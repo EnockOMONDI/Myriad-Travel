@@ -1,0 +1,32 @@
+
+/* TAN-Garland Font Family - Mbugani Luxe Adventures */
+@font-face {
+    font-family: 'TAN-Garland-Regular';
+    src: url('../fonts/TAN-Garland-Regular.woff2') format('woff2'),
+         url('../fonts/TAN-Garland-Regular.ttf') format('truetype'),
+         url('../fonts/TAN-Garland-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Use TAN-Garland-Regular for all weights since only Regular is available */
+@font-face {
+    font-family: 'TAN-Garland-Light';
+    src: url('../fonts/TAN-Garland-Regular.woff2') format('woff2'),
+         url('../fonts/TAN-Garland-Regular.ttf') format('truetype'),
+         url('../fonts/TAN-Garland-Regular.otf') format('opentype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'TAN-Garland-Bold';
+    src: url('../fonts/TAN-Garland-Regular.woff2') format('woff2'),
+         url('../fonts/TAN-Garland-Regular.ttf') format('truetype'),
+         url('../fonts/TAN-Garland-Regular.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}

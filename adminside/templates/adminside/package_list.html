@@ -1,0 +1,799 @@
+{% extends 'adminside/base.html' %}
+{% load static %}
+{% load image_tags %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block meta_description %}{{ meta_description }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Modern Package Listing Styles */
+    .packages-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .packages-header {
+        background: #291c1b;
+        color: white;
+        padding: 40px 30px;
+        border-radius: 20px;
+        margin-bottom: 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .packages-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{% static "assets/images/hero/safari-pattern.png" %}') center/cover;
+        opacity: 0.1;
+        z-index: 1;
+    }
+
+    .packages-header-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .packages-header h1 {
+        font-family: 'TAN-Garland-Regular', Georgia, serif;
+        font-size: 3rem;
+        margin-bottom: 15px;
+        font-weight: 400;
+    }
+
+    .packages-header p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* Search and Filter Section */
+    .search-filter-section {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        border: 1px solid #f0f0f0;
+    }
+
+    .search-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        gap: 20px;
+    }
+
+    .search-input-wrapper {
+        position: relative;
+        flex: 1;
+        max-width: 200px;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 15px 50px 15px 20px;
+        border: 2px solid #e9ecef;
+        border-radius: 50px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #471601;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(71, 22, 1, 0.1);
+    }
+
+    .search-icon {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        font-size: 18px;
+    }
+
+    .results-info {
+        color: #6c757d;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* Category Filter Pills */
+    .category-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .category-pill {
+        padding: 12px 24px;
+        border: 2px solid #efac00;
+        border-radius: 50px;
+        background: white;
+        color: #495057;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 12px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .category-pill:hover {
+        border-color: #efac00;
+        color: #efac00;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(227, 170, 0, 0.2);
+        text-decoration: none;
+    }
+
+    .category-pill.active {
+        background: #e3aa00;
+        border-color: #e3aa00;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(71, 22, 1, 0.3);
+    }
+
+    .category-pill .count {
+        background: rgba(255,255,255,0.2);
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .category-pill.active .count {
+        background: rgba(255,255,255,0.3);
+    }
+
+    /* Package Grid Layout */
+    .packages-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+
+    /* Package Card Design */
+    .package-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        transition: all 0.4s ease;
+        position: relative;
+        border: 1px solid #f0f0f0;
+    }
+
+    .package-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        border-color: #e3aa00;
+    }
+
+    .package-image-container {
+        position: relative;
+        height: 250px;
+        overflow: hidden;
+    }
+
+    .package-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .package-card:hover .package-image {
+        transform: scale(1.05);
+    }
+
+    .package-badges {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .package-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        backdrop-filter: blur(10px);
+    }
+
+    .badge-popular {
+        background: linear-gradient(135deg, #e3aa00, #ff9d00);
+        color: white;
+    }
+
+    .badge-new {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+    }
+
+    .badge-featured {
+        background: #291c1b;
+        color: white;
+    }
+
+    .package-content {
+        padding: 25px;
+    }
+
+    .package-category-badge {
+        display: inline-block;
+        padding: 6px 14px;
+        background: linear-gradient(135deg, #291c1a, #471601);
+        color: white;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-radius: 20px;
+        margin-bottom: 12px;
+    }
+
+    .package-category-badge i {
+        margin-right: 4px;
+        font-size: 10px;
+    }
+
+    .package-destination {
+        color: #e3aa00;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+    }
+
+    .package-name {
+        font-family: 'TAN-Garland-Regular', Georgia, serif;
+        font-size: 1.4rem;
+        font-weight: 400;
+        color: #2c3e50;
+        margin-bottom: 12px;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .package-description {
+        color: #6c757d;
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .package-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 12px;
+    }
+
+    .package-duration {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #495057;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .package-price {
+        text-align: right;
+    }
+
+    .price-label {
+        font-size: 12px;
+        color: #6c757d;
+        margin-bottom: 2px;
+    }
+
+    .price-amount {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #471601;
+        font-family: 'TAN-Garland-Regular', Georgia, serif;
+    }
+
+    .package-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .btn-view-details {
+        flex: 1;
+        padding: 12px 20px;
+        background: #291c1b;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 14px;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-view-details:hover {
+        background: #291c1b;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(71, 22, 1, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-quick-book {
+        padding: 12px 16px;
+        background: white;
+        color: #e3aa00;
+        border: 2px solid #e3aa00;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 14px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-quick-book:hover {
+        background: #e3aa00;
+        color: white;
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    /* Loading States */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255,255,255,0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .loading-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #471601;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Pagination Styles */
+    .pagination-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 40px;
+    }
+
+    .pagination {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .pagination .page-link {
+        padding: 12px 16px;
+        border: 2px solid #e9ecef;
+        border-radius: 50px;
+        color: #495057;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        min-width: 48px;
+        text-align: center;
+    }
+
+    .pagination .page-link:hover {
+        border-color: #e3aa00;
+        color: #e3aa00;
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .pagination .page-item.active .page-link {
+        background: #471601;
+        border-color: #471601;
+        color: white;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+
+    .empty-state-icon {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+
+    .empty-state h3 {
+        font-family: 'TAN-Garland-Regular', Georgia, serif;
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+        color: #495057;
+    }
+
+    .empty-state p {
+        font-size: 16px;
+        max-width: 400px;
+        margin: 0 auto 25px;
+    }
+
+    .btn-reset-filters {
+        padding: 12px 24px;
+        background: #e3aa00;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-reset-filters:hover {
+        background: #e8840a;
+        transform: translateY(-2px);
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+        .packages-grid {
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .packages-container {
+            padding: 15px;
+        }
+
+        .packages-header {
+            padding: 30px 20px;
+            margin-bottom: 20px;
+        }
+
+        .packages-header h1 {
+            font-size: 2.2rem;
+        }
+
+        .search-filter-section {
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .search-container {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 15px;
+        }
+
+        .search-input-wrapper {
+            max-width: none;
+        }
+
+        .category-filters {
+            justify-content: flex-start;
+            gap: 8px;
+        }
+
+        .category-pill {
+            padding: 10px 16px;
+            font-size: 13px;
+        }
+
+        .packages-grid {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .package-content {
+            padding: 20px;
+        }
+
+        .package-actions {
+            flex-direction: column;
+        }
+
+        .btn-quick-book {
+            order: -1;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .packages-header h1 {
+            font-size: 1.8rem;
+        }
+
+        .package-image-container {
+            height: 200px;
+        }
+
+        .package-name {
+            font-size: 1.2rem;
+        }
+
+        .category-pill {
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+    }
+
+    /* Animation Classes */
+    .fade-in {
+        animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="packages-container">
+    <!-- Header Section -->
+    <!-- <div class="packages-header">
+        <div class="packages-header-content">
+            <h1>🦁 Luxury Safari Packages</h1>
+            <p>Discover extraordinary adventures across East Africa with our premium travel experiences. From the Serengeti to the Maasai Mara, create memories that last a lifetime.</p>
+        </div>
+    </div> -->
+
+    <!-- Search and Filter Section -->
+    <div class="search-filter-section">
+        <!-- Search Bar -->
+        <div class="search-container">
+            <div class="search-input-wrapper">
+                <input type="text"
+                       class="search-input"
+                       id="packageSearch"
+                       placeholder="Search packages, destinations, or experiences..."
+                       value="{{ search_query }}">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+            <div class="results-info">
+                <i class="fas fa-info-circle"></i>
+                <span id="resultsCount">{{ page_obj.paginator.count }} packages found</span>
+            </div>
+        </div>
+
+        <!-- Category Filter Pills -->
+        <div class="category-filters">
+            {% for category in categories %}
+            <a href="?category={{ category.key }}{% if search_query %}&search={{ search_query }}{% endif %}"
+               class="category-pill {% if current_category == category.key %}active{% endif %}"
+               data-category="{{ category.key }}">
+                <span>{{ category.name }}</span>
+                <span class="count">{{ category.count }}</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Packages Grid -->
+    <div id="packagesContainer">
+        {% include 'adminside/package_cards.html' %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="pagination-container">
+        <nav aria-label="Package pagination">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if current_category != 'all' %}&category={{ current_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="First">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if current_category != 'all' %}&category={{ current_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="Previous">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}{% if current_category != 'all' %}&category={{ current_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if current_category != 'all' %}&category={{ current_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="Next">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if current_category != 'all' %}&category={{ current_category }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" aria-label="Last">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('packageSearch');
+    const categoryPills = document.querySelectorAll('.category-pill');
+    const packagesContainer = document.getElementById('packagesContainer');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const resultsCount = document.getElementById('resultsCount');
+
+    let searchTimeout;
+    let currentCategory = '{{ current_category }}';
+
+    // Search functionality with debouncing
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            performSearch();
+        }, 500);
+    });
+
+    // Category filter functionality
+    categoryPills.forEach(pill => {
+        pill.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            // Update active state
+            categoryPills.forEach(p => p.classList.remove('active'));
+            this.classList.add('active');
+
+            currentCategory = this.dataset.category;
+            performSearch();
+        });
+    });
+
+    function performSearch() {
+        const searchQuery = searchInput.value.trim();
+
+        // Show loading
+        showLoading();
+
+        // Build URL parameters
+        const params = new URLSearchParams();
+        if (currentCategory !== 'all') {
+            params.append('category', currentCategory);
+        }
+        if (searchQuery) {
+            params.append('search', searchQuery);
+        }
+
+        // Make AJAX request
+        fetch(`?${params.toString()}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Update packages container
+            packagesContainer.innerHTML = data.html;
+
+            // Update results count
+            resultsCount.textContent = `${data.total_count} packages found`;
+
+            // Add fade-in animation
+            packagesContainer.classList.add('fade-in');
+
+            // Hide loading
+            hideLoading();
+
+            // Update URL without page reload
+            const newUrl = `${window.location.pathname}?${params.toString()}`;
+            window.history.pushState({}, '', newUrl);
+        })
+        .catch(error => {
+            console.error('Search error:', error);
+            hideLoading();
+        });
+    }
+
+    function showLoading() {
+        loadingOverlay.classList.add('active');
+    }
+
+    function hideLoading() {
+        loadingOverlay.classList.remove('active');
+    }
+
+    // Remove fade-in class after animation
+    packagesContainer.addEventListener('animationend', function() {
+        this.classList.remove('fade-in');
+    });
+});
+</script>
+{% endblock %}

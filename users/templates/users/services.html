@@ -1,0 +1,495 @@
+{% extends 'users/basebackup.html' %}
+{% load static %}
+
+{% block title %}Our Services - Mbugani Luxe Adventures{% endblock %}
+
+{% block content %}
+    <!--====== Start Services Hero Section ======-->
+    <section class="services-hero-section pt-150 pb-80" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="services-hero-content text-center mb-50 wow fadeInDown">
+                        <span class="sub-title" style="color: #e3aa00; font-weight: 600; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;">Premium Travel Services</span>
+                        <h1 style="color: #471601; font-family: 'TAN-Garland-Regular', sans-serif; font-size: 3.5rem; line-height: 1.3; margin: 20px 0 25px;">Comprehensive Luxury Travel Solutions</h1>
+                        <p style="font-size: 1.2rem; line-height: 1.8; color: #666; max-width: 800px; margin: 0 auto;">
+                            From air ticketing to bespoke safari experiences, Mbugani Luxe Adventures offers a complete suite of premium travel services designed to exceed your expectations at every turn.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--====== End Services Hero Section ======-->
+
+    <!--====== Start Air Ticketing Section ======-->
+    <section id="air-ticketing" class="service-detail-section pt-100 pb-80">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="service-content pr-lg-50 mb-50 wow fadeInLeft">
+                        <div class="section-title mb-40">
+                            <span class="sub-title" style="color: #e3aa00; font-weight: 600; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;">Service 01</span>
+                            <h2 style="color: #471601; font-family: 'TAN-Garland-Regular', sans-serif; font-size: 2.5rem; line-height: 1.3; margin-bottom: 25px;">Air Ticketing</h2>
+                        </div>
+                        <p style="font-size: 1.1rem; line-height: 1.8; color: #333; margin-bottom: 20px;">
+                            Experience seamless air travel with our comprehensive ticketing services. We partner with leading airlines worldwide to secure the best routes, competitive fares, and premium seating options for our discerning clients.
+                        </p>
+                        <p style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 25px;">
+                            Whether you're flying business class to the Maasai Mara or arranging multi-city itineraries across Africa, our expert team handles every detail with precision and care. We offer flexible booking options, real-time flight updates, and 24/7 support to ensure your journey begins smoothly.
+                        </p>
+                        <div class="service-features mb-30">
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Competitive fares with premium airlines</p>
+                            </div>
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Business and first-class seating arrangements</p>
+                            </div>
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Multi-city and complex itinerary management</p>
+                            </div>
+                        </div>
+                        <a href="{% url 'users:contactus' %}" class="main-btn primary-btn">
+                            <i class="fas fa-plane"></i> Book Your Flight
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="service-image mb-50 wow fadeInRight">
+                        <div class="image-wrapper" style="position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(71, 22, 1, 0.15);">
+                            <img src="{% static 'assets/images/services/air.webp' %}" srcset="{% static 'assets/images/services/air-768.webp' %} 768w, {% static 'assets/images/services/air.webp' %} 1536w" sizes="(max-width: 991px) 100vw, 50vw" alt="Traveller with luggage looking towards a passenger aircraft at the airport" width="1536" height="1024" loading="lazy" decoding="async" style="width: 100%; height: auto; display: block;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--====== End Air Ticketing Section ======-->
+
+    <!--====== Start Hotel Bookings Section ======-->
+    <section id="hotel-bookings" class="service-detail-section pt-80 pb-80" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 order-lg-2">
+                    <div class="service-content pl-lg-50 mb-50 wow fadeInRight">
+                        <div class="section-title mb-40">
+                            <span class="sub-title" style="color: #e3aa00; font-weight: 600; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;">Service 02</span>
+                            <h2 style="color: #471601; font-family: 'TAN-Garland-Regular', sans-serif; font-size: 2.5rem; line-height: 1.3; margin-bottom: 25px;">Hotel Bookings</h2>
+                        </div>
+                        <p style="font-size: 1.1rem; line-height: 1.8; color: #333; margin-bottom: 20px;">
+                            Indulge in world-class accommodations handpicked for their exceptional service, stunning locations, and unparalleled luxury. From boutique lodges in the heart of the savannah to five-star resorts on pristine beaches, we curate stays that complement your journey perfectly.
+                        </p>
+                        <p style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 25px;">
+                            Our extensive network of hotel partners across Kenya and East Africa ensures you receive exclusive rates, room upgrades, and VIP treatment. We handle all reservations, special requests, and ensure every accommodation meets our exacting standards for luxury and comfort.
+                        </p>
+                        <div class="service-features mb-30">
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Luxury lodges and five-star hotels</p>
+                            </div>
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Exclusive rates and complimentary upgrades</p>
+                            </div>
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Personalized accommodation recommendations</p>
+                            </div>
+                        </div>
+                        <a href="{% url 'users:contactus' %}" class="main-btn primary-btn">
+                            <i class="fas fa-hotel"></i> Reserve Your Stay
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 order-lg-1">
+                    <div class="service-image mb-50 wow fadeInLeft">
+                        <div class="image-wrapper" style="position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(71, 22, 1, 0.15);">
+                            <img src="{% static 'assets/images/services/hotel.webp' %}" srcset="{% static 'assets/images/services/hotel-768.webp' %} 768w, {% static 'assets/images/services/hotel.webp' %} 1536w" sizes="(max-width: 991px) 100vw, 50vw" alt="Warmly furnished lodge bedroom opening onto a leafy terrace" width="1536" height="1024" loading="lazy" decoding="async" style="width: 100%; height: auto; display: block;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--====== End Hotel Bookings Section ======-->
+
+    <!--====== Start Tours and Safaris Section ======-->
+    <section id="tours-safaris" class="service-detail-section pt-100 pb-80">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="service-content pr-lg-50 mb-50 wow fadeInLeft">
+                        <div class="section-title mb-40">
+                            <span class="sub-title" style="color: #e3aa00; font-weight: 600; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;">Service 03</span>
+                            <h2 style="color: #471601; font-family: 'TAN-Garland-Regular', sans-serif; font-size: 2.5rem; line-height: 1.3; margin-bottom: 25px;">Tours and Safaris</h2>
+                        </div>
+                        <p style="font-size: 1.1rem; line-height: 1.8; color: #333; margin-bottom: 20px;">
+                            Embark on extraordinary safari adventures that showcase Africa's magnificent wildlife and breathtaking landscapes. Our expertly curated tours combine thrilling game drives, intimate wildlife encounters, and cultural immersion experiences that create memories to last a lifetime.
+                        </p>
+                        <p style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 25px;">
+                            Led by experienced guides with deep knowledge of Kenya's ecosystems and wildlife behavior, each safari is tailored to your interests and pace. From the Great Migration in the Maasai Mara to intimate bush walks in Amboseli, we craft journeys that reveal the true essence of Africa's wild beauty while ensuring your comfort and safety at every moment.
+                        </p>
+                        <div class="service-features mb-30">
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Expert wildlife guides and naturalists</p>
+                            </div>
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Private and group safari options</p>
+                            </div>
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Customized itineraries to iconic destinations</p>
+                            </div>
+                        </div>
+                        <a href="{% url 'adminside:package_list' %}" class="main-btn primary-btn">
+                            <i class="fas fa-binoculars"></i> Explore Safaris
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="service-image mb-50 wow fadeInRight">
+                        <div class="image-wrapper" style="position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(71, 22, 1, 0.15);">
+                            <img src="{% static 'assets/images/services/safari.webp' %}" srcset="{% static 'assets/images/services/safari-768.webp' %} 768w, {% static 'assets/images/services/safari.webp' %} 1536w" sizes="(max-width: 991px) 100vw, 50vw" alt="Guide and safari guests watching elephants on open grassland" width="1536" height="1024" loading="lazy" decoding="async" style="width: 100%; height: auto; display: block;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--====== End Tours and Safaris Section ======-->
+
+    <!--====== Start MICE Section ======-->
+    <section id="mice" class="service-detail-section pt-80 pb-80" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 order-lg-2">
+                    <div class="service-content pl-lg-50 mb-50 wow fadeInRight">
+                        <div class="section-title mb-40">
+                            <span class="sub-title" style="color: #e3aa00; font-weight: 600; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;">Service 04</span>
+                            <h2 style="color: #471601; font-family: 'TAN-Garland-Regular', sans-serif; font-size: 2.5rem; line-height: 1.3; margin-bottom: 25px;">MICE (Meetings, Incentives, Conferences & Events)</h2>
+                        </div>
+                        <p style="font-size: 1.1rem; line-height: 1.8; color: #333; margin-bottom: 20px;">
+                            Transform your corporate events into unforgettable experiences with our comprehensive MICE services. We specialize in organizing high-impact meetings, incentive travel programs, conferences, and exclusive events in Kenya's most inspiring venues.
+                        </p>
+                        <p style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 25px;">
+                            From intimate boardroom meetings in luxury lodges to large-scale conferences in world-class facilities, we handle every aspect of event planning and execution. Our team coordinates venue selection, accommodation, catering, audio-visual equipment, team-building activities, and post-event safari experiences that reward and inspire your team.
+                        </p>
+                        <div class="service-features mb-30">
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Full event planning and coordination</p>
+                            </div>
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Unique venues with safari experiences</p>
+                            </div>
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Incentive travel programs and rewards</p>
+                            </div>
+                        </div>
+                        <a href="{% url 'users:contactus' %}" class="main-btn primary-btn">
+                            <i class="fas fa-briefcase"></i> Plan Your Event
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 order-lg-1">
+                    <div class="service-image mb-50 wow fadeInLeft">
+                        <div class="image-wrapper" style="position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(71, 22, 1, 0.15);">
+                            <img src="{% static 'assets/images/services/conference.webp' %}" srcset="{% static 'assets/images/services/conference-768.webp' %} 768w, {% static 'assets/images/services/conference.webp' %} 1536w" sizes="(max-width: 991px) 100vw, 50vw" alt="Business delegates listening to a speaker in a conference room" width="1536" height="1024" loading="lazy" decoding="async" style="width: 100%; height: auto; display: block;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--====== End MICE Section ======-->
+
+    <!--====== Start Group Travel Logistics Section ======-->
+    <section id="group-travel" class="service-detail-section pt-100 pb-80">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="service-content pr-lg-50 mb-50 wow fadeInLeft">
+                        <div class="section-title mb-40">
+                            <span class="sub-title" style="color: #e3aa00; font-weight: 600; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;">Service 05</span>
+                            <h2 style="color: #471601; font-family: 'TAN-Garland-Regular', sans-serif; font-size: 2.5rem; line-height: 1.3; margin-bottom: 25px;">Group Travel Logistics</h2>
+                        </div>
+                        <p style="font-size: 1.1rem; line-height: 1.8; color: #333; margin-bottom: 20px;">
+                            Orchestrating seamless group travel requires meticulous planning, coordination, and attention to detail. Our group travel logistics services ensure that every member of your party enjoys a smooth, stress-free journey from departure to return.
+                        </p>
+                        <p style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 25px;">
+                            Whether you're organizing a family reunion safari, a corporate retreat, or a special interest group tour, we manage all logistics including transportation, accommodation coordination, meal planning, activity scheduling, and on-ground support. Our experienced coordinators ensure perfect timing, seamless transitions, and that every group member's needs are met with professionalism and care.
+                        </p>
+                        <div class="service-features mb-30">
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Complete logistics coordination for groups</p>
+                            </div>
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Dedicated group coordinators and support staff</p>
+                            </div>
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Flexible itineraries for diverse group needs</p>
+                            </div>
+                        </div>
+                        <a href="{% url 'users:contactus' %}" class="main-btn primary-btn">
+                            <i class="fas fa-users"></i> Organize Group Travel
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="service-image mb-50 wow fadeInRight">
+                        <div class="image-wrapper" style="position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(71, 22, 1, 0.15);">
+                            <img src="{% static 'assets/images/services/group.webp' %}" srcset="{% static 'assets/images/services/group-768.webp' %} 768w, {% static 'assets/images/services/group.webp' %} 1536w" sizes="(max-width: 991px) 100vw, 50vw" alt="Travellers meeting their coordinator beside a tour bus" width="1536" height="1024" loading="lazy" decoding="async" style="width: 100%; height: auto; display: block;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--====== End Group Travel Logistics Section ======-->
+
+    <!--====== Start Team Building Section ======-->
+    <section id="team-building" class="service-detail-section pt-80 pb-80" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 order-lg-2">
+                    <div class="service-content pl-lg-50 mb-50 wow fadeInRight">
+                        <div class="section-title mb-40">
+                            <span class="sub-title" style="color: #e3aa00; font-weight: 600; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;">Service 06</span>
+                            <h2 style="color: #471601; font-family: 'TAN-Garland-Regular', sans-serif; font-size: 2.5rem; line-height: 1.3; margin-bottom: 25px;">Team Building</h2>
+                        </div>
+                        <p style="font-size: 1.1rem; line-height: 1.8; color: #333; margin-bottom: 20px;">
+                            Strengthen bonds, enhance collaboration, and inspire your team with our innovative team-building programs set against Africa's stunning natural backdrop. We design engaging activities that combine adventure, learning, and fun to create lasting connections among team members.
+                        </p>
+                        <p style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 25px;">
+                            Our team-building experiences range from wildlife conservation challenges and bush survival skills to cultural immersion activities and adventure sports. Each program is customized to your organization's goals, whether building trust, improving communication, or celebrating achievements. The unique safari setting provides a refreshing change from traditional corporate environments, fostering creativity and camaraderie.
+                        </p>
+                        <div class="service-features mb-30">
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Customized team-building activities</p>
+                            </div>
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Adventure and cultural experiences</p>
+                            </div>
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Professional facilitators and guides</p>
+                            </div>
+                        </div>
+                        <a href="{% url 'users:contactus' %}" class="main-btn primary-btn">
+                            <i class="fas fa-handshake"></i> Build Your Team
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 order-lg-1">
+                    <div class="service-image mb-50 wow fadeInLeft">
+                        <div class="image-wrapper" style="position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(71, 22, 1, 0.15);">
+                            <img src="{% static 'assets/images/services/team.webp' %}" srcset="{% static 'assets/images/services/team-768.webp' %} 768w, {% static 'assets/images/services/team.webp' %} 1536w" sizes="(max-width: 991px) 100vw, 50vw" alt="Colleagues working together on an outdoor team-building activity" width="1536" height="1024" loading="lazy" decoding="async" style="width: 100%; height: auto; display: block;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--====== End Team Building Section ======-->
+
+    <!--====== Start Travel Insurance Section ======-->
+    <section id="travel-insurance" class="service-detail-section pt-100 pb-80">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="service-content pr-lg-50 mb-50 wow fadeInLeft">
+                        <div class="section-title mb-40">
+                            <span class="sub-title" style="color: #e3aa00; font-weight: 600; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;">Service 07</span>
+                            <h2 style="color: #471601; font-family: 'TAN-Garland-Regular', sans-serif; font-size: 2.5rem; line-height: 1.3; margin-bottom: 25px;">Travel Insurance</h2>
+                        </div>
+                        <p style="font-size: 1.1rem; line-height: 1.8; color: #333; margin-bottom: 20px;">
+                            Travel with complete peace of mind knowing you're protected by comprehensive insurance coverage tailored for luxury safari and adventure travel. We partner with leading insurance providers to offer policies that safeguard your investment and well-being throughout your journey.
+                        </p>
+                        <p style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 25px;">
+                            Our travel insurance options cover medical emergencies, trip cancellations, lost luggage, flight delays, and emergency evacuations. We help you select the right coverage level for your specific itinerary and activities, ensuring you're protected whether you're on a game drive, hot air balloon safari, or relaxing at a luxury lodge. Our team assists with claims processing and provides 24/7 emergency support.
+                        </p>
+                        <div class="service-features mb-30">
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Comprehensive medical and trip coverage</p>
+                            </div>
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Emergency evacuation and assistance</p>
+                            </div>
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">24/7 claims support and assistance</p>
+                            </div>
+                        </div>
+                        <a href="{% url 'users:contactus' %}" class="main-btn primary-btn">
+                            <i class="fas fa-shield-alt"></i> Get Coverage
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="service-image mb-50 wow fadeInRight">
+                        <div class="image-wrapper" style="position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(71, 22, 1, 0.15);">
+                            <img src="{% static 'assets/images/services/insurance.webp' %}" srcset="{% static 'assets/images/services/insurance-768.webp' %} 768w, {% static 'assets/images/services/insurance.webp' %} 1536w" sizes="(max-width: 991px) 100vw, 50vw" alt="Traveller reviewing travel protection documents with an advisor" width="1536" height="1024" loading="lazy" decoding="async" style="width: 100%; height: auto; display: block;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--====== End Travel Insurance Section ======-->
+
+    <!--====== Start Airport Transfers Section ======-->
+    <section id="airport-transfers" class="service-detail-section pt-80 pb-80" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 order-lg-2">
+                    <div class="service-content pl-lg-50 mb-50 wow fadeInRight">
+                        <div class="section-title mb-40">
+                            <span class="sub-title" style="color: #e3aa00; font-weight: 600; font-size: 16px; text-transform: uppercase; letter-spacing: 1px;">Service 08</span>
+                            <h2 style="color: #471601; font-family: 'TAN-Garland-Regular', sans-serif; font-size: 2.5rem; line-height: 1.3; margin-bottom: 25px;">Airport Transfers</h2>
+                        </div>
+                        <p style="font-size: 1.1rem; line-height: 1.8; color: #333; margin-bottom: 20px;">
+                            Begin and end your journey in style with our premium airport transfer services. We provide comfortable, reliable transportation between Jomo Kenyatta International Airport, Wilson Airport, and your accommodation or safari destination, ensuring a seamless transition from arrival to adventure.
+                        </p>
+                        <p style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 25px;">
+                            Our fleet of luxury vehicles includes air-conditioned sedans, SUVs, and safari vehicles, all maintained to the highest standards. Professional drivers greet you at arrivals, assist with luggage, and provide a smooth, comfortable ride while sharing insights about Nairobi and Kenya. We monitor flight schedules to ensure timely pickups and offer meet-and-greet services for VIP clients.
+                        </p>
+                        <div class="service-features mb-30">
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Luxury vehicles with professional drivers</p>
+                            </div>
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Flight monitoring and timely pickups</p>
+                            </div>
+                            <div class="feature-item" style="display: flex; align-items: start; margin-bottom: 15px;">
+                                <i class="fas fa-check-circle" style="color: #e3aa00; font-size: 20px; margin-right: 15px; margin-top: 3px;"></i>
+                                <p style="margin: 0; color: #666;">Meet-and-greet VIP services available</p>
+                            </div>
+                        </div>
+                        <a href="{% url 'users:contactus' %}" class="main-btn primary-btn">
+                            <i class="fas fa-car"></i> Book Transfer
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 order-lg-1">
+                    <div class="service-image mb-50 wow fadeInLeft">
+                        <div class="image-wrapper" style="position: relative; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(71, 22, 1, 0.15);">
+                            <img src="{% static 'assets/images/services/transfer.webp' %}" srcset="{% static 'assets/images/services/transfer-768.webp' %} 768w, {% static 'assets/images/services/transfer.webp' %} 1536w" sizes="(max-width: 991px) 100vw, 50vw" alt="Chauffeur welcoming a traveller beside an airport transfer vehicle" width="1536" height="1024" loading="lazy" decoding="async" style="width: 100%; height: auto; display: block;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--====== End Airport Transfers Section ======-->
+
+    <!--====== Start Call to Action Section ======-->
+    <section class="cta-section pt-100 pb-100" style="background: linear-gradient(135deg, rgba(71, 22, 1, 0.9), rgba(227, 170, 0, 0.8)), url('{% static 'assets/images/hero/2.png' %}') center/cover; position: relative;">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="cta-content text-center text-white wow fadeInUp">
+                        <h2 style="color: #ffffff; font-family: 'TAN-Garland-Regular', sans-serif; font-size: 3rem; line-height: 1.3; margin-bottom: 25px;">Ready to Experience Our Premium Services?</h2>
+                        <p style="font-size: 1.2rem; line-height: 1.7; color: rgba(255, 255, 255, 0.9); margin-bottom: 40px;">
+                            Let our expert team handle every detail of your journey. From the moment you book your flight to the final airport transfer home, we ensure a seamless, luxurious experience.
+                        </p>
+                        <div class="cta-buttons">
+                            <a href="{% url 'users:contactus' %}" class="main-btn primary-btn">
+                                <i class="fas fa-envelope"></i> Contact Us Today
+                            </a>
+                            <a href="{% url 'adminside:package_list' %}" class="main-btn secondary-btn">
+                                <i class="fas fa-binoculars"></i> View Safari Packages
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="shape-overlay" style="position: absolute; bottom: 0; left: 0; width: 100%; height: 100px; background: #ffffff; clip-path: polygon(0 20%, 100% 0%, 100% 100%, 0% 100%);"></div>
+    </section>
+    <!--====== End Call to Action Section ======-->
+
+    <!-- Custom Styles for Services Page -->
+    <style>
+        /* H2 Heading Fixes */
+        h2 {
+            font-family: 'TAN-Garland-Regular', 'Georgia', 'Times New Roman', serif !important;
+            font-weight: normal !important;
+            text-rendering: optimizeLegibility !important;
+        }
+
+        /* CTA Section H2 Specific Styling */
+        .cta-section h2 {
+            color: #ffffff !important;
+            font-family: 'TAN-Garland-Regular', 'Georgia', 'Times New Roman', serif !important;
+            font-size: 3rem !important;
+            line-height: 1.3 !important;
+            margin-bottom: 25px !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        /* Service Card Hover Effects */
+        .service-card-luxury:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(71, 22, 1, 0.2) !important;
+        }
+
+        /* Button Hover Effects */
+        .main-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(41, 28, 26, 0.3);
+        }
+
+        .main-btn.secondary-btn:hover {
+            background: #ffffff;
+            color: #471601;
+        }
+
+        /* Responsive Typography */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem !important;
+            }
+
+            h2 {
+                font-size: 2rem !important;
+            }
+
+            .cta-section h2 {
+                font-size: 2rem !important;
+            }
+
+            .cta-buttons a {
+                display: block;
+                margin: 10px 0 !important;
+            }
+        }
+
+        /* Image Overlay Effects */
+        .image-wrapper:hover img {
+            transform: scale(1.05);
+            transition: transform 0.5s ease;
+        }
+
+        .image-wrapper img {
+            transition: transform 0.5s ease;
+        }
+    </style>
+
+{% endblock %}
+

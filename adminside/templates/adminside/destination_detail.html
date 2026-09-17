@@ -1,0 +1,493 @@
+{% extends 'adminside/base.html' %}
+{% load static %}
+{% load image_tags %}
+
+{% block title %}{{ destination.name }} - Destination Details{% endblock %}
+
+{% block content %}
+<style>
+    .destination-hero {
+        position: relative;
+        height: 400px;
+        border-radius: 15px;
+        overflow: hidden;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(23, 11, 44, 0.1);
+    }
+
+    .destination-hero img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .destination-hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+            to bottom,
+            rgba(23, 11, 44, 0.3) 0%,
+            rgba(23, 11, 44, 0.7) 100%
+        );
+        display: flex;
+        align-items: end;
+        padding: 40px;
+    }
+
+    .destination-hero-content {
+        color: white;
+        width: 100%;
+    }
+
+    .destination-title {
+        font-family: 'TAN-Garland-Regular', sans-serif;
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .destination-type-badge {
+        background: #e3aa00;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+
+    .destination-pricing {
+        background: rgba(255, 255, 255, 0.9);
+        color: #471601;
+        padding: 15px 20px;
+        border-radius: 10px;
+        display: inline-block;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    .content-section {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .section-title {
+        font-family: 'TAN-Garland-Regular', sans-serif;
+        font-size: 1.8rem;
+        color: #471601;
+        margin-bottom: 20px;
+        border-bottom: 3px solid #e3aa00;
+        padding-bottom: 10px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 15px;
+        margin-bottom: 30px;
+        max-width: 600px;
+    }
+
+    .stat-card {
+        background: #471601;
+        color: white;
+        padding: 15px 12px;
+        border-radius: 10px;
+        text-align: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(71, 22, 1, 0.2);
+        min-height: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(71, 22, 1, 0.3);
+        background: #291c1b;
+    }
+
+    .stat-icon {
+        font-size: 1.8rem;
+        color: #e3aa00;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+        line-height: 1.2;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        opacity: 0.9;
+        line-height: 1.2;
+        font-weight: 500;
+    }
+
+    .packages-grid, .accommodations-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    /* Responsive design for statistics boxes */
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            max-width: 100%;
+        }
+
+        .stat-card {
+            padding: 12px 8px;
+            min-height: 85px;
+        }
+
+        .stat-icon {
+            font-size: 1.5rem;
+            margin-bottom: 6px;
+        }
+
+        .stat-number {
+            font-size: 1.3rem;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .stat-card {
+            padding: 10px 6px;
+            min-height: 75px;
+        }
+
+        .stat-icon {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .stat-number {
+            font-size: 1.1rem;
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+        }
+    }
+
+    .package-card, .accommodation-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .package-card:hover, .accommodation-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .card-image {
+        height: 200px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .package-card:hover .card-image img,
+    .accommodation-card:hover .card-image img {
+        transform: scale(1.05);
+    }
+
+    .card-content {
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #471601;
+        margin-bottom: 10px;
+    }
+
+    .card-description {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+        line-height: 1.5;
+    }
+
+    .card-price {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #e3aa00;
+        margin-bottom: 15px;
+    }
+
+    .card-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.8rem;
+        color: #888;
+    }
+
+    .btn-explore {
+        background: #291c1b;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .btn-explore:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 157, 0, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+    .breadcrumb-nav {
+        background: rgba(255, 157, 0, 0.1);
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+
+    .breadcrumb-nav a {
+        color: #471601;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .breadcrumb-nav a:hover {
+        color: #e3aa00;
+    }
+
+    @media (max-width: 768px) {
+        .destination-title {
+            font-size: 2rem;
+        }
+        
+        .destination-hero {
+            height: 300px;
+        }
+        
+        .destination-hero-overlay {
+            padding: 20px;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .packages-grid, .accommodations-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<!-- Breadcrumb Navigation -->
+<div class="breadcrumb-nav">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'adminside:destination_list' %}"><i class="fas fa-globe"></i> Destinations</a></li>
+            {% if destination.parent %}
+                {% if destination.parent.parent %}
+                    <li class="breadcrumb-item"><a href="{% url 'adminside:destination_detail' destination.parent.parent.slug %}">{{ destination.parent.parent.name }}</a></li>
+                {% endif %}
+                <li class="breadcrumb-item"><a href="{% url 'adminside:destination_detail' destination.parent.slug %}">{{ destination.parent.name }}</a></li>
+            {% endif %}
+            <li class="breadcrumb-item active" aria-current="page">{{ destination.name }}</li>
+        </ol>
+    </nav>
+</div>
+
+<!-- Destination Hero Section -->
+<div class="destination-hero">
+    {% image_with_default destination.image "destinations" "" destination.name %}
+    <div class="destination-hero-overlay">
+        <div class="destination-hero-content">
+            <div class="destination-type-badge">
+                <i class="fas fa-map-marker-alt"></i> {{ destination.get_destination_type_display }}
+            </div>
+            <h1 class="destination-title">{{ destination.name }}</h1>
+            {% if destination.starting_price %}
+                <div class="destination-pricing">
+                    <i class="fas fa-tag"></i> Starting from {{ destination.starting_price|currency_format }}
+                </div>
+            {% else %}
+                <div class="destination-pricing">
+                    <i class="fas fa-phone"></i> Get Quote
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Section -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-suitcase"></i>
+        </div>
+        <div class="stat-number">{{ packages.count }}</div>
+        <div class="stat-label">Travel Packages</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-bed"></i>
+        </div>
+        <div class="stat-number">{{ accommodations.count }}</div>
+        <div class="stat-label">Accommodations</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-map-marker-alt"></i>
+        </div>
+        <div class="stat-number">{{ destination.children.count }}</div>
+        <div class="stat-label">Sub-destinations</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon">
+            <i class="fas fa-star"></i>
+        </div>
+        <div class="stat-number">4.8</div>
+        <div class="stat-label">Average Rating</div>
+    </div>
+</div>
+
+<!-- Description Section -->
+<div class="content-section">
+    <h2 class="section-title">
+        <i class="fas fa-info-circle"></i> About {{ destination.name }}
+    </h2>
+    <div class="destination-description">
+        {{ destination.description|safe }}
+    </div>
+</div>
+
+<!-- Packages Section -->
+{% if packages %}
+<div class="content-section">
+    <h2 class="section-title">
+        <i class="fas fa-suitcase"></i> Available Packages
+    </h2>
+    <div class="packages-grid">
+        {% for package in packages %}
+        <div class="package-card">
+            <div class="card-image">
+                {% image_with_placeholder package.featured_image "" package.name %}
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">{{ package.name }}</h3>
+                <p class="card-description">{{ package.description|striptags|truncatewords:15 }}</p>
+                <div class="card-price">Starting from ${{ package.adult_price }}</div>
+                <div class="card-meta">
+                    <span><i class="fas fa-calendar"></i> {{ package.duration_days }} Days</span>
+                    <a href="{% url 'adminside:package_detail' package.slug %}" class="btn-explore">
+                        <i class="fas fa-arrow-right"></i> Explore
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Accommodations Section -->
+{% if accommodations %}
+<div class="content-section">
+    <h2 class="section-title">
+        <i class="fas fa-bed"></i> Featured Accommodations
+    </h2>
+    <div class="accommodations-grid">
+        {% for accommodation in accommodations %}
+        <div class="accommodation-card">
+            <div class="card-image">
+                {% image_with_default accommodation.image "accommodations" "" accommodation.name %}
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">{{ accommodation.name }}</h3>
+                <p class="card-description">{{ accommodation.description|striptags|truncatewords:15 }}</p>
+                <div class="card-price">${{ accommodation.price_per_room_per_night }}/night</div>
+                <div class="card-meta">
+                    <span><i class="fas fa-users"></i> {{ accommodation.max_occupancy_per_room }} guests</span>
+                    <a href="{% url 'adminside:accommodation_detail' accommodation.slug %}" class="btn-explore">
+                        <i class="fas fa-arrow-right"></i> View Details
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Sub-destinations Section -->
+{% if destination.children.all %}
+<div class="content-section">
+    <h2 class="section-title">
+        <i class="fas fa-map"></i> Explore {{ destination.name }}
+    </h2>
+    <div class="packages-grid">
+        {% for child in destination.children.all %}
+        <div class="package-card">
+            <div class="card-image">
+                {% image_with_placeholder child.image "" child.name %}
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">{{ child.name }}</h3>
+                <p class="card-description">{{ child.description|striptags|truncatewords:15 }}</p>
+                {% if child.starting_price %}
+                    <div class="card-price">Starting from {{ child.starting_price|currency_format }}</div>
+                {% else %}
+                    <div class="card-price">Get Quote</div>
+                {% endif %}
+                <div class="card-meta">
+                    <span><i class="fas fa-map-marker-alt"></i> {{ child.get_destination_type_display }}</span>
+                    <a href="{% url 'adminside:destination_detail' child.slug %}" class="btn-explore">
+                        <i class="fas fa-arrow-right"></i> Explore
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

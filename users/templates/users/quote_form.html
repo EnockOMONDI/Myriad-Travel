@@ -1,0 +1,290 @@
+{% extends 'users/basebackup.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - Mbugani Luxe Adventures{% endblock %}
+
+{% block content %}
+<!--====== PAGE TITLE PART START ======-->
+<section class="page-title-area bg_cover" style="background-image: url({% static 'assets/images/bg/page-bg.jpg' %});">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="page-title-content">
+                    <h3 class="title">{{ page_title }}</h3>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'users:users-home' %}">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Quote Request</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-title-shape">
+        <img src="{% static 'assets/images/shape/shape-12.png' %}" alt="Shape">
+    </div>
+</section>
+<!--====== PAGE TITLE PART ENDS ======-->
+
+<!--====== QUOTE FORM PART START ======-->
+<section class="contact-area pt-120 pb-120">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="contact-form-wrapper">
+                    <div class="section-title text-center mb-50">
+                        <span class="sub-title">Get Your Personalized Quote</span>
+                        <h2 class="title">Request a Custom Travel Quote</h2>
+                        <p class="text-muted">
+                            Fill out the form below and we'll create a personalized travel package tailored to your needs and preferences.
+                            Our travel experts will contact you within 24 hours with a detailed quote.
+                        </p>
+                    </div>
+
+                    {% if package %}
+                    <div class="alert alert-info mb-4">
+                        <h5 class="alert-heading"><i class="fas fa-info-circle"></i> Requesting Quote for: {{ package.name }}</h5>
+                        <p class="mb-0">You're requesting a quote for this specific package. We'll customize it based on your requirements.</p>
+                    </div>
+                    {% endif %}
+
+                    <form method="post" class="contact-form">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <!-- Full Name -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.full_name.id_for_label }}" class="form-label">
+                                        <i class="fas fa-user"></i> Full Name *
+                                    </label>
+                                    {{ form.full_name }}
+                                    {% if form.full_name.errors %}
+                                        <div class="text-danger mt-1">
+                                            {% for error in form.full_name.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label">
+                                        <i class="fas fa-envelope"></i> Email Address *
+                                    </label>
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                        <div class="text-danger mt-1">
+                                            {% for error in form.email.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Phone Number -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.phone_number.id_for_label }}" class="form-label">
+                                        <i class="fas fa-phone"></i> Phone Number *
+                                    </label>
+                                    {{ form.phone_number }}
+                                    {% if form.phone_number.errors %}
+                                        <div class="text-danger mt-1">
+                                            {% for error in form.phone_number.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Number of Travelers -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.number_of_travelers.id_for_label }}" class="form-label">
+                                        <i class="fas fa-users"></i> Number of Travelers *
+                                    </label>
+                                    {{ form.number_of_travelers }}
+                                    {% if form.number_of_travelers.errors %}
+                                        <div class="text-danger mt-1">
+                                            {% for error in form.number_of_travelers.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Destination -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.destination.id_for_label }}" class="form-label">
+                                        <i class="fas fa-map-marker-alt"></i> Preferred Destination *
+                                    </label>
+                                    {{ form.destination }}
+                                    {% if form.destination.errors %}
+                                        <div class="text-danger mt-1">
+                                            {% for error in form.destination.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Travel Dates -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.preferred_travel_dates.id_for_label }}" class="form-label">
+                                        <i class="fas fa-calendar-alt"></i> Preferred Travel Dates *
+                                    </label>
+                                    {{ form.preferred_travel_dates }}
+                                    {% if form.preferred_travel_dates.errors %}
+                                        <div class="text-danger mt-1">
+                                            {% for error in form.preferred_travel_dates.errors %}
+                                                <small>{{ error }}</small>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    <small class="form-text text-muted">e.g., "December 2024" or "Flexible dates in 2025"</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Special Requests -->
+                        <div class="form-group">
+                            <label for="{{ form.special_requests.id_for_label }}" class="form-label">
+                                <i class="fas fa-comment-alt"></i> Special Requests or Additional Information
+                            </label>
+                            {{ form.special_requests }}
+                            {% if form.special_requests.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.special_requests.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">
+                                Tell us about your travel preferences, accommodation requirements, dietary restrictions, or any special needs.
+                            </small>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="form-group text-center">
+                            <button type="submit" class="main-btn primary-btn">
+                                <i class="fas fa-paper-plane"></i> Submit Quote Request
+                            </button>
+                        </div>
+
+                        <!-- Terms and Privacy -->
+                        <div class="form-group">
+                            <small class="form-text text-muted text-center">
+                                By submitting this form, you agree to our <a href="#" class="text-primary">Terms of Service</a> and
+                                <a href="#" class="text-primary">Privacy Policy</a>. We'll use your information to provide you with a personalized quote.
+                            </small>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--====== QUOTE FORM PART ENDS ======-->
+
+<style>
+/* Custom styles for quote form */
+.contact-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.contact-form .form-label {
+    font-weight: 600;
+    color: #291c1b;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.contact-form input[type="text"],
+.contact-form input[type="email"],
+.contact-form input[type="tel"],
+.contact-form input[type="number"],
+.contact-form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.contact-form input[type="text"]:focus,
+.contact-form input[type="email"]:focus,
+.contact-form input[type="tel"]:focus,
+.contact-form input[type="number"]:focus,
+.contact-form textarea:focus {
+    border-color: #291c1b;
+    box-shadow: 0 0 0 0.2rem rgba(41, 28, 26, 0.25);
+    outline: none;
+}
+
+.contact-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.main-btn.primary-btn {
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+}
+
+.main-btn.primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(41, 28, 26, 0.3);
+}
+
+.alert-info {
+    border-color: #291c1b;
+    background-color: rgba(41, 28, 26, 0.1);
+    color: #291c1b;
+}
+
+.alert-info .alert-heading {
+    color: #291c1b;
+    font-weight: 600;
+}
+
+.section-title .sub-title {
+    color: #bd8c06;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.section-title .title {
+    color: #291c1b;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 1rem 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .section-title .title {
+        font-size: 2rem;
+    }
+
+    .contact-form .row .col-md-6 {
+        margin-bottom: 1rem;
+    }
+}
+</style>
+{% endblock %}

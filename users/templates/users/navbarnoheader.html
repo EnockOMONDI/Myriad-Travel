@@ -1,0 +1,184 @@
+{% load static %}
+    
+    <!--====== Search From ======-->
+     <div class="modal fade search-modal" id="search-modal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form>
+                    <div class="form_group">
+                        <input type="search" class="form_control" placeholder="Search here" name="search">
+                        <label><i class="fa fa-search"></i></label>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div><!--====== Search From ======-->
+    <!--====== Start Hero Section ======-->
+    <header class="header-area header-three" style="background-color: #ffffff;">
+        <!--====== Header Top Bar ======-->
+        <!-- <div class="header-top-bar pt-60 pb-30">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-3 d-none d-xl-block">
+                        <div class="site-brading">
+                            <a href="{% url 'users:users-home'%}" class="brand-logo"><img src="{% static 'assets/images/logo/websitelogo.png' %}" alt="Logo"></a>
+                        </div>
+                    </div>
+                    <div class="col-xl-9 col-lg-12">
+                        <div class="information-wrapper">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="single-info-item-two">
+                                        <div class="inner-info">
+                                            <div class="icon">
+                                                <i class="far fa-map-marker-alt"></i>
+                                            </div>
+                                            <div class="info">
+                                                <span class="title">New Peoples Media Center (Kilimani) , Kilimani Rd, Elgeyo Marakwet Junction Off Ngong Rd</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="single-info-item-two">
+                                        <div class="inner-info">
+                                            <div class="icon">
+                                                <i class="far fa-envelope"></i>
+                                            </div>
+                                            <div class="info">
+                                                <span class="title">Info@mbuganiluxeadventures.com</span>
+                                                <span class="title">bookings@mbuganiluxeadventures.com</span>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="single-info-item-two">
+                                        <div class="inner-info">
+                                            <div class="icon">
+                                                <i class="far fa-phone-plus"></i>
+                                            </div>
+                                            <div class="info">
+                                                <span class="title">+254701810167</span>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <!--====== Header Navigation ======-->
+        <div class="header-navigation navigation-white">
+            <div class="nav-overlay"></div>
+            <div class="container-fluid">
+                <div class="primary-menu black-bg">
+                    <!--====== Site Branding ======-->
+                    <div class="site-brading d-block d-xl-none">
+                        <a href="{% url 'users:users-home'%}" class="brand-logo"><img src="{% static 'assets/images/logo/websitelogo.png' %}" alt="Logo"></a>
+                    </div>
+                    <!--====== Nav Menu ======-->
+                    <div class="nav-menu ">
+                        <!--====== Site Branding ======-->
+                        <div class="mobile-logo mb-30 d-block d-xl-none">
+                            <a href="{% url 'users:users-home'%}" class="brand-logo"><img src="{% static 'assets/images/logo/websitelogo.png' %}" alt="Site Logo"></a>
+                        </div>
+                        <!--=== Nav Search ===-->
+                        <div class="nav-search mb-30 d-block d-xl-none ">
+                            <form>
+                                <div class="form_group">
+                                    <input type="email" class="form_control" placeholder="Search Here" name="email" required>
+                                    <button class="search-btn"><i class="fas fa-search"></i></button>
+                                </div>
+                            </form>
+                        </div>
+                        <!--====== Main Menu ======-->
+                        <nav class="main-menu ">
+                            <ul>
+                                <li><a href="{% url 'users:users-home'%}"> <span style="padding-right: 10px;"> Home</a></li>
+
+                                <li><a href="{% url 'users:aboutus'%} "> <span style="padding-right: 10px;"><i class="far fa-info-circle"></i> Who we are</a></li>
+
+                             
+                                <li class="menu-item has-children"><a href="#"> <span style="padding-right: 10px;"><i class="far fa-map"></i> Holidays</a>
+                                    <ul class="sub-menu">
+                                        <li><a href="{% url 'adminside:destination_list'%} "><strong>   <i class="far fa-arrow-right "></i> All Destinations</strong></a></li>
+                                        <li><a href="{% url 'adminside:user_package_list'%} "><strong>   <i class="far fa-suitcase "></i> All Packages</strong></a></li>
+
+                                    </ul>
+                                </li>
+
+                           
+                             
+                                <li class="menu-item has-children"><a href="#"> <span style="padding-right: 10px;"><i class="far fa-briefcase"></i> Business Travel</a>
+                                    <ul class="sub-menu">
+                                        <li><a href="{% url 'users:corporatepage'%} ">Corporate Travel Management</a></li>
+                                    </ul>
+                                </li>
+                                   
+                                <li class="menu-item has-children"><a href="#"> <span style="padding-right: 10px;"><i class="far fa-bed"></i> Stays</a></a>
+                                    <ul class="sub-menu">
+                                        <li><a href="">Luxury Hotels </a></li>
+                                        <li><a href="">Comfortable Stays </a></li>
+                                        <li><a href="">Affordable Lodgings</a></li>
+                                        <li><a href="">Extended Stays </a></li>
+                                        <li><a href="">Airport Convenience</a></li>
+                                        <li><a href=""><strong>   <i class="far fa-arrow-right "></i> View All</strong></a></li>
+
+
+
+                                    </ul>
+                                </li>
+                                <li class="menu-item has-children"><a href="#"><i class="far fa-plane"></i> + <i class="far fa-bed"></i> <small>Deals</small> </a>
+                                    <ul class="sub-menu">
+                                        <li><a href="destination.html">Flights + Stay Deals</a></li>
+                                        <li><a href="destination.html">Flight Offers</a></li>
+                                        <li><a href="destination-details.html">Hotel Deals</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="{% url 'blog:blog-list'%}"> <span style="padding-right: 10px;"> <i class="far fa-globe"></i> Travel News</a></a></li>
+
+                                <!-- <li class="menu-item has-children"><a href="#"> <span style="padding-right: 10px;"><i class="far fa-globe"></i> Travel News</a>
+                                    <ul class="sub-menu">
+                                        <li><a href="tour.html">Travel Insurance</a></li>
+                                        <li><a href="tour-details.html">Group travel</a></li>
+                                    </ul>
+                                </li> -->
+
+                            </ul>
+                        </nav>
+                        <!--====== Menu Button ======-->
+                        <div class="menu-button mt-40 d-xl-none">
+                            {% if user.is_authenticated %}
+                            <a href="/logout" class="main-btn secondary-btn">Logout<i class="fas fa-user"></i></a>
+                            {% else %}
+                            <a href="/login" class="main-btn secondary-btn">Login<i class="fas fa-user"></i></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!--====== Nav Right Item ======-->
+                    <div class="nav-right-item">
+                        {% if user.is_authenticated %}
+
+                        <div class="menu-button d-xl-block d-none">
+                            <a href="/logout" class="main-btn primary-btn">Logout<i class="fas fa-user"></i></a>
+                            {% else %}
+                            <a href="/login" class="main-btn primary-btn">Login<i class="fas fa-user"></i></a>
+                            {% endif %}
+                        </div>
+                        <div class="navbar-toggler">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header><!--====== End Header ======-->
+<!--====== Start What We Section ======-->
+<!--====== Start Services Section ======-->

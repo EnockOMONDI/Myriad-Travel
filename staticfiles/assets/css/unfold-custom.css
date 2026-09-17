@@ -1,0 +1,364 @@
+/* Mbugani Luxe Adventures - Custom Unfold Admin Styles */
+
+/* === HERO SLIDER ADMIN STYLING === */
+
+/* Hero Slider List View */
+.model-heroslider .results {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.model-heroslider .results tr {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.model-heroslider .results tr:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(93, 0, 0, 0.15);
+    border-color: #471601;
+}
+
+/* Hero Slider Image Thumbnails */
+.hero-slider-thumbnail {
+    width: 100%;
+    max-width: 200px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #e5e5e5;
+    transition: all 0.3s ease;
+}
+
+.hero-slider-thumbnail:hover {
+    border-color: #471601;
+    transform: scale(1.02);
+}
+
+/* Hero Slider Form Styling */
+.model-heroslider .form-row {
+    margin-bottom: 25px;
+}
+
+.model-heroslider .form-row label {
+    font-weight: 600;
+    color: #471601;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.model-heroslider .form-row input,
+.model-heroslider .form-row textarea {
+    border-radius: 8px;
+    border: 2px solid #e5e5e5;
+    padding: 12px 16px;
+    transition: all 0.3s ease;
+}
+
+.model-heroslider .form-row input:focus,
+.model-heroslider .form-row textarea:focus {
+    border-color: #471601;
+    box-shadow: 0 0 0 3px rgba(71, 22, 1, 0.1);
+}
+
+/* Hero Slider Status Indicators */
+.hero-slider-active {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.hero-slider-inactive {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Hero Slider Order Badge */
+.hero-slider-order {
+    background: #291c1b;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Homepage Management Section */
+.app-adminside .model-heroslider {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.app-adminside .model-heroslider h2 {
+    color: #471601;
+    font-family: 'TAN-Garland-Regular', sans-serif;
+    margin-bottom: 15px;
+}
+
+.app-adminside .model-heroslider .addlink {
+    background: #291c1b;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.app-adminside .model-heroslider .addlink:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(93, 0, 0, 0.3);
+    color: white;
+}
+
+/* Brand Colors */
+:root {
+    --mbugani-primary: #471601;
+    --mbugani-secondary: #e3aa00;
+    --mbugani-light: #f8f9fa;
+    --mbugani-dark: #471601;
+}
+
+/* Custom branding for admin interface */
+.unfold-admin-header {
+    background: linear-gradient(135deg, var(--mbugani-primary) 0%, var(--mbugani-dark) 100%);
+}
+
+.unfold-sidebar {
+    background: var(--mbugani-light);
+    border-right: 1px solid #e9ecef;
+}
+
+.unfold-sidebar .nav-link {
+    color: var(--mbugani-dark);
+    transition: all 0.3s ease;
+}
+
+.unfold-sidebar .nav-link:hover {
+    background-color: var(--mbugani-secondary);
+    color: white;
+    transform: translateX(5px);
+}
+
+.unfold-sidebar .nav-link.active {
+    background-color: var(--mbugani-primary);
+    color: white;
+}
+
+/* Form styling */
+.form-control:focus {
+    border-color: var(--mbugani-secondary);
+    box-shadow: 0 0 0 0.2rem rgba(255, 157, 0, 0.25);
+}
+
+.btn-primary {
+    background-color: var(--mbugani-primary);
+    border-color: var(--mbugani-primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--mbugani-secondary);
+    border-color: var(--mbugani-secondary);
+}
+
+/* Dashboard cards */
+.dashboard-card {
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(15, 35, 141, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Travel-themed icons */
+.travel-icon {
+    color: var(--mbugani-secondary);
+    font-size: 1.2em;
+}
+
+/* Custom table styling */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(15, 35, 141, 0.05);
+}
+
+/* Prose Editor customization */
+.prose-editor {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.prose-editor:focus-within {
+    border-color: var(--mbugani-secondary);
+    box-shadow: 0 0 0 0.2rem rgba(255, 157, 0, 0.25);
+}
+
+/* Login page customization */
+.login-form {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(15, 35, 141, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .unfold-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .unfold-sidebar.show {
+        transform: translateX(0);
+    }
+}
+
+/* Animation classes */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-in-left {
+    animation: slideInLeft 0.5s ease-out;
+}
+
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Package and destination specific styling */
+.package-status-draft {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.package-status-published {
+    background-color: #28a745;
+    color: white;
+}
+
+.package-status-archived {
+    background-color: #6c757d;
+    color: white;
+}
+
+.destination-type-country {
+    background-color: var(--mbugani-primary);
+    color: white;
+}
+
+.destination-type-city {
+    background-color: var(--mbugani-secondary);
+    color: white;
+}
+
+.destination-type-place {
+    background-color: #17a2b8;
+    color: white;
+}
+
+/* Enhanced form styling */
+.field-wrapper {
+    margin-bottom: 1.5rem;
+}
+
+.field-label {
+    font-weight: 600;
+    color: var(--mbugani-dark);
+    margin-bottom: 0.5rem;
+}
+
+.field-help-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+/* Image upload styling */
+.image-upload-wrapper {
+    border: 2px dashed #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    transition: border-color 0.3s ease;
+}
+
+.image-upload-wrapper:hover {
+    border-color: var(--mbugani-secondary);
+}
+
+.image-preview {
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Success and error messages */
+.alert-success {
+    background-color: rgba(40, 167, 69, 0.1);
+    border-color: #28a745;
+    color: #155724;
+}
+
+.alert-error {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-color: #dc3545;
+    color: #721c24;
+}
+
+/* Loading states */
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 157, 0, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--mbugani-secondary);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Print styles */
+@media print {
+    .unfold-sidebar,
+    .unfold-header,
+    .btn,
+    .pagination {
+        display: none !important;
+    }
+    
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+}

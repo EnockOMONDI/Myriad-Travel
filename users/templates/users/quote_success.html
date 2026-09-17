@@ -1,0 +1,281 @@
+{% extends 'users/basebackup.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - Mbugani Luxe Adventures{% endblock %}
+
+{% block content %}
+<!--====== PAGE TITLE PART START ======-->
+<section class="page-title-area bg_cover" style="background-image: url({% static 'assets/images/bg/page-bg.jpg' %});">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="page-title-content">
+                    <h3 class="title">{{ page_title }}</h3>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'users:users-home' %}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'users:quote_request' %}">Quote Request</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Success</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-title-shape">
+        <img src="{% static 'assets/images/shape/shape-12.png' %}" alt="Shape">
+    </div>
+</section>
+<!--====== PAGE TITLE PART ENDS ======-->
+
+<!--====== SUCCESS MESSAGE PART START ======-->
+<section class="success-area pt-120 pb-120">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="success-content text-center">
+                    <!-- Success Icon -->
+                    <div class="success-icon mb-4">
+                        <i class="fas fa-check-circle" style="font-size: 5rem; color: #28a745;"></i>
+                    </div>
+
+                    <!-- Success Title -->
+                    <h2 class="success-title mb-4" style="color: #291c1b; font-weight: 700;">
+                        Quote Request Submitted Successfully!
+                    </h2>
+
+                    <!-- Success Message -->
+                    <div class="success-message mb-5">
+                        <p class="lead mb-3" style="font-size: 1.2rem; color: #6c757d;">
+                            Thank you for choosing Mbugani Luxe Adventures for your travel needs.
+                        </p>
+                        <p class="mb-4" style="font-size: 1rem; line-height: 1.6;">
+                            Your quote request has been received and our travel experts are already working on creating a personalized travel package tailored to your preferences. We'll send you a detailed quote via email within the next 24 hours.
+                        </p>
+                    </div>
+
+                    <!-- What Happens Next -->
+                    <div class="next-steps mb-5">
+                        <h4 class="mb-3" style="color: #291c1b; font-weight: 600;">What Happens Next?</h4>
+                        <div class="row justify-content-center">
+                            <div class="col-md-10">
+                                <div class="steps-container">
+                                    <div class="step-item mb-3">
+                                        <div class="step-number" style="display: inline-block; width: 30px; height: 30px; background-color: #bd8c06; color: white; border-radius: 50%; text-align: center; line-height: 30px; font-weight: bold; margin-right: 10px;">1</div>
+                                        <span style="font-weight: 500;">Our travel consultant will review your requirements</span>
+                                    </div>
+                                    <div class="step-item mb-3">
+                                        <div class="step-number" style="display: inline-block; width: 30px; height: 30px; background-color: #bd8c06; color: white; border-radius: 50%; text-align: center; line-height: 30px; font-weight: bold; margin-right: 10px;">2</div>
+                                        <span style="font-weight: 500;">We'll create a customized itinerary with pricing</span>
+                                    </div>
+                                    <div class="step-item mb-3">
+                                        <div class="step-number" style="display: inline-block; width: 30px; height: 30px; background-color: #bd8c06; color: white; border-radius: 50%; text-align: center; line-height: 30px; font-weight: bold; margin-right: 10px;">3</div>
+                                        <span style="font-weight: 500;">You'll receive a detailed quote via email within 24 hours</span>
+                                    </div>
+                                    <div class="step-item">
+                                        <div class="step-number" style="display: inline-block; width: 30px; height: 30px; background-color: #bd8c06; color: white; border-radius: 50%; text-align: center; line-height: 30px; font-weight: bold; margin-right: 10px;">4</div>
+                                        <span style="font-weight: 500;">We'll discuss any modifications and finalize your booking</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="contact-info mb-5">
+                        <h4 class="mb-3" style="color: #291c1b; font-weight: 600;">Need Immediate Assistance?</h4>
+                        <p class="mb-3">While you wait for your personalized quote, feel free to contact us directly:</p>
+                        <div class="contact-details">
+                            <p class="mb-2">
+                                <i class="fas fa-phone" style="color: #bd8c06; margin-right: 8px;"></i>
+                                <strong>Phone:</strong> +254701810167
+                            </p>
+                            <p class="mb-2">
+                                <i class="fas fa-envelope" style="color: #bd8c06; margin-right: 8px;"></i>
+                                <strong>Email:</strong> info@mbuganiluxeadventures.com
+                            </p>
+                            <p class="mb-2">
+                                <i class="fab fa-whatsapp" style="color: #bd8c06; margin-right: 8px;"></i>
+                                <strong>WhatsApp:</strong>
+                                <a href="https://api.whatsapp.com/send/?phone=254798197430&text&type=phone_number&app_absent=0" target="_blank" style="color: #291c1b; text-decoration: none;">
+                                    Chat with us on WhatsApp
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <a href="{% url 'users:users-home' %}" class="main-btn primary-btn mr-3">
+                            <i class="fas fa-home"></i> Back to Home
+                        </a>
+                        <a href="{% url 'users:quote_request' %}" class="main-btn secondary-btn">
+                            <i class="fas fa-plus"></i> Submit Another Request
+                        </a>
+                    </div>
+
+                    <!-- Additional Information -->
+                    <div class="additional-info mt-5">
+                        <p class="text-muted" style="font-size: 0.9rem;">
+                            <i class="fas fa-info-circle" style="margin-right: 5px;"></i>
+                            All quotes are valid for 30 days from the date of issue. Prices may vary based on availability and exchange rates.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--====== SUCCESS MESSAGE PART ENDS ======-->
+
+<style>
+/* Custom styles for success page */
+.success-content {
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.success-icon {
+    animation: checkmark 0.8s ease-in-out;
+}
+
+@keyframes checkmark {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.success-title {
+    font-size: 2.5rem;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-left: 3px solid #e9ecef;
+    padding-left: 1rem;
+    transition: all 0.3s ease;
+}
+
+.step-item:hover {
+    border-left-color: #bd8c06;
+    background-color: rgba(189, 140, 6, 0.05);
+}
+
+.contact-details p {
+    margin: 0.5rem 0;
+    font-size: 1rem;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.main-btn {
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.main-btn.primary-btn {
+    background-color: #291c1b;
+    color: white;
+    border: 2px solid #291c1b;
+}
+
+.main-btn.primary-btn:hover {
+    background-color: #1f1513;
+    border-color: #1f1513;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(41, 28, 26, 0.3);
+}
+
+.main-btn.secondary-btn {
+    background-color: #bd8c06;
+    color: white;
+    border: 2px solid #bd8c06;
+}
+
+.main-btn.secondary-btn:hover {
+    background-color: #a67805;
+    border-color: #a67805;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(189, 140, 6, 0.3);
+}
+
+.section-title .sub-title {
+    color: #bd8c06;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.section-title .title {
+    color: #291c1b;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 1rem 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .success-title {
+        font-size: 2rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .main-btn {
+        width: 100%;
+        max-width: 250px;
+        justify-content: center;
+    }
+
+    .step-item {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .step-number {
+        margin-bottom: 0.5rem;
+        margin-right: 0;
+    }
+}
+</style>
+{% endblock %}

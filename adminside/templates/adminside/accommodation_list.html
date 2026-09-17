@@ -1,0 +1,963 @@
+{% extends 'adminside/base.html' %}
+{% load static %}
+{% load image_tags %}
+
+{% block title %}Accommodations - Mbugani Luxe Adventures{% endblock %}
+{% block meta_description %}Find the perfect accommodation for your stay with Mbugani Luxe Adventures. From luxury hotels to cozy guesthouses, discover amazing places to stay.{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Enhanced Navigation Styles */
+    .main-container {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 30px;
+        min-height: 100vh;
+        transition: grid-template-columns 0.3s ease;
+    }
+
+    .nav-sidebar {
+        background: #291c1b;
+        border-radius: 20px;
+        padding: 25px;
+        height: fit-content;
+        position: sticky;
+        top: 20px;
+        box-shadow: 0 10px 30px rgba(71, 22, 1, 0.2);
+        transform: translateY(0);
+        animation: slideInLeft 0.6s ease-out;
+    }
+
+    .nav-sidebar h3 {
+        color: white;
+        font-weight: 600;
+        margin-bottom: 25px;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .destination-nav {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .nav-country {
+        margin-bottom: 15px;
+    }
+
+    .country-btn {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 12px 18px;
+        border-radius: 12px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 44px;
+    }
+
+    .country-btn:hover {
+        background: rgba(255, 157, 0, 0.2);
+        border-color: #e3aa00;
+        transform: translateX(5px);
+    }
+
+    .country-btn.active {
+        background: #e3aa00;
+        border-color: #e3aa00;
+        color: #471601;
+        font-weight: 600;
+    }
+
+    .cities-dropdown {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease, padding 0.3s ease;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 0 0 12px 12px;
+        margin-top: 2px;
+    }
+
+    .cities-dropdown.active {
+        max-height: 500px;
+        padding: 10px 0;
+    }
+
+    .city-item {
+        padding: 8px 20px;
+        color: rgba(255, 255, 255, 0.9);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-radius: 8px;
+        margin: 2px 10px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .city-item:hover {
+        background: rgba(255, 157, 0, 0.15);
+        color: white;
+        transform: translateX(8px);
+    }
+
+    .places-dropdown {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        margin-left: 15px;
+    }
+
+    .places-dropdown.active {
+        max-height: 300px;
+        padding: 5px 0;
+    }
+
+    .place-item {
+        padding: 6px 15px;
+        color: rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-radius: 6px;
+        margin: 1px 5px;
+        font-size: 0.9rem;
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+    }
+
+    .place-item:hover {
+        background: rgba(255, 157, 0, 0.1);
+        color: white;
+        transform: translateX(5px);
+    }
+
+    .content-area {
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    .filter-section {
+        background: var(--white);
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: var(--shadow);
+    }
+
+    .search-box {
+        position: relative;
+    }
+
+    .search-input {
+        border: 2px solid #e9ecef;
+        border-radius: 25px;
+        padding: 12px 50px 12px 20px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .search-input:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 0.2rem rgba(255, 157, 0, 0.25);
+        outline: none;
+    }
+
+    .search-btn {
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: var(--secondary-color);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        color: var(--white);
+        transition: all 0.3s ease;
+    }
+
+    .search-btn:hover {
+        background: #e68900;
+        transform: translateY(-50%) scale(1.05);
+    }
+
+    /* Exact Mbugani Luxe Adventures destination card styling for accommodations */
+    .accommodation-card {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        height: 450px !important;
+        min-height: 450px;
+        max-height: 450px;
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        box-shadow: 0 8px 25px rgba(23, 11, 44, 0.1);
+        margin: 0 auto;
+        max-width: 100%;
+    }
+
+    .accommodation-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(23, 11, 44, 0.2);
+    }
+
+    .accommodation-image {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .accommodation-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: all 0.6s ease;
+    }
+
+    .accommodation-card:hover .accommodation-image img {
+        transform: scale(1.1);
+    }
+
+    .accommodation-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+            to bottom,
+            rgba(23, 11, 44, 0.1) 0%,
+            rgba(23, 11, 44, 0.3) 50%,
+            rgba(23, 11, 44, 0.9) 100%
+        );
+        display: flex;
+        align-items: flex-end;
+        padding: 30px;
+        transition: all 0.4s ease;
+    }
+
+    .accommodation-card:hover .accommodation-overlay {
+        background: linear-gradient(
+            to bottom,
+            rgba(71, 22, 1, 0.2) 0%,
+            rgba(71, 22, 1, 0.5) 50%,
+            rgba(71, 22, 1, 0.95) 100%
+        );
+    }
+
+    .accommodation-content {
+        color: white;
+        width: 100%;
+    }
+
+    .accommodation-title {
+        font-family: 'Prompt', sans-serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: #ffffff;
+        line-height: 1.3;
+    }
+
+    .accommodation-description {
+        font-size: 1rem;
+        margin-bottom: 15px;
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1.5;
+    }
+
+    .accommodation-price {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #e3aa00;
+        margin-bottom: 20px;
+    }
+
+    .accommodation-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 12px 25px;
+        background: rgba(255, 157, 0, 0.9);
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        border: 2px solid transparent;
+    }
+
+    .accommodation-btn:hover {
+        background: #ffffff;
+        color: #471601;
+        border-color: #e3aa00;
+        transform: translateX(5px);
+        text-decoration: none;
+    }
+
+    .accommodation-btn i {
+        margin-right: 8px;
+        transition: transform 0.3s ease;
+    }
+
+    .accommodation-btn:hover i {
+        transform: translateX(3px);
+    }
+
+    .featured-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: var(--secondary-color);
+        color: var(--white);
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        z-index: 10;
+    }
+
+    .type-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--primary-color);
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        z-index: 10;
+        text-transform: capitalize;
+    }
+
+    .rating-badge {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        background: rgba(255, 157, 0, 0.9);
+        color: var(--white);
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .filter-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .filter-tag {
+        background: var(--primary-color);
+        color: var(--white);
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .filter-tag .remove-filter {
+        background: none;
+        border: none;
+        color: var(--white);
+        cursor: pointer;
+        padding: 0;
+        font-size: 1rem;
+    }
+
+    .results-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: var(--white);
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+    }
+
+    .pagination-wrapper {
+        display: flex;
+        justify-content: center;
+        margin-top: 50px;
+    }
+
+    .pagination .page-link {
+        border: none;
+        color: var(--primary-color);
+        padding: 12px 18px;
+        margin: 0 5px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .pagination .page-link:hover {
+        background: var(--secondary-color);
+        color: var(--white);
+    }
+
+    .pagination .page-item.active .page-link {
+        background: var(--primary-color);
+        color: var(--white);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    /* Mobile-First Responsive Design */
+    @media (max-width: 1024px) {
+        .main-container {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .nav-sidebar {
+            position: relative;
+            top: 0;
+            margin-bottom: 20px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .nav-sidebar {
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .country-btn, .city-item, .place-item {
+            min-height: 44px; /* Touch target size */
+        }
+
+        .search-input {
+            font-size: 16px; /* Prevent zoom on iOS */
+        }
+    }
+
+    @media (max-width: 480px) {
+        .nav-sidebar {
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .nav-sidebar h3 {
+            font-size: 1.1rem;
+        }
+
+        .country-btn {
+            padding: 10px 15px;
+            font-size: 0.9rem;
+        }
+
+        .city-item, .place-item {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1199px) {
+        .accommodation-title {
+            font-size: 1.6rem;
+        }
+
+        .accommodation-overlay {
+            padding: 25px;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .filter-section {
+            padding: 20px;
+        }
+        
+        .accommodation-card {
+            height: 380px !important;
+            min-height: 380px;
+            max-height: 380px;
+        }
+        
+        .accommodation-title {
+            font-size: 1.4rem;
+        }
+
+        .accommodation-overlay {
+            padding: 20px;
+        }
+
+        .results-info {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .accommodation-card {
+            height: 320px !important;
+            min-height: 320px;
+            max-height: 320px;
+        }
+
+        .accommodation-overlay {
+            padding: 15px;
+        }
+
+        .accommodation-btn {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+
+        .accommodation-title {
+            font-size: 1.2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-container">
+    <!-- Enhanced Navigation Sidebar -->
+    <div class="nav-sidebar">
+        <h3>
+            <i class="fas fa-bed"></i>
+            Find Accommodations
+        </h3>
+        <ul class="destination-nav">
+            {% for country in countries %}
+            <li class="nav-country">
+                <button class="country-btn" onclick="toggleCountry('{{ country.slug }}')">
+                    <span>
+                        <i class="fas fa-flag me-2"></i>{{ country.name }}
+                    </span>
+                    <i class="fas fa-chevron-down transition-transform" id="chevron-{{ country.slug }}"></i>
+                </button>
+                <div class="cities-dropdown" id="cities-{{ country.slug }}">
+                    {% for city in country.children.all %}
+                    <div class="city-item" onclick="filterByDestination('{{ city.id }}')">
+                        <span>
+                            <i class="fas fa-city me-2"></i>{{ city.name }}
+                        </span>
+                        {% if city.children.all %}
+                        <i class="fas fa-chevron-down" id="city-chevron-{{ city.slug }}"></i>
+                        {% endif %}
+                    </div>
+                    {% if city.children.all %}
+                    <div class="places-dropdown" id="places-{{ city.slug }}">
+                        {% for place in city.children.all %}
+                        <div class="place-item" onclick="filterByDestination('{{ place.id }}')">
+                            <i class="fas fa-map-marker-alt me-2"></i>{{ place.name }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Content Area -->
+    <div class="content-area">
+        <!-- Filter Section -->
+        <div class="filter-section">
+    <form method="GET" class="row g-3 align-items-end">
+        <div class="col-md-6">
+            <label for="search" class="form-label fw-semibold">Search Accommodations</label>
+            <div class="search-box">
+                <input type="text"
+                       class="search-input"
+                       id="search"
+                       name="search"
+                       value="{{ search_query }}"
+                       placeholder="Search by name, description, or destination...">
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label for="destination" class="form-label fw-semibold">Filter by Destination</label>
+            <select class="form-select" id="destination" name="destination">
+                <option value="">All Destinations</option>
+                {% for country in countries %}
+                    <option value="{{ country.id }}" {% if country.id|stringformat:"s" == current_destination_id %}selected{% endif %}>
+                        🌍 {{ country.name }}
+                    </option>
+                    {% for city in country.children.all %}
+                        <option value="{{ city.id }}" {% if city.id|stringformat:"s" == current_destination_id %}selected{% endif %}>
+                            &nbsp;&nbsp;🏙️ {{ city.name }}
+                        </option>
+                        {% for place in city.children.all %}
+                            <option value="{{ place.id }}" {% if place.id|stringformat:"s" == current_destination_id %}selected{% endif %}>
+                                &nbsp;&nbsp;&nbsp;&nbsp;📍 {{ place.name }}
+                            </option>
+                        {% endfor %}
+                    {% endfor %}
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="type" class="form-label fw-semibold">Accommodation Type</label>
+            <select class="form-select" id="type" name="type">
+                <option value="">All Types</option>
+                {% for value, label in accommodation_types %}
+                    <option value="{{ value }}" {% if value == current_type %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </form>
+
+    <!-- Active Filters -->
+    {% if search_query or current_destination_id or current_type %}
+    <div class="filter-tags">
+        {% if search_query %}
+        <div class="filter-tag">
+            <span>Search: "{{ search_query }}"</span>
+            <button type="button" class="remove-filter" onclick="removeFilter('search')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        {% endif %}
+        {% if current_destination_id %}
+        <div class="filter-tag">
+            <span>Destination Filter Active</span>
+            <button type="button" class="remove-filter" onclick="removeFilter('destination')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        {% endif %}
+        {% if current_type %}
+        <div class="filter-tag">
+            <span>Type: {{ current_type|title }}</span>
+            <button type="button" class="remove-filter" onclick="removeFilter('type')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- Results Info -->
+<div class="results-info">
+    <div>
+        <h5 class="mb-1">Accommodations</h5>
+        <p class="text-muted mb-0">
+            Showing {{ page_obj.start_index }}-{{ page_obj.end_index }} of {{ page_obj.paginator.count }} accommodations
+        </p>
+    </div>
+    <div class="d-flex gap-2">
+        <button class="btn btn-outline-primary btn-sm" onclick="toggleSidebar()">
+            <i class="fas fa-filter me-1"></i>Filters
+        </button>
+    </div>
+</div>
+
+<!-- Accommodation Grid -->
+<div class="row g-4">
+    {% for accommodation in page_obj %}
+    <div class="col-lg-4 col-md-6">
+        <div class="accommodation-card">
+            <div class="accommodation-image">
+                {% image_with_default accommodation.image "accommodations" "img-fluid" accommodation.name %}
+                {% if accommodation.is_featured %}
+                <div class="featured-badge">
+                    <i class="fas fa-star me-1"></i>Featured
+                </div>
+                {% endif %}
+                <div class="type-badge">
+                    {{ accommodation.get_accommodation_type_display }}
+                </div>
+                {% if accommodation.rating > 0 %}
+                <div class="rating-badge">
+                    <i class="fas fa-star"></i>
+                    <span>{{ accommodation.rating }}</span>
+                </div>
+                {% endif %}
+                <div class="accommodation-overlay">
+                    <div class="accommodation-content">
+                        <h4 class="accommodation-title">{{ accommodation.name }}</h4>
+                        <p class="accommodation-description">{{ accommodation.description|truncatewords:15 }}</p>
+                        <div class="accommodation-price">From ${{ accommodation.price_per_room_per_night }}/night</div>
+                        <a href="{% url 'adminside:accommodation_detail' accommodation.slug %}" class="accommodation-btn">
+                            <i class="fas fa-arrow-right"></i> View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="text-center py-5">
+            <i class="fas fa-bed fa-3x text-muted mb-3"></i>
+            <h3 class="text-muted">No accommodations found</h3>
+            <p class="text-muted">Try adjusting your search criteria or browse all destinations.</p>
+            <a href="{% url 'adminside:accommodation_list' %}" class="btn btn-primary">
+                <i class="fas fa-refresh me-2"></i>View All Accommodations
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination -->
+{% if page_obj.has_other_pages %}
+<div class="pagination-wrapper">
+    <nav aria-label="Accommodation pagination">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if current_destination_id %}destination={{ current_destination_id }}&{% endif %}{% if current_type %}type={{ current_type }}&{% endif %}page={{ page_obj.previous_page_number }}">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if current_destination_id %}destination={{ current_destination_id }}&{% endif %}{% if current_type %}type={{ current_type }}&{% endif %}page={{ num }}">{{ num }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if current_destination_id %}destination={{ current_destination_id }}&{% endif %}{% if current_type %}type={{ current_type }}&{% endif %}page={{ page_obj.next_page_number }}">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}
+    </div> <!-- End content-area -->
+</div> <!-- End main-container -->
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Enhanced Navigation Functions
+    function toggleCountry(countrySlug) {
+        const dropdown = document.getElementById(`cities-${countrySlug}`);
+        const chevron = document.getElementById(`chevron-${countrySlug}`);
+        const isActive = dropdown.classList.contains('active');
+
+        // Close all other country dropdowns
+        document.querySelectorAll('.cities-dropdown.active').forEach(el => {
+            if (el.id !== `cities-${countrySlug}`) {
+                el.classList.remove('active');
+                const otherChevron = document.querySelector(`#chevron-${el.id.replace('cities-', '')}`);
+                if (otherChevron) otherChevron.style.transform = 'rotate(0deg)';
+            }
+        });
+
+        // Toggle current dropdown
+        if (isActive) {
+            dropdown.classList.remove('active');
+            chevron.style.transform = 'rotate(0deg)';
+        } else {
+            dropdown.classList.add('active');
+            chevron.style.transform = 'rotate(180deg)';
+        }
+    }
+
+    function filterByDestination(destinationId) {
+        const url = new URL(window.location);
+        url.searchParams.set('destination', destinationId);
+        url.searchParams.delete('page'); // Reset to first page
+        window.location.href = url.toString();
+    }
+
+    function removeFilter(filterType) {
+        const url = new URL(window.location);
+        url.searchParams.delete(filterType);
+        url.searchParams.delete('page'); // Reset to first page
+        window.location.href = url.toString();
+    }
+
+    function toggleSidebar() {
+        const sidebar = document.querySelector('.nav-sidebar');
+        const mainContainer = document.querySelector('.main-container');
+
+        if (window.innerWidth <= 1024) {
+            sidebar.style.display = sidebar.style.display === 'none' ? 'block' : 'none';
+        }
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-submit form on filter change
+        const destinationSelect = document.getElementById('destination');
+        const typeSelect = document.getElementById('type');
+
+        if (destinationSelect) {
+            destinationSelect.addEventListener('change', function() {
+                this.form.submit();
+            });
+        }
+
+        if (typeSelect) {
+            typeSelect.addEventListener('change', function() {
+                this.form.submit();
+            });
+        }
+
+        // Add scroll reveal animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe accommodation cards for scroll animations
+        document.querySelectorAll('.accommodation-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+            observer.observe(card);
+        });
+
+        // Mobile responsive navigation
+        if (window.innerWidth <= 1024) {
+            const sidebar = document.querySelector('.nav-sidebar');
+            const mainContainer = document.querySelector('.main-container');
+
+            mainContainer.style.gridTemplateColumns = '1fr';
+            sidebar.style.position = 'fixed';
+            sidebar.style.top = '20px';
+            sidebar.style.left = '20px';
+            sidebar.style.right = '20px';
+            sidebar.style.zIndex = '1000';
+            sidebar.style.display = 'none';
+
+            // Add backdrop
+            const backdrop = document.createElement('div');
+            backdrop.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+                display: none;
+            `;
+            document.body.appendChild(backdrop);
+
+            backdrop.addEventListener('click', () => {
+                sidebar.style.display = 'none';
+                backdrop.style.display = 'none';
+            });
+        }
+
+        // Add touch support for mobile
+        let touchStartY = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            const touchEndY = e.changedTouches[0].clientY;
+            const diff = touchStartY - touchEndY;
+
+            // Swipe up to close mobile sidebar
+            if (diff > 50 && window.innerWidth <= 768) {
+                const sidebar = document.querySelector('.nav-sidebar');
+                if (sidebar.style.display !== 'none') {
+                    sidebar.style.display = 'none';
+                }
+            }
+        });
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        const sidebar = document.querySelector('.nav-sidebar');
+        const mainContainer = document.querySelector('.main-container');
+
+        if (window.innerWidth > 1024) {
+            sidebar.style.display = 'block';
+            sidebar.style.position = 'sticky';
+            mainContainer.style.gridTemplateColumns = '320px 1fr';
+        } else {
+            mainContainer.style.gridTemplateColumns = '1fr';
+        }
+    });
+</script>
+{% endblock %}

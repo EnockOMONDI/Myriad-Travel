@@ -1,0 +1,226 @@
+{% extends 'users/basemain.html' %}
+{% load static %}
+
+{% block title %}{{ job.title }} - Position Closed | Mbugani Luxe Adventures{% endblock %}
+
+{% block content %}
+<!-- Job Closed Hero Section -->
+<section class="job-closed-hero py-5" style="background-color: #291c1b; position: relative; overflow: hidden;">
+    <!-- Background Pattern -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(255,255,255,0.05) 0%, transparent 50%); pointer-events: none;"></div>
+    
+    <div class="container position-relative">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mx-auto text-center">
+                <!-- Status Badge -->
+                <div class="mb-4">
+                    <span class="badge bg-danger px-4 py-2 fs-6 rounded-pill">
+                        <i class="fas fa-lock me-2"></i>Applications Closed
+                    </span>
+                </div>
+                
+                <!-- Job Title -->
+                <h1 class="display-4 fw-bold text-white mb-3" style="font-family: 'TAN-Garland-Regular', sans-serif;">
+                    {{ job.title }}
+                </h1>
+                
+                <!-- Job Meta Information -->
+                <div class="job-meta d-flex flex-wrap justify-content-center gap-4 mb-4">
+                    <div class="meta-item">
+                        <span class="badge bg-light text-dark px-3 py-2">
+                            <i class="fas fa-briefcase me-2"></i>{{ job.get_job_type_display }}
+                        </span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="badge bg-light text-dark px-3 py-2">
+                            <i class="fas fa-map-marker-alt me-2"></i>{{ job.location }}
+                        </span>
+                    </div>
+                    {% if job.salary_range %}
+                        <div class="meta-item">
+                            <span class="badge bg-light text-dark px-3 py-2">
+                                <i class="fas fa-money-bill-wave me-2"></i>{{ job.salary_range }}
+                            </span>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Closed Message -->
+                <div class="alert alert-warning mx-auto" style="max-width: 600px; background: rgba(255, 193, 7, 0.1); border: 2px solid #ffc107; border-radius: 15px;">
+                    <h4 class="alert-heading text-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Position No Longer Available
+                    </h4>
+                    <p class="mb-0 text-white">
+                        Thank you for your interest in this position. Applications for this role are currently closed. 
+                        Please check our other available opportunities below or visit our careers page regularly for new openings.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Job Summary Section -->
+<section class="job-summary py-5" style="background-color: #f8f9fa;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                    <div class="card-body p-5">
+                        <h3 class="mb-4" style="color: #291c1b; font-family: 'TAN-Garland-Regular', sans-serif;">
+                            <i class="fas fa-info-circle me-2" style="color: #ff9d00;"></i>About This Position
+                        </h3>
+                        
+                        <!-- Brief Job Description -->
+                        <div class="job-description mb-4" style="line-height: 1.8; color: #666;">
+                            {{ job.description|striptags|truncatewords:50 }}
+                        </div>
+                        
+                        <!-- Job Details Grid -->
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <div class="d-flex justify-content-between">
+                                        <span class="fw-bold text-muted">Job Type:</span>
+                                        <span class="text-dark">{{ job.get_job_type_display }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <div class="d-flex justify-content-between">
+                                        <span class="fw-bold text-muted">Location:</span>
+                                        <span class="text-dark">{{ job.location }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if job.salary_range %}
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <div class="d-flex justify-content-between">
+                                        <span class="fw-bold text-muted">Salary:</span>
+                                        <span class="text-dark">{{ job.salary_range }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <div class="d-flex justify-content-between">
+                                        <span class="fw-bold text-muted">Posted:</span>
+                                        <span class="text-dark">{{ job.posted_date|date:"M d, Y" }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="text-center mt-5">
+                            <a href="{% url 'users:careers' %}" class="btn btn-primary btn-lg px-5 py-3 me-3" style="background: linear-gradient(135deg, #291c1b, #ff9d00); border: none; border-radius: 25px;">
+                                <i class="fas fa-search me-2"></i>View Open Positions
+                            </a>
+                            <a href="{% url 'users:careers' %}#application" class="btn btn-outline-primary btn-lg px-5 py-3" style="border-color: #291c1b; color: #291c1b; border-radius: 25px;">
+                                <i class="fas fa-bell me-2"></i>Get Job Alerts
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Other Opportunities Section -->
+<section class="other-opportunities py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold" style="color: #291c1b; font-family: 'TAN-Garland-Regular', sans-serif;">
+                Other Opportunities
+            </h2>
+            <p class="lead text-muted">
+                Explore other exciting career opportunities at Mbugani Luxe Adventures
+            </p>
+        </div>
+        
+        <div class="row g-4">
+            {% for open_job in open_jobs %}
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 border-0 shadow-sm" style="border-radius: 15px; transition: transform 0.3s ease;">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="card-title fw-bold" style="color: #291c1b;">{{ open_job.title }}</h5>
+                            <span class="badge bg-success">Open</span>
+                        </div>
+                        
+                        <p class="card-text text-muted mb-3">{{ open_job.description|truncatewords:15 }}</p>
+                        
+                        <div class="job-meta mb-3">
+                            <small class="text-muted">
+                                <i class="fas fa-map-marker-alt me-1" style="color: #ff9d00;"></i>{{ open_job.location }}
+                            </small>
+                        </div>
+                        
+                        <a href="{{ open_job.get_absolute_url }}" class="btn btn-outline-primary w-100" style="border-color: #291c1b; color: #291c1b; border-radius: 25px;">
+                            <i class="fas fa-eye me-2"></i>View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center">
+                <div class="alert alert-info" style="background: rgba(13, 202, 240, 0.1); border: 2px solid #0dcaf0; border-radius: 15px;">
+                    <h4 class="alert-heading">
+                        <i class="fas fa-info-circle me-2"></i>No Open Positions Currently
+                    </h4>
+                    <p class="mb-0">
+                        We don't have any open positions at the moment, but we're always looking for talented individuals. 
+                        Please check back soon or submit your resume for future opportunities.
+                    </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Custom Styles -->
+<style>
+    .job-closed-hero {
+        min-height: 60vh;
+        display: flex;
+        align-items: center;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .info-item {
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .info-item:last-child {
+        border-bottom: none;
+    }
+    
+    .job-meta .meta-item {
+        margin-bottom: 10px;
+    }
+    
+    @media (max-width: 768px) {
+        .job-closed-hero {
+            min-height: 50vh;
+        }
+        
+        .display-4 {
+            font-size: 2rem;
+        }
+        
+        .btn-lg {
+            padding: 10px 20px;
+            font-size: 1rem;
+        }
+    }
+</style>
+{% endblock %}

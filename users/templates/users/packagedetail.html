@@ -1,0 +1,882 @@
+{% extends 'users/basemain.html' %}
+{% load static  %}
+{% load image_tags %}
+
+
+{% block content %}
+   
+    <section 
+    class="page-banner overlay pt-170 pb-170 bg_cover" 
+    style="background-image: url({% image_url_with_placeholder package.featured_image %});">
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="page-banner-content text-center text-white">
+                    <h1 class="page-title">{{package_name}}</h1>
+                    <ul class="breadcrumb-link text-white">
+
+                        <li><i class="fas fa-map-marker-alt"></i> <a href=""> {{destination_name}}</a></li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="place-details-section">
+    <!--=== Place Slider ===-->
+    
+    <div class="container">
+       
+        <!--=== Tour Details Wrapper ===-->
+        <div class="tour-details-wrapper pt-80">
+            <!--=== Tour Title Wrapper ===-->
+            <div class="tour-title-wrapper pb-30 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
+                <div class="row">
+                    <div class="col-xl-6">
+                        <div class="tour-title mb-20">
+                            <h3 class="title">{{package_name}} </h3>
+                            <p><i class="far fa-map-marker-alt"></i>{{destination_name}}, {{ package.destination.city }} </p>
+                        </div>
+                    </div>
+                    <div class="col-xl-6">
+                        <div class="tour-widget-info">
+                            <div class="info-box mb-20">
+                                <div class="icon">
+                                    <i class="fal fa-box-usd"></i>
+                                </div>
+                                <div class="info">
+                                    <h4><span>From</span>${{ package.adult_price }}</h4>
+                                </div>
+                            </div>
+                            <div class="info-box mb-20">
+                                <div class="icon">
+                                    <i class="fal fa-clock"></i>
+                                </div>
+                                <div class="info">
+                                    <h4><span>Durations</span>{{ package.number_of_days }} Days</h4>
+                                </div>
+                            </div>
+                            <!-- <div class="info-box mb-20">
+                                <div class="icon">
+                                    <i class="fal fa-planet-ringed"></i>
+                                </div>
+                                <div class="info">
+                                    <h4><span>Tour Type</span>City Tour</h4>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!--=== Tour Area Nav ===-->
+            <div class="tour-area-nav pt-20 pb-20 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
+                <div class="row align-items-center">
+                    <div class="col-md-4">
+                        <div class="ratings-box">
+                            <ul class="ratings">
+                                <li><i class="fas fa-star"></i></li>
+                                <li><i class="fas fa-star"></i></li>
+                                <li><i class="fas fa-star"></i></li>
+                                <li><i class="fas fa-star"></i></li>
+                                <li><i class="fas fa-star"></i></li>
+                                <li><a href="#"></a></li>
+                             
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="share-nav">
+                            <a href="#">Share<i class="far fa-share"></i></a>
+                            <a href="#">Reviews<i class="far fa-share"></i></a>
+                            <form action="">
+                    
+                            <a href="{% url 'users:users-bookings' package_id=package.id %}" class="btn btn-primary">Book Now</a>
+                            <a href="#">Whislist<i class="far fa-heart"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-8">
+                    <!--=== Place Content Wrap ===-->
+                
+                    <!--=== Days Area ===-->
+                    <!--=== Days Area ===-->
+                    <div class="days-area mb-55 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
+                        <ul class="nav nav-tabs mb-35" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#day1" aria-selected="false" role="tab" tabindex="-1">Day 1st</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#day2" aria-selected="false" role="tab" tabindex="-1">Day 2nd</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#day3" aria-selected="true" role="tab">Day 3rd</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#day4" aria-selected="false" tabindex="-1" role="tab">Day 4th</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#day5" aria-selected="false" tabindex="-1" role="tab">Day 5th</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade" id="day1" role="tabpanel">
+                                <div class="content-box">
+                                    <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit sed quia consequuntur magne doloreseos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor si amet consectetur adipisci velit sed quian numquam eius modi tempora incidunt</p>
+                                    <ul class="check-list">
+                                        <li><i class="fas fa-badge-check"></i>Parking in the Camp</li>
+                                        <li><i class="fas fa-badge-check"></i>kayaking Sport</li>
+                                        <li><i class="fas fa-badge-check"></i>Mountain Hiking</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="day2" role="tabpanel">
+                                <div class="content-box">
+                                    <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit sed quia consequuntur magne doloreseos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor si amet consectetur adipisci velit sed quian numquam eius modi tempora incidunt</p>
+                                    <ul class="check-list">
+                                        <li><i class="fas fa-badge-check"></i>Parking in the Camp</li>
+                                        <li><i class="fas fa-badge-check"></i>kayaking Sport</li>
+                                        <li><i class="fas fa-badge-check"></i>Mountain Hiking</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade active show" id="day3" role="tabpanel">
+                                <div class="content-box">
+                                    <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit sed quia consequuntur magne doloreseos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor si amet consectetur adipisci velit sed quian numquam eius modi tempora incidunt</p>
+                                    <ul class="check-list">
+                                        <li><i class="fas fa-badge-check"></i>Parking in the Camp</li>
+                                        <li><i class="fas fa-badge-check"></i>kayaking Sport</li>
+                                        <li><i class="fas fa-badge-check"></i>Mountain Hiking</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="day4" role="tabpanel">
+                                <div class="content-box">
+                                    <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit sed quia consequuntur magne doloreseos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor si amet consectetur adipisci velit sed quian numquam eius modi tempora incidunt</p>
+                                    <ul class="check-list">
+                                        <li><i class="fas fa-badge-check"></i>Parking in the Camp</li>
+                                        <li><i class="fas fa-badge-check"></i>kayaking Sport</li>
+                                        <li><i class="fas fa-badge-check"></i>Mountain Hiking</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="day5" role="tabpanel">
+                                <div class="content-box">
+                                    <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit sed quia consequuntur magne doloreseos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor si amet consectetur adipisci velit sed quian numquam eius modi tempora incidunt</p>
+                                    <ul class="check-list">
+                                        <li><i class="fas fa-badge-check"></i>Parking in the Camp</li>
+                                        <li><i class="fas fa-badge-check"></i>kayaking Sport</li>
+                                        <li><i class="fas fa-badge-check"></i>Mountain Hiking</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--=== Map Box ===-->
+                  
+                    <!--=== Calendar Box ===-->
+                    <div class="calendar-wrapper wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
+                        <div class="calendar-container mb-45"><div class="calendar-box"><div class="weeks-container"><div class="buttons-container"><button class="prev-button"><i class="far fa-angle-left"></i></button><span class="label-container month-container"><span class="month-label">september</span> <span class="year-label">2023</span></span><button class="next-button"><i class="far fa-angle-right"></i></button></div><div class="weeks-wrapper header"><div class="week" data-week-no="0"><div class="day header" data-day="0">su</div><div class="day header" data-day="1">mo</div><div class="day header" data-day="2">tu</div><div class="day header highlight" data-day="3">we</div><div class="day header" data-day="4">th</div><div class="day header" data-day="5">fr</div><div class="day header" data-day="6">sa</div></div></div><div class="weeks-wrapper"><div class="week" data-week-no="1"><div class="day disabled" data-date="Sun Aug 27 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>27</span></div><div class="day disabled" data-date="Mon Aug 28 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>28</span></div><div class="day disabled" data-date="Tue Aug 29 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>29</span></div><div class="day disabled highlight" data-date="Wed Aug 30 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>30</span></div><div class="day disabled" data-date="Thu Aug 31 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>31</span></div><div class="day" data-date="Fri Sep 01 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>1</span></div><div class="day" data-date="Sat Sep 02 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>2</span></div></div><div class="week highlight" data-week-no="2"><div class="day" data-date="Sun Sep 03 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>3</span></div><div class="day" data-date="Mon Sep 04 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>4</span></div><div class="day" data-date="Tue Sep 05 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>5</span></div><div class="day selected today highlight" data-date="Wed Sep 06 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>6</span></div><div class="day" data-date="Thu Sep 07 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>7</span></div><div class="day" data-date="Fri Sep 08 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>8</span></div><div class="day" data-date="Sat Sep 09 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>9</span></div></div><div class="week" data-week-no="3"><div class="day" data-date="Sun Sep 10 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>10</span></div><div class="day" data-date="Mon Sep 11 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>11</span></div><div class="day" data-date="Tue Sep 12 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>12</span></div><div class="day highlight" data-date="Wed Sep 13 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>13</span></div><div class="day" data-date="Thu Sep 14 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>14</span></div><div class="day" data-date="Fri Sep 15 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>15</span></div><div class="day" data-date="Sat Sep 16 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>16</span></div></div><div class="week" data-week-no="4"><div class="day" data-date="Sun Sep 17 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>17</span></div><div class="day" data-date="Mon Sep 18 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>18</span></div><div class="day" data-date="Tue Sep 19 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>19</span></div><div class="day highlight" data-date="Wed Sep 20 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>20</span></div><div class="day" data-date="Thu Sep 21 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>21</span></div><div class="day" data-date="Fri Sep 22 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>22</span></div><div class="day" data-date="Sat Sep 23 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>23</span></div></div><div class="week" data-week-no="5"><div class="day" data-date="Sun Sep 24 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>24</span></div><div class="day" data-date="Mon Sep 25 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>25</span></div><div class="day" data-date="Tue Sep 26 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>26</span></div><div class="day highlight" data-date="Wed Sep 27 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>27</span></div><div class="day" data-date="Thu Sep 28 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>28</span></div><div class="day" data-date="Fri Sep 29 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>29</span></div><div class="day" data-date="Sat Sep 30 2023 00:00:00 GMT+0300 (East Africa Time)" ola=""><span>30</span></div></div></div></div></div></div>
+                    </div>
+                    <!--=== Releted Tour Place ===-->
+                    <div class="related-tour-place wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="section-title mb-35">
+                                    <h3>Related Tours</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="place-arrows mb-35"><div class="prev slick-arrow" style=""><i class="far fa-arrow-left"></i></div><div class="next slick-arrow" style=""><i class="far fa-arrow-right"></i></div></div>
+                            </div>
+                        </div>
+                        <div class="recent-place-slider slick-initialized slick-slider">
+                            <!--=== Single Place Item ===-->
+                            <div class="slick-list draggable"><div class="slick-track" style="opacity: 1; width: 2904px; transform: translate3d(-1089px, 0px, 0px);"><div class="single-place-item mb-60 slick-slide slick-cloned" data-slick-index="-2" id="" aria-hidden="true" style="width: 333px;" tabindex="-1">
+                                <div class="place-img">
+                                    <img src="assets/images/place/place-2.jpg" alt="Place Image">
+                                </div>
+                                <div class="place-content">
+                                    <div class="info">
+                                        <ul class="ratings">
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><a href="#" tabindex="-1">(4.9)</a></li>
+                                        </ul>
+                                        <h4 class="title"><a href="tour-details.html" tabindex="-1">Trees Under White Clouds during Daytime</a></h4>
+                                        <p class="location"><i class="fas fa-map-marker-alt"></i>North Province, Maldives</p>
+                                        <p class="price"><i class="fas fa-usd-circle"></i>Price<span class="currency">$</span>93.65</p>
+                                        <div class="meta">
+                                            <span><i class="far fa-clock"></i>05 Days</span>
+                                            <span><i class="far fa-user"></i>25</span>
+                                            <span><a href="tour-details.html" tabindex="-1">Details<i class="far fa-long-arrow-right"></i></a></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><div class="single-place-item mb-60 slick-slide slick-cloned" data-slick-index="-1" id="" aria-hidden="true" style="width: 333px;" tabindex="-1">
+                                <div class="place-img">
+                                    <img src="assets/images/place/place-3.jpg" alt="Place Image">
+                                </div>
+                                <div class="place-content">
+                                    <div class="info">
+                                        <ul class="ratings">
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><a href="#" tabindex="-1">(4.9)</a></li>
+                                        </ul>
+                                        <h4 class="title"><a href="tour-details.html" tabindex="-1">Body of Water Near Mountain</a></h4>
+                                        <p class="location"><i class="fas fa-map-marker-alt"></i>North Province, Maldives</p>
+                                        <p class="price"><i class="fas fa-usd-circle"></i>Price<span class="currency">$</span>93.65</p>
+                                        <div class="meta">
+                                            <span><i class="far fa-clock"></i>05 Days</span>
+                                            <span><i class="far fa-user"></i>25</span>
+                                            <span><a href="tour-details.html" tabindex="-1">Details<i class="far fa-long-arrow-right"></i></a></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><div class="single-place-item mb-60 slick-slide" data-slick-index="0" aria-hidden="true" style="width: 333px;" tabindex="-1">
+                                <div class="place-img">
+                                    <img src="assets/images/place/place-1.jpg" alt="Place Image">
+                                </div>
+                                <div class="place-content">
+                                    <div class="info">
+                                        <ul class="ratings">
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><a href="#" tabindex="-1">(4.9)</a></li>
+                                        </ul>
+                                        <h4 class="title"><a href="tour-details.html" tabindex="-1">Man and Woman Walks on Dock</a></h4>
+                                        <p class="location"><i class="fas fa-map-marker-alt"></i>North Province, Maldives</p>
+                                        <p class="price"><i class="fas fa-usd-circle"></i>Price<span class="currency">$</span>93.65</p>
+                                        <div class="meta">
+                                            <span><i class="far fa-clock"></i>05 Days</span>
+                                            <span><i class="far fa-user"></i>25</span>
+                                            <span><a href="tour-details.html" tabindex="-1">Details<i class="far fa-long-arrow-right"></i></a></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><div class="single-place-item mb-60 slick-slide slick-current slick-active" data-slick-index="1" aria-hidden="false" style="width: 333px;" tabindex="0">
+                                <div class="place-img">
+                                    <img src="assets/images/place/place-2.jpg" alt="Place Image">
+                                </div>
+                                <div class="place-content">
+                                    <div class="info">
+                                        <ul class="ratings">
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><a href="#" tabindex="0">(4.9)</a></li>
+                                        </ul>
+                                        <h4 class="title"><a href="tour-details.html" tabindex="0">Trees Under White Clouds during Daytime</a></h4>
+                                        <p class="location"><i class="fas fa-map-marker-alt"></i>North Province, Maldives</p>
+                                        <p class="price"><i class="fas fa-usd-circle"></i>Price<span class="currency">$</span>93.65</p>
+                                        <div class="meta">
+                                            <span><i class="far fa-clock"></i>05 Days</span>
+                                            <span><i class="far fa-user"></i>25</span>
+                                            <span><a href="tour-details.html" tabindex="0">Details<i class="far fa-long-arrow-right"></i></a></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><div class="single-place-item mb-60 slick-slide slick-active" data-slick-index="2" aria-hidden="false" style="width: 333px;" tabindex="0">
+                                <div class="place-img">
+                                    <img src="assets/images/place/place-3.jpg" alt="Place Image">
+                                </div>
+                                <div class="place-content">
+                                    <div class="info">
+                                        <ul class="ratings">
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><a href="#" tabindex="0">(4.9)</a></li>
+                                        </ul>
+                                        <h4 class="title"><a href="tour-details.html" tabindex="0">Body of Water Near Mountain</a></h4>
+                                        <p class="location"><i class="fas fa-map-marker-alt"></i>North Province, Maldives</p>
+                                        <p class="price"><i class="fas fa-usd-circle"></i>Price<span class="currency">$</span>93.65</p>
+                                        <div class="meta">
+                                            <span><i class="far fa-clock"></i>05 Days</span>
+                                            <span><i class="far fa-user"></i>25</span>
+                                            <span><a href="tour-details.html" tabindex="0">Details<i class="far fa-long-arrow-right"></i></a></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><div class="single-place-item mb-60 slick-slide slick-cloned" data-slick-index="3" id="" aria-hidden="true" style="width: 333px;" tabindex="-1">
+                                <div class="place-img">
+                                    <img src="assets/images/place/place-1.jpg" alt="Place Image">
+                                </div>
+                                <div class="place-content">
+                                    <div class="info">
+                                        <ul class="ratings">
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><a href="#" tabindex="-1">(4.9)</a></li>
+                                        </ul>
+                                        <h4 class="title"><a href="tour-details.html" tabindex="-1">Man and Woman Walks on Dock</a></h4>
+                                        <p class="location"><i class="fas fa-map-marker-alt"></i>North Province, Maldives</p>
+                                        <p class="price"><i class="fas fa-usd-circle"></i>Price<span class="currency">$</span>93.65</p>
+                                        <div class="meta">
+                                            <span><i class="far fa-clock"></i>05 Days</span>
+                                            <span><i class="far fa-user"></i>25</span>
+                                            <span><a href="tour-details.html" tabindex="-1">Details<i class="far fa-long-arrow-right"></i></a></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><div class="single-place-item mb-60 slick-slide slick-cloned" data-slick-index="4" id="" aria-hidden="true" style="width: 333px;" tabindex="-1">
+                                <div class="place-img">
+                                    <img src="assets/images/place/place-2.jpg" alt="Place Image">
+                                </div>
+                                <div class="place-content">
+                                    <div class="info">
+                                        <ul class="ratings">
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><a href="#" tabindex="-1">(4.9)</a></li>
+                                        </ul>
+                                        <h4 class="title"><a href="tour-details.html" tabindex="-1">Trees Under White Clouds during Daytime</a></h4>
+                                        <p class="location"><i class="fas fa-map-marker-alt"></i>North Province, Maldives</p>
+                                        <p class="price"><i class="fas fa-usd-circle"></i>Price<span class="currency">$</span>93.65</p>
+                                        <div class="meta">
+                                            <span><i class="far fa-clock"></i>05 Days</span>
+                                            <span><i class="far fa-user"></i>25</span>
+                                            <span><a href="tour-details.html" tabindex="-1">Details<i class="far fa-long-arrow-right"></i></a></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><div class="single-place-item mb-60 slick-slide slick-cloned" data-slick-index="5" id="" aria-hidden="true" style="width: 333px;" tabindex="-1">
+                                <div class="place-img">
+                                    <img src="assets/images/place/place-3.jpg" alt="Place Image">
+                                </div>
+                                <div class="place-content">
+                                    <div class="info">
+                                        <ul class="ratings">
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><a href="#" tabindex="-1">(4.9)</a></li>
+                                        </ul>
+                                        <h4 class="title"><a href="tour-details.html" tabindex="-1">Body of Water Near Mountain</a></h4>
+                                        <p class="location"><i class="fas fa-map-marker-alt"></i>North Province, Maldives</p>
+                                        <p class="price"><i class="fas fa-usd-circle"></i>Price<span class="currency">$</span>93.65</p>
+                                        <div class="meta">
+                                            <span><i class="far fa-clock"></i>05 Days</span>
+                                            <span><i class="far fa-user"></i>25</span>
+                                            <span><a href="tour-details.html" tabindex="-1">Details<i class="far fa-long-arrow-right"></i></a></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div></div></div>
+                            <!--=== Single Place Item ===-->
+                            
+                            <!--=== Single Place Item ===-->
+                            
+                        </div>
+                    </div>
+                    <!--=== Reviews Area ===-->
+                    <div class="reviews-wrapper mb-60 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
+                        <div class="reviews-inner-box">
+                            <div class="rating-value">
+                                <h4>Clients Reviews</h4>
+                                <div class="rate-score">4.9</div>
+                                <ul class="ratings">
+                                    <li><i class="fas fa-star"></i></li>
+                                    <li><i class="fas fa-star"></i></li>
+                                    <li><i class="fas fa-star"></i></li>
+                                    <li><i class="fas fa-star"></i></li>
+                                    <li><i class="fas fa-star"></i></li>
+                                    <li><a href="#">(4.9)</a></li>
+                                </ul>
+                                <span class="reviews">3k Reviews</span>
+                            </div>
+                            <div class="reviews-progress">
+                                <div class="single-progress-bar">
+                                    <div class="progress-title">
+                                        <h6>Quality <span class="rate">4.8</span></h6>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar wow slideInLeft" style="width: 85%; visibility: visible; animation-name: slideInLeft;"></div>
+                                    </div>
+                                </div>
+                                <div class="single-progress-bar">
+                                    <div class="progress-title">
+                                        <h6>Team Member<span class="rate">4.6</span></h6>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar wow slideInLeft" style="width: 75%; visibility: visible; animation-name: slideInLeft;"></div>
+                                    </div>
+                                </div>
+                                <div class="single-progress-bar">
+                                    <div class="progress-title">
+                                        <h6>Locations<span class="rate">4.7</span></h6>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar wow slideInLeft" style="width: 90%; visibility: visible; animation-name: slideInLeft;"></div>
+                                    </div>
+                                </div>
+                                <div class="single-progress-bar">
+                                    <div class="progress-title">
+                                        <h6>Cost<span class="rate">4.9</span></h6>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar wow slideInLeft" style="width: 95%; visibility: visible; animation-name: slideInLeft;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--=== Comments Area ===-->
+                    <div class="comments-area wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
+                        <ul class="comment-list">
+                            <li>
+                                <div class="comment">
+                                    <div class="comment-avatar">
+                                        <img src="assets/images/place/comment-1.jpg" alt="comment author">
+                                    </div>
+                                    <div class="comment-wrap">
+                                        <div class="comment-author-content">
+                                            <span class="author-name">Glenn M. Whitaker<span class="time"><i class="far fa-clock"></i>5 Minute Ago</span></span>
+                                            <span class="position">CEO &amp; Founder</span>
+                                            <ul class="comment-rating-ul">
+                                                <li>
+                                                    <span class="title">Quality</span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                </li>
+                                                <li>
+                                                    <span class="title">Location</span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                </li>
+                                                <li>
+                                                    <span class="title">Services</span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                </li>
+                                                <li>
+                                                    <span class="title">Team</span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                </li>
+                                                <li>
+                                                    <span class="title">Price</span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                </li>
+                                            </ul>
+                                            <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepture</p>
+                                            <a href="#" class="btn-link">Reply<i class="far fa-angle-double-right"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ul class="comment-reply">
+                                    <li>
+                                        <div class="comment">
+                                            <div class="comment-avatar">
+                                                <img src="assets/images/place/comment-2.jpg" alt="comment author">
+                                            </div>
+                                            <div class="comment-wrap">
+                                                <div class="comment-author-content">
+                                                    <span class="author-name">Glenn M. Whitaker<span class="time"><i class="far fa-clock"></i>5 Minute Ago</span></span>
+                                                    <span class="position">CEO &amp; Founder</span>
+                                                    <ul class="comment-rating-ul">
+                                                        <li>
+                                                            <span class="title">Quality</span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                        </li>
+                                                        <li>
+                                                            <span class="title">Location</span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                        </li>
+                                                        <li>
+                                                            <span class="title">Services</span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                        </li>
+                                                        <li>
+                                                            <span class="title">Team</span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                        </li>
+                                                        <li>
+                                                            <span class="title">Price</span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                            <span><i class="fas fa-star"></i></span>
+                                                        </li>
+                                                    </ul>
+                                                    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepture</p>
+                                                    <a href="#" class="btn-link">Reply<i class="far fa-angle-double-right"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <div class="comment">
+                                    <div class="comment-avatar">
+                                        <img src="assets/images/place/comment-3.jpg" alt="comment author">
+                                    </div>
+                                    <div class="comment-wrap">
+                                        <div class="comment-author-content">
+                                            <span class="author-name">Glenn M. Whitaker<span class="time"><i class="far fa-clock"></i>5 Minute Ago</span></span>
+                                            <span class="position">CEO &amp; Founder</span>
+                                            <ul class="comment-rating-ul">
+                                                <li>
+                                                    <span class="title">Quality</span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                </li>
+                                                <li>
+                                                    <span class="title">Location</span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                </li>
+                                                <li>
+                                                    <span class="title">Services</span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                </li>
+                                                <li>
+                                                    <span class="title">Team</span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                </li>
+                                                <li>
+                                                    <span class="title">Price</span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                    <span><i class="fas fa-star"></i></span>
+                                                </li>
+                                            </ul>
+                                            <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepture</p>
+                                            <a href="#" class="btn-link">Reply<i class="far fa-angle-double-right"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--===  Comments Form  ===-->
+                    <div class="comments-respond mb-30 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
+                        <h3 class="comments-heading" style="margin-bottom: 15px;">Leave a Comments</h3>
+                        <ul class="comment-rating-ul mb-20">
+                            <li>
+                                <span class="title">Quality</span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                            </li>
+                            <li>
+                                <span class="title">Location</span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                            </li>
+                            <li>
+                                <span class="title">Services</span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                            </li>
+                            <li>
+                                <span class="title">Team</span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                            </li>
+                            <li>
+                                <span class="title">Price</span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                                <span><i class="fas fa-star"></i></span>
+                            </li>
+                        </ul>
+                        <form class="comment-form">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form_group">
+                                        <input type="email" class="form_control" placeholder="Email Address" name="name" required="">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form_group">
+                                        <input type="text" class="form_control" placeholder="Enter Name" name="email" required="">
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form_group">
+                                        <textarea name="message" class="form_control" rows="4" placeholder="Write Comments"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="form_group">
+                                        <button class="main-btn primary-btn">Send comments<i class="fas fa-angle-double-right"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-xl-4">
+                    <!--=== Sidebar Widget Area ===-->
+                    <div class="sidebar-widget-area pt-60 pl-lg-30">
+                        <!--=== Booking Widget ===-->
+                        <div class="sidebar-widget booking-form-widget wow fadeInUp mb-40" style="visibility: visible; animation-name: fadeInUp;">
+                            <h4 class="widget-title">Booking Tour</h4>
+                            <form class="sidebar-booking-form">
+                                <div class="booking-date-time mb-20">
+                                    <div class="booking-item">
+                                        <label>Date</label>
+                                        <div class="bk-item booking-time">
+                                            <i class="far fa-calendar-alt"></i>
+                                            <input type="text" placeholder="Select Date" class="datepicker hasDatepicker" id="dp1693975519902">
+                                        </div>
+                                    </div>
+                                    <div class="booking-item">
+                                        <label>Time</label>
+                                        <div class="bk-item booking-date">
+                                            <i class="far fa-calendar-alt"></i>
+                                            <select class="wide" style="display: none;">
+                                                <option value="01">12.00 Am</option>
+                                                <option value="01">01.00 Am</option>
+                                                <option value="01">02.00 Am</option>
+                                                <option value="01">03.00 Am</option>
+                                                <option value="01">04.00 Am</option>
+                                                <option value="01">05.00 Am</option>
+                                                <option value="01">06.00 Am</option>
+                                                <option value="01">07.00 Am</option>
+                                                <option value="01">08.00 Am</option>
+                                                <option value="01">09.00 Am</option>
+                                                <option value="01">10.00 Am</option>
+                                                <option value="01">11.00 Am</option>
+                                                <option value="01">12.00 Pm</option>
+                                            </select><div class="nice-select wide" tabindex="0"><span class="current">12.00 Am</span><ul class="list"><li data-value="01" class="option selected">12.00 Am</li><li data-value="01" class="option">01.00 Am</li><li data-value="01" class="option">02.00 Am</li><li data-value="01" class="option">03.00 Am</li><li data-value="01" class="option">04.00 Am</li><li data-value="01" class="option">05.00 Am</li><li data-value="01" class="option">06.00 Am</li><li data-value="01" class="option">07.00 Am</li><li data-value="01" class="option">08.00 Am</li><li data-value="01" class="option">09.00 Am</li><li data-value="01" class="option">10.00 Am</li><li data-value="01" class="option">11.00 Am</li><li data-value="01" class="option">12.00 Pm</li></ul></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="booking-guest-box mb-20">
+                                    <h6 class="mb-20">Tickets</h6>
+                                    <div class="booking-item">
+                                        <label>Adult (18+ years) $43</label>
+                                        <div class="bk-item booking-user">
+                                            <i class="far fa-user"></i>
+                                            <select class="wide" style="display: none;">
+                                                <option value="01">1</option>
+                                                <option value="02">2</option>
+                                                <option value="03">3</option>
+                                                <option value="04">4</option>
+                                                <option value="05">5</option>
+                                            </select><div class="nice-select wide" tabindex="0"><span class="current">1</span><ul class="list"><li data-value="01" class="option selected">1</li><li data-value="02" class="option">2</li><li data-value="03" class="option">3</li><li data-value="04" class="option">4</li><li data-value="05" class="option">5</li></ul></div>
+                                        </div>
+                                    </div>
+                                    <div class="booking-item">
+                                        <label>Youth (13-17 years) $29</label>
+                                        <div class="bk-item booking-user">
+                                            <i class="far fa-user"></i>
+                                            <select class="wide" style="display: none;">
+                                                <option value="01">1</option>
+                                                <option value="02">2</option>
+                                                <option value="03">3</option>
+                                                <option value="04">4</option>
+                                                <option value="05">5</option>
+                                            </select><div class="nice-select wide" tabindex="0"><span class="current">1</span><ul class="list"><li data-value="01" class="option selected">1</li><li data-value="02" class="option">2</li><li data-value="03" class="option">3</li><li data-value="04" class="option">4</li><li data-value="05" class="option">5</li></ul></div>
+                                        </div>
+                                    </div>
+                                    <div class="booking-item">
+                                        <label>Child (0-12 years) $0</label>
+                                        <div class="bk-item booking-user">
+                                            <i class="far fa-user"></i>
+                                            <select class="wide" style="display: none;">
+                                                <option value="01">1</option>
+                                                <option value="02">2</option>
+                                                <option value="03">3</option>
+                                                <option value="04">4</option>
+                                                <option value="05">5</option>
+                                            </select><div class="nice-select wide" tabindex="0"><span class="current">1</span><ul class="list"><li data-value="01" class="option selected">1</li><li data-value="02" class="option">2</li><li data-value="03" class="option">3</li><li data-value="04" class="option">4</li><li data-value="05" class="option">5</li></ul></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="booking-extra mb-15 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
+                                    <h6 class="mb-10">Aditional Services</h6>
+                                    <div class="extra">
+                                        <i class="fas fa-check-circle"></i>Service Per Boooking <span><span class="currency">$</span>50</span>
+                                    </div>
+                                    <div class="extra">
+                                        <i class="fas fa-check-circle"></i>Service Per Person <span><span class="currency">$</span>20</span>
+                                    </div>
+                                </div>
+                                <div class="booking-total mb-20">
+                                    <div class="total">
+                                        <label>Total</label>
+                                        <span class="price"><span class="currency">$</span>70</span>
+                                    </div>
+                                </div>
+                                <div class="submit-button">
+                                    <button class="main-btn primary-btn">Booking Now<i class="far fa-paper-plane"></i></button>
+                                </div>
+                            </form>
+                        </div>
+                        <!--=== Booking Info Widget ===-->
+                        <div class="sidebar-widget booking-info-widget wow fadeInUp mb-40" style="visibility: visible; animation-name: fadeInUp;">
+                            <h4 class="widget-title">Tour Information</h4>
+                            <ul class="info-list">
+                                <li><span><i class="far fa-user-circle"></i>Max Guests<span>35</span></span></li>
+                                <li><span><i class="far fa-user-circle"></i>Minimum Age<span>12+</span></span></li>
+                                <li><span><i class="far fa-map-marker-alt"></i>Tour Location<span>Thailand</span></span></li>
+                                <li><span><i class="far fa-globe"></i>Language<span>English</span></span></li>
+                            </ul>
+                        </div>
+                        <!--=== Recent Place Widget ===-->
+                        <div class="sidebar-widget recent-place-widget mb-40 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
+                            <h4 class="widget-title">Last Minute Deals</h4>
+                            <ul class="recent-place-list">
+                                <li class="place-thumbnail-content">
+                                    <img src="assets/images/place/thumb-1.jpg" alt="post thumb">
+                                    <div class="place-content">
+                                        <ul class="ratings">
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="far fa-star"></i></li>
+                                        </ul>
+                                        <h5><a href="tour-details.html">Infinity Pool Nears
+                                            Beach</a></h5>
+                                        <span class="price"><span class="text">From :</span><span class="currency">$</span>45.23</span>
+                                    </div>
+                                </li>
+                                <li class="place-thumbnail-content">
+                                    <img src="assets/images/place/thumb-2.jpg" alt="post thumb">
+                                    <div class="place-content">
+                                        <ul class="ratings">
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star-half-alt"></i></li>
+                                        </ul>
+                                        <h5><a href="tour-details.html">Infinity Pool Nears
+                                            Beach</a></h5>
+                                        <span class="price"><span class="text">From :</span><span class="currency">$</span>45.23</span>
+                                    </div>
+                                </li>
+                                <li class="place-thumbnail-content">
+                                    <img src="assets/images/place/thumb-3.jpg" alt="post thumb">
+                                    <div class="place-content">
+                                        <ul class="ratings">
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                            <li><i class="fas fa-star"></i></li>
+                                        </ul>
+                                        <h5><a href="tour-details.html">Infinity Pool Nears
+                                            Beach</a></h5>
+                                        <span class="price"><span class="text">From :</span><span class="currency">$</span>45.23</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <!--=== Banner Widget ===-->
+                        <div class="sidebar-widget sidebar-banner-widget wow fadeInUp mb-40" style="visibility: visible; animation-name: fadeInUp;">
+                            <div class="banner-widget-content">
+                                <div class="banner-img">
+                                    <img src="assets/images/blog/banner-1.jpg" alt="Post Banner">
+                                    <div class="hover-overlay">
+                                        <div class="hover-content">
+                                            <h4 class="title"><a href="#">Swimming Pool</a></h4>
+                                            <p><i class="fas fa-map-marker-alt"></i>Marrakesh, Morocco</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% include 'users/footer.html' %}
+
+       
+{% endblock %}

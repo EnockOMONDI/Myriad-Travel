@@ -1,0 +1,303 @@
+/* CKEditor Admin Interface Styling for Mbugani Luxe Adventures - Default Django Admin */
+
+/* CKEditor toolbar styling for default admin */
+.cke_toolbar {
+    background: linear-gradient(135deg, #291c1b 0%, #1a3a9e 100%) !important;
+    border: 1px solid #ddd !important;
+    border-radius: 4px 4px 0 0 !important;
+    padding: 8px !important;
+}
+
+.cke_toolbar_break {
+    background: transparent !important;
+}
+
+/* CKEditor buttons */
+.cke_button {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 4px !important;
+    margin: 2px !important;
+    transition: all 0.3s ease !important;
+}
+
+.cke_button:hover {
+    background: rgba(255, 157, 0, 0.8) !important;
+    border-color: #ff9d00 !important;
+    transform: translateY(-1px) !important;
+}
+
+.cke_button_on {
+    background: #ff9d00 !important;
+    border-color: #ff9d00 !important;
+    box-shadow: 0 2px 8px rgba(255, 157, 0, 0.3) !important;
+}
+
+.cke_button_icon {
+    filter: brightness(0) invert(1) !important;
+}
+
+.cke_button:hover .cke_button_icon {
+    filter: brightness(0) !important;
+}
+
+.cke_button_on .cke_button_icon {
+    filter: brightness(0) !important;
+}
+
+/* CKEditor main container for default admin */
+.cke {
+    border: 1px solid #ddd !important;
+    border-radius: 4px !important;
+    box-shadow: 0 2px 8px rgba(15, 35, 141, 0.1) !important;
+    overflow: hidden !important;
+    margin-top: 5px !important;
+}
+
+.cke_top {
+    background: #291c1b !important;
+    border-bottom: 2px solid #ff9d00 !important;
+}
+
+.cke_bottom {
+    background: #f8f9fa !important;
+    border-top: 1px solid #dee2e6 !important;
+}
+
+/* CKEditor content area */
+.cke_contents {
+    background: white !important;
+    border: none !important;
+}
+
+.cke_contents iframe {
+    background: white !important;
+}
+
+/* CKEditor resize handle */
+.cke_resizer {
+    background: #ff9d00 !important;
+    border-color: #ff9d00 !important;
+}
+
+/* CKEditor dropdown menus */
+.cke_panel {
+    border: 2px solid #291c1b !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 25px rgba(15, 35, 141, 0.3) !important;
+}
+
+.cke_panel_listItem a {
+    transition: all 0.3s ease !important;
+}
+
+.cke_panel_listItem a:hover {
+    background: #ff9d00 !important;
+    color: white !important;
+}
+
+/* CKEditor combo boxes */
+.cke_combo_button {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 4px !important;
+    color: white !important;
+}
+
+.cke_combo_button:hover {
+    background: rgba(255, 157, 0, 0.8) !important;
+    border-color: #ff9d00 !important;
+}
+
+.cke_combo_arrow {
+    border-top-color: white !important;
+}
+
+.cke_combo_button:hover .cke_combo_arrow {
+    border-top-color: #291c1b !important;
+}
+
+/* CKEditor dialog styling */
+.cke_dialog {
+    border: 2px solid #291c1b !important;
+    border-radius: 12px !important;
+    box-shadow: 0 15px 40px rgba(15, 35, 141, 0.4) !important;
+}
+
+.cke_dialog_title {
+    background: linear-gradient(135deg, #291c1b 0%, #1a3a9e 100%) !important;
+    color: white !important;
+    font-weight: 700 !important;
+    padding: 15px 20px !important;
+    border-radius: 10px 10px 0 0 !important;
+}
+
+.cke_dialog_footer {
+    background: #f8f9fa !important;
+    border-top: 1px solid #dee2e6 !important;
+    border-radius: 0 0 10px 10px !important;
+}
+
+.cke_dialog_ui_button {
+    background: #291c1b !important;
+    border: none !important;
+    color: white !important;
+    padding: 8px 16px !important;
+    border-radius: 6px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+}
+
+.cke_dialog_ui_button:hover {
+    background: #ff9d00 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(255, 157, 0, 0.3) !important;
+}
+
+.cke_dialog_ui_button_ok {
+    background: #ff9d00 !important;
+}
+
+.cke_dialog_ui_button_ok:hover {
+    background: #e8890a !important;
+}
+
+/* CKEditor path bar */
+.cke_path {
+    background: #f8f9fa !important;
+    color: #666 !important;
+    padding: 8px 12px !important;
+}
+
+.cke_path_item {
+    color: #291c1b !important;
+    font-weight: 600 !important;
+}
+
+.cke_path_item:hover {
+    background: #ff9d00 !important;
+    color: white !important;
+    border-radius: 4px !important;
+}
+
+/* CKEditor source mode */
+.cke_source {
+    font-family: 'Courier New', monospace !important;
+    background: #f8f9fa !important;
+    color: #333 !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 4px !important;
+}
+
+/* CKEditor maximized mode */
+.cke_maximized .cke_top {
+    background: linear-gradient(135deg, #291c1b 0%, #1a3a9e 100%) !important;
+}
+
+/* Custom styles for Django admin integration */
+.form-row .cke {
+    margin-top: 5px !important;
+}
+
+.form-row label {
+    color: #291c1b !important;
+    font-weight: 600 !important;
+}
+
+/* Help text styling */
+.help {
+    color: #666 !important;
+    font-style: italic !important;
+    margin-top: 5px !important;
+}
+
+/* Error styling */
+.errorlist {
+    color: #dc3545 !important;
+    background: #f8d7da !important;
+    border: 1px solid #f5c6cb !important;
+    border-radius: 4px !important;
+    padding: 8px 12px !important;
+    margin-top: 5px !important;
+}
+
+/* Success styling */
+.success {
+    color: #155724 !important;
+    background: #d4edda !important;
+    border: 1px solid #c3e6cb !important;
+    border-radius: 4px !important;
+    padding: 8px 12px !important;
+    margin-top: 5px !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .cke_toolbar {
+        padding: 4px !important;
+    }
+    
+    .cke_button {
+        margin: 1px !important;
+    }
+    
+    .cke_dialog {
+        width: 95% !important;
+        margin: 2.5% !important;
+    }
+}
+
+/* Loading animation */
+.cke_loading {
+    background: linear-gradient(90deg, #291c1b, #ff9d00, #291c1b) !important;
+    background-size: 200% 100% !important;
+    animation: loading 2s infinite !important;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Integration with Django default admin */
+.form-row .cke {
+    width: 100% !important;
+}
+
+.form-row .field-content .cke,
+.form-row .field-excerpt .cke,
+.form-row .field-description .cke,
+.form-row .field-hotel_description .cke,
+.form-row .field-dtn_description .cke,
+.form-row .field-inclusive .cke,
+.form-row .field-exclusive .cke,
+.form-row .field-itinerary_description .cke,
+.form-row .field-special_requests .cke,
+.form-row .field-event_details .cke,
+.form-row .field-travel_details .cke,
+.form-row .field-comment .cke {
+    margin-top: 5px !important;
+}
+
+/* Django admin form styling */
+.form-row label {
+    font-weight: bold !important;
+    color: #333 !important;
+}
+
+/* Responsive adjustments for default admin */
+@media (max-width: 1024px) {
+    .cke_toolbar {
+        padding: 4px !important;
+    }
+
+    .cke_button {
+        margin: 1px !important;
+    }
+}
+
+/* Focus states for better UX */
+.cke:focus-within {
+    border-color: #291c1b !important;
+    box-shadow: 0 0 0 2px rgba(15, 35, 141, 0.2) !important;
+}

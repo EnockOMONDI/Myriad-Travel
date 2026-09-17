@@ -1,0 +1,230 @@
+{% extends 'users/basebackup.html' %}
+{% load static %}
+
+{% block title %}Access Forbidden - 403 | Mbugani Luxe Adventures{% endblock %}
+
+{% block meta_description %}Access to this page is restricted. Contact Mbugani Luxe Adventures if you believe you should have access to this content.{% endblock %}
+
+{% block content %}
+<!-- 403 Error Page -->
+<section class="error-page-section" style="background: linear-gradient(135deg, #291c1a 0%, #1a1410 100%); min-height: 100vh; display: flex; align-items: center; position: relative; overflow: hidden;">
+    <!-- Background Pattern -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle at 25% 25%, rgba(255,255,255,0.05) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(189,140,6,0.1) 0%, transparent 50%); pointer-events: none;"></div>
+
+    <div class="container position-relative">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10 text-center">
+                <!-- Error Code -->
+                <div class="error-code mb-4">
+                    <h1 class="display-1 fw-bold text-white mb-0" style="font-size: 8rem; font-family: 'TAN-Garland-Regular', 'Arial', sans-serif; text-shadow: 0 0 30px rgba(189,140,6,0.3);">
+                        403
+                    </h1>
+                    <div class="error-icon mb-4">
+                        <i class="fas fa-lock" style="font-size: 4rem; color: #bd8c06; animation: shake 2s infinite;"></i>
+                    </div>
+                </div>
+                
+                <!-- Error Message -->
+                <div class="error-message mb-5">
+                    <h2 class="h3 text-white mb-3" style="font-family: 'TAN-Garland-Regular', sans-serif;">
+                        Access to this area is restricted
+                    </h2>
+                    <p class="lead text-light mb-4" style="opacity: 0.9;">
+                        You don't have permission to access this page or resource. This could be because you're not logged in, don't have the required privileges, or the content is restricted.
+                    </p>
+                    <p class="text-light" style="opacity: 0.8;">
+                        If you believe you should have access to this content, please contact our support team.
+                    </p>
+                </div>
+                
+                <!-- Possible Reasons -->
+                <div class="error-reasons mb-5">
+                    <div class="card border-0 shadow-lg" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 0; border: 1px solid #EFE8DC;">
+                        <div class="card-body p-4">
+                            <h5 class="text-white mb-3" style="font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;">
+                                <i class="fas fa-question-circle me-2" style="color: #bd8c06;"></i>
+                                Why am I seeing this?
+                            </h5>
+                            <div class="row g-3 text-start">
+                                <div class="col-md-6">
+                                    <div class="reason-item">
+                                        <i class="fas fa-user-slash text-warning me-2"></i>
+                                        <span class="text-light">You're not logged in</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="reason-item">
+                                        <i class="fas fa-key text-info me-2"></i>
+                                        <span class="text-light">Insufficient permissions</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="reason-item">
+                                        <i class="fas fa-shield-alt text-primary me-2"></i>
+                                        <span class="text-light">Protected content</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="reason-item">
+                                        <i class="fas fa-clock text-danger me-2"></i>
+                                        <span class="text-light">Session expired</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="error-actions mb-5">
+                    <div class="row g-3 justify-content-center">
+                        <div class="col-auto">
+                            <a href="{% url 'login' %}" class="btn btn-lg px-4 py-3" style="background: transparent; border: 3px solid #291c1a; border-radius: 0; color: #fff; font-weight: 600; font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <a href="{% url 'users:users-home' %}" class="btn btn-outline-light btn-lg px-4 py-3" style="border-radius: 0; border: 3px solid #bd8c06; color: #bd8c06; font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;">
+                                <i class="fas fa-home me-2"></i>Back to Home
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row g-3 justify-content-center mt-3">
+                        <div class="col-auto">
+                            <a href="{% url 'users:users-register' %}" class="btn btn-outline-light btn-lg px-4 py-3" style="border-radius: 0; border: 3px solid #bd8c06; color: #bd8c06; font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;">
+                                <i class="fas fa-user-plus me-2"></i>Create Account
+                            </a>
+                        </div>
+                        <div class="col-auto">
+                            <a href="{% url 'users:contactus' %}" class="btn btn-outline-light btn-lg px-4 py-3" style="border-radius: 0; border: 3px solid #bd8c06; color: #bd8c06; font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;">
+                                <i class="fas fa-envelope me-2"></i>Contact Support
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Help Section -->
+                <div class="error-help mb-5">
+                    <div class="card border-0 shadow-lg" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 0; border: 1px solid #EFE8DC;">
+                        <div class="card-body p-4">
+                            <h5 class="text-white mb-3" style="font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;">
+                                <i class="fas fa-life-ring me-2" style="color: #bd8c06;"></i>
+                                Need Help Getting Access?
+                            </h5>
+                            <div class="row g-3">
+                                <div class="col-md-4 text-center">
+                                    <div class="help-item">
+                                        <i class="fas fa-user-circle mb-2" style="color: #bd8c06; font-size: 2rem;"></i>
+                                        <h6 class="text-white" style="font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;">Customer Account</h6>
+                                        <p class="text-light small mb-2" style="font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;">Access your bookings and profile</p>
+                                        <a href="{% url 'login' %}" class="btn btn-sm btn-outline-light" style="border-radius: 0; border: 2px solid #bd8c06; color: #bd8c06; font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;">Login Here</a>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <div class="help-item">
+                                        <i class="fas fa-briefcase mb-2" style="color: #bd8c06; font-size: 2rem;"></i>
+                                        <h6 class="text-white" style="font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;">Business Portal</h6>
+                                        <p class="text-light small mb-2" style="font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;">Corporate travel management</p>
+                                        <a href="mailto:corporate@mbuganiluxeadventures.com" class="btn btn-sm btn-outline-light" style="border-radius: 0; border: 2px solid #bd8c06; color: #bd8c06; font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;">Contact Sales</a>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <div class="help-item">
+                                        <i class="fas fa-cog mb-2" style="color: #bd8c06; font-size: 2rem;"></i>
+                                        <h6 class="text-white" style="font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;">Admin Access</h6>
+                                        <p class="text-light small mb-2" style="font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;">Staff and administrator login</p>
+                                        <a href="{% url 'admin:index' %}" class="btn btn-sm btn-outline-light" style="border-radius: 0; border: 2px solid #bd8c06; color: #bd8c06; font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;">Admin Portal</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contact Information -->
+                <div class="error-contact">
+                    <div class="card border-0 shadow-lg" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 0; border: 1px solid #EFE8DC;">
+                        <div class="card-body p-4">
+                            <h5 class="text-white mb-3" style="font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;">
+                                <i class="fas fa-headset me-2" style="color: #bd8c06;"></i>
+                                Still Need Help?
+                            </h5>
+                            <div class="row g-3 text-center">
+                                <div class="col-md-4">
+                                    <div class="contact-item">
+                                        <i class="fas fa-phone-alt mb-2" style="color: #bd8c06; font-size: 1.5rem;"></i>
+                                        <p class="text-light mb-1" style="font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;">Call Support</p>
+                                        <a href="tel:+2540701810167" class="text-white text-decoration-none fw-bold" style="font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;">
+                                            +2540701810167
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="contact-item">
+                                        <i class="fas fa-envelope mb-2" style="color: #bd8c06; font-size: 1.5rem;"></i>
+                                        <p class="text-light mb-1" style="font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;">Email Support</p>
+                                        <a href="mailto:support@mbuganiluxeadventures.com" class="text-white text-decoration-none fw-bold" style="font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;">
+                                            support@mbuganiluxeadventures.com
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="contact-item">
+                                        <i class="fab fa-whatsapp mb-2" style="color: #bd8c06; font-size: 1.5rem;"></i>
+                                        <p class="text-light mb-1" style="font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;">WhatsApp</p>
+                                        <a href="https://wa.me/254798197430" class="text-white text-decoration-none fw-bold" style="font-family: 'TAN-Garland-Regular', 'Arial', sans-serif;" target="_blank">
+                                            Chat with Us
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Custom Styles -->
+<style>
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+    
+    .error-page-section .btn:hover {
+        transform: translateY(-2px);
+        transition: all 0.3s ease;
+    }
+    
+    .contact-item:hover, .help-item:hover {
+        transform: translateY(-3px);
+        transition: all 0.3s ease;
+    }
+    
+    .reason-item {
+        padding: 8px 0;
+    }
+    
+    @media (max-width: 768px) {
+        .error-code h1 {
+            font-size: 5rem !important;
+        }
+        
+        .error-icon i {
+            font-size: 2.5rem !important;
+        }
+        
+        .btn-lg {
+            padding: 12px 20px !important;
+            font-size: 1rem !important;
+        }
+        
+        .help-item i {
+            font-size: 1.5rem !important;
+        }
+    }
+</style>
+{% endblock %}

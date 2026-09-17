@@ -1,0 +1,5 @@
+<!doctype html><html><body style="font-family:Arial,sans-serif;color:#291c1b">
+<h1>New {{ title }} inquiry</h1><p>Reference: {{ title }} #{{ reference }}</p>
+<table cellpadding="10" style="border-collapse:collapse">{% for label, value in fields %}
+<tr><th align="left">{{ label }}</th><td style="white-space:pre-wrap">{{ value }}</td></tr>{% endfor %}</table>
+<p>Submitted through the Mbugani Luxe Adventures website.</p></body></html>

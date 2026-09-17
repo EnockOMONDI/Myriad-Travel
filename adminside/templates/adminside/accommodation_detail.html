@@ -1,0 +1,497 @@
+{% extends 'adminside/base.html' %}
+{% load static %}
+{% load image_tags %}
+
+{% block title %}{{ accommodation.name }} - Accommodation Details{% endblock %}
+
+{% block content %}
+<style>
+    .accommodation-hero {
+        position: relative;
+        height: 450px;
+        border-radius: 15px;
+        overflow: hidden;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(23, 11, 44, 0.1);
+    }
+
+    .accommodation-hero img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .accommodation-hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+            to bottom,
+            rgba(23, 11, 44, 0.2) 0%,
+            rgba(23, 11, 44, 0.8) 100%
+        );
+        display: flex;
+        align-items: end;
+        padding: 40px;
+    }
+
+    .accommodation-hero-content {
+        color: white;
+        width: 100%;
+    }
+
+    .accommodation-title {
+        font-family: 'TAN-Garland-Regular', sans-serif;
+        font-size: 2.8rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .accommodation-location {
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+        opacity: 0.9;
+    }
+
+    .accommodation-rating {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .stars {
+        color: #ff9d00;
+        font-size: 1.2rem;
+    }
+
+    .rating-text {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+    }
+
+    .accommodation-pricing {
+        background: rgba(255, 255, 255, 0.95);
+        color: #291c1b;
+        padding: 20px 25px;
+        border-radius: 12px;
+        display: inline-block;
+    }
+
+    .price-main {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #ff9d00;
+    }
+
+    .price-period {
+        font-size: 1rem;
+        color: #666;
+    }
+
+    .content-section {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .section-title {
+        font-family: 'TAN-Garland-Regular', sans-serif;
+        font-size: 1.8rem;
+        color: #291c1b;
+        margin-bottom: 20px;
+        border-bottom: 3px solid #ff9d00;
+        padding-bottom: 10px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .info-card {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        padding: 25px;
+        border-radius: 12px;
+        border-left: 4px solid #ff9d00;
+        transition: transform 0.3s ease;
+    }
+
+    .info-card:hover {
+        transform: translateY(-3px);
+    }
+
+    .info-icon {
+        font-size: 2rem;
+        color: #ff9d00;
+        margin-bottom: 15px;
+    }
+
+    .info-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #291c1b;
+        margin-bottom: 8px;
+    }
+
+    .info-value {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #ff9d00;
+    }
+
+    .amenities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+    }
+
+    .amenity-item {
+        background: linear-gradient(45deg, #291c1b, #2a1a4a);
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: transform 0.3s ease;
+    }
+
+    .amenity-item:hover {
+        transform: translateX(5px);
+    }
+
+    .amenity-icon {
+        color: #ff9d00;
+        font-size: 1.2rem;
+    }
+
+    .packages-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .package-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 2px solid transparent;
+    }
+
+    .package-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        border-color: #ff9d00;
+    }
+
+    .card-image {
+        height: 200px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .package-card:hover .card-image img {
+        transform: scale(1.05);
+    }
+
+    .card-content {
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #291c1b;
+        margin-bottom: 10px;
+    }
+
+    .card-description {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+        line-height: 1.5;
+    }
+
+    .card-price {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #ff9d00;
+        margin-bottom: 15px;
+    }
+
+    .card-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.8rem;
+        color: #888;
+    }
+
+    .btn-explore {
+        background: linear-gradient(45deg, #291c1b, #fb9300);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .btn-explore:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 157, 0, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+    .breadcrumb-nav {
+        background: rgba(255, 157, 0, 0.1);
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+
+    .breadcrumb-nav a {
+        color: #291c1b;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .breadcrumb-nav a:hover {
+        color: #ff9d00;
+    }
+
+    .contact-section {
+        background: linear-gradient(135deg, #291c1b, #2a1a4a);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+    }
+
+    .contact-title {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+
+    .contact-text {
+        margin-bottom: 20px;
+        opacity: 0.9;
+    }
+
+    .btn-contact {
+        background: #ff9d00;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .btn-contact:hover {
+        background: #e68900;
+        transform: translateY(-2px);
+        color: white;
+        text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+        .accommodation-title {
+            font-size: 2rem;
+        }
+        
+        .accommodation-hero {
+            height: 350px;
+        }
+        
+        .accommodation-hero-overlay {
+            padding: 20px;
+        }
+        
+        .info-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .amenities-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .packages-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<!-- Breadcrumb Navigation -->
+<div class="breadcrumb-nav">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'adminside:accommodation_list' %}"><i class="fas fa-bed"></i> Accommodations</a></li>
+            {% if accommodation.destination %}
+                <li class="breadcrumb-item"><a href="{% url 'adminside:destination_detail' accommodation.destination.slug %}">{{ accommodation.destination.name }}</a></li>
+            {% endif %}
+            <li class="breadcrumb-item active" aria-current="page">{{ accommodation.name }}</li>
+        </ol>
+    </nav>
+</div>
+
+<!-- Accommodation Hero Section -->
+<div class="accommodation-hero">
+    {% image_with_default accommodation.image "accommodations" "" accommodation.name %}
+    <div class="accommodation-hero-overlay">
+        <div class="accommodation-hero-content">
+            <h1 class="accommodation-title">{{ accommodation.name }}</h1>
+            <div class="accommodation-location">
+                <i class="fas fa-map-marker-alt"></i> 
+                {% if accommodation.destination %}{{ accommodation.destination.name }}{% endif %}
+                {% if accommodation.address %} - {{ accommodation.address }}{% endif %}
+            </div>
+            <div class="accommodation-rating">
+                <div class="stars">
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= accommodation.rating %}
+                            <i class="fas fa-star"></i>
+                        {% else %}
+                            <i class="far fa-star"></i>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="rating-text">
+                    {{ accommodation.rating }}/5 ({{ accommodation.total_reviews }} reviews)
+                </div>
+            </div>
+            <div class="accommodation-pricing">
+                <div class="price-main">${{ accommodation.price_per_room_per_night }}</div>
+                <div class="price-period">per room / per night</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Accommodation Information -->
+<div class="info-grid">
+    <div class="info-card">
+        <div class="info-icon">
+            <i class="fas fa-users"></i>
+        </div>
+        <div class="info-title">Max Occupancy</div>
+        <div class="info-value">{{ accommodation.max_occupancy_per_room }} guests</div>
+    </div>
+    <div class="info-card">
+        <div class="info-icon">
+            <i class="fas fa-door-open"></i>
+        </div>
+        <div class="info-title">Total Rooms</div>
+        <div class="info-value">{{ accommodation.total_rooms }} rooms</div>
+    </div>
+    <div class="info-card">
+        <div class="info-icon">
+            <i class="fas fa-star"></i>
+        </div>
+        <div class="info-title">Rating</div>
+        <div class="info-value">{{ accommodation.rating }}/5</div>
+    </div>
+    <div class="info-card">
+        <div class="info-icon">
+            <i class="fas fa-calendar-check"></i>
+        </div>
+        <div class="info-title">Availability</div>
+        <div class="info-value">{% if accommodation.is_active %}Available{% else %}Unavailable{% endif %}</div>
+    </div>
+</div>
+
+<!-- Description Section -->
+<div class="content-section">
+    <h2 class="section-title">
+        <i class="fas fa-info-circle"></i> About {{ accommodation.name }}
+    </h2>
+    <div class="accommodation-description">
+        {{ accommodation.description|safe }}
+    </div>
+</div>
+
+<!-- Amenities Section -->
+<div class="content-section">
+    <h2 class="section-title">
+        <i class="fas fa-concierge-bell"></i> Amenities & Features
+    </h2>
+    <div class="amenities-grid">
+        {% for amenity in accommodation.amenities|split:"," %}
+        <div class="amenity-item">
+            <div class="amenity-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <span>{{ amenity|title }}</span>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Related Packages Section -->
+{% if related_packages %}
+<div class="content-section">
+    <h2 class="section-title">
+        <i class="fas fa-suitcase"></i> Packages Including This Accommodation
+    </h2>
+    <div class="packages-grid">
+        {% for package in related_packages %}
+        <div class="package-card">
+            <div class="card-image">
+                {% image_with_placeholder package.featured_image "" package.name %}
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">{{ package.name }}</h3>
+                <p class="card-description">{{ package.description|striptags|truncatewords:15 }}</p>
+                <div class="card-price">Starting from ${{ package.adult_price }}</div>
+                <div class="card-meta">
+                    <span><i class="fas fa-calendar"></i> {{ package.duration_days }} Days</span>
+                    <a href="{% url 'adminside:package_detail' package.slug %}" class="btn-explore">
+                        <i class="fas fa-arrow-right"></i> View Package
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Contact Section -->
+<div class="content-section">
+    <div class="contact-section">
+        <h3 class="contact-title">
+            <i class="fas fa-phone"></i> Ready to Book?
+        </h3>
+        <p class="contact-text">
+            Contact our travel experts to book {{ accommodation.name }} or get more information about availability and special offers.
+        </p>
+        <a href="{% url 'users:contactus' %}" class="btn-contact">
+            <i class="fas fa-envelope"></i> Contact Us
+        </a>
+    </div>
+</div>
+
+{% endblock %}

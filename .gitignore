@@ -1,0 +1,174 @@
+# ============================================
+# Mbugani Luxe Adventures - .gitignore
+# ============================================
+# This file protects sensitive data from being committed to version control
+
+# ============================================
+# ENVIRONMENT VARIABLES & SECRETS
+# ============================================
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+.env.backup
+
+# ============================================
+# PYTHON
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ============================================
+# DJANGO
+# ============================================
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+/media/
+# Note: staticfiles/ is kept in repo for deployment
+
+# Development database (keep local only)
+db_development.sqlite3
+
+# ============================================
+# LOGS & DIAGNOSTICS
+# ============================================
+logs/
+*.log
+renderenvvar.txt
+*.log.*
+log/
+
+# ============================================
+# DATABASE BACKUPS
+# ============================================
+*.sql
+*.dump
+*.backup
+
+# ============================================
+# IDE & EDITORS
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+.project
+.pydevproject
+.settings/
+
+# ============================================
+# TESTING
+# ============================================
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+htmlcov/
+
+# ============================================
+# TEMPORARY FILES
+# ============================================
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# ============================================
+# SECRETS & CREDENTIALS
+# ============================================
+secrets.json
+credentials.json
+*.pem
+*.key
+*.cert
+*.crt
+gloabla
+gloabla.pub
+
+# ============================================
+# NODE.JS (if used)
+# ============================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# ============================================
+# DEPLOYMENT
+# ============================================
+.railway/
+.render/
+
+# ============================================
+# MACOS
+# ============================================
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# ============================================
+# WINDOWS
+# ============================================
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ============================================
+# LINUX
+# ============================================
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ============================================
+# DJANGO SETTINGS FILES (contain secrets)
+# ============================================
+tours_travels/settings_dev.py
+

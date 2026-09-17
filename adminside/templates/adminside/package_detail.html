@@ -1,0 +1,568 @@
+{% extends 'adminside/base.html' %}
+{% load static %}
+{% load image_tags %}
+
+{% block title %}{{ package.name }} - Mbugani Luxe Adventures{% endblock %}
+{% block meta_description %}{{ package.description|truncatewords:30 }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .package-hero {
+        position: relative;
+        height: 450px;
+        border-radius: 15px;
+        overflow: hidden;
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(23, 11, 44, 0.1);
+    }
+
+    .package-hero img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .package-hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+            to bottom,
+            rgba(23, 11, 44, 0.3) 0%,
+            rgba(23, 11, 44, 0.8) 100%
+        );
+        display: flex;
+        align-items: end;
+        padding: 40px;
+    }
+
+    .package-hero-content {
+        color: white;
+        width: 100%;
+    }
+
+    .package-title {
+        font-family: 'TAN-Garland-Regular', sans-serif;
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .package-description {
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+        opacity: 0.9;
+        line-height: 1.5;
+    }
+
+    .package-badges {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .package-badge {
+        background: rgba(255, 157, 0, 0.9);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .package-pricing {
+        background: rgba(255, 255, 255, 0.95);
+        color: #471601;
+        padding: 20px 25px;
+        border-radius: 12px;
+        display: inline-block;
+    }
+
+    .price-main {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #e3aa00;
+    }
+
+    .price-period {
+        font-size: 1rem;
+        color: #666;
+    }
+    
+    .package-info {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-top: -100px;
+        position: relative;
+        z-index: 3;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .package-stats {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .stat-item {
+        flex: 1;
+        padding: 1rem;
+    }
+    
+    .stat-item i {
+        font-size: 2rem;
+        color: #e3aa00;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-item h4 {
+        color: #471601;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-item p {
+        color: #666;
+        margin: 0;
+    }
+    
+    .price-tag {
+        background: linear-gradient(135deg, #e3aa00, #ffb347);
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        text-align: center;
+        margin: 2rem 0;
+    }
+    
+    .package-content {
+        margin-top: 3rem;
+    }
+    
+    .content-section {
+        margin-bottom: 3rem;
+        padding: 2rem;
+        background: #f8f9fa;
+        border-radius: 15px;
+    }
+    
+    .content-section h3 {
+        color: #471601;
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+    }
+
+    .itinerary-day {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid #e3aa00;
+    }
+
+    .itinerary-day h5 {
+        color: #471601;
+        margin-bottom: 1rem;
+    }
+    
+    .accommodation-item, .travel-item {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .accommodation-item img, .travel-item img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-right: 1rem;
+    }
+    
+    .book-now-btn {
+        background: #291c1b;
+        color: white;
+        padding: 1rem 3rem;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+    
+    .book-now-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(23, 11, 44, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+    .breadcrumb-nav {
+        background: rgba(255, 157, 0, 0.1);
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+
+    .breadcrumb-nav a {
+        color: #471601;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .breadcrumb-nav a:hover {
+        color: #e3aa00;
+    }
+
+    @media (max-width: 768px) {
+        .package-title {
+            font-size: 2rem;
+        }
+
+        .package-hero {
+            height: 350px;
+        }
+
+        .package-hero-overlay {
+            padding: 20px;
+        }
+
+        .package-badges {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .package-pricing {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb Navigation -->
+<div class="breadcrumb-nav">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'adminside:package_list' %}"><i class="fas fa-suitcase"></i> Packages</a></li>
+            {% if package.main_destination %}
+                <li class="breadcrumb-item"><a href="{% url 'adminside:destination_detail' package.main_destination.slug %}">{{ package.main_destination.name }}</a></li>
+            {% endif %}
+            <li class="breadcrumb-item active" aria-current="page">{{ package.name }}</li>
+        </ol>
+    </nav>
+</div>
+
+<!-- Package Hero Section -->
+<div class="package-hero">
+    {% image_with_placeholder package.featured_image "" package.name %}
+    <div class="package-hero-overlay">
+        <div class="package-hero-content">
+            <h1 class="package-title">{{ package.name }}</h1>
+            <p class="package-description">{{ package.description|striptags|truncatewords:25 }}</p>
+
+            <div class="package-badges">
+                {% if package.main_destination %}
+                <div class="package-badge">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>{{ package.main_destination.name }}</span>
+                </div>
+                {% endif %}
+                <div class="package-badge">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>{{ package.duration_days }} Days</span>
+                </div>
+                {% if package.status %}
+                <div class="package-badge">
+                    <i class="fas fa-check-circle"></i>
+                    <span>{{ package.get_status_display }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="package-pricing">
+                <div class="price-main">${{ package.adult_price }}</div>
+                <div class="price-period">per adult</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Package Info Card -->
+    <div class="package-info">
+        <div class="package-stats">
+            <div class="stat-item">
+                <i class="fas fa-calendar-alt"></i>
+                <h4>Duration</h4>
+                <p>{{ package.duration_days }} Days</p>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-users"></i>
+                <h4>Duration</h4>
+                <p>{{ package.duration_days }} Days</p>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-star"></i>
+                <h4>Rating</h4>
+                <p>{{ package.rating }}/5.0</p>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-bookmark"></i>
+                <h4>Bookings</h4>
+                <p>{{ package.total_bookings }}</p>
+            </div>
+        </div>
+        
+        <div class="price-tag">
+            Starting from ${{ package.adult_price }}
+        </div>
+        
+        <!-- <div class="text-center">
+            <a href="{% url 'users:add_to_cart' package.id %}" class="book-now-btn">
+                <i class="fas fa-shopping-cart"></i> Book This Package
+            </a>
+        </div> -->
+        <div class="text-center">
+            <a href="{% url 'users:quote_request' %}?package_id={{ package.id }}" class="book-now-btn">
+                <i class="fas fa-shopping-cart"></i> Get Quote
+            </a>
+        </div>
+    </div>
+    
+    <!-- Package Content -->
+    <div class="package-content">
+        <!-- Description -->
+    
+   
+    
+
+        <!-- Enhanced Itinerary Section -->
+        {% if package.itinerary.days.exists %}
+        <div class="content-section" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border: 1px solid #e9ecef; border-radius: 15px;">
+            <h3 style="color: #291c1b; margin-bottom: 2rem; font-weight: 600; display: flex; align-items: center;">
+                <i class="fas fa-route me-3" style="color: #e3aa00;"></i>
+                Detailed Itinerary
+                {% if "bush safari" in package.name|lower or "multiday" in package.name|lower %}
+                    <span class="badge ms-3" style="background: #291c1b; color: white; font-size: 0.8rem;">Bush Safari</span>
+                {% elif "nairobi" in package.name|lower %}
+                    <span class="badge ms-3" style="background: #291c1b; color: white; font-size: 0.8rem;">Nairobi Excursion</span>
+                {% elif "outbound" in package.name|lower or "cape town" in package.name|lower %}
+                    <span class="badge ms-3" style="background: #291c1b; color: white; font-size: 0.8rem;">Outbound Package</span>
+                {% endif %}
+            </h3>
+
+            {% if package.itinerary.overview %}
+            <div class="itinerary-overview" style="background: rgba(41, 28, 27, 0.05); padding: 1.5rem; border-radius: 10px; margin-bottom: 2rem; border-left: 4px solid #291c1b;">
+                <h5 style="color: #291c1b; margin-bottom: 1rem; font-weight: 600;">
+                    <i class="fas fa-info-circle me-2"></i>Tour Overview
+                </h5>
+                <p style="color: #495057; line-height: 1.6; margin: 0;">{{ package.itinerary.overview }}</p>
+            </div>
+            {% endif %}
+
+            <div class="itinerary-timeline">
+                {% for day in package.itinerary.days.all %}
+                <div class="itinerary-day" style="position: relative; background: white; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border: 1px solid #f0f0f0; transition: all 0.3s ease;">
+                    <!-- Day number indicator -->
+                    <div class="day-number" style="position: absolute; top: -15px; left: 20px; background: #291c1b; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(41, 28, 27, 0.3);">
+                        {{ day.day_number }}
+                    </div>
+
+                    <div class="day-content" style="margin-left: 60px;">
+                        <h5 style="color: #291c1b; margin-bottom: 1rem; font-weight: 600; font-size: 1.2rem;">
+                            {{ day.title }}
+                        </h5>
+
+                        <div class="day-description" style="color: #495057; line-height: 1.7; margin-bottom: 1.5rem;">
+                            {{ day.description|safe }}
+                        </div>
+
+                        <!-- Day details -->
+                        <div class="day-details" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+                            {% if day.destination %}
+                            <div class="detail-item" style="display: flex; align-items: center; gap: 0.5rem; color: #e3aa00; font-weight: 500;">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>{{ day.destination.name }}</span>
+                            </div>
+                            {% endif %}
+
+                            {% if day.accommodation %}
+                            <div class="detail-item" style="display: flex; align-items: center; gap: 0.5rem; color: #28a745; font-weight: 500;">
+                                <i class="fas fa-bed"></i>
+                                <span>{{ day.accommodation.name }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Meals included -->
+                        {% if day.breakfast or day.lunch or day.dinner %}
+                        <div class="meals-included" style="background: rgba(227, 170, 0, 0.1); padding: 1rem; border-radius: 8px; border-left: 3px solid #e3aa00;">
+                            <h6 style="color: #291c1b; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem;">
+                                <i class="fas fa-utensils me-2"></i>Meals Included:
+                            </h6>
+                            <div class="meal-icons" style="display: flex; gap: 1rem;">
+                                {% if day.breakfast %}
+                                <span style="color: #28a745; font-size: 0.9rem;">
+                                    <i class="fas fa-coffee me-1"></i>Breakfast
+                                </span>
+                                {% endif %}
+                                {% if day.lunch %}
+                                <span style="color: #28a745; font-size: 0.9rem;">
+                                    <i class="fas fa-utensils me-1"></i>Lunch
+                                </span>
+                                {% endif %}
+                                {% if day.dinner %}
+                                <span style="color: #28a745; font-size: 0.9rem;">
+                                    <i class="fas fa-moon me-1"></i>Dinner
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Itinerary summary -->
+            <div class="itinerary-summary" style="background: #291c1b; color: white; padding: 2rem; border-radius: 12px; margin-top: 2rem; text-align: center;">
+                <h4 style="margin-bottom: 1rem; font-weight: 600;">
+                    <i class="fas fa-check-circle me-2"></i>Ready for Your Adventure?
+                </h4>
+                <p style="margin-bottom: 1.5rem; opacity: 0.9; font-size: 1rem;">
+                    This carefully crafted itinerary ensures you experience the best of {{ package.main_destination.name }} with expert guides and premium accommodations.
+                </p>
+                <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                    <div style="background: rgba(255,255,255,0.1); padding: 0.75rem 1.5rem; border-radius: 25px; font-size: 0.9rem;">
+                        <i class="fas fa-users me-2"></i>Small Groups
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 0.75rem 1.5rem; border-radius: 25px; font-size: 0.9rem;">
+                        <i class="fas fa-calendar-alt me-2"></i>{{ package.duration_days }} Days / {{ package.duration_nights }} Nights
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 0.75rem 1.5rem; border-radius: 25px; font-size: 0.9rem;">
+                        <i class="fas fa-star me-2"></i>Expert Local Guides
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <!-- No itinerary message for packages without detailed itineraries -->
+        <div class="content-section" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%); border: 1px solid #e9ecef; border-radius: 15px; text-align: center; padding: 3rem;">
+            <div style="color: #e3aa00; font-size: 3rem; margin-bottom: 1rem;">
+                <i class="fas fa-route"></i>
+            </div>
+            <h4 style="color: #291c1b; margin-bottom: 1rem;">Custom Itinerary Available</h4>
+            <p style="color: #6c757d; font-size: 1.1rem; max-width: 600px; margin: 0 auto 2rem;">
+                This package offers a flexible itinerary that can be customized based on your preferences and interests.
+                Contact our travel experts to create a personalized experience for your {{ package.main_destination.name }} adventure.
+            </p>
+            <div style="background: #291c1b; color: white; padding: 1rem 2rem; border-radius: 25px; display: inline-block;">
+                <i class="fas fa-phone me-2"></i>Call for Custom Itinerary: +254701810167
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Accommodations -->
+        {% if package.available_accommodations.exists %}
+        <div class="content-section">
+            <h3><i class="fas fa-bed me-2"></i>Accommodations</h3>
+            {% for accommodation in package.available_accommodations.all %}
+            <div class="accommodation-item">
+                {% image_with_default accommodation.image "accommodations" "" accommodation.name %}
+                <div>
+                    <h5>{{ accommodation.name }}</h5>
+                    <p>{{ accommodation.description|truncatewords:20 }}</p>
+                    <small class="text-muted">
+                        <i class="fas fa-dollar-sign"></i> From ${{ accommodation.price_per_room_per_night }}/night
+                    </small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <!-- Travel Options -->
+        {% if package.available_travel_modes.exists %}
+        <div class="content-section">
+            <h3><i class="fas fa-plane me-2"></i>Travel Options</h3>
+            {% for travel in package.available_travel_modes.all %}
+            <div class="travel-item">
+                <i class="fas fa-{{ travel.transport_type }} fa-3x text-primary me-3"></i>
+                <div>
+                    <h5>{{ travel.name }}</h5>
+                    <p>{{ travel.departure_location }} → {{ travel.arrival_location }}</p>
+                    <small class="text-muted">
+                        <i class="fas fa-dollar-sign"></i> ${{ travel.price_per_person }}/person
+                    </small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <!-- Inclusions & Exclusions -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="content-section">
+                    <h3><i class="fas fa-check-circle me-2 text-success"></i>Inclusions</h3>
+                    <div>{{ package.inclusions|safe }}</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="content-section">
+                    <h3><i class="fas fa-times-circle me-2 text-danger"></i>Exclusions</h3>
+                    <div>{{ package.exclusions|safe }}</div>
+                </div>
+            </div>
+        </div>
+<!-- Booking Call-to-Action -->
+
+        <div class="content-section" style="background: #291c1b; color: white; border-radius: 15px; padding: 40px; text-align: center; margin: 30px 0;">
+            <h2 style="color: white; margin-bottom: 20px; font-family: 'TAN-Garland-Regular', sans-serif;">
+                <i class="fas fa-star"></i> Ready for Your Adventure?
+            </h2>
+            <p style="font-size: 1.2rem; margin-bottom: 30px; opacity: 0.9;">
+                Join thousands of satisfied travelers who have experienced the magic of East Africa with Mbugani Luxe Adventures.
+            </p>
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 30px;">
+                <div style="background: rgba(255,255,255,0.1); padding: 15px 25px; border-radius: 25px;">
+                    <i class="fas fa-shield-alt" style="color: #e3aa00; margin-right: 8px;"></i>
+                    <span>Secure Booking</span>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); padding: 15px 25px; border-radius: 25px;">
+                    <i class="fas fa-headset" style="color: #e3aa00; margin-right: 8px;"></i>
+                    <span>24/7 Support</span>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); padding: 15px 25px; border-radius: 25px;">
+                    <i class="fas fa-award" style="color: #e3aa00; margin-right: 8px;"></i>
+                    <span>Best Price Guarantee</span>
+                </div>
+            </div>
+            <a href="{% url 'users:add_to_cart' package.id %}" style="background: white; color: #471601; padding: 20px 50px; border-radius: 50px; font-size: 1.3rem; font-weight: 700; text-decoration: none; display: inline-block; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.2);" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 5px 15px rgba(0,0,0,0.2)'">
+                <i class="fas fa-rocket" style="margin-right: 10px;"></i>
+                Start Your Journey - Book Now
+            </a>
+            <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.8;">
+                <i class="fas fa-clock"></i> No login required • Instant confirmation • Free cancellation
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

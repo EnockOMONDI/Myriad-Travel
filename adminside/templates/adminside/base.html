@@ -1,0 +1,463 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ page_title }} - Mbugani Luxe Adventures{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Explore amazing travel destinations, packages, and accommodations with Mbugani Luxe Adventures - Your trusted travel partner{% endblock %}">
+
+    <!--====== Favicon Icon ======-->
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'assets/images/favicon_io/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'assets/images/favicon_io/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'assets/images/favicon_io/favicon-16x16.png' %}">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts - Prompt (Mbugani Luxe Adventures brand font) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #471601;
+            --secondary-color: #e3aa00;
+            --accent-color: #471601;
+            --text-dark: #2c3e50;
+            --text-light: #6c757d;
+            --bg-light: #f8f9fa;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            transition: left 0.3s ease;
+            z-index: 1050;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h4 {
+            color: var(--white);
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .sidebar-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .sidebar-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .nav-section {
+            margin-bottom: 30px;
+        }
+
+        .nav-section-title {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 20px 10px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .destination-tree {
+            list-style: none;
+            padding: 0;
+        }
+
+        .destination-item {
+            position: relative;
+        }
+
+        .destination-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .destination-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--secondary-color);
+            color: var(--white);
+        }
+
+        .destination-link.active {
+            background: rgba(255, 157, 0, 0.2);
+            border-left-color: var(--secondary-color);
+        }
+
+        .destination-icon {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .destination-toggle {
+            margin-left: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .destination-toggle.expanded {
+            transform: rotate(90deg);
+        }
+
+        .destination-children {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .destination-children.expanded {
+            max-height: 500px;
+        }
+
+        .destination-children .destination-link {
+            padding-left: 40px;
+            font-size: 0.9rem;
+        }
+
+        .destination-children .destination-children .destination-link {
+            padding-left: 60px;
+            font-size: 0.85rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 0;
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .content-header {
+            background: var(--white);
+            padding: 20px 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--secondary-color);
+        }
+
+        .brand-logo {
+            height: 70px;
+            margin-right: 15px;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .header-brand:hover {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+
+        .sidebar-toggle {
+            background: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 20px;
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .page-title {
+            margin: 0;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Overlay */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .content-header {
+                padding: 15px 20px;
+            }
+            
+            .sidebar {
+                width: 280px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #e68900;
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h4><i class="fas fa-compass me-2"></i>Explore</h4>
+            <button class="sidebar-close" id="sidebarClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Destinations</div>
+                <ul class="destination-tree" id="destinationTree">
+                    {% for country in countries %}
+                    <li class="destination-item">
+                        <a href="{% url 'adminside:destination_detail' country.slug %}" 
+                           class="destination-link" 
+                           data-destination-id="{{ country.id }}">
+                            <i class="fas fa-globe destination-icon"></i>
+                            <span>{{ country.name }}</span>
+                            {% if country.children.all %}
+                            <i class="fas fa-chevron-right destination-toggle"></i>
+                            {% endif %}
+                        </a>
+                        {% if country.children.all %}
+                        <ul class="destination-children">
+                            {% for city in country.children.all %}
+                            <li class="destination-item">
+                                <a href="{% url 'adminside:destination_detail' city.slug %}" 
+                                   class="destination-link"
+                                   data-destination-id="{{ city.id }}">
+                                    <i class="fas fa-city destination-icon"></i>
+                                    <span>{{ city.name }}</span>
+                                    {% if city.children.all %}
+                                    <i class="fas fa-chevron-right destination-toggle"></i>
+                                    {% endif %}
+                                </a>
+                                {% if city.children.all %}
+                                <ul class="destination-children">
+                                    {% for place in city.children.all %}
+                                    <li class="destination-item">
+                                        <a href="{% url 'adminside:destination_detail' place.slug %}" 
+                                           class="destination-link"
+                                           data-destination-id="{{ place.id }}">
+                                            <i class="fas fa-map-marker-alt destination-icon"></i>
+                                            <span>{{ place.name }}</span>
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Quick Links</div>
+                <ul class="destination-tree">
+                    <li class="destination-item">
+                        <a href="{% url 'adminside:package_list' %}" class="destination-link">
+                            <i class="fas fa-suitcase destination-icon"></i>
+                            <span>All Packages</span>
+                        </a>
+                    </li>
+                    <li class="destination-item">
+                        <a href="{% url 'adminside:accommodation_list' %}" class="destination-link">
+                            <i class="fas fa-bed destination-icon"></i>
+                            <span>All Accommodations</span>
+                        </a>
+                    </li>
+                    <li class="destination-item">
+                        <a href="{% url 'adminside:travel_mode_list' %}" class="destination-link">
+                            <i class="fas fa-plane destination-icon"></i>
+                            <span>Travel Options</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="content-header">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <button class="sidebar-toggle" id="sidebarToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <a href="{% url 'users:users-home' %}" class="header-brand">
+                        <img src="{% static 'assets/images/logo/websitelogo.png' %}" alt="Mbugani Luxe Adventures" class="brand-logo">
+                       
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container-fluid px-4">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Sidebar functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebarClose = document.getElementById('sidebarClose');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            
+            function openSidebar() {
+                sidebar.classList.add('active');
+                sidebarOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+            
+            function closeSidebar() {
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            
+            sidebarToggle.addEventListener('click', openSidebar);
+            sidebarClose.addEventListener('click', closeSidebar);
+            sidebarOverlay.addEventListener('click', closeSidebar);
+            
+            // Destination tree toggle
+            document.querySelectorAll('.destination-toggle').forEach(toggle => {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const parent = this.closest('.destination-item');
+                    const children = parent.querySelector('.destination-children');
+                    
+                    if (children) {
+                        children.classList.toggle('expanded');
+                        this.classList.toggle('expanded');
+                    }
+                });
+            });
+            
+            // Highlight current destination
+            const currentDestinationId = '{{ current_destination_id }}';
+            if (currentDestinationId) {
+                const currentLink = document.querySelector(`[data-destination-id="${currentDestinationId}"]`);
+                if (currentLink) {
+                    currentLink.classList.add('active');
+                    
+                    // Expand parent nodes
+                    let parent = currentLink.closest('.destination-children');
+                    while (parent) {
+                        parent.classList.add('expanded');
+                        const toggle = parent.previousElementSibling.querySelector('.destination-toggle');
+                        if (toggle) toggle.classList.add('expanded');
+                        parent = parent.closest('.destination-item').parentElement.closest('.destination-children');
+                    }
+                }
+            }
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

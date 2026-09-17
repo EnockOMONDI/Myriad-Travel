@@ -1,0 +1,1004 @@
+{% load static %}
+<header
+    class="header-area header-two transparent-header {% if request.resolver_match.url_name == 'users-home' %}homepage-navbar{% else %}page-navbar{% endif %}"
+    style="position: fixed; top: 0; left: 0; right: 0; z-index: 10000;">
+    <!--====== Header Navigation ======-->
+    <div class="header-navigation navigation-white breakpoint-on" style="position: relative; z-index: 10001;">
+        <div class="nav-overlay"></div>
+        <div class="container-fluid">
+            <div class="primary-menu">
+                <!--====== Site Branding ======-->
+                <div class="site-branding">
+                    <a href="{% url 'users:users-home'%}" class="brand-logo"><img
+                            src="{% static 'assets/images/logo/websitelogo.png' %}" alt="Logo"></a>
+                </div>
+                <!--====== Navbar Toggler ======-->
+                <button class="navbar-toggler" type="button" aria-label="Toggle navigation">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <!--====== Nav Menu ======-->
+                <div class="nav-menu">
+                    <!-- Mobile Logo - Only visible on mobile -->
+                    <div class="mobile-nav-logo">
+                        <a href="{% url 'users:users-home'%}">
+                            <img src="{% static 'assets/images/logo/websitelogo.png' %}" alt="Mbugani Luxe Adventures">
+                        </a>
+                    </div>
+                    <!--====== Main Menu ======-->
+                    <nav class="main-menu">
+                        <ul>
+                            <li class="menu-item"><a href="{% url 'users:users-home' %}">Home</a></li>
+                            <li class="menu-item"><a href="{% url 'users:aboutus' %}">About Us</a></li>
+
+
+                            <li class="menu-item has-children"><a href="{% url 'users:services' %}">Services<span
+                                        class="dd-trigger"><i class="far fa-angle-down"></i></span></a>
+                                <ul class="sub-menu">
+                                    <li><a href="{% url 'users:services' %}">All Services</a></li>
+                                    <li><a href="{% url 'users:services' %}#air-ticketing">Air Ticketing</a></li>
+                                    <li><a href="{% url 'users:services' %}#hotel-bookings">Hotel Bookings</a></li>
+                                    <li><a href="{% url 'users:services' %}#tours-safaris">Tours and Safaris</a></li>
+                                    <li><a href="{% url 'users:services' %}#mice">MICE</a></li>
+                                    <li><a href="{% url 'users:services' %}#group-travel">Group Travel Logistics</a>
+                                    </li>
+                                    <li><a href="{% url 'users:services' %}#team-building">Team Building</a></li>
+                                    <li><a href="{% url 'users:services' %}#travel-insurance">Travel Insurance</a></li>
+                                    <li><a href="{% url 'users:services' %}#airport-transfers">Airport Transfers</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="menu-item has-children"><a href="#">Travel experiences<span class="dd-trigger"><i
+                                            class="far fa-angle-down"></i></span></a>
+                                <ul class="sub-menu">
+                                    <li><a href="{% url 'adminside:package_list' %}">Highlight experiences</a></li>
+                                    <!-- <li><a href="{% url 'adminside:destination_list' %}">Destinations</a></li> -->
+                                </ul>
+                            </li>
+
+
+                            <li class="menu-item has-children"><a href="#">Blog<span class="dd-trigger"><i
+                                            class="far fa-angle-down"></i></span></a>
+                                <ul class="sub-menu">
+                                    <li><a href="{% url 'blog:blog-list' %}">Blog List</a></li>
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </nav>
+                    <!--====== Menu Button ======-->
+
+                    <!-- <div class="menu-button mt-40 d-xl-none">
+                                <a href="https://api.whatsapp.com/send/?phone=254798197430&text&type=phone_number&app_absent=0" target="_blank" class="main-btn secondary-btn">Chat<i class="fas fa-paper-plane"></i></a>
+                            </div> -->
+                </div>
+                <!--====== Nav Right Item ======-->
+                <div class="nav-right-item">
+
+
+                    <div class="menu-button d-xl-block d-none">
+                        <a href="https://api.whatsapp.com/send/?phone=2540701810167&text&type=phone_number&app_absent=0"
+                            target="_blank" class="main-btn primary-btn">Contact Us<i
+                                class="fas fa-paper-plane"></i></a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<style>
+    /* ===== MBUGANI LUXE ADVENTURES NAVBAR STYLING ===== */
+    /*
+     * NAVBAR IMPROVEMENTS IMPLEMENTED:
+     *
+     * DESKTOP NAVIGATION:
+     * - Pure CSS hover-based dropdowns (no JavaScript conflicts)
+     * - Smooth fade-in with slide-down animation
+     * - Icon rotation on hover for visual feedback
+     * - Reduced z-index from 100000 to 1000
+     * - Better positioning without extreme negative values
+     *
+     * MOBILE NAVIGATION:
+     * - Reduced top padding from 80px to 70px (space for close button)
+     * - Improved spacing hierarchy with better margins
+     * - Enhanced submenu contrast (#f5f5f5 background)
+     * - Stronger border-left (4px instead of 3px)
+     * - Smoother animations with cubic-bezier easing
+     * - Better visual separation between parent and child items
+     * - Mobile logo added at top of menu panel (center-aligned)
+     * - Close button (X) fixed positioning with z-index: 100000
+     * - Close button stays visible above mobile menu panel
+     *
+     * JAVASCRIPT:
+     * - Desktop: CSS-only hover (no click handlers)
+     * - Mobile: JavaScript toggle for accordion behavior
+     * - Breakpoint-aware event listeners
+     * - No conflicts between hover and click
+     */
+
+    /* Color Variables for Navbar */
+    :root {
+        --navbar-primary: #291c1a;
+        /* Deep Mbugani brown */
+        --navbar-secondary: #bd8c06;
+        /* Signature gold */
+        --navbar-primary-hover: #1f1513;
+        --navbar-secondary-hover: #a67805;
+        --navbar-text-light: #ffffff;
+        --navbar-text-dark: #2c2c2c;
+        --navbar-border: #e5e5e5;
+        --navbar-shadow: rgba(41, 28, 26, 0.2);
+    }
+
+    /* ===== NAVBAR OPTIMIZATION STYLES ===== */
+
+    /* Logo Size Reduction */
+    .site-branding .brand-logo img {
+        max-height: 60px !important;
+        /* Reduced from default ~60px */
+        width: auto !important;
+        object-fit: contain;
+        margin-right: 15px;
+    }
+
+    .mobile-logo .brand-logo img {
+        max-height: 60px !important;
+        /* Reduced mobile logo size */
+        width: auto !important;
+    }
+
+    /* === NAVIGATION MENU STYLING === */
+
+    /* === CONDITIONAL NAVBAR STYLING === */
+
+    /* Homepage navbar - white text for transparent background over hero images */
+    .homepage-navbar .main-menu>ul>li>a {
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        padding: 0 15px !important;
+        color: var(--navbar-text-light) !important;
+        text-decoration: none !important;
+        transition: all 0.3s ease !important;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    /* Other pages navbar - dark text for white/light backgrounds */
+    .page-navbar .main-menu>ul>li>a {
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        padding: 0 15px !important;
+        color: var(--navbar-text-dark) !important;
+        text-decoration: none !important;
+        transition: all 0.3s ease !important;
+        text-shadow: none !important;
+    }
+
+    /* Homepage navbar hover */
+    .homepage-navbar .main-menu>ul>li>a:hover {
+        color: var(--navbar-secondary) !important;
+        transform: translateY(-1px) !important;
+    }
+
+    /* Other pages navbar hover */
+    .page-navbar .main-menu>ul>li>a:hover {
+        color: var(--navbar-primary) !important;
+        transform: translateY(-1px) !important;
+    }
+
+    /* Submenu styling - SMOOTH HOVER DROPDOWNS */
+    .main-menu .sub-menu {
+        background: var(--navbar-text-light) !important;
+        border-radius: 8px !important;
+        border: 1px solid var(--navbar-border) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+        z-index: 1000 !important;
+        position: absolute !important;
+        min-width: 220px !important;
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transform: translateY(15px) !important;
+        transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                    visibility 0.3s !important;
+        pointer-events: none !important;
+        padding: 8px 0 !important;
+    }
+
+    .main-menu .sub-menu li a {
+        font-size: 13px !important;
+        padding: 12px 20px !important;
+        color: var(--navbar-text-dark) !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        border-radius: 4px !important;
+        margin: 2px 8px !important;
+        font-family: 'Prompt', 'TAN-Garland-Regular', sans-serif !important;
+        display: block !important;
+    }
+
+    .main-menu .sub-menu li a:hover {
+        color: var(--navbar-text-light) !important;
+        background-color: var(--navbar-primary) !important;
+        transform: translateX(5px) !important;
+    }
+
+    /* === BUTTON STYLING === */
+
+    /* Primary buttons */
+    .main-btn.primary-btn {
+        font-size: 13px !important;
+        padding: 10px 20px !important;
+        background-color: var(--navbar-primary) !important;
+        border-color: var(--navbar-primary) !important;
+        color: var(--navbar-text-light) !important;
+        border-radius: 10px !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .main-btn.primary-btn:hover {
+        background-color: var(--navbar-primary-hover) !important;
+        border-color: var(--navbar-primary-hover) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 5px 15px var(--navbar-shadow) !important;
+    }
+
+    /* Secondary buttons */
+    .main-btn.secondary-btn {
+        font-size: 13px !important;
+        padding: 10px 20px !important;
+        background-color: var(--navbar-secondary) !important;
+        border-color: var(--navbar-secondary) !important;
+        color: var(--navbar-text-light) !important;
+        border-radius: 25px !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .main-btn.secondary-btn:hover {
+        background-color: var(--navbar-secondary-hover) !important;
+        border-color: var(--navbar-secondary-hover) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 5px 15px rgba(227, 170, 0, 0.3) !important;
+    }
+
+    .main-btn i {
+        font-size: 12px !important;
+        margin-left: 8px !important;
+    }
+
+    /* Search Button Optimization */
+    .search-btn {
+        font-size: 16px !important;
+        /* Reduced search icon size */
+        width: 40px !important;
+        height: 40px !important;
+    }
+
+    /* Navbar Container Optimization */
+    .primary-menu {
+        align-items: center !important;
+        min-height: 70px !important;
+        /* Reduced navbar height */
+    }
+
+    .nav-right-item {
+        display: flex !important;
+        align-items: center !important;
+        gap: 15px !important;
+        /* Consistent spacing between elements */
+    }
+
+    /* === MOBILE MENU OPTIMIZATION === */
+    .header-navigation .navbar-toggler {
+        display: none !important;
+    }
+
+    .header-navigation.breakpoint-on .navbar-toggler {
+        display: flex !important;
+        width: 35px !important;
+        height: 35px !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 0 !important;
+        border: none !important;
+        background: transparent !important;
+        cursor: pointer !important;
+        position: relative !important;
+        z-index: 100000 !important;
+        margin-left: auto !important;
+        order: 4 !important;
+    }
+
+    /* Ensure toggler stays above mobile menu when active */
+    .header-navigation.breakpoint-on .navbar-toggler.active {
+        position: fixed !important;
+        top: 20px !important;
+        right: 20px !important;
+        z-index: 100000 !important;
+    }
+
+    .navbar-toggler span {
+        display: block !important;
+        width: 25px !important;
+        height: 3px !important;
+        background-color: var(--navbar-text-light) !important;
+        margin: 3px 0 !important;
+        transition: all 0.3s ease !important;
+        border-radius: 2px !important;
+    }
+
+    /* Dark text for non-homepage pages */
+    .page-navbar .navbar-toggler span {
+        background-color: var(--navbar-text-dark) !important;
+    }
+
+    /* Hamburger animation on active - BROWN COLOR */
+    .navbar-toggler.active span:nth-child(1) {
+        transform: rotate(45deg) translate(6px, 6px) !important;
+        background-color: var(--navbar-primary) !important;
+    }
+
+    .navbar-toggler.active span:nth-child(2) {
+        opacity: 0 !important;
+    }
+
+    .navbar-toggler.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(6px, -6px) !important;
+        background-color: var(--navbar-primary) !important;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 1199px) {
+        .site-branding .brand-logo img {
+            max-height: 50px !important;
+        }
+
+        .main-menu>ul>li>a {
+            font-size: 13px !important;
+            padding: 0 12px !important;
+        }
+
+        .main-btn {
+            font-size: 12px !important;
+            padding: 8px 16px !important;
+        }
+    }
+
+    @media (max-width: 991px) {
+        .primary-menu {
+            min-height: 60px !important;
+        }
+
+        .site-branding .brand-logo img {
+            max-height: 40px !important;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .site-branding .brand-logo img {
+            max-height: 32px !important;
+        }
+
+        .search-btn {
+            width: 35px !important;
+            height: 35px !important;
+            font-size: 14px !important;
+        }
+    }
+
+    /* Dropdown Menu Optimization */
+    .main-menu .sub-menu {
+        min-width: 200px !important;
+        /* Reduced dropdown width */
+        padding: 10px 0 !important;
+    }
+
+    .dd-trigger i {
+        font-size: 12px !important;
+        margin-left: 5px !important;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        display: inline-block !important;
+    }
+
+    /* Rotate dropdown icon on hover - DESKTOP ONLY */
+    @media (min-width: 1200px) {
+        .main-menu ul > li.has-children:hover .dd-trigger i {
+            transform: rotate(180deg) !important;
+        }
+    }
+
+    /* Layout Balance Improvements */
+    .nav-menu {
+        flex: 1 !important;
+        display: flex !important;
+        justify-content: center !important;
+    }
+
+    .container-fluid {
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+
+    /* Allow dropdown overflow - CRITICAL FIX */
+    .header-navigation {
+        overflow: visible !important;
+    }
+
+    .header-navigation .container-fluid {
+        overflow: visible !important;
+    }
+
+    .primary-menu {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        flex-wrap: nowrap !important;
+        overflow: visible !important;
+    }
+
+    .primary-menu .site-branding {
+        order: 1 !important;
+    }
+
+    .primary-menu .nav-menu {
+        order: 2 !important;
+    }
+
+    .primary-menu .nav-right-item {
+        order: 3 !important;
+    }
+
+    .nav-menu {
+        overflow: visible !important;
+    }
+
+    .main-menu {
+        overflow: visible !important;
+    }
+
+    .main-menu ul {
+        overflow: visible !important;
+    }
+
+    .main-menu ul>li {
+        position: relative !important;
+        overflow: visible !important;
+    }
+
+    /* === OPTIMIZED MENU HOVER EFFECTS === */
+
+    /* Homepage menu hover effects */
+    .homepage-navbar .main-menu>ul>li>a:hover {
+        color: var(--navbar-secondary) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    /* Other pages menu hover effects */
+    .page-navbar .main-menu>ul>li>a:hover {
+        color: var(--navbar-primary) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .main-btn:hover {
+        transform: translateY(-1px) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    /* === ENHANCED STICKY NAVBAR STYLING === */
+
+    /* Default sticky navbar background color for non-homepage pages */
+    .page-navbar .header-navigation.sticky {
+        background-color: var(--navbar-primary) !important;
+        box-shadow: 0 2px 20px var(--navbar-shadow) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    /* Homepage sticky navbar - white background */
+    .homepage-navbar .header-navigation.sticky {
+        background-color: rgba(255, 255, 255, 0.98) !important;
+        backdrop-filter: blur(10px) !important;
+        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    /* === STICKY NAVBAR STYLING === */
+
+    /* Sticky navbar for homepage - dark text on white background */
+    .homepage-navbar .header-navigation.sticky .main-menu>ul>li>a {
+        color: var(--navbar-text-dark) !important;
+        text-shadow: none !important;
+    }
+
+    .homepage-navbar .header-navigation.sticky .main-menu>ul>li>a:hover {
+        color: var(--navbar-primary) !important;
+    }
+
+    /* Sticky navbar for other pages - white text on colored background */
+    .page-navbar .header-navigation.sticky .main-menu>ul>li>a {
+        color: var(--navbar-text-light) !important;
+        text-shadow: none !important;
+    }
+
+    .page-navbar .header-navigation.sticky .main-menu>ul>li>a:hover {
+        color: var(--navbar-secondary) !important;
+    }
+
+    /* Sticky navbar logo adjustment */
+    .header-navigation.sticky .site-branding .brand-logo img {
+        max-height: 40px !important;
+        transition: all 0.3s ease !important;
+    }
+
+    /* === BACKGROUND STYLING FOR DIFFERENT PAGE TYPES === */
+
+    /* Homepage - transparent background when not sticky */
+    .homepage-navbar .header-navigation:not(.sticky) {
+        background-color: transparent !important;
+    }
+
+    /* Other pages - white background when not sticky for visibility */
+    .page-navbar .header-navigation:not(.sticky) {
+        background-color: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(10px) !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    /* Force override any conflicting styles for sticky navbar - non-homepage pages */
+    .page-navbar.header-two .header-navigation.sticky,
+    .page-navbar.header-one .header-navigation.sticky {
+        background-color: var(--navbar-primary) !important;
+    }
+
+    /* Force override for homepage sticky navbar */
+    .homepage-navbar.header-two .header-navigation.sticky,
+    .homepage-navbar.header-one .header-navigation.sticky {
+        background-color: rgba(255, 255, 255, 0.98) !important;
+    }
+
+    /* === HERO SECTION Z-INDEX FIX === */
+    .hero-section,
+    .hero-wrapper-two,
+    .hero-slider-two {
+        position: relative !important;
+        z-index: 1 !important;
+    }
+
+    /* Ensure main content doesn't overlap fixed navbar */
+
+
+    /* Prevent body scroll when mobile menu is open */
+    body.nav-open {
+        overflow: hidden !important;
+    }
+
+    /* Override any conflicting z-index from main stylesheet */
+    .transparent-header {
+        z-index: 10000 !important;
+    }
+
+    .sticky {
+        z-index: 10000 !important;
+    }
+
+    .header-navigation,
+    .header-navigation.sticky,
+    .header-area {
+        z-index: 10001 !important;
+    }
+
+    /* Force dropdown visibility above everything */
+    .header-navigation .main-menu ul>li .sub-menu {
+        z-index: 1000 !important;
+        position: absolute !important;
+    }
+
+    /* DESKTOP ONLY: Show dropdowns on hover with smooth animation */
+    @media (min-width: 1200px) {
+        .header-navigation .main-menu ul>li.has-children:hover .sub-menu {
+            display: block !important;
+            left: 0 !important;
+            top: 100% !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateY(0) !important;
+            pointer-events: auto !important;
+        }
+
+        /* Adjust dropdown position for right-aligned items */
+        .main-menu ul>li:nth-last-child(-n+2) .sub-menu {
+            left: auto !important;
+            right: 0 !important;
+        }
+
+        /* Add subtle hover effect to parent menu item */
+        .main-menu ul>li.has-children:hover > a {
+            transform: translateY(-2px) !important;
+        }
+    }
+
+    /* Ensure dropdowns don't overflow viewport */
+    .main-menu .sub-menu {
+        max-height: 70vh !important;
+        overflow-y: auto !important;
+    }
+
+    /* Mobile menu z-index override */
+    .header-navigation.breakpoint-on .nav-menu {
+        z-index: 1001 !important;
+    }
+
+    /* === SMOOTH TRANSITIONS === */
+    .header-navigation {
+        transition: background-color 0.3s ease, backdrop-filter 0.3s ease, box-shadow 0.3s ease !important;
+    }
+
+    .main-menu>ul>li>a {
+        transition: color 0.3s ease, transform 0.3s ease !important;
+        font-family: 'Prompt', 'TAN-Garland-Regular', sans-serif !important;
+        letter-spacing: 0.04em !important;
+        text-transform: uppercase !important;
+    }
+
+    /* === NAV OVERLAY STYLING === */
+    .nav-overlay {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background-color: rgba(0, 0, 0, 0.5) !important;
+        z-index: 999 !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                    visibility 0.3s !important;
+    }
+
+    .nav-overlay.active {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    /* === MOBILE LOGO STYLING === */
+    .mobile-nav-logo {
+        display: none !important; /* Hidden on desktop */
+    }
+
+    /* === MOBILE MENU STYLING === */
+    @media (max-width: 1199px) {
+
+        /* Mobile logo - visible only on mobile */
+        .mobile-nav-logo {
+            display: block !important;
+            text-align: center !important;
+            margin-bottom: 30px !important;
+            padding-top: 15px !important;
+        }
+
+        .mobile-nav-logo img {
+            max-height: 50px !important;
+            width: auto !important;
+            transition: transform 0.3s ease !important;
+        }
+
+        .mobile-nav-logo img:hover {
+            transform: scale(1.05) !important;
+        }
+
+        /* Mobile menu background - slides from TOP with smooth animation */
+        .header-navigation.breakpoint-on .nav-menu {
+            position: fixed !important;
+            top: -100% !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            max-height: 100vh !important;
+            background-color: var(--navbar-text-light) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+            border-radius: 0 !important;
+            padding: 70px 20px 40px 20px !important;
+            z-index: 1001 !important;
+            transition: top 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+        }
+
+        .header-navigation.breakpoint-on .nav-menu.menu-on {
+            top: 0 !important;
+        }
+
+        /* Mobile menu links - improved spacing */
+        .header-navigation.breakpoint-on .nav-menu .main-menu ul li a {
+            color: var(--navbar-text-dark) !important;
+            font-size: 16px !important;
+            font-weight: 500 !important;
+            padding: 30px 60px !important;
+            border-bottom: 1px solid #e8e8e8 !important;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            font-family: 'Prompt', 'TAN-Garland-Regular', sans-serif !important;
+            display: block !important;
+        }
+
+        /* Add spacing between parent menu items */
+        .header-navigation.breakpoint-on .nav-menu .main-menu ul > li {
+            margin-bottom: 4px !important;
+        }
+
+        /* Mobile menu link hover */
+        .header-navigation.breakpoint-on .nav-menu .main-menu ul li a:hover {
+            background-color: var(--navbar-primary) !important;
+            color: var(--navbar-text-light) !important;
+            transform: translateX(10px) !important;
+        }
+
+        /* Mobile submenu styling - IMPROVED HIERARCHY */
+        .header-navigation.breakpoint-on .nav-menu .main-menu ul li .sub-menu {
+            background-color: #f5f5f5 !important;
+            border-left: 4px solid var(--navbar-primary) !important;
+            margin-left: 30px !important;
+            margin-right: 10px !important;
+            position: static !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transform: none !important;
+            z-index: auto !important;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+            border-radius: 4px !important;
+            min-width: auto !important;
+            left: auto !important;
+            top: auto !important;
+            pointer-events: none !important;
+            display: none !important;
+            padding: 8px 0 !important;
+            max-height: 0 !important;
+            overflow: hidden !important;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        /* Show submenu when parent has 'active' class - SMOOTH EXPANSION */
+        .header-navigation.breakpoint-on .nav-menu .main-menu ul li.active .sub-menu {
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
+            display: block !important;
+            max-height: 1000px !important;
+            margin-top: 8px !important;
+            margin-bottom: 12px !important;
+        }
+
+        /* Mobile submenu links - BETTER SPACING */
+        .header-navigation.breakpoint-on .nav-menu .main-menu ul li .sub-menu li a {
+            font-size: 14px !important;
+            padding: 12px 20px !important;
+            color: var(--navbar-text-dark) !important;
+            border-bottom: none !important;
+            font-weight: 400 !important;
+            margin: 2px 8px !important;
+            border-radius: 3px !important;
+        }
+
+        /* Mobile submenu link hover - SUBTLE HIGHLIGHT */
+        .header-navigation.breakpoint-on .nav-menu .main-menu ul li .sub-menu li a:hover {
+            background-color: rgba(41, 28, 26, 0.08) !important;
+            color: var(--navbar-primary) !important;
+            transform: translateX(5px) !important;
+        }
+
+        /* Mobile logo removed from panel */
+    }
+
+    /* Mobile sticky navbar */
+    @media (max-width: 991px) {
+
+        /* Default for non-homepage pages */
+        .page-navbar .header-navigation.sticky {
+            background-color: var(--navbar-primary) !important;
+        }
+
+        .page-navbar .header-navigation.sticky .navbar-toggler span {
+            background-color: var(--navbar-text-light) !important;
+        }
+
+        /* Homepage specific */
+        .homepage-navbar .header-navigation.sticky {
+            background-color: rgba(255, 255, 255, 0.98) !important;
+        }
+
+        .homepage-navbar .header-navigation.sticky .navbar-toggler span {
+            background-color: var(--navbar-text-dark) !important;
+        }
+    }
+</style>
+
+<script>
+    // Enhanced Mobile Navbar Toggle Functionality
+    document.addEventListener('DOMContentLoaded', function () {
+        // Override any existing navigation functionality
+        window.mobileNavOverride = true;
+
+        // Enhanced mobile navigation functionality
+        function initMobileNav() {
+            const navbarToggler = document.querySelector('.navbar-toggler');
+            const navMenu = document.querySelector('.nav-menu');
+            const navOverlay = document.querySelector('.nav-overlay');
+            const body = document.body;
+
+            console.log('Initializing mobile nav:', { navbarToggler, navMenu, navOverlay });
+
+            if (!navbarToggler || !navMenu) {
+                console.error('Mobile nav elements not found');
+                return;
+            }
+
+            // Remove any existing event listeners by cloning
+            const newToggler = navbarToggler.cloneNode(true);
+            navbarToggler.parentNode.replaceChild(newToggler, navbarToggler);
+
+            // Toggle mobile menu function
+            function toggleMobileMenu() {
+                const isOpen = navMenu.classList.contains('menu-on');
+
+                console.log('Toggling mobile menu, current state:', isOpen);
+
+                // Toggle classes
+                newToggler.classList.toggle('active');
+                navMenu.classList.toggle('menu-on');
+
+                if (navOverlay) {
+                    navOverlay.classList.toggle('active');
+                }
+
+                // Prevent body scroll when menu is open
+                body.classList.toggle('nav-open');
+
+                console.log('Mobile menu toggled:', {
+                    togglerActive: newToggler.classList.contains('active'),
+                    menuOn: navMenu.classList.contains('menu-on'),
+                    overlayActive: navOverlay ? navOverlay.classList.contains('active') : false,
+                    bodyNavOpen: body.classList.contains('nav-open')
+                });
+            }
+
+            // Close mobile menu function
+            function closeMobileMenu() {
+                console.log('Closing mobile menu');
+                newToggler.classList.remove('active');
+                navMenu.classList.remove('menu-on');
+
+                if (navOverlay) {
+                    navOverlay.classList.remove('active');
+                }
+
+                body.classList.remove('nav-open');
+            }
+
+            // Event listeners
+            newToggler.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (typeof e.stopImmediatePropagation === 'function') {
+                    e.stopImmediatePropagation();
+                }
+                toggleMobileMenu();
+            });
+
+            // Close menu when clicking overlay
+            if (navOverlay) {
+                navOverlay.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    closeMobileMenu();
+                });
+            }
+
+            // Close menu when clicking on menu links (including submenu links)
+            const menuLinks = navMenu.querySelectorAll('a');
+            menuLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // Only close if it's not a parent menu item with submenu
+                    const parentLi = this.closest('li');
+                    if (!parentLi || !parentLi.classList.contains('has-children')) {
+                        closeMobileMenu();
+                    }
+                });
+            });
+
+            // Mobile Dropdown Toggle - ONLY FOR MOBILE
+            function handleDropdownToggle() {
+                const dropdownTriggers = navMenu.querySelectorAll('.dd-trigger');
+
+                dropdownTriggers.forEach(trigger => {
+                    // Remove existing listeners by cloning
+                    const newTrigger = trigger.cloneNode(true);
+                    trigger.parentNode.replaceChild(newTrigger, trigger);
+
+                    newTrigger.addEventListener('click', function (e) {
+                        // Only handle clicks on mobile
+                        if (window.innerWidth >= 1200) {
+                            return; // Let CSS hover handle desktop
+                        }
+
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const parentLi = this.closest('li');
+
+                        // Close other open dropdowns (accordion behavior)
+                        const otherActiveLis = navMenu.querySelectorAll('li.has-children.active');
+                        otherActiveLis.forEach(li => {
+                            if (li !== parentLi) {
+                                li.classList.remove('active');
+                                const icon = li.querySelector('.dd-trigger i');
+                                if (icon) {
+                                    icon.classList.remove('fa-angle-up');
+                                    icon.classList.add('fa-angle-down');
+                                }
+                            }
+                        });
+
+                        // Toggle current dropdown
+                        parentLi.classList.toggle('active');
+
+                        // Toggle icon
+                        const icon = this.querySelector('i');
+                        if (icon) {
+                            if (parentLi.classList.contains('active')) {
+                                icon.classList.remove('fa-angle-down');
+                                icon.classList.add('fa-angle-up');
+                            } else {
+                                icon.classList.remove('fa-angle-up');
+                                icon.classList.add('fa-angle-down');
+                            }
+                        }
+                    });
+                });
+            }
+
+            // Initialize dropdown toggles
+            handleDropdownToggle();
+
+            // Mobile: Allow clicking parent link to toggle dropdown
+            const dropdownLinks = navMenu.querySelectorAll('li.has-children > a');
+            dropdownLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    // Only handle on mobile and for # links
+                    if (window.innerWidth < 1200 && this.getAttribute('href') === '#') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const trigger = this.querySelector('.dd-trigger');
+                        if (trigger) {
+                            trigger.click();
+                        }
+                    }
+                });
+            });
+
+            // Close menu on window resize to desktop
+            window.addEventListener('resize', function () {
+                if (window.innerWidth > 1199 && navMenu.classList.contains('menu-on')) {
+                    closeMobileMenu();
+
+                    // Close all active dropdowns when switching to desktop
+                    const activeDropdowns = navMenu.querySelectorAll('li.has-children.active');
+                    activeDropdowns.forEach(li => {
+                        li.classList.remove('active');
+                        const icon = li.querySelector('.dd-trigger i');
+                        if (icon) {
+                            icon.classList.remove('fa-angle-up');
+                            icon.classList.add('fa-angle-down');
+                        }
+                    });
+                }
+            });
+
+            console.log('Mobile navigation initialized successfully');
+        }
+
+        // Initialize mobile navigation
+        initMobileNav();
+
+        console.log('✅ Navbar initialized - Desktop: CSS hover | Mobile: JavaScript toggle');
+    });
+</script>

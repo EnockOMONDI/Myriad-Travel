@@ -1,0 +1,69 @@
+MBUGANI LUXE ADVENTURES - QUOTE REQUEST CONFIRMATION
+===================================================
+
+Thank You, {{ quote_request.full_name }}!
+
+Your quote request has been successfully received and our travel experts are already working on creating a personalized travel package tailored to your preferences.
+
+YOUR QUOTE REQUEST DETAILS:
+===========================
+Full Name: {{ quote_request.full_name }}
+Email: {{ quote_request.email }}
+Phone: {{ quote_request.phone_number }}
+Destination: {{ quote_request.destination }}
+Travel Dates: {{ quote_request.preferred_travel_dates }}
+Travelers: {{ quote_request.number_of_travelers }}
+
+{% if quote_request.package %}
+Package: {{ quote_request.package.name }}
+{% endif %}
+
+{% if quote_request.special_requests %}
+Special Requests: {{ quote_request.special_requests }}
+{% endif %}
+
+Request Date: {{ quote_request.created_at|date:"F j, Y \a\t g:i A" }}
+
+WHAT HAPPENS NEXT?
+==================
+✓ Our travel experts will review your request
+✓ We'll create a personalized quote based on your preferences
+✓ You'll receive a detailed proposal within 24 hours
+✓ Our team will contact you to discuss your travel plans
+
+CONTACT US:
+===========
+If you have any questions or need to make changes to your request:
+
+📧 Email: info@mbuganiluxeadventures.com
+📞 Phone: +254701810167
+💬 WhatsApp: +254701810167
+🌐 Website: https://www.mbuganiluxeadventures.com
+
+FOLLOW US:
+==========
+Stay connected for travel inspiration and exclusive offers:
+- Facebook: Mbugani Luxe Adventures
+- Instagram: @mbuganiluxeadventures
+- Twitter: @mbuganitravel
+
+WHY CHOOSE MBUGANI LUXE ADVENTURES?
+===================================
+✓ Personalized safari experiences
+✓ Expert local guides
+✓ Luxury accommodations
+✓ 24/7 customer support
+✓ Sustainable tourism practices
+✓ Competitive pricing
+
+Thank you for choosing Mbugani Luxe Adventures for your African safari adventure!
+
+---
+This email was sent to {{ quote_request.email }} because you requested a quote from our website.
+If you believe this was sent in error, please contact us at info@mbuganiluxeadventures.com.
+
+Mbugani Luxe Adventures
+Luxury Safari Experiences in East Africa
+Email: info@mbuganiluxeadventures.com
+Phone: +254701810167
+Website: https://www.mbuganiluxeadventures.com

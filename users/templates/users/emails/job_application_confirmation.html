@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Received - {{ application.get_position_display }}</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #291c1b, #fb9300);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .success-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .welcome-message {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .welcome-message h2 {
+            color: #291c1b;
+            margin: 0 0 15px 0;
+            font-size: 24px;
+        }
+        
+        .application-details {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 4px solid #fb9300;
+        }
+        
+        .application-details h3 {
+            color: #291c1b;
+            margin: 0 0 20px 0;
+            font-size: 20px;
+        }
+        
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .detail-item {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #291c1b;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .next-steps {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        
+        .next-steps h3 {
+            color: #1976d2;
+            margin: 0 0 15px 0;
+        }
+        
+        .next-steps ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #666;
+        }
+        
+        .next-steps li {
+            margin-bottom: 8px;
+        }
+        
+        .company-info {
+            background: #fff3e0;
+            border: 1px solid #ff9800;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        
+        .company-info h3 {
+            color: #f57c00;
+            margin: 0 0 15px 0;
+        }
+        
+        .contact-details {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        
+        .contact-item {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .contact-item i {
+            color: #fb9300;
+            margin-bottom: 10px;
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 25px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .footer p {
+            margin: 5px 0;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .social-links {
+            margin: 15px 0;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            margin: 0 10px;
+            color: #291c1b;
+            font-size: 20px;
+            text-decoration: none;
+        }
+        
+        @media (max-width: 600px) {
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-details {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="success-icon">✅</div>
+            <h1>Application Received!</h1>
+            <p>Thank you for your interest in joining Mbugani Luxe Adventures</p>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <!-- Welcome Message -->
+            <div class="welcome-message">
+                <h2>Hello {{ application.full_name }}!</h2>
+                <p>Thank you for applying for the <strong>{{ application.get_position_display }}</strong> position at Mbugani Luxe Adventures. We have successfully received your application and appreciate your interest in joining our team.</p>
+            </div>
+            
+            <!-- Application Details -->
+            <div class="application-details">
+                <h3>📋 Your Application Details</h3>
+                
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">Position Applied For</div>
+                        <div class="detail-value">{{ application.get_position_display }}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">Application Date</div>
+                        <div class="detail-value">{{ application.created_at|date:"F d, Y" }}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">Years of Experience</div>
+                        <div class="detail-value">{{ application.years_of_experience }} year{{ application.years_of_experience|pluralize }}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">Availability Date</div>
+                        <div class="detail-value">{{ application.availability_date|date:"F d, Y" }}</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; padding: 15px; background: white; border-radius: 5px; border: 1px solid #e9ecef;">
+                    <div class="detail-label">Contact Information</div>
+                    <div class="detail-value">
+                        📧 {{ application.email }}<br>
+                        📞 {{ application.phone_number }}{% if application.alternative_phone_number %}<br>
+                        📞 {{ application.alternative_phone_number }} (Alternative){% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Next Steps -->
+            <div class="next-steps">
+                <h3>🚀 What Happens Next?</h3>
+                <ul>
+                    <li><strong>Application Review:</strong> Our HR team will carefully review your application and resume within 5-7 business days.</li>
+                    <li><strong>Initial Screening:</strong> If your profile matches our requirements, we'll contact you for an initial phone/video screening.</li>
+                    <li><strong>Interview Process:</strong> Qualified candidates will be invited for in-person or virtual interviews with our team.</li>
+                    <li><strong>Final Decision:</strong> We'll notify all applicants of our decision via email within 2-3 weeks of application submission.</li>
+                </ul>
+            </div>
+            
+            <!-- Company Information -->
+            <div class="company-info">
+                <h3>🌍 About Mbugani Luxe Adventures</h3>
+                <p style="color: #666; margin: 0; line-height: 1.6;">
+                    We specialize in creating unforgettable travel experiences across East Africa. From wildlife safaris to cultural tours, 
+                    beach getaways to mountain adventures - we make travel dreams come true with personalized service and expert local knowledge. 
+                    Join our passionate team and help us continue delivering exceptional travel experiences.
+                </p>
+            </div>
+            
+            <!-- Contact Information -->
+            <div class="contact-details">
+                <div class="contact-item">
+                    <i class="fas fa-envelope fa-2x"></i>
+                    <div><strong>Email</strong><br>careers@mbuganiluxeadventures.com</div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-phone fa-2x"></i>
+                    <div><strong>Phone</strong><br>+254701810167</div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt fa-2x"></i>
+                    <div><strong>Location</strong><br>Nairobi, Kenya</div>
+                </div>
+            </div>
+            
+            <div style="background: #e8f5e8; border: 1px solid #4caf50; border-radius: 8px; padding: 20px; margin: 25px 0; text-align: center;">
+                <h3 style="color: #2e7d32; margin: 0 0 15px 0;">💡 Questions?</h3>
+                <p style="color: #666; margin: 0; line-height: 1.6;">
+                    If you have any questions about your application or the position, feel free to reach out to our HR team at 
+                    <a href="mailto:careers@mbuganiluxeadventures.com" style="color: #2e7d32; text-decoration: none;">careers@mbuganiluxeadventures.com</a>
+                </p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Mbugani Luxe Adventures</strong></p>
+            <p>Creating unforgettable travel experiences across East Africa</p>
+            
+            <div class="social-links">
+                <a href="#">📘</a>
+                <a href="#">📷</a>
+                <a href="#">🐦</a>
+                <a href="#">💼</a>
+            </div>
+            
+            <p>📧 careers@mbuganiluxeadventures.com | 📞 +254701810167</p>
+            <p style="font-size: 12px; color: #999;">
+                This email was sent to {{ application.email }}. You're receiving this because you submitted a job application with Mbugani Luxe Adventures.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1037 @@
+{% extends 'users/basemain.html' %}
+{% load static  %}
+{% load image_tags %}
+
+
+{% block content %}
+
+
+   
+<br>    
+
+    <!--====== Start Featured Destinations Section ======-->
+    <section class="featured-destinations-section py-5" style="background-color: #f8f3fc;">
+        <div class="container">
+            <!-- Section Header -->
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-8 text-center">
+                    <div class="section-header wow fadeInUp">
+                        <h1 class="display-4 fw-bold mb-4" style="color: #291c1a; font-family: 'TAN-Garland-Regular', sans-serif;">
+                            Featured Destinations
+                        </h1>
+                        <p class="lead mb-0" style="color: #333;">
+                            Discover breathtaking destinations around the world with our carefully curated travel packages.
+
+                        </p>
+                    </div>
+                </div>
+            </div>
+<br>
+            <!-- Destinations Slider -->
+            <div class="destinations-slider-wrapper position-relative wow fadeInUp" data-wow-delay="0.1s" role="region" aria-label="Featured Destinations Carousel">
+                <div class="destinations-slider" role="group" aria-label="Destination cards">
+                    {% for destination in featured_destinations %}
+                    <!-- Dynamic Destination: {{ destination.name }} -->
+                    <div class="destination-slide">
+                        <div class="destination-card">
+                            <div class="destination-image">
+                                {% image_with_default destination.image "destinations" "img-fluid" destination.name %}
+                                <div class="destination-overlay">
+                                    <div class="destination-content">
+                                        <h4 class="destination-title">{{ destination.name }}</h4>
+                                        <p class="destination-description">{{ destination.description|striptags|truncatewords:12 }}</p>
+                                        {% if destination.starting_price %}
+                                            <div class="destination-price">Starting from {{ destination.starting_price|currency_format }}</div>
+                                        {% elif destination.packages.exists %}
+                                            {% with destination.packages.first as first_package %}
+                                                <div class="destination-price">Starting from ${{ first_package.adult_price|floatformat:0 }}</div>
+                                            {% endwith %}
+                                        {% else %}
+                                            <div class="destination-price">Get Quote</div>
+                                        {% endif %}
+                                        <a href="{% url 'adminside:destination_detail' destination.slug %}" class="destination-btn">
+                                            <i class="fas fa-arrow-right"></i> Explore
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <!-- Fallback: No featured destinations found -->
+                    <div class="destination-slide">
+                        <div class="destination-card">
+                            <div class="destination-image">
+                                <img src="{{ default_images.DESTINATIONS }}" alt="Explore Destinations" class="img-fluid">
+                                <div class="destination-overlay">
+                                    <div class="destination-content">
+                                        <h4 class="destination-title">Discover Amazing Destinations</h4>
+                                        <p class="destination-description">Explore our carefully curated travel packages to breathtaking destinations around the world</p>
+                                        <div class="destination-price">Starting from $500</div>
+                                        <a href="{% url 'adminside:user_package_list' %}" class="destination-btn">
+                                            <i class="fas fa-arrow-right"></i> Explore
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- View All Button -->
+            <div class="row mt-5">
+                <div class="col-12 text-center">
+                    <a href="{% url 'adminside:user_package_list' %}" class="view-all-destinations-btn wow fadeInUp" data-wow-delay="0.7s">
+                        <i class="fas fa-globe-americas"></i> View All Destinations
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Destinations Section Styles -->
+    <style>
+        .featured-destinations-section {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Slider Wrapper Styles */
+        .destinations-slider-wrapper {
+            position: relative;
+            margin: 0 60px;
+        }
+
+        .destinations-slider {
+            overflow: hidden;
+        }
+
+        /* Essential Slick Slider Overrides */
+        .destinations-slider .slick-list {
+            overflow: hidden;
+            margin: 0 -15px;
+        }
+
+        .destinations-slider .slick-track {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .destinations-slider .slick-slide {
+            height: auto;
+            padding: 0 15px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .destinations-slider .slick-slide > div {
+            height: 100%;
+        }
+
+        .destination-slide {
+            padding: 0;
+            outline: none;
+            height: 100%;
+        }
+
+        /* Show all slides before initialization for debugging */
+        .destinations-slider:not(.slick-initialized) {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .destinations-slider:not(.slick-initialized) .destination-slide {
+            flex: 0 0 calc(25% - 15px);
+            display: block;
+        }
+
+        @media (max-width: 1200px) {
+            .destinations-slider:not(.slick-initialized) .destination-slide {
+                flex: 0 0 calc(33.333% - 15px);
+            }
+        }
+
+        @media (max-width: 991px) {
+            .destinations-slider:not(.slick-initialized) .destination-slide {
+                flex: 0 0 calc(50% - 15px);
+            }
+        }
+
+        @media (max-width: 767px) {
+            .destinations-slider:not(.slick-initialized) .destination-slide {
+                flex: 0 0 100%;
+            }
+        }
+
+        /* Fix for potential Bootstrap conflicts */
+        .destinations-slider .slick-slide img {
+            display: block;
+            width: 100%;
+        }
+
+        /* Ensure proper spacing */
+        .destinations-slider .slick-list {
+            padding: 0 !important;
+        }
+
+        /* Hide arrows when slider is not initialized */
+        .destinations-slider-wrapper:not(.slick-initialized) .slick-prev,
+        .destinations-slider-wrapper:not(.slick-initialized) .slick-next {
+            display: none !important;
+        }
+
+        /* Force horizontal layout for Slick slider */
+        .destinations-slider.slick-initialized {
+            display: block !important;
+        }
+
+        .destinations-slider.slick-initialized .slick-track {
+            display: flex !important;
+            align-items: stretch !important;
+        }
+
+        .destinations-slider.slick-initialized .slick-slide {
+            display: block !important;
+            float: none !important;
+            height: auto !important;
+            min-height: 1px !important;
+        }
+
+        /* Ensure proper width calculation */
+        .destinations-slider.slick-initialized .slick-slide > div {
+            height: 100%;
+            width: 100%;
+        }
+
+        /* Override any potential Bootstrap or other CSS conflicts */
+        .destinations-slider .destination-slide {
+            display: block !important;
+            width: auto !important;
+            float: none !important;
+        }
+
+        .destination-card {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            height: 450px !important;
+            min-height: 450px;
+            max-height: 450px;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 8px 25px rgba(23, 11, 44, 0.1);
+            margin: 0 auto;
+            max-width: 100%;
+        }
+
+        .destination-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(23, 11, 44, 0.2);
+        }
+
+        /* Navigation Arrows - Maximum Visibility */
+        .destinations-slider-wrapper .destinations-nav-prev,
+        .destinations-slider-wrapper .destinations-nav-next,
+        .destinations-slider-wrapper .slick-prev,
+        .destinations-slider-wrapper .slick-next {
+            position: absolute !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            width: 55px !important;
+            height: 55px !important;
+            background: linear-gradient(135deg, #0f238d 0%, #0f238d 100%) !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            cursor: pointer !important;
+            z-index: 9999 !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 8px 25px rgba(23, 11, 44, 0.6) !important;
+            border: 3px solid rgba(255, 255, 255, 0.3) !important;
+            font-size: 0 !important;
+            line-height: 1 !important;
+            padding: 0 !important;
+            outline: none !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            pointer-events: auto !important;
+        }
+
+        /* Focus styles for accessibility */
+        .destinations-slider-wrapper .destinations-nav-prev:focus,
+        .destinations-slider-wrapper .destinations-nav-next:focus,
+        .destinations-slider-wrapper .slick-prev:focus,
+        .destinations-slider-wrapper .slick-next:focus {
+            outline: 3px solid #ff9d00;
+            outline-offset: 2px;
+        }
+
+        .destinations-slider-wrapper .destinations-nav-prev,
+        .destinations-slider-wrapper .slick-prev {
+            left: -30px !important;
+        }
+
+        .destinations-slider-wrapper .destinations-nav-next,
+        .destinations-slider-wrapper .slick-next {
+            right: -30px !important;
+        }
+
+        /* Ensure arrows stay visible during all interactions */
+        .destinations-slider-wrapper .destinations-nav-prev:hover,
+        .destinations-slider-wrapper .destinations-nav-next:hover,
+        .destinations-slider-wrapper .slick-prev:hover,
+        .destinations-slider-wrapper .slick-next:hover,
+        .destinations-slider-wrapper .destinations-nav-prev:focus,
+        .destinations-slider-wrapper .destinations-nav-next:focus,
+        .destinations-slider-wrapper .slick-prev:focus,
+        .destinations-slider-wrapper .slick-next:focus,
+        .destinations-slider-wrapper .destinations-nav-prev:active,
+        .destinations-slider-wrapper .destinations-nav-next:active,
+        .destinations-slider-wrapper .slick-prev:active,
+        .destinations-slider-wrapper .slick-next:active {
+            z-index: 10000 !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            display: flex !important;
+        }
+
+        .destinations-slider-wrapper .destinations-nav-prev:hover,
+        .destinations-slider-wrapper .destinations-nav-next:hover,
+        .destinations-slider-wrapper .slick-prev:hover,
+        .destinations-slider-wrapper .slick-next:hover {
+            background: #ffffff !important;
+            border-color: #ff9d00 !important;
+            transform: translateY(-50%) scale(1.15) !important;
+            box-shadow: 0 10px 30px rgba(23, 11, 44, 0.7) !important;
+            z-index: 10001 !important;
+        }
+
+        /* FontAwesome icons inside buttons - Maximum Visibility */
+        .destinations-slider-wrapper .destinations-nav-prev i,
+        .destinations-slider-wrapper .destinations-nav-next i,
+        .destinations-slider-wrapper .slick-prev i,
+        .destinations-slider-wrapper .slick-next i {
+            color: #ffffff !important;
+            font-size: 1.4rem !important;
+            transition: all 0.3s ease !important;
+            opacity: 1 !important;
+            display: inline-block !important;
+            line-height: 1 !important;
+            pointer-events: none !important;
+            z-index: inherit !important;
+            position: relative !important;
+        }
+
+        /* Hide default Slick arrows content */
+        .destinations-slider-wrapper .slick-prev:before,
+        .destinations-slider-wrapper .slick-next:before {
+            display: none !important;
+            content: '' !important;
+        }
+
+        /* Hover effects for icons */
+        .destinations-slider-wrapper .destinations-nav-prev:hover i,
+        .destinations-slider-wrapper .destinations-nav-next:hover i,
+        .destinations-slider-wrapper .slick-prev:hover i,
+        .destinations-slider-wrapper .slick-next:hover i {
+            color: #0f238d !important;
+        }
+
+        /* Ensure arrows are always visible - Override all hiding mechanisms */
+        .destinations-slider-wrapper .slick-prev.slick-disabled,
+        .destinations-slider-wrapper .slick-next.slick-disabled {
+            opacity: 0.7 !important;
+            display: flex !important;
+            visibility: visible !important;
+            z-index: 9999 !important;
+        }
+
+        .destinations-slider-wrapper .slick-prev.slick-disabled:hover,
+        .destinations-slider-wrapper .slick-next.slick-disabled:hover {
+            opacity: 0.9 !important;
+            z-index: 10000 !important;
+        }
+
+        /* Override any potential CSS that might hide arrows */
+        .destinations-slider-wrapper .slick-arrow {
+            display: flex !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            z-index: 9999 !important;
+        }
+
+        /* Prevent arrows from being hidden by overflow */
+        .destinations-slider-wrapper {
+            overflow: visible !important;
+            position: relative !important;
+            z-index: 10 !important;
+        }
+
+        /* Ensure slider container doesn't hide arrows */
+        .destinations-slider {
+            overflow: visible !important;
+            position: relative !important;
+        }
+
+        /* Fallback CSS arrows if FontAwesome fails to load */
+        .destinations-slider-wrapper .destinations-nav-prev:not(:has(i)),
+        .destinations-slider-wrapper .slick-prev:not(:has(i)) {
+            position: relative;
+        }
+
+        .destinations-slider-wrapper .destinations-nav-prev:not(:has(i)):after,
+        .destinations-slider-wrapper .slick-prev:not(:has(i)):after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-30%, -50%) rotate(45deg);
+            width: 8px;
+            height: 8px;
+            border-left: 2px solid #ffffff;
+            border-bottom: 2px solid #ffffff;
+        }
+
+        .destinations-slider-wrapper .destinations-nav-next:not(:has(i)),
+        .destinations-slider-wrapper .slick-next:not(:has(i)) {
+            position: relative;
+        }
+
+        .destinations-slider-wrapper .destinations-nav-next:not(:has(i)):after,
+        .destinations-slider-wrapper .slick-next:not(:has(i)):after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-70%, -50%) rotate(-45deg);
+            width: 8px;
+            height: 8px;
+            border-right: 2px solid #ffffff;
+            border-top: 2px solid #ffffff;
+        }
+
+        /* Alternative fallback using Unicode arrows */
+        .destinations-slider-wrapper .destinations-nav-prev.no-fontawesome:before {
+            content: '‹';
+            font-size: 2rem;
+            color: #ffffff;
+            line-height: 1;
+        }
+
+        .destinations-slider-wrapper .destinations-nav-next.no-fontawesome:before {
+            content: '›';
+            font-size: 2rem;
+            color: #ffffff;
+            line-height: 1;
+        }
+
+        /* Global override - Ensure arrows are NEVER hidden */
+        .destinations-slider-wrapper .slick-prev,
+        .destinations-slider-wrapper .slick-next,
+        .destinations-slider-wrapper .destinations-nav-prev,
+        .destinations-slider-wrapper .destinations-nav-next {
+            display: flex !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            z-index: 9999 !important;
+            pointer-events: auto !important;
+        }
+
+        /* Override any theme or plugin CSS that might hide arrows */
+        .slick-slider .slick-prev,
+        .slick-slider .slick-next {
+            display: flex !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            z-index: 9999 !important;
+        }
+
+        /* Prevent any overflow from hiding arrows */
+        .destinations-slider-wrapper,
+        .destinations-slider,
+        .slick-list,
+        .slick-track {
+            overflow: visible !important;
+        }
+
+        .destination-image {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .destination-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.6s ease;
+        }
+
+        .destination-card:hover .destination-image img {
+            transform: scale(1.1);
+        }
+
+        .destination-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                to bottom,
+                rgba(23, 11, 44, 0.1) 0%,
+                rgba(23, 11, 44, 0.3) 50%,
+                rgba(23, 11, 44, 0.9) 100%
+            );
+            display: flex;
+            align-items: flex-end;
+            padding: 30px;
+            transition: all 0.4s ease;
+        }
+
+        .destination-card:hover .destination-overlay {
+            background: linear-gradient(
+                to bottom,
+                rgba(15, 35, 141, 0.2) 0%,
+                rgba(15, 35, 141, 0.5) 50%,
+                rgba(15, 35, 141, 0.95) 100%
+            );
+        }
+
+        .destination-content {
+            color: white;
+            width: 100%;
+        }
+
+        .destination-title {
+            font-family: 'TAN-Garland-Regular', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .destination-description {
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.5;
+        }
+
+        .destination-price {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ff9d00;
+            margin-bottom: 20px;
+        }
+
+        .destination-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background: rgba(255, 157, 0, 0.9);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 2px solid transparent;
+        }
+
+        .destination-btn:hover {
+            background: #ffffff;
+            color: #0f238d;
+            border-color: #ff9d00;
+            transform: translateX(5px);
+        }
+
+        .destination-btn i {
+            margin-right: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .destination-btn:hover i {
+            transform: translateX(3px);
+        }
+
+        .view-all-destinations-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 18px 40px;
+            background: linear-gradient(135deg, #0f238d 0%, #0f238d 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 25px rgba(23, 11, 44, 0.3);
+            border: 3px solid transparent;
+        }
+
+        .view-all-destinations-btn:hover {
+            background: #ffffff;
+            color: #0f238d;
+            border-color: #ff9d00;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(23, 11, 44, 0.4);
+        }
+
+        .view-all-destinations-btn i {
+            margin-right: 12px;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .view-all-destinations-btn:hover i {
+            transform: rotate(360deg);
+        }
+
+        /* Responsive Design - Maintain Maximum Visibility */
+        @media (max-width: 991px) {
+            .destinations-slider-wrapper {
+                margin: 0 50px !important;
+                overflow: visible !important;
+            }
+
+            .destinations-slider-wrapper .destinations-nav-prev,
+            .destinations-slider-wrapper .slick-prev {
+                left: -25px !important;
+                z-index: 9999 !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+            }
+
+            .destinations-slider-wrapper .destinations-nav-next,
+            .destinations-slider-wrapper .slick-next {
+                right: -25px !important;
+                z-index: 9999 !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+            }
+
+            .destination-card {
+                height: 410px !important;
+                min-height: 410px;
+                max-height: 410px;
+            }
+
+            .destination-title {
+                font-size: 1.6rem;
+            }
+
+            .destination-overlay {
+                padding: 25px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .destinations-slider-wrapper {
+                margin: 0 40px !important;
+                overflow: visible !important;
+            }
+
+            .destinations-slider-wrapper .destinations-nav-prev,
+            .destinations-slider-wrapper .destinations-nav-next,
+            .destinations-slider-wrapper .slick-prev,
+            .destinations-slider-wrapper .slick-next {
+                width: 50px !important;
+                height: 50px !important;
+                z-index: 9999 !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+            }
+
+            .destinations-slider-wrapper .destinations-nav-prev,
+            .destinations-slider-wrapper .slick-prev {
+                left: -20px !important;
+            }
+
+            .destinations-slider-wrapper .destinations-nav-next,
+            .destinations-slider-wrapper .slick-next {
+                right: -20px !important;
+            }
+
+            .destinations-slider-wrapper .destinations-nav-prev i,
+            .destinations-slider-wrapper .destinations-nav-next i,
+            .destinations-slider-wrapper .slick-prev i,
+            .destinations-slider-wrapper .slick-next i {
+                font-size: 1.2rem !important;
+            }
+
+            .destination-card {
+                height: 370px !important;
+                min-height: 370px;
+                max-height: 370px;
+            }
+
+            .destination-title {
+                font-size: 1.4rem;
+            }
+
+            .destination-overlay {
+                padding: 20px;
+            }
+
+            .view-all-destinations-btn {
+                padding: 15px 30px;
+                font-size: 1rem;
+            }
+
+            .section-header h1 {
+                font-size: 2.2rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .destinations-slider-wrapper {
+                margin: 0 30px !important;
+                overflow: visible !important;
+            }
+
+            .destinations-slider-wrapper .destinations-nav-prev,
+            .destinations-slider-wrapper .destinations-nav-next,
+            .destinations-slider-wrapper .slick-prev,
+            .destinations-slider-wrapper .slick-next {
+                width: 45px !important;
+                height: 45px !important;
+                z-index: 9999 !important;
+                opacity: 1 !important;
+                visibility: visible !important;
+            }
+
+            .destinations-slider-wrapper .destinations-nav-prev,
+            .destinations-slider-wrapper .slick-prev {
+                left: -15px !important;
+            }
+
+            .destinations-slider-wrapper .destinations-nav-next,
+            .destinations-slider-wrapper .slick-next {
+                right: -15px !important;
+            }
+
+            .destinations-slider-wrapper .destinations-nav-prev i,
+            .destinations-slider-wrapper .destinations-nav-next i,
+            .destinations-slider-wrapper .slick-prev i,
+            .destinations-slider-wrapper .slick-next i {
+                font-size: 1.1rem !important;
+            }
+
+            .destination-card {
+                height: 320px !important;
+                min-height: 320px;
+                max-height: 320px;
+            }
+
+            .destination-overlay {
+                padding: 15px;
+            }
+
+            .destination-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            .section-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+
+    <!--====== End Featured Destinations Section ======-->
+
+    <!-- Destinations Slider JavaScript -->
+    <script>
+        (function() {
+            'use strict';
+
+            // Function to initialize the destinations slider
+            function initDestinationsSlider() {
+                console.log('Attempting to initialize destinations slider...');
+
+                // Check if jQuery is available
+                if (typeof jQuery === 'undefined' && typeof $ === 'undefined') {
+                    console.error('jQuery is not loaded');
+                    return false;
+                }
+
+                // Use jQuery safely
+                var $ = jQuery || window.$;
+
+                // Check if Slick is available
+                if (typeof $.fn.slick === 'undefined') {
+                    console.error('Slick.js is not loaded');
+                    return false;
+                }
+
+                var $slider = $('.destinations-slider');
+                if (!$slider.length) {
+                    console.error('Destinations slider element not found');
+                    return false;
+                }
+
+                // Check if slider is already initialized
+                if ($slider.hasClass('slick-initialized')) {
+                    console.log('Slider already initialized');
+                    return true;
+                }
+
+                console.log('Initializing destinations slider...');
+
+                try {
+                    // Initialize Destinations Slider with accessibility improvements
+                    $slider.slick({
+                        dots: false,
+                        infinite: true,
+                        speed: 600,
+                        slidesToShow: 4,
+                        slidesToScroll: 1,
+                        autoplay: true,
+                        autoplaySpeed: 4000,
+                        pauseOnHover: true,
+                        pauseOnFocus: true,
+                        arrows: true,
+                        accessibility: true,
+                        focusOnSelect: false,
+                        prevArrow: '<button type="button" class="destinations-nav-prev" aria-label="Previous destinations"><i class="fas fa-chevron-left" aria-hidden="true"></i></button>',
+                        nextArrow: '<button type="button" class="destinations-nav-next" aria-label="Next destinations"><i class="fas fa-chevron-right" aria-hidden="true"></i></button>',
+                        responsive: [
+                            {
+                                breakpoint: 1200,
+                                settings: {
+                                    slidesToShow: 3,
+                                    slidesToScroll: 1
+                                }
+                            },
+                            {
+                                breakpoint: 991,
+                                settings: {
+                                    slidesToShow: 2,
+                                    slidesToScroll: 1
+                                }
+                            },
+                            {
+                                breakpoint: 767,
+                                settings: {
+                                    slidesToShow: 1,
+                                    slidesToScroll: 1,
+                                    centerMode: true,
+                                    centerPadding: '20px'
+                                }
+                            },
+                            {
+                                breakpoint: 576,
+                                settings: {
+                                    slidesToShow: 1,
+                                    slidesToScroll: 1,
+                                    centerMode: false,
+                                    centerPadding: '0px'
+                                }
+                            }
+                        ]
+                    });
+
+                    console.log('Destinations slider initialized successfully');
+
+                    // Add hover effects and ensure arrow visibility after slider initialization
+                    setTimeout(function() {
+                        // Check if FontAwesome icons are loaded
+                        checkFontAwesome();
+
+                        // Ensure arrows are always visible
+                        ensureArrowVisibility();
+
+                        $('.destination-card').hover(
+                            function() {
+                                if ($slider.hasClass('slick-initialized')) {
+                                    $slider.slick('slickPause');
+                                }
+                            },
+                            function() {
+                                if ($slider.hasClass('slick-initialized')) {
+                                    $slider.slick('slickPlay');
+                                }
+                            }
+                        );
+                    }, 500);
+
+                    return true;
+
+                } catch (error) {
+                    console.error('Error initializing destinations slider:', error);
+                    return false;
+                }
+            }
+
+            // Function to ensure arrow visibility at all times
+            function ensureArrowVisibility() {
+                var $ = jQuery || window.$;
+
+                // Force arrow visibility with maximum priority
+                var arrowSelectors = [
+                    '.destinations-nav-prev',
+                    '.destinations-nav-next',
+                    '.slick-prev',
+                    '.slick-next'
+                ];
+
+                arrowSelectors.forEach(function(selector) {
+                    $(selector).css({
+                        'display': 'flex !important',
+                        'opacity': '1 !important',
+                        'visibility': 'visible !important',
+                        'z-index': '9999 !important',
+                        'position': 'absolute !important'
+                    });
+                });
+
+                // Monitor for any changes that might hide arrows
+                var observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'attributes' &&
+                            (mutation.attributeName === 'style' ||
+                             mutation.attributeName === 'class')) {
+
+                            var $target = $(mutation.target);
+                            if ($target.hasClass('slick-prev') ||
+                                $target.hasClass('slick-next') ||
+                                $target.hasClass('destinations-nav-prev') ||
+                                $target.hasClass('destinations-nav-next')) {
+
+                                // Re-enforce visibility
+                                $target.css({
+                                    'display': 'flex !important',
+                                    'opacity': '1 !important',
+                                    'visibility': 'visible !important',
+                                    'z-index': '9999 !important'
+                                });
+                            }
+                        }
+                    });
+                });
+
+                // Start observing
+                $('.destinations-slider-wrapper').each(function() {
+                    observer.observe(this, {
+                        attributes: true,
+                        childList: true,
+                        subtree: true
+                    });
+                });
+
+                console.log('Arrow visibility monitoring enabled');
+            }
+
+            // Function to check if FontAwesome is loaded and apply fallbacks
+            function checkFontAwesome() {
+                var $ = jQuery || window.$;
+
+                // Check if FontAwesome CSS is loaded by testing a known class
+                var testElement = $('<i class="fas fa-chevron-left" style="position: absolute; left: -9999px;"></i>').appendTo('body');
+                var fontFamily = testElement.css('font-family');
+                testElement.remove();
+
+                // If FontAwesome is not loaded, apply fallback
+                if (!fontFamily || fontFamily.indexOf('Font Awesome') === -1) {
+                    console.warn('FontAwesome not detected, applying fallback arrows');
+
+                    // Replace FontAwesome icons with Unicode arrows
+                    $('.destinations-nav-prev, .slick-prev').each(function() {
+                        var $this = $(this);
+                        if ($this.find('i').length > 0) {
+                            $this.find('i').replaceWith('<span style="font-size: 1.4rem; color: #ffffff;">‹</span>');
+                        } else {
+                            $this.addClass('no-fontawesome');
+                        }
+                    });
+
+                    $('.destinations-nav-next, .slick-next').each(function() {
+                        var $this = $(this);
+                        if ($this.find('i').length > 0) {
+                            $this.find('i').replaceWith('<span style="font-size: 1.4rem; color: #ffffff;">›</span>');
+                        } else {
+                            $this.addClass('no-fontawesome');
+                        }
+                    });
+                } else {
+                    console.log('FontAwesome loaded successfully');
+                }
+            }
+
+            // Multiple initialization attempts with proper timing
+            function attemptInitialization() {
+                if (initDestinationsSlider()) {
+                    return; // Success, stop trying
+                }
+
+                // Try again after a delay
+                setTimeout(attemptInitialization, 1000);
+            }
+
+            // Initialize when DOM is ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(attemptInitialization, 100);
+                });
+            } else {
+                setTimeout(attemptInitialization, 100);
+            }
+
+            // Fallback for window load
+            window.addEventListener('load', function() {
+                setTimeout(attemptInitialization, 200);
+            });
+
+        })();
+    </script>
+
+    <!-- Resource Loading Error Handling -->
+    <script>
+        (function() {
+            'use strict';
+
+            // Handle image loading errors
+            document.addEventListener('DOMContentLoaded', function() {
+                var images = document.querySelectorAll('img');
+                images.forEach(function(img) {
+                    img.addEventListener('error', function() {
+                        console.warn('Failed to load image:', this.src);
+                        // You can set a placeholder image here if needed
+                        // this.src = '/static/assets/images/placeholder.jpg';
+                    });
+                });
+            });
+
+            // Check for critical script loading
+            window.addEventListener('load', function() {
+                var criticalScripts = {
+                    'jQuery': typeof jQuery !== 'undefined',
+                    'Slick.js': typeof jQuery !== 'undefined' && typeof jQuery.fn.slick !== 'undefined',
+                    'WOW.js': typeof WOW !== 'undefined'
+                };
+
+                var missingScripts = [];
+                for (var script in criticalScripts) {
+                    if (!criticalScripts[script]) {
+                        missingScripts.push(script);
+                    }
+                }
+
+                if (missingScripts.length > 0) {
+                    console.warn('Missing critical scripts:', missingScripts.join(', '));
+                } else {
+                    console.log('All critical scripts loaded successfully');
+                }
+            });
+        })();
+    </script>
+
+            {% include 'users/footer.html' %}
+
+       
+{% endblock %}

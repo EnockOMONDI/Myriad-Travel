@@ -1,0 +1,387 @@
+{% extends 'users/basebackup.html' %}
+{% load static %}
+
+{% block title %}{{ job.title }} - Careers | Mbugani Luxe Adventures{% endblock %}
+
+{% block content %}
+<!-- Job Detail Hero Section -->
+<section class="job-detail-hero py-5" style="background-color: #291c1b; position: relative; overflow: hidden;">
+    <!-- Background Pattern -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(255,255,255,0.05) 0%, transparent 50%); pointer-events: none;"></div>
+    
+    <div class="container position-relative">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb" class="mb-4">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'users:users-home' %}" class="text-white-50 text-decoration-none">
+                                <i class="fas fa-home me-1"></i>Home
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'users:careers' %}" class="text-white-50 text-decoration-none">Careers</a>
+                        </li>
+                        <li class="breadcrumb-item active text-white" aria-current="page">{{ job.title }}</li>
+                    </ol>
+                </nav>
+                
+                <!-- Job Title and Info -->
+                <h1 class="display-4 fw-bold text-white mb-3" style="font-family: 'TAN-Garland-Regular', sans-serif;">
+                    {{ job.title }}
+                </h1>
+                
+                <!-- Job Meta Information -->
+                <div class="job-meta d-flex flex-wrap gap-3 mb-4">
+                    <div class="meta-item">
+                        <span class="badge bg-light text-dark px-3 py-2">
+                            <i class="fas fa-clock me-2"></i>{{ job.get_job_type_display }}
+                        </span>
+                    </div>
+                    <div class="meta-item">
+                        {% if job.application_status == 'open' %}
+                            <span class="badge bg-success px-3 py-2">
+                        {% elif job.application_status == 'reviewing' %}
+                            <span class="badge bg-warning px-3 py-2">
+                        {% elif job.application_status == 'closed' %}
+                            <span class="badge bg-danger px-3 py-2">
+                        {% else %}
+                            <span class="badge bg-secondary px-3 py-2">
+                        {% endif %}
+                            <i class="fas fa-circle me-2"></i>{{ job.get_application_status_display }}
+                        </span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="badge bg-light text-dark px-3 py-2">
+                            <i class="fas fa-map-marker-alt me-2"></i>{{ job.location }}
+                        </span>
+                    </div>
+                 
+                </div>
+                
+                <!-- Apply Now Button -->
+                {% if job.is_application_open %}
+                    <a href="{% url 'users:careers' %}?job_id={{ job.id }}#application" class="btn btn-light btn-lg px-4 py-3 fw-bold" style="border-radius: 25px; box-shadow: 0 8px 25px rgba(0,0,0,0.2);">
+                        <i class="fas fa-paper-plane me-2"></i>Apply Now
+                    </a>
+                {% else %}
+                    <button class="btn btn-secondary btn-lg px-4 py-3 fw-bold" disabled style="border-radius: 25px;">
+                        <i class="fas fa-lock me-2"></i>Applications Closed
+                    </button>
+                {% endif %}
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="job-image-large">
+                    {% if job.job_image %}
+                        <img src="{{ job.job_image.url }}" alt="{{ job.title }}" class="img-fluid rounded-3 shadow-lg" style="width: 100%; max-height: 300px; object-fit: cover;">
+                    {% else %}
+                        <img src="{% static 'images/jobsthumbnail.png' %}" alt="{{ job.title }}" class="img-fluid rounded-3 shadow-lg" style="width: 100%; max-height: 300px; object-fit: cover;">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Job Details Section -->
+<section class="job-details py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Job Description -->
+                <div class="job-section mb-5">
+                    <h2 class="section-title mb-4" style="color: #291c1b; font-family: 'TAN-Garland-Regular', sans-serif; font-weight: 700;">
+                        <i class="fas fa-info-circle me-2" style="color: #ff9d00;"></i>Job Description
+                    </h2>
+                    <div class="content-card p-4 bg-white rounded-3 shadow-sm">
+                        <div class="job-description" style="line-height: 1.8; color: #666;">
+                            {{ job.description|safe }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Key Responsibilities -->
+                <div class="job-section mb-5">
+                    <h2 class="section-title mb-4" style="color: #291c1b; font-family: 'TAN-Garland-Regular', sans-serif; font-weight: 700;">
+                        <i class="fas fa-tasks me-2" style="color: #ff9d00;"></i>Key Responsibilities
+                    </h2>
+                    <div class="content-card p-4 bg-white rounded-3 shadow-sm">
+                        <div class="job-responsibilities" style="line-height: 1.8; color: #666;">
+                            {{ job.responsibilities|safe }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Requirements -->
+                <div class="job-section mb-5">
+                    <h2 class="section-title mb-4" style="color: #291c1b; font-family: 'TAN-Garland-Regular', sans-serif; font-weight: 700;">
+                        <i class="fas fa-check-circle me-2" style="color: #ff9d00;"></i>Requirements & Qualifications
+                    </h2>
+                    <div class="content-card p-4 bg-white rounded-3 shadow-sm">
+                        <div class="job-requirements" style="line-height: 1.8; color: #666;">
+                            {{ job.requirements|safe }}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Benefits -->
+                {% if job.benefits %}
+                    <div class="job-section mb-5">
+                        <h2 class="section-title mb-4" style="color: #291c1b; font-family: 'TAN-Garland-Regular', sans-serif; font-weight: 700;">
+                            <i class="fas fa-gift me-2" style="color: #ff9d00;"></i>Benefits & Perks
+                        </h2>
+                        <div class="content-card p-4 bg-white rounded-3 shadow-sm">
+                            <div class="job-benefits" style="line-height: 1.8; color: #666;">
+                                {{ job.benefits|safe }}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Quick Apply Card -->
+                <div class="quick-apply-card mb-4 p-4 bg-white rounded-3 shadow-sm border-start border-4" style="border-color: #ff9d00 !important;">
+                    <h4 class="fw-bold mb-3" style="color: #291c1b; font-family: 'TAN-Garland-Regular', sans-serif;">
+                        <i class="fas fa-rocket me-2" style="color: #ff9d00;"></i>Quick Apply
+                    </h4>
+                    <p class="text-muted mb-3">Ready to join our team? Apply now and take the next step in your career journey.</p>
+                    
+                    {% if job.is_application_open %}
+                        <a href="{% url 'users:careers' %}?job_id={{ job.id }}#application" class="btn btn-primary w-100 mb-3" style="background: linear-gradient(135deg, #291c1b, #ff9d00); border: none; border-radius: 25px; padding: 12px;">
+                            <i class="fas fa-paper-plane me-2"></i>Apply for this Position
+                        </a>
+                    {% else %}
+                        <button class="btn btn-secondary w-100 mb-3" disabled style="border-radius: 25px; padding: 12px;">
+                            <i class="fas fa-lock me-2"></i>Applications Closed
+                        </button>
+                    {% endif %}
+                    
+                    <a href="{% url 'users:careers' %}" class="btn btn-outline-primary w-100" style="border-color: #291c1b; color: #291c1b; border-radius: 25px;">
+                        <i class="fas fa-arrow-left me-2"></i>View All Jobs
+                    </a>
+                </div>
+                
+                <!-- Job Information Card -->
+                <div class="job-info-card mb-4 p-4 bg-white rounded-3 shadow-sm">
+                    <h5 class="fw-bold mb-3" style="color: #291c1b; font-family: 'TAN-Garland-Regular', sans-serif;">
+                        <i class="fas fa-info me-2" style="color: #ff9d00;"></i>Job Information
+                    </h5>
+                    
+                    <div class="info-item mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-bold text-muted">Job Type:</span>
+                            {% if job.job_type == 'full_time' %}
+                                <span class="badge bg-primary">{{ job.get_job_type_display }}</span>
+                            {% elif job.job_type == 'part_time' %}
+                                <span class="badge bg-info">{{ job.get_job_type_display }}</span>
+                            {% elif job.job_type == 'contract' %}
+                                <span class="badge bg-warning text-dark">{{ job.get_job_type_display }}</span>
+                            {% else %}
+                                <span class="badge bg-success">{{ job.get_job_type_display }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="info-item mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-bold text-muted">Status:</span>
+                            {% if job.application_status == 'open' %}
+                                <span class="badge bg-success">{{ job.get_application_status_display }}</span>
+                            {% elif job.application_status == 'reviewing' %}
+                                <span class="badge bg-warning text-dark">{{ job.get_application_status_display }}</span>
+                            {% elif job.application_status == 'closed' %}
+                                <span class="badge bg-danger">{{ job.get_application_status_display }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ job.get_application_status_display }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="info-item mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-bold text-muted">Location:</span>
+                            <span class="text-dark">{{ job.location }}</span>
+                        </div>
+                    </div>
+                    
+   
+                    
+                    <div class="info-item mb-3">
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-bold text-muted">Posted:</span>
+                            <span class="text-dark">{{ job.posted_date|date:"M d, Y" }}</span>
+                        </div>
+                    </div>
+                    
+                    {% if job.application_deadline %}
+                        <div class="info-item mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-bold text-muted">Deadline:</span>
+                                <span class="text-dark">{{ job.application_deadline|date:"M d, Y" }}</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Share Job Card -->
+                <div class="share-job-card p-4 bg-white rounded-3 shadow-sm">
+                    <h5 class="fw-bold mb-3" style="color: #291c1b; font-family: 'TAN-Garland-Regular', sans-serif;">
+                        <i class="fas fa-share-alt me-2" style="color: #ff9d00;"></i>Share this Job
+                    </h5>
+                    <p class="text-muted mb-3">Know someone who might be interested? Share this opportunity!</p>
+                    
+                    <div class="share-buttons d-flex gap-2">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.get_full_path }}" target="_blank" class="btn btn-outline-primary btn-sm flex-fill">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?url={{ request.get_full_path }}&text=Check out this job opportunity: {{ job.title }} at Mbugani Luxe Adventures" target="_blank" class="btn btn-outline-info btn-sm flex-fill">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.get_full_path }}" target="_blank" class="btn btn-outline-primary btn-sm flex-fill">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <button class="btn btn-outline-secondary btn-sm flex-fill" onclick="copyJobUrl()">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Jobs Section -->
+{% if related_jobs %}
+    <section class="related-jobs py-5" style="background-color: #f8f9fa;">
+        <div class="container">
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-8 text-center">
+                    <h2 class="display-5 fw-bold mb-4" style="color: #291c1b; font-family: 'TAN-Garland-Regular', sans-serif;">
+                        Related Opportunities
+                    </h2>
+                    <p class="lead text-muted">
+                        Explore other exciting positions that might interest you
+                    </p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                {% for related_job in related_jobs %}
+                    <div class="col-lg-4 col-md-6">
+                        <div class="job-card h-100 p-4 bg-white rounded-3 shadow-sm border-start border-4" style="border-color: #ff9d00 !important; transition: all 0.3s ease;">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <h5 class="fw-bold mb-0" style="color: #291c1b;">{{ related_job.title }}</h5>
+                                {% if related_job.application_status == 'open' %}
+                                    <span class="badge bg-success">{{ related_job.get_application_status_display }}</span>
+                                {% elif related_job.application_status == 'reviewing' %}
+                                    <span class="badge bg-warning text-dark">{{ related_job.get_application_status_display }}</span>
+                                {% elif related_job.application_status == 'closed' %}
+                                    <span class="badge bg-danger">{{ related_job.get_application_status_display }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ related_job.get_application_status_display }}</span>
+                                {% endif %}
+                            </div>
+                            
+                            <p class="text-muted mb-3">{{ related_job.description|striptags|truncatewords:15 }}</p>
+                            
+                            <div class="job-meta mb-3">
+                                <small class="text-muted">
+                                    <i class="fas fa-map-marker-alt me-1" style="color: #ff9d00;"></i>{{ related_job.location }}
+                                </small>
+                            </div>
+                            
+                            <a href="{{ related_job.get_absolute_url }}" class="btn btn-outline-primary w-100" style="border-color: #291c1b; color: #291c1b;">
+                                <i class="fas fa-eye me-2"></i>View Details
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endif %}
+
+<style>
+    .job-detail-hero {
+        min-height: 400px;
+    }
+    
+    .breadcrumb-item + .breadcrumb-item::before {
+        color: rgba(255,255,255,0.5);
+    }
+    
+    .content-card {
+        border: 1px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+    
+    .content-card:hover {
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+    }
+    
+    .info-item {
+        padding-bottom: 10px;
+        border-bottom: 1px solid #f1f1f1;
+    }
+    
+    .info-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    
+    .share-buttons .btn {
+        border-radius: 8px;
+    }
+    
+    @media (max-width: 768px) {
+        .job-detail-hero {
+            min-height: 300px;
+            padding: 40px 0;
+        }
+        
+        .display-4 {
+            font-size: 2rem;
+        }
+        
+        .job-meta {
+            flex-direction: column;
+            gap: 10px !important;
+        }
+    }
+</style>
+
+<script>
+    function copyJobUrl() {
+        navigator.clipboard.writeText(window.location.href).then(function() {
+            // Show success message
+            const button = event.target.closest('button');
+            const originalContent = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check"></i>';
+            button.classList.add('btn-success');
+            button.classList.remove('btn-outline-secondary');
+            
+            setTimeout(function() {
+                button.innerHTML = originalContent;
+                button.classList.remove('btn-success');
+                button.classList.add('btn-outline-secondary');
+            }, 2000);
+        });
+    }
+    
+    // Smooth scroll for apply button
+    document.addEventListener('DOMContentLoaded', function() {
+        const applyButtons = document.querySelectorAll('a[href*="#application"]');
+        applyButtons.forEach(function(button) {
+            button.addEventListener('click', function(e) {
+                // Let the default behavior handle the navigation
+                // The smooth scroll will be handled by the careers page
+            });
+        });
+    });
+</script>
+{% endblock %}

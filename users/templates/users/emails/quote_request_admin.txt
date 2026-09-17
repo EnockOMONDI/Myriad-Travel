@@ -1,0 +1,61 @@
+MBUGANI LUXE ADVENTURES - NEW QUOTE REQUEST
+===========================================
+
+🚨 NEW QUOTE REQUEST RECEIVED
+
+{{ quote_request.full_name }} has submitted a quote request that requires your immediate attention. Please review the details below and respond within 24 hours.
+
+QUICK STATS:
+- Travelers: {{ quote_request.number_of_travelers }}
+- Time Submitted: {{ quote_request.created_at|date:"H:i" }}
+- Date: {{ quote_request.created_at|date:"M j" }}
+
+CUSTOMER DETAILS:
+================
+Full Name: {{ quote_request.full_name }}
+Email: {{ quote_request.email }}
+Phone: {{ quote_request.phone_number }}
+Destination: {{ quote_request.destination }}
+Travel Dates: {{ quote_request.preferred_travel_dates }}
+Number of Travelers: {{ quote_request.number_of_travelers }}
+
+{% if quote_request.package %}
+REQUESTED PACKAGE:
+=================
+Package: {{ quote_request.package.name }}
+Duration: {{ quote_request.package.duration_days }} days
+Price: ${{ quote_request.package.adult_price }} USD per person
+{% endif %}
+
+REQUEST INFORMATION:
+===================
+Request Date: {{ quote_request.created_at|date:"F j, Y \a\t g:i A" }}
+Status: {{ quote_request.get_status_display }}
+
+{% if quote_request.special_requests %}
+SPECIAL REQUESTS & NOTES:
+========================
+{{ quote_request.special_requests }}
+{% endif %}
+
+NEXT ACTIONS:
+============
+1. Reply via Email: {{ quote_request.email }}
+2. Call Customer: {{ quote_request.phone_number }}
+3. WhatsApp: https://api.whatsapp.com/send/?phone={{ quote_request.phone_number|slice:1 }}&text=Hello {{ quote_request.full_name }}, regarding your quote request...
+
+CONTACT SUMMARY:
+===============
+Name: {{ quote_request.full_name }}
+Email: {{ quote_request.email }}
+Phone: {{ quote_request.phone_number }}
+Destination: {{ quote_request.destination }}
+
+---
+This is an automated notification from Mbugani Luxe Adventures.
+Please respond to this quote request within 24 hours.
+
+Mbugani Luxe Adventures
+Email: info@mbuganiluxeadventures.com
+Phone: +254701810167
+Website: https://www.mbuganiluxeadventures.com
