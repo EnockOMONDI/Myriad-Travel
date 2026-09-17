@@ -82,8 +82,8 @@ def blog_list(request):
         "featured_blog": featured_blog,
         "sort_by": sort_by,
         "category_slug": category_slug,
-        "page_title": "Travel Blog - Mbugani Luxe Adventures",
-        "meta_description": "Discover amazing travel stories, tips, and guides from Mbugani Luxe Adventures. Explore destinations, get travel advice, and plan your next adventure.",
+        "page_title": "Travel Blog - Myriad Travel",
+        "meta_description": "Discover travel stories, safari tips, destination guides, and planning advice from Myriad Travel.",
     }
     return render(request, 'users/bloglist.html', context)
 
@@ -155,7 +155,7 @@ def blog_detail(request, slug=None, pid=None):
     ).order_by("date").first()
 
     # SEO and meta data
-    page_title = f"{post.title} - Mbugani Luxe Adventures Blog"
+    page_title = f"{post.title} - Myriad Travel Blog"
     meta_description = post.get_meta_description()
     canonical_url = request.build_absolute_uri(post.get_absolute_url())
 
@@ -220,8 +220,8 @@ def category_detail(request, slug):
     ).order_by('title')
 
     # SEO data
-    page_title = f"{category.title} - Travel Blog - Mbugani Luxe Adventures"
-    meta_description = category.description or f"Explore {category.title} articles and travel guides from Mbugani Luxe Adventures."
+    page_title = f"{category.title} - Travel Blog - Myriad Travel"
+    meta_description = category.description or f"Explore {category.title} articles and travel guides from Myriad Travel."
 
     context = {
         "category": category,
@@ -273,8 +273,8 @@ def blog_search(request):
         "blog_count": blog_queryset.count(),
         "query": query,
         "categories": categories,
-        "page_title": f"Search Results for '{query}' - Mbugani Luxe Adventures Blog",
-        "meta_description": f"Search results for '{query}' in Mbugani Luxe Adventures blog.",
+        "page_title": f"Search Results for '{query}' - Myriad Travel Blog",
+        "meta_description": f"Search results for '{query}' in the Myriad Travel blog.",
         "breadcrumbs": [
             {"name": "Home", "url": "/"},
             {"name": "Blog", "url": reverse("blog:blog-list")},

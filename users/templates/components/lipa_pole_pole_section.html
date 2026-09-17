@@ -1,0 +1,181 @@
+{% load static %}
+<section id="lipa-pole-pole-section" class="py-16 sm:py-24 px-4 sm:px-8 bg-gradient-to-b from-emerald-950/90 via-slate-950 to-slate-950 text-white relative overflow-hidden">
+  <!-- Decorative Ambient Gradients -->
+  <div class="absolute -top-40 -right-40 w-96 h-96 bg-emerald-600/15 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-amber-600/15 rounded-full blur-3xl pointer-events-none"></div>
+
+  <div class="max-w-7xl mx-auto relative z-10 space-y-12">
+    <!-- Header -->
+    <div class="text-center max-w-3xl mx-auto space-y-3">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-bold uppercase tracking-wider">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-400"></i>
+        <span>Myriad Travel Signature Program</span>
+      </div>
+      <h2 class="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold leading-[0.95] text-white">
+        Lipa Pole Pole — Keep Things Flexible
+      </h2>
+      <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+        &ldquo;We have Lipa Pole Pole to secure the vacations you don’t want to miss without being locked out.&rdquo; 
+        Lock in peak safari lodges and early bird flights today, and pay in easy, interest-free monthly installments.
+      </p>
+    </div>
+
+    <!-- Interactive Calculator & Guarantees Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <!-- Left Column: Interactive Calculator (7 cols) -->
+      <div class="lg:col-span-7 bg-white text-slate-900 rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 space-y-6">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div>
+            <h3 class="text-lg font-bold font-serif text-slate-900">
+              Interactive Installment Calculator
+            </h3>
+            <p class="text-xs text-slate-500">
+              Select your estimated trip value and see how easy it is to save.
+            </p>
+          </div>
+          <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full">
+            0% Interest
+          </span>
+        </div>
+
+        <!-- Destination Selector -->
+        <div class="space-y-1.5">
+          <label class="text-xs font-bold text-slate-700 uppercase">
+            Select Your Dream Getaway
+          </label>
+          <select
+            id="lipa-dest-select"
+            class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm font-medium text-slate-800 focus:ring-2 focus:ring-emerald-500 outline-hidden"
+          >
+            <option value="Maasai Mara Great Migration (4 Days)">🦁 Maasai Mara Migration Safari (4 Days)</option>
+            <option value="Diani Beach Luxury Escape (5 Days)">🏖️ Diani Beach Coastal Luxury (5 Days)</option>
+            <option value="Amboseli Kilimanjaro Giants (3 Days)">🐘 Amboseli Elephant Safari (3 Days)</option>
+            <option value="Zanzibar Island &amp; Stone Town (5 Days)">✈️ Zanzibar Island Holiday (5 Days)</option>
+            <option value="Dubai &amp; Desert Safari (6 Days)">🏙️ Dubai Luxury Holiday (6 Days)</option>
+            <option value="Custom Family / Group Trip">✨ Custom Family / Group Safari</option>
+          </select>
+        </div>
+
+        <!-- Target Budget Slider -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-slate-700 uppercase">Estimated Total Trip Cost</span>
+            <span id="lipa-budget-display" class="text-base font-bold text-slate-900">KSh 60,000</span>
+          </div>
+          <input
+            type="range"
+            id="lipa-budget-slider"
+            min="20000"
+            max="250000"
+            step="5000"
+            value="60000"
+            class="w-full accent-emerald-600 cursor-pointer h-2 bg-slate-200 rounded-lg"
+          />
+          <div class="flex justify-between text-[10px] text-slate-400 font-medium">
+            <span>KSh 20,000 / $200</span>
+            <span>KSh 120,000 / $1,200</span>
+            <span>KSh 250,000 / $2,500</span>
+          </div>
+        </div>
+
+        <!-- Installment Months Buttons -->
+        <div class="space-y-2">
+          <label class="text-xs font-bold text-slate-700 uppercase">
+            Choose Number of Monthly Installments
+          </label>
+          <div class="grid grid-cols-5 gap-2">
+            <button type="button" class="lipa-month-btn py-2 text-xs font-bold rounded-xl transition-all border cursor-pointer bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100" data-months="2">2 Mos</button>
+            <button type="button" class="lipa-month-btn py-2 text-xs font-bold rounded-xl transition-all border cursor-pointer bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100" data-months="3">3 Mos</button>
+            <button type="button" class="lipa-month-btn py-2 text-xs font-bold rounded-xl transition-all border cursor-pointer bg-emerald-600 text-white border-emerald-600 shadow-xs scale-102" data-months="4">4 Mos</button>
+            <button type="button" class="lipa-month-btn py-2 text-xs font-bold rounded-xl transition-all border cursor-pointer bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100" data-months="5">5 Mos</button>
+            <button type="button" class="lipa-month-btn py-2 text-xs font-bold rounded-xl transition-all border cursor-pointer bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100" data-months="6">6 Mos</button>
+          </div>
+        </div>
+
+        <!-- Result Box -->
+        <div class="bg-gradient-to-r from-emerald-50 to-teal-50 p-5 rounded-2xl border border-emerald-200/80 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <span class="text-xs text-emerald-800 font-semibold block uppercase">
+              Your Monthly Contribution
+            </span>
+            <div class="text-2xl sm:text-3xl font-extrabold text-emerald-900">
+              <span id="lipa-monthly-display">KSh 15,000</span>
+              <span class="text-xs text-slate-500 font-normal"> / month</span>
+            </div>
+            <span id="lipa-duration-note" class="text-[11px] text-slate-600">
+              Split across 4 manageable monthly payments before travel.
+            </span>
+          </div>
+
+          <a
+            href="https://wa.me/254712236522?text=Hello%20Myriad%20Travel,%20I%20would%20like%20to%20start%20a%20Lipa%20Pole%20Pole%20plan."
+            target="_blank"
+            rel="noopener noreferrer"
+            id="btn-start-lipa-pole-pole"
+            class="w-full sm:w-auto px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 shrink-0 text-center cursor-pointer"
+          >
+            <i data-lucide="send" class="w-4 h-4"></i>
+            <span>Start This Plan</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Right Column: Key Guarantees & How it Works (5 cols) -->
+      <div class="lg:col-span-5 space-y-5">
+        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/10 space-y-4">
+          <h3 class="text-lg font-bold font-serif text-white flex items-center gap-2">
+            <i data-lucide="lock" class="w-5 h-5 text-amber-400"></i>
+            <span>Why Travelers Love Lipa Pole Pole</span>
+          </h3>
+
+          <div class="space-y-3 text-xs sm:text-sm text-slate-200">
+            <div class="flex items-start gap-3">
+              <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="text-white block">Locks in Early Bird Rates:</strong>
+                Safari camps and beach resorts increase prices as dates approach. Booking early with Lipa Pole Pole locks in the cheapest rate.
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="text-white block">Zero Financial Strain:</strong>
+                No high-interest bank loans or overdraft fees. Simply make your monthly deposit at your convenience via M-Pesa or bank transfer.
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 shrink-0 mt-0.5"></i>
+              <div>
+                <strong class="text-white block">Guaranteed Lodge Availability:</strong>
+                Peak season rooms in Maasai Mara and Diani sell out months ahead. Lipa Pole Pole reserves your room while you pay.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3-Step Process -->
+        <div class="bg-slate-900/60 rounded-2xl p-6 border border-slate-800 space-y-3 text-xs text-slate-300">
+          <h4 class="font-bold text-amber-400 uppercase tracking-wider text-[11px]">
+            3 Simple Steps to Travel:
+          </h4>
+          <ol class="space-y-2.5">
+            <li class="flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 font-bold flex items-center justify-center text-[10px]">1</span>
+              <span>Pick any package or tell us your custom itinerary</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 font-bold flex items-center justify-center text-[10px]">2</span>
+              <span>Make a small initial deposit to lock your dates</span>
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 font-bold flex items-center justify-center text-[10px]">3</span>
+              <span>Clear balance comfortably in monthly tranches before departure!</span>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

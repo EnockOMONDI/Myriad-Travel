@@ -1,11 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Booking Successful</title>
-</head>
-<body>
-    <h1>Booking Confirmed!</h1>
-    <p>Thank you, {{ booking.full_name }}. Your booking for {{ booking.package.package_name }} is confirmed.</p>
-    
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}Booking Submitted — Myriad Travel{% endblock %}
+{% block content %}<section class="py-20 px-4 sm:px-8 max-w-2xl mx-auto text-center"><div class="bg-white border border-slate-200 rounded-2xl p-8"><h1 class="text-3xl font-bold font-serif mb-3">Booking Submitted</h1><p class="text-slate-600">Thank you, {{ booking.full_name }}. Our team will confirm availability and next steps.</p></div></section>{% endblock %}

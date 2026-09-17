@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Top Travel Destinations in Kenya &amp; Worldwide — Myriad Travel
+{% endblock %}
+
+{% block content %}
+<div class="bg-slate-900 text-white py-16 px-4 sm:px-8">
+  <div class="max-w-7xl mx-auto space-y-4">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold uppercase tracking-wider">
+      <i data-lucide="compass" class="w-3.5 h-3.5"></i>
+      <span>Extraordinary Places</span>
+    </div>
+    <h1 class="text-3xl sm:text-5xl font-bold font-serif">
+      Discover Iconic Safari Reserves &amp; Coastal Havens
+    </h1>
+    <p class="text-slate-300 text-sm sm:text-base max-w-2xl">
+      From the golden savannah plains of the Maasai Mara and Amboseli's elephant giants to the pristine beaches of Diani and exotic international metropolises.
+    </p>
+  </div>
+</div>
+
+{% include 'components/destination_showcase.html' %}
+{% endblock %}

@@ -1,0 +1,200 @@
+{% load static %}
+<section id="destinations-section" class="py-16 sm:py-24 px-4 sm:px-8 max-w-7xl mx-auto">
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+    <div class="space-y-3 max-w-2xl">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold uppercase tracking-wider">
+        <i data-lucide="compass" class="w-3.5 h-3.5 text-amber-600"></i>
+        <span>Extraordinary Destinations</span>
+      </div>
+      <h2 class="text-3xl sm:text-5xl font-serif font-bold leading-[0.95] text-slate-900">
+        Explore Kenya &amp; The World
+      </h2>
+      <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+        From the endless savannahs of the Great Rift Valley to the ancient Swahili shores of the Indian Ocean and global desert metropolises.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="open-plan-modal-btn inline-flex items-center gap-2 px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs sm:text-sm font-semibold transition-all shadow-xs cursor-pointer self-start md:self-auto"
+    >
+      <span>Request Another Destination</span>
+      <i data-lucide="arrow-right" class="w-4 h-4"></i>
+    </button>
+  </div>
+
+  <!-- Grid of destinations -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+    {% if destinations %}
+      {% for dest in destinations %}
+        {% include 'components/destination_card.html' with dest=dest %}
+      {% endfor %}
+    {% else %}
+      <!-- Fallback / Demo Destinations -->
+      <!-- 1. Maasai Mara -->
+      <div class="destination-card group relative rounded-2xl overflow-hidden bg-slate-900 aspect-4/3 cursor-pointer shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+        <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=800&auto=format&fit=crop" alt="Maasai Mara" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out opacity-85 group-hover:opacity-100" loading="lazy" />
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+        <div class="absolute top-4 right-4">
+          <span class="px-3 py-1 bg-white/20 backdrop-blur-md text-white text-[11px] font-bold rounded-full border border-white/20 shadow-xs">World Famous</span>
+        </div>
+        <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-white space-y-2">
+          <span class="text-xs font-semibold text-amber-400 uppercase tracking-wider flex items-center gap-1">
+            <i data-lucide="map-pin" class="w-3 h-3"></i>
+            <span>Kenya</span>
+          </span>
+          <h3 class="text-xl sm:text-2xl font-bold font-serif leading-tight group-hover:text-amber-300 transition-colors">Maasai Mara</h3>
+          <p class="text-xs text-slate-200 line-clamp-2 leading-relaxed">
+            Home to the Seventh Wonder of the World: the Great Wildebeest Migration, the Big Five, and endless golden savannahs.
+          </p>
+          <div class="flex flex-wrap items-center gap-1.5 pt-2 border-t border-white/15">
+            <span class="text-[10px] bg-black/40 text-slate-200 px-2 py-0.5 rounded-md font-medium">Great Migration</span>
+            <span class="text-[10px] bg-black/40 text-slate-200 px-2 py-0.5 rounded-md font-medium">Big Five</span>
+            <span class="text-[10px] bg-black/40 text-slate-200 px-2 py-0.5 rounded-md font-medium">Hot Air Balloons</span>
+          </div>
+          <div class="pt-2 flex items-center justify-between text-xs font-semibold text-amber-300 opacity-90 group-hover:opacity-100 transition-opacity">
+            <span>View Tours &amp; Safaris</span>
+            <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Diani Beach -->
+      <div class="destination-card group relative rounded-2xl overflow-hidden bg-slate-900 aspect-4/3 cursor-pointer shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+        <img src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=800&auto=format&fit=crop" alt="Diani Beach" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out opacity-85 group-hover:opacity-100" loading="lazy" />
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+        <div class="absolute top-4 right-4">
+          <span class="px-3 py-1 bg-white/20 backdrop-blur-md text-white text-[11px] font-bold rounded-full border border-white/20 shadow-xs">Top Beach</span>
+        </div>
+        <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-white space-y-2">
+          <span class="text-xs font-semibold text-amber-400 uppercase tracking-wider flex items-center gap-1">
+            <i data-lucide="map-pin" class="w-3 h-3"></i>
+            <span>Kenya</span>
+          </span>
+          <h3 class="text-xl sm:text-2xl font-bold font-serif leading-tight group-hover:text-amber-300 transition-colors">Diani Beach</h3>
+          <p class="text-xs text-slate-200 line-clamp-2 leading-relaxed">
+            Pristine sugar-white coral sands, swaying palms, vibrant coral reef diving, kite surfing, and relaxed coastal luxury.
+          </p>
+          <div class="flex flex-wrap items-center gap-1.5 pt-2 border-t border-white/15">
+            <span class="text-[10px] bg-black/40 text-slate-200 px-2 py-0.5 rounded-md font-medium">White Sands</span>
+            <span class="text-[10px] bg-black/40 text-slate-200 px-2 py-0.5 rounded-md font-medium">Wasini Dolphins</span>
+            <span class="text-[10px] bg-black/40 text-slate-200 px-2 py-0.5 rounded-md font-medium">Luxury Resorts</span>
+          </div>
+          <div class="pt-2 flex items-center justify-between text-xs font-semibold text-amber-300 opacity-90 group-hover:opacity-100 transition-opacity">
+            <span>View Tours &amp; Safaris</span>
+            <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Amboseli -->
+      <div class="destination-card group relative rounded-2xl overflow-hidden bg-slate-900 aspect-4/3 cursor-pointer shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+        <img src="https://images.unsplash.com/photo-1575550959106-5a7defe28b56?q=80&w=800&auto=format&fit=crop" alt="Amboseli" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out opacity-85 group-hover:opacity-100" loading="lazy" />
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+        <div class="absolute top-4 right-4">
+          <span class="px-3 py-1 bg-white/20 backdrop-blur-md text-white text-[11px] font-bold rounded-full border border-white/20 shadow-xs">Wildlife Photography</span>
+        </div>
+        <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-white space-y-2">
+          <span class="text-xs font-semibold text-amber-400 uppercase tracking-wider flex items-center gap-1">
+            <i data-lucide="map-pin" class="w-3 h-3"></i>
+            <span>Kenya</span>
+          </span>
+          <h3 class="text-xl sm:text-2xl font-bold font-serif leading-tight group-hover:text-amber-300 transition-colors">Amboseli National Park</h3>
+          <p class="text-xs text-slate-200 line-clamp-2 leading-relaxed">
+            Iconic panoramic views of massive elephant herds dusting themselves against the snow-capped majesty of Mount Kilimanjaro.
+          </p>
+          <div class="flex flex-wrap items-center gap-1.5 pt-2 border-t border-white/15">
+            <span class="text-[10px] bg-black/40 text-slate-200 px-2 py-0.5 rounded-md font-medium">Elephant Tuskers</span>
+            <span class="text-[10px] bg-black/40 text-slate-200 px-2 py-0.5 rounded-md font-medium">Mt. Kilimanjaro</span>
+          </div>
+          <div class="pt-2 flex items-center justify-between text-xs font-semibold text-amber-300 opacity-90 group-hover:opacity-100 transition-opacity">
+            <span>View Tours &amp; Safaris</span>
+            <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Zanzibar -->
+      <div class="destination-card group relative rounded-2xl overflow-hidden bg-slate-900 aspect-4/3 cursor-pointer shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+        <img src="https://images.unsplash.com/photo-1586861635167-e5223aadc9fe?q=80&w=800&auto=format&fit=crop" alt="Zanzibar" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out opacity-85 group-hover:opacity-100" loading="lazy" />
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+        <div class="absolute top-4 right-4">
+          <span class="px-3 py-1 bg-white/20 backdrop-blur-md text-white text-[11px] font-bold rounded-full border border-white/20 shadow-xs">International Island</span>
+        </div>
+        <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-white space-y-2">
+          <span class="text-xs font-semibold text-amber-400 uppercase tracking-wider flex items-center gap-1">
+            <i data-lucide="map-pin" class="w-3 h-3"></i>
+            <span>Tanzania</span>
+          </span>
+          <h3 class="text-xl sm:text-2xl font-bold font-serif leading-tight group-hover:text-amber-300 transition-colors">Zanzibar Island</h3>
+          <p class="text-xs text-slate-200 line-clamp-2 leading-relaxed">
+            Labyrinthine alleys of Stone Town, fragrant clove orchards, traditional wooden dhows, and turquoise island swimming.
+          </p>
+          <div class="flex flex-wrap items-center gap-1.5 pt-2 border-t border-white/15">
+            <span class="text-[10px] bg-black/40 text-slate-200 px-2 py-0.5 rounded-md font-medium">Stone Town UNESCO</span>
+            <span class="text-[10px] bg-black/40 text-slate-200 px-2 py-0.5 rounded-md font-medium">Spice Farms</span>
+          </div>
+          <div class="pt-2 flex items-center justify-between text-xs font-semibold text-amber-300 opacity-90 group-hover:opacity-100 transition-opacity">
+            <span>View Tours &amp; Safaris</span>
+            <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Dubai & UAE -->
+      <div class="destination-card group relative rounded-2xl overflow-hidden bg-slate-900 aspect-4/3 cursor-pointer shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+        <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=800&auto=format&fit=crop" alt="Dubai" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out opacity-85 group-hover:opacity-100" loading="lazy" />
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+        <div class="absolute top-4 right-4">
+          <span class="px-3 py-1 bg-white/20 backdrop-blur-md text-white text-[11px] font-bold rounded-full border border-white/20 shadow-xs">Global City</span>
+        </div>
+        <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-white space-y-2">
+          <span class="text-xs font-semibold text-amber-400 uppercase tracking-wider flex items-center gap-1">
+            <i data-lucide="map-pin" class="w-3 h-3"></i>
+            <span>United Arab Emirates</span>
+          </span>
+          <h3 class="text-xl sm:text-2xl font-bold font-serif leading-tight group-hover:text-amber-300 transition-colors">Dubai &amp; UAE</h3>
+          <p class="text-xs text-slate-200 line-clamp-2 leading-relaxed">
+            Burj Khalifa, world-class luxury shopping, rollercoaster desert safaris, glittering marinas, and family entertainment.
+          </p>
+          <div class="flex flex-wrap items-center gap-1.5 pt-2 border-t border-white/15">
+            <span class="text-[10px] bg-black/40 text-slate-200 px-2 py-0.5 rounded-md font-medium">Burj Khalifa</span>
+            <span class="text-[10px] bg-black/40 text-slate-200 px-2 py-0.5 rounded-md font-medium">Desert Safari</span>
+          </div>
+          <div class="pt-2 flex items-center justify-between text-xs font-semibold text-amber-300 opacity-90 group-hover:opacity-100 transition-opacity">
+            <span>View Tours &amp; Safaris</span>
+            <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Lamu Island -->
+      <div class="destination-card group relative rounded-2xl overflow-hidden bg-slate-900 aspect-4/3 cursor-pointer shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop" alt="Lamu" class="w-full h-full object-cover group-hover:scale-108 transition-transform duration-700 ease-out opacity-85 group-hover:opacity-100" loading="lazy" />
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+        <div class="absolute top-4 right-4">
+          <span class="px-3 py-1 bg-white/20 backdrop-blur-md text-white text-[11px] font-bold rounded-full border border-white/20 shadow-xs">UNESCO Heritage</span>
+        </div>
+        <div class="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-white space-y-2">
+          <span class="text-xs font-semibold text-amber-400 uppercase tracking-wider flex items-center gap-1">
+            <i data-lucide="map-pin" class="w-3 h-3"></i>
+            <span>Kenya Coast</span>
+          </span>
+          <h3 class="text-xl sm:text-2xl font-bold font-serif leading-tight group-hover:text-amber-300 transition-colors">Lamu Island</h3>
+          <p class="text-xs text-slate-200 line-clamp-2 leading-relaxed">
+            An idyllic, car-free UNESCO haven of donkey transport, ancient coral stone mansions, carved doors, and tranquil dhow sails.
+          </p>
+          <div class="flex flex-wrap items-center gap-1.5 pt-2 border-t border-white/15">
+            <span class="text-[10px] bg-black/40 text-slate-200 px-2 py-0.5 rounded-md font-medium">Swahili Architecture</span>
+            <span class="text-[10px] bg-black/40 text-slate-200 px-2 py-0.5 rounded-md font-medium">Sunset Dhow</span>
+          </div>
+          <div class="pt-2 flex items-center justify-between text-xs font-semibold text-amber-300 opacity-90 group-hover:opacity-100 transition-opacity">
+            <span>View Tours &amp; Safaris</span>
+            <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"></i>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>

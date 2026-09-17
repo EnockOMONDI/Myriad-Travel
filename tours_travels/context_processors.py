@@ -129,4 +129,19 @@ def site_settings(request):
     return {
         'SITE_URL': getattr(settings, 'SITE_URL', 'http://localhost:8000'),
         'DEBUG': getattr(settings, 'DEBUG', False),
+        'company': {
+            'name': 'Myriad Travel',
+            'tagline': 'Beyond Imagination',
+            'address': {
+                'full': 'Applewood Adams, 8th Floor, Ngong Road, Nairobi, Kenya',
+            },
+            'contacts': {
+                'primary_phone': '+254712236522',
+                'alt_phone': '+254113446213',
+                'phone_formatted': '+254 (0) 712 236 522',
+                'whatsapp': '254712236522',
+                'email_general': 'info@myriad-travel.com',
+                'email_marketing': 'marketing@myriad-travel.com',
+            },
+        },
     }

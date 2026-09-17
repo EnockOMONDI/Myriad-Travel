@@ -1,0 +1,22 @@
+{% extends 'adminside/base.html' %}
+{% block title %}Travel Options - Myriad Travel{% endblock %}
+{% block content %}
+<section class="container py-5">
+  <h1 class="mb-4">Travel Options</h1>
+  <div class="row">
+    {% for travel_mode in travel_modes %}
+    <div class="col-md-6 col-lg-4 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">{{ travel_mode.name }}</h5>
+          <p class="card-text">{{ travel_mode.departure_location }} to {{ travel_mode.arrival_location }}</p>
+          <p class="fw-bold">KSh {{ travel_mode.price_per_person }}</p>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <p>No travel options are available yet.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

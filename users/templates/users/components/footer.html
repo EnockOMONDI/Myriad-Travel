@@ -1,0 +1,241 @@
+{% load static %}
+<footer id="footer-section" class="bg-[#071321] text-white border-t border-slate-800">
+  <!-- Top CTA Banner -->
+  <div class="border-b border-slate-800/80 bg-gradient-to-r from-amber-600/20 via-slate-900/50 to-emerald-600/20 py-12 px-4 sm:px-8">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+      <div class="space-y-2">
+        <h3 class="text-xl sm:text-2xl font-bold font-serif text-white">
+          Ready to embark on an unforgettable safari journey?
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-300">
+          Speak with a dedicated Nairobi safari designer today and secure your spot with Lipa Pole Pole.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <button
+          type="button"
+          class="open-plan-modal-btn px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all cursor-pointer"
+        >
+          Start Custom Itinerary
+        </button>
+        <a
+          href="https://wa.me/{{ company.contacts.whatsapp|default:'254712236522' }}?text=Hello%20Myriad%20Travel,%20I%20would%20like%20to%20plan%20a%20trip%20to%20Kenya.%20Please%20connect%20me%20with%20a%20safari%20consultant."
+          target="_blank"
+          rel="noopener noreferrer"
+          class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer"
+        >
+          <i data-lucide="send" class="w-4 h-4"></i>
+          <span>Chat on WhatsApp</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Footer Content -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-8 py-16">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+      <!-- Col 1 & 2: Company Overview & Accreditations (2 cols) -->
+      <div class="lg:col-span-2 space-y-6">
+        <div class="space-y-3">
+          <div class="flex items-center gap-3">
+            <img
+              src="{% static 'images/myriad-logo.png' %}"
+              alt="{{ company.name|default:'Myriad Travel' }}"
+              class="h-10 sm:h-12 w-auto object-contain bg-white/95 p-1.5 rounded-lg shadow-sm"
+            />
+            <div>
+              <span class="text-lg font-bold font-serif text-white tracking-tight block">
+                {{ company.name|default:"Myriad Travel" }}
+              </span>
+              <span class="text-[11px] font-semibold text-amber-400 tracking-widest uppercase block">
+                {{ company.tagline|default:"Beyond Imagination" }}
+              </span>
+            </div>
+          </div>
+
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-sm">
+            A premier Kenyan tour operator delivering handcrafted bush safaris, coastal escapes, corporate team building, and global holidays. Headquartered in Nairobi with direct lodge and park relationships.
+          </p>
+        </div>
+
+        <!-- Official Licensing & Badges -->
+        <div class="space-y-2 pt-2">
+          <span class="text-[11px] font-bold text-amber-400 uppercase tracking-wider block">
+            Accreditations &amp; Partner Authorities
+          </span>
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="bg-white/90 p-1.5 rounded-lg shadow-2xs hover:bg-white transition-colors" title="Tourism Regulatory Authority">
+              <img src="{% static 'images/partners/tra.png' %}" alt="TRA Kenya" class="h-6 w-auto object-contain max-w-[60px]" />
+            </div>
+            <div class="bg-white/90 p-1.5 rounded-lg shadow-2xs hover:bg-white transition-colors" title="Kenya Wildlife Service">
+              <img src="{% static 'images/partners/kws.png' %}" alt="KWS" class="h-6 w-auto object-contain max-w-[60px]" />
+            </div>
+            <div class="bg-white/90 p-1.5 rounded-lg shadow-2xs hover:bg-white transition-colors" title="Magical Kenya">
+              <img src="{% static 'images/partners/magical.png' %}" alt="Magical Kenya" class="h-6 w-auto object-contain max-w-[60px]" />
+            </div>
+            <div class="bg-white/90 p-1.5 rounded-lg shadow-2xs hover:bg-white transition-colors" title="KATO Member">
+              <img src="{% static 'images/partners/kato.png' %}" alt="KATO" class="h-6 w-auto object-contain max-w-[60px]" />
+            </div>
+          </div>
+        </div>
+
+        <!-- SafariBookings Rating -->
+        <div class="inline-flex items-center gap-2 bg-slate-900 px-3.5 py-2 rounded-xl border border-slate-800 text-xs">
+          <div class="flex text-amber-400">
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
+          </div>
+          <span class="text-white font-bold">5.0 / 5.0</span>
+          <span class="text-slate-400 font-medium">SafariBookings Certified</span>
+        </div>
+      </div>
+
+      <!-- Col 3: Popular Safari Experiences -->
+      <div class="space-y-4">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-amber-400">
+          Curated Collections
+        </h4>
+        <ul class="space-y-2.5 text-xs text-slate-300">
+          <li>
+            <a href="/#packages-section" class="hover:text-amber-400 transition-colors">
+              Maasai Mara Big Five Safaris
+            </a>
+          </li>
+          <li>
+            <a href="/#packages-section" class="hover:text-amber-400 transition-colors">
+              Diani Beach &amp; Coastal Luxury
+            </a>
+          </li>
+          <li>
+            <a href="/#packages-section" class="hover:text-amber-400 transition-colors">
+              Amboseli Elephant Giants
+            </a>
+          </li>
+          <li>
+            <a href="/#packages-section" class="hover:text-amber-400 transition-colors">
+              Zanzibar Island &amp; Stone Town
+            </a>
+          </li>
+          <li>
+            <a href="/#packages-section" class="hover:text-amber-400 transition-colors">
+              Mt. Longonot &amp; Weekend Hikes
+            </a>
+          </li>
+          <li>
+            <a href="/#lipa-pole-pole-section" class="text-emerald-400 hover:text-emerald-300 font-semibold transition-colors">
+              Lipa Pole Pole Flexible Plans
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Col 4: Corporate & Concierge Services -->
+      <div class="space-y-4">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-amber-400">
+          Travel Services
+        </h4>
+        <ul class="space-y-2.5 text-xs text-slate-300">
+          <li>
+            <a href="/#services-section" class="hover:text-amber-400 transition-colors">
+              Flight Ticketing &amp; Bush Charters
+            </a>
+          </li>
+          <li>
+            <a href="/#services-section" class="hover:text-amber-400 transition-colors">
+              Corporate Travel &amp; MICE Retreats
+            </a>
+          </li>
+          <li>
+            <a href="/#services-section" class="hover:text-amber-400 transition-colors">
+              4x4 Safari Land Cruiser Hire
+            </a>
+          </li>
+          <li>
+            <a href="/#services-section" class="hover:text-amber-400 transition-colors">
+              Kenya eTA &amp; Visa Advisory
+            </a>
+          </li>
+          <li>
+            <a href="/#services-section" class="hover:text-amber-400 transition-colors">
+              JKIA / Wilson Airport VIP Transfers
+            </a>
+          </li>
+          <li>
+            <a href="/#services-section" class="hover:text-amber-400 transition-colors">
+              Team Building in Naivasha &amp; Nanyuki
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Col 5: Physical Contact & Office Location -->
+      <div class="space-y-4">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-amber-400">
+          Nairobi Operations Desk
+        </h4>
+        <div class="space-y-3 text-xs text-slate-300">
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="map-pin" class="w-4 h-4 text-amber-400 shrink-0 mt-0.5"></i>
+            <span class="leading-snug">
+              {{ company.address.full|default:"Applewood Adams, 8th Floor, Ngong Road, Nairobi, Kenya" }}
+            </span>
+          </div>
+
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="phone" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i>
+            <div class="space-y-0.5">
+              <a href="tel:{{ company.contacts.primary_phone|default:'+254712236522' }}" class="hover:text-white block">
+                {{ company.contacts.phone_formatted|default:"+254 (0) 712 236 522" }}
+              </a>
+              <a href="tel:{{ company.contacts.alt_phone|default:'+254113446213' }}" class="hover:text-white block">
+                {{ company.contacts.alt_phone|default:"+254 113 446 213" }}
+              </a>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="mail" class="w-4 h-4 text-sky-400 shrink-0 mt-0.5"></i>
+            <div class="space-y-0.5">
+              <a href="mailto:{{ company.contacts.email_general|default:'info@myriad-travel.com' }}" class="hover:text-white block">
+                {{ company.contacts.email_general|default:"info@myriad-travel.com" }}
+              </a>
+              <a href="mailto:{{ company.contacts.email_marketing|default:'marketing@myriad-travel.com' }}" class="hover:text-white block">
+                {{ company.contacts.email_marketing|default:"marketing@myriad-travel.com" }}
+              </a>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-2.5">
+            <i data-lucide="clock" class="w-4 h-4 text-slate-400 shrink-0 mt-0.5"></i>
+            <div class="space-y-0.5 text-[11px] text-slate-400">
+              <span>Mon - Fri: 8:30 AM – 5:30 PM (EAT)</span>
+              <span class="block">Saturday: 9:00 AM – 1:00 PM (EAT)</span>
+              <span class="text-emerald-400 font-semibold block">
+                24/7 Client Ground Support &amp; WhatsApp
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Copyright Bar -->
+    <div class="pt-12 mt-12 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <div>
+        &copy; {% now "Y" %} {{ company.name|default:"Myriad Travel" }}. All Rights Reserved. Licensed by Tourism Regulatory Authority of Kenya (TRA).
+      </div>
+
+      <div class="flex items-center gap-4 text-slate-400">
+        <a href="#" class="hover:underline">Privacy Policy</a>
+        <span>•</span>
+        <a href="#" class="hover:underline">Terms of Service</a>
+        <span>•</span>
+        <a href="#" class="hover:underline">Booking Conditions</a>
+      </div>
+    </div>
+  </div>
+</footer>

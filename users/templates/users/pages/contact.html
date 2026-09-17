@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Contact &amp; Nairobi Office — Myriad Travel
+{% endblock %}
+
+{% block content %}
+<div class="bg-slate-900 text-white py-16 px-4 sm:px-8">
+  <div class="max-w-7xl mx-auto space-y-4">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold uppercase tracking-wider">
+      <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
+      <span>Nairobi Operations HQ</span>
+    </div>
+    <h1 class="text-3xl sm:text-5xl font-bold font-serif">
+      Contact Our Safari Designers
+    </h1>
+    <p class="text-slate-300 text-sm sm:text-base max-w-2xl">
+      Visit us at Applewood Adams on Ngong Road or reach our 24/7 concierge desk via phone, email, or WhatsApp.
+    </p>
+  </div>
+</div>
+
+<div class="py-16 px-4 sm:px-8 max-w-7xl mx-auto">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+    <!-- Left Column: Physical Office & Contacts (5 cols) -->
+    <div class="lg:col-span-5 space-y-8">
+      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+        <h2 class="text-xl font-bold font-serif text-slate-900">Headquarters &amp; Direct Lines</h2>
+        
+        <div class="space-y-4 text-sm text-slate-700">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+              <i data-lucide="map-pin" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <strong class="text-slate-900 block">Nairobi Head Office:</strong>
+              <span>{{ company.address.full|default:"Applewood Adams, 8th Floor, Ngong Road, Nairobi, Kenya" }}</span>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+              <i data-lucide="phone" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <strong class="text-slate-900 block">Telephone &amp; WhatsApp:</strong>
+              <span>{{ company.contacts.phone_formatted|default:"+254 (0) 712 236 522" }}</span>
+              <span class="block text-xs text-slate-500">Alt: +254 113 446 213</span>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center shrink-0">
+              <i data-lucide="mail" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <strong class="text-slate-900 block">Email Desks:</strong>
+              <a href="mailto:{{ company.contacts.email_general|default:'info@myriad-travel.com' }}" class="text-amber-700 hover:underline block">
+                {{ company.contacts.email_general|default:"info@myriad-travel.com" }}
+              </a>
+              <a href="mailto:{{ company.contacts.email_marketing|default:'marketing@myriad-travel.com' }}" class="text-amber-700 hover:underline block text-xs">
+                {{ company.contacts.email_marketing|default:"marketing@myriad-travel.com" }}
+              </a>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center shrink-0">
+              <i data-lucide="clock" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <strong class="text-slate-900 block">Office Hours (EAT):</strong>
+              <span>Mon - Fri: 8:30 AM – 5:30 PM</span>
+              <span class="block text-xs text-slate-500">Saturday: 9:00 AM – 1:00 PM</span>
+              <span class="block text-xs text-emerald-700 font-semibold mt-1">24/7 WhatsApp Safari Dispatch Active</span>
+            </div>
+          </div>
+        </div>
+
+        <a
+          href="https://wa.me/{{ company.contacts.whatsapp|default:'254712236522' }}?text=Hello%20Myriad%20Travel,%20I%20would%20like%20to%20reach%20your%20safari%20desk."
+          target="_blank"
+          rel="noopener noreferrer"
+          class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-center"
+        >
+          <i data-lucide="send" class="w-4 h-4"></i>
+          <span>Direct WhatsApp Concierge</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Right Column: Standard Django POST Form (7 cols) -->
+    <div class="lg:col-span-7 bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+      <div class="space-y-2">
+        <h2 class="text-xl font-bold font-serif text-slate-900">Send an Online Inquiry</h2>
+        <p class="text-xs sm:text-sm text-slate-600">
+          Fill in your details below. Our Nairobi safari desk will process your inquiry and reply via email / WhatsApp within 2 hours.
+        </p>
+      </div>
+
+      <form method="POST" action="/contact/" class="space-y-4">
+        {% csrf_token %}
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="space-y-1">
+            <label class="text-xs font-bold uppercase text-slate-700">Full Name *</label>
+            <input type="text" name="full_name" required placeholder="Jane Doe" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm" />
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-bold uppercase text-slate-700">Phone / WhatsApp *</label>
+            <input type="tel" name="phone" required placeholder="+254 712 345 678" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="space-y-1">
+            <label class="text-xs font-bold uppercase text-slate-700">Email Address *</label>
+            <input type="email" name="email" required placeholder="jane@example.com" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm" />
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-bold uppercase text-slate-700">Trip Subject / Destination</label>
+            <input type="text" name="subject" placeholder="e.g. 4-Day Maasai Mara or Diani Beach" class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm" />
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-xs font-bold uppercase text-slate-700">Your Message / Requirements *</label>
+          <textarea name="message" rows="4" required placeholder="Tell us about your preferred travel dates, group size, special requests, or Lipa Pole Pole installment preferences..." class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm"></textarea>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full py-3.5 bg-amber-600 hover:bg-amber-700 text-white font-bold text-sm rounded-xl shadow-md transition-colors cursor-pointer"
+        >
+          Submit Inquiry to Nairobi Desk
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -44,6 +44,112 @@ from .models import QuoteRequest
 from django.contrib.auth.models import User
 from blog.models import Post, Category
 from adminside.models import Destination, Package, Accommodation
+from django.utils.text import slugify
+from types import SimpleNamespace
+
+
+def _image_url(image_field, fallback):
+    if image_field and hasattr(image_field, 'cdn_url'):
+        return image_field.cdn_url
+    if image_field and hasattr(image_field, 'url'):
+        try:
+            return image_field.url
+        except (ValueError, AttributeError):
+            pass
+    return fallback
+
+
+def _package_presenter(package):
+    category = package.category.name if package.category else 'Safari & Holiday'
+    destination = package.main_destination.get_full_name() if package.main_destination else 'Kenya'
+    price_kes = int(package.adult_price or 0)
+    highlights = [line.strip() for line in (package.highlights or '').splitlines() if line.strip()]
+    if not highlights:
+        highlights = [
+            'Customizable private itinerary',
+            'Trusted Myriad Travel concierge support',
+        ]
+    lipa_months = package.lipa_pole_pole_months or 4
+    return {
+        'id': package.id,
+        'slug': package.slug,
+        'title': package.name,
+        'subtitle': package.subtitle or package.meta_description or package.description,
+        'description': package.description,
+        'category': category,
+        'region': package.region or slugify(category) or 'kenya-safari',
+        'destination': destination,
+        'featured_image': _image_url(package.featured_image, 'https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=1200&auto=format&fit=crop'),
+        'duration': f'{package.duration_days} Days / {package.duration_nights} Nights',
+        'rating': package.rating,
+        'reviews_count': package.total_reviews,
+        'price_kes': price_kes,
+        'price_usd': round(price_kes / 130) if price_kes else 0,
+        'lipa_pole_pole': package.lipa_pole_pole,
+        'lipa_pole_pole_months': lipa_months,
+        'price_kes_monthly': round(price_kes / lipa_months) if price_kes and lipa_months else 0,
+        'price_usd_monthly': round((price_kes / 130) / lipa_months) if price_kes and lipa_months else 0,
+        'highlights': highlights,
+        'inclusions': [package.inclusions],
+        'exclusions': [package.exclusions],
+        'itinerary': _itinerary_presenter(package),
+        'model': package,
+    }
+
+
+def _itinerary_presenter(package):
+    days = []
+    try:
+        itinerary = package.itinerary
+    except Exception:
+        itinerary = None
+    if itinerary:
+        for day in itinerary.days.all().order_by('day_number'):
+            meals = ', '.join(label for ok, label in [
+                (day.breakfast, 'Breakfast'),
+                (day.lunch, 'Lunch'),
+                (day.dinner, 'Dinner'),
+            ] if ok)
+            days.append({
+                'day': day.day_number,
+                'title': day.title,
+                'description': day.description,
+                'meals': meals,
+                'stay': day.accommodation.name if day.accommodation else '',
+            })
+    return days
+
+
+def _destination_presenter(destination):
+    country = destination.country.name if destination.country else 'Kenya'
+    return {
+        'id': destination.id,
+        'name': destination.name,
+        'slug': destination.slug,
+        'country': country,
+        'description': destination.meta_description or destination.description,
+        'image': _image_url(destination.image, 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?q=80&w=1200&auto=format&fit=crop'),
+        'badge': 'Featured' if destination.is_featured else destination.get_destination_type_display(),
+        'popular_for': ['Safari', 'Nature', 'Tailored Trips'],
+        'model': destination,
+    }
+
+
+def _public_page_context(package_limit=None):
+    packages_qs = Package.objects.select_related('main_destination', 'category').prefetch_related(
+        'available_accommodations',
+        'available_travel_modes',
+        'itinerary__days',
+    ).filter(status=Package.PUBLISHED).order_by('-is_featured', '-published_at', '-created_at')
+    if package_limit:
+        packages_qs = packages_qs[:package_limit]
+
+    destinations_qs = Destination.objects.filter(is_active=True).order_by('-is_featured', 'display_order', 'name')[:12]
+    return {
+        'packages': [_package_presenter(package) for package in packages_qs],
+        'featured_destinations': [_destination_presenter(dest) for dest in destinations_qs],
+        'all_destinations': destinations_qs,
+    }
 
 
 
@@ -105,7 +211,7 @@ def services(request):
     """
     Render the services page showcasing all Mbugani Luxe Adventures services.
     """
-    return render(request, 'users/services.html')
+    return render(request, 'users/pages/services.html', _public_page_context(package_limit=6))
 
 
 def corporate(request):
@@ -145,11 +251,30 @@ def ngo_travel(request):
 
 def holidays(request):
 
-    return render(request, 'users/holidays.html')
+    return render(request, 'users/pages/packages.html', _public_page_context())
 
 def contactus(request):
 
-    return render(request, 'users/contactus.html')
+    return render(request, 'users/pages/contact.html')
+
+
+def packages(request):
+    return render(request, 'users/pages/packages.html', _public_page_context())
+
+
+def destinations(request):
+    return render(request, 'users/pages/destinations.html', _public_page_context())
+
+
+def package_detail(request, slug):
+    package = get_object_or_404(
+        Package.objects.select_related('main_destination', 'category').prefetch_related('itinerary__days'),
+        slug=slug,
+        status=Package.PUBLISHED,
+    )
+    context = _public_page_context(package_limit=6)
+    context['pkg'] = _package_presenter(package)
+    return render(request, 'users/pages/package_detail.html', context)
 
 
 def send_job_application_emails(job_application):
@@ -461,7 +586,8 @@ def home(request):
             'hero_slides': hero_slides,  # Dynamic hero slider data
         }
 
-        return render(request, 'users/indexbackup.html', context)
+        context.update(_public_page_context(package_limit=12))
+        return render(request, 'users/pages/home.html', context)
 
 
     except Exception as e:
@@ -479,7 +605,8 @@ def home(request):
                 'hero_slides': [],  # Empty hero slides for fallback
             }
             logger.debug("Using basic context fallback")
-            return render(request, 'users/indexbackup.html', basic_context)
+            basic_context.update(_public_page_context(package_limit=12))
+            return render(request, 'users/pages/home.html', basic_context)
         except Exception as e2:
             logger.error(f"Error in home view fallback: {e2}")
             from django.http import HttpResponse
@@ -522,7 +649,9 @@ def destination(request,id):
 
 	context={'dest':dest,'packages':packages}
 
-	return render(request,'users/destination.html',context)
+	context.update(_public_page_context())
+	context['dest'] = _destination_presenter(dest)
+	return render(request,'users/pages/destinations.html',context)
 
 
 

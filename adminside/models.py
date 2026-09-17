@@ -329,7 +329,21 @@ class Package(models.Model):
     # Basic information
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
+    subtitle = models.CharField(max_length=280, blank=True, help_text="Short package card subtitle for the public website")
     description = CKEditor5Field(config_name='default', help_text="Detailed package description with rich text formatting")
+
+    REGION_CHOICES = [
+        ('kenya-safari', 'Kenya Safaris & Bush'),
+        ('kenya-coast', 'Kenya Coast & Beach'),
+        ('international', 'International Escapes'),
+        ('day-trips', 'Weekend Hikes & Day Trips'),
+    ]
+    region = models.CharField(
+        max_length=40,
+        choices=REGION_CHOICES,
+        default='kenya-safari',
+        help_text="Frontend collection used by the Myriad package filters"
+    )
 
     # Category
     category = models.ForeignKey(
@@ -357,8 +371,11 @@ class Package(models.Model):
     # Pricing
     adult_price = models.PositiveIntegerField()
     child_price = models.PositiveIntegerField()
+    lipa_pole_pole = models.BooleanField(default=False, help_text="Show this package as eligible for Myriad's Lipa Pole Pole plan")
+    lipa_pole_pole_months = models.PositiveIntegerField(default=4, help_text="Suggested number of monthly installments")
 
     # Package content
+    highlights = models.TextField(blank=True, help_text="One public-facing highlight per line for package cards and detail pages")
     inclusions = CKEditor5Field(config_name='default', help_text="What's included in the package")
     exclusions = CKEditor5Field(config_name='default', help_text="What's NOT included in the package")
     

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Concierge Travel Services &amp; Corporate MICE — Myriad Travel
+{% endblock %}
+
+{% block content %}
+<div class="bg-slate-900 text-white py-16 px-4 sm:px-8">
+  <div class="max-w-7xl mx-auto space-y-4">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold uppercase tracking-wider">
+      <i data-lucide="briefcase" class="w-3.5 h-3.5"></i>
+      <span>Travel Concierge</span>
+    </div>
+    <h1 class="text-3xl sm:text-5xl font-bold font-serif">
+      Full-Service Safari &amp; Corporate Logistics
+    </h1>
+    <p class="text-slate-300 text-sm sm:text-base max-w-2xl">
+      Domestic bush hops, international flights, Kenya eTA visa guidance, 4x4 cruiser hire, and corporate team-building retreats in Naivasha and Nanyuki.
+    </p>
+  </div>
+</div>
+
+{% include 'components/services_section.html' %}
+{% endblock %}

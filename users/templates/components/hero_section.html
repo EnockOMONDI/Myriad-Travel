@@ -1,0 +1,62 @@
+{% load static %}
+<section id="hero" class="relative w-full overflow-hidden bg-slate-950 text-white">
+  <div class="absolute inset-0 z-0">
+    <div class="hero-slide absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-100 scale-100" data-title="Discover Kenya" data-tag="Kenya's Finest Destinations">
+      <img src="{% static 'images/hero/discover-kenya.png' %}" alt="Elephants beneath Mount Kilimanjaro" class="w-full h-full object-cover object-center" loading="eager" />
+      <div class="absolute inset-0 bg-black/25"></div>
+    </div>
+
+    <div class="hero-slide absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-0 scale-105 pointer-events-none" data-title="Beyond Imagination" data-tag="Myriad Travel">
+      <img src="{% static 'images/hero/beyond-imagination.png' %}" alt="Turquoise island lagoon" class="w-full h-full object-cover object-center" loading="lazy" />
+      <div class="absolute inset-0 bg-black/20"></div>
+    </div>
+
+    <div class="hero-slide absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-0 scale-105 pointer-events-none" data-title="Tours & Safaris" data-tag="Wild Experiences. Unforgettable Memories">
+      <img src="{% static 'images/hero/tours-safaris.png' %}" alt="Safari vehicle at sunset" class="w-full h-full object-cover object-center" loading="lazy" />
+      <div class="absolute inset-0 bg-black/35"></div>
+    </div>
+
+    <div class="hero-slide absolute inset-0 transition-opacity duration-1000 ease-in-out opacity-0 scale-105 pointer-events-none" data-title="Signature Tours" data-tag="Tailored for Life's Biggest Moments">
+      <img src="{% static 'images/hero/signature-tours.png' %}" alt="Giraffes on open savannah" class="w-full h-full object-cover object-center" loading="lazy" />
+      <div class="absolute inset-0 bg-black/20"></div>
+    </div>
+  </div>
+
+  <button type="button" id="hero-prev-btn" class="absolute left-6 sm:left-10 top-1/2 z-20 -translate-y-1/2 h-11 w-11 rounded-full border border-white/70 text-white hover:bg-white/15 transition-colors flex items-center justify-center" aria-label="Previous slide">
+    <i data-lucide="chevron-left" class="w-5 h-5"></i>
+  </button>
+  <button type="button" id="hero-next-btn" class="absolute right-6 sm:right-10 top-1/2 z-20 -translate-y-1/2 h-11 w-11 rounded-full border border-white/70 text-white hover:bg-white/15 transition-colors flex items-center justify-center" aria-label="Next slide">
+    <i data-lucide="chevron-right" class="w-5 h-5"></i>
+  </button>
+
+  <div class="relative z-10 min-h-[430px] sm:min-h-[520px] lg:min-h-[590px] flex items-center justify-center px-4 sm:px-8 py-20 text-center">
+    <div class="max-w-6xl mx-auto space-y-5">
+      <p id="hero-eyebrow" class="text-2xl sm:text-4xl lg:text-5xl font-light tracking-wide text-white/95">
+        Kenya's Finest Destinations
+      </p>
+
+      <h1 id="hero-heading" class="text-6xl sm:text-8xl lg:text-[8.5rem] font-serif font-bold leading-[0.88] text-white">
+        Discover Kenya
+      </h1>
+
+      <div class="flex items-center justify-center gap-3 text-xs sm:text-sm font-semibold text-white">
+        <span>689 reviews</span>
+        <span class="h-4 w-px bg-white/70"></span>
+        <span class="text-amber-400 tracking-tight">★★★★☆</span>
+        <span>4,8/5</span>
+      </div>
+
+      <a href="#packages-section" class="inline-flex items-center justify-center gap-3 min-w-52 px-8 py-4 border border-white/90 text-white text-sm font-bold hover:bg-white hover:text-slate-950 transition-colors">
+        <span>Take Me There</span>
+        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+      </a>
+    </div>
+  </div>
+
+  <div class="absolute bottom-6 left-1/2 z-20 -translate-x-1/2 flex items-center gap-2">
+    <button type="button" class="hero-slide-btn transition-all duration-300 rounded-full w-8 h-2 bg-white" aria-label="Slide 1"></button>
+    <button type="button" class="hero-slide-btn transition-all duration-300 rounded-full w-2 h-2 bg-white/50 hover:bg-white/80" aria-label="Slide 2"></button>
+    <button type="button" class="hero-slide-btn transition-all duration-300 rounded-full w-2 h-2 bg-white/50 hover:bg-white/80" aria-label="Slide 3"></button>
+    <button type="button" class="hero-slide-btn transition-all duration-300 rounded-full w-2 h-2 bg-white/50 hover:bg-white/80" aria-label="Slide 4"></button>
+  </div>
+</section>

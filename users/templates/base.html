@@ -1,0 +1,153 @@
+{% load static %}
+<!doctype html>
+<html lang="en" class="scroll-smooth" data-currency="KES">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="{% static 'images/myriad-logo.png' %}" />
+    
+    <title>{% block title %}Myriad Travel — Beyond Imagination | Kenya Safaris, Beach Escapes & Global Holidays{% endblock %}</title>
+    
+    <meta name="description" content="{% block meta_description %}Myriad Travel — Beyond Imagination. Premier Kenya safari adventures, Diani & Mombasa beach getaways, international holidays, flights, visa assistance, and corporate travel based in Nairobi, Kenya.{% endblock %}" />
+    <meta name="keywords" content="Myriad Travel, Kenya safari packages, Maasai Mara safari, Diani beach holiday, Nairobi tour operator, Lipa Pole Pole travel, African safari, Amboseli tour, Kenya travel agency" />
+    
+    <!-- Open Graph / Social Meta -->
+    <meta property="og:title" content="{% block og_title %}Myriad Travel — Beyond Imagination | Kenya Safaris & International Holidays{% endblock %}" />
+    <meta property="og:description" content="{% block og_description %}Customized Kenya safaris, luxury beach holidays, international escapes, and corporate travel. Flexible Lipa Pole Pole payments and 5-star verified service.{% endblock %}" />
+    <meta property="og:image" content="{% static 'images/myriad-logo.png' %}" />
+    <meta property="og:type" content="website" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (Compiled Standalone Static File) -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    
+    <!-- Tailwind CSS CDN Fallback for dynamic classes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+              serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            },
+            colors: {
+              safari: {
+                gold: '#D97706',
+                dark: '#0B192C',
+                sand: '#FBF8F2',
+              }
+            }
+          }
+        }
+      }
+    </script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+      body {
+        font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+        color: #1e293b;
+        background-color: #F9F2F2;
+      }
+      h1, h2, h3, .font-serif, .font-display {
+        font-family: "Playfair Display", Georgia, serif;
+      }
+      .form-control,
+      .input-box,
+      form input[type="text"],
+      form input[type="email"],
+      form input[type="password"],
+      form input[type="tel"],
+      form input[type="number"],
+      form input[type="date"],
+      form input[type="file"],
+      form select,
+      form textarea {
+        width: 100%;
+        border: 1px solid #cbd5e1;
+        border-radius: 0.75rem;
+        background: #fff;
+        padding: 0.75rem 0.875rem;
+        font-size: 0.875rem;
+        color: #0f172a;
+        outline: none;
+      }
+      .form-control:focus,
+      .input-box:focus,
+      form input:focus,
+      form select:focus,
+      form textarea:focus {
+        border-color: #d97706;
+        box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.16);
+      }
+      form label {
+        display: block;
+        margin-bottom: 0.375rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #475569;
+        text-transform: uppercase;
+      }
+      form .helptext,
+      form ul.errorlist {
+        display: block;
+        margin-top: 0.35rem;
+        font-size: 0.75rem;
+      }
+      form ul.errorlist {
+        color: #be123c;
+        list-style: none;
+        padding-left: 0;
+      }
+      form p {
+        margin-bottom: 1rem;
+      }
+    </style>
+
+    {% block extra_head %}{% endblock %}
+  </head>
+  <body class="bg-[#F9F2F2] text-slate-900 antialiased selection:bg-amber-600 selection:text-white min-h-screen flex flex-col font-sans">
+    
+    <!-- Django Flash Messages Container -->
+    {% if messages %}
+    <div class="fixed top-20 right-4 z-50 max-w-md space-y-2">
+      {% for message in messages %}
+      <div class="p-4 rounded-xl shadow-lg border text-sm font-medium flex items-center justify-between gap-3 {% if message.tags == 'success' %}bg-emerald-50 text-emerald-900 border-emerald-200{% elif message.tags == 'error' %}bg-rose-50 text-rose-900 border-rose-200{% else %}bg-amber-50 text-amber-900 border-amber-200{% endif %}">
+        <span>{{ message }}</span>
+        <button type="button" onclick="this.parentElement.remove()" class="text-slate-400 hover:text-slate-700">&times;</button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Top Navigation Header -->
+    {% include 'components/navbar.html' %}
+
+    <!-- Main Content Block -->
+    <main class="flex-1">
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    {% include 'components/footer.html' %}
+
+    <!-- Floating WhatsApp Specialist Chat Widget -->
+    {% include 'components/floating_whatsapp.html' %}
+
+    <!-- Modals -->
+    {% include 'components/plan_trip_modal.html' %}
+    {% include 'components/package_modal.html' %}
+    
+    <!-- Core UI Interaction Scripts -->
+    <script src="{% static 'js/main.js' %}"></script>
+    
+    {% block extra_scripts %}{% endblock %}
+  </body>
+</html>

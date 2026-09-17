@@ -1,0 +1,16 @@
+{% load static %}
+<!-- Floating WhatsApp Action Button with Tooltip -->
+<div class="fixed bottom-6 right-6 z-40 flex items-center group">
+  <div class="hidden sm:block mr-3 bg-slate-900 text-white text-xs font-medium py-1.5 px-3 rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+    Chat with a Safari Specialist
+  </div>
+  <a
+    href="https://wa.me/{{ company.contacts.whatsapp|default:'254712236522' }}?text=Hello%20Myriad%20Travel,%20I%20am%20interested%20in%20planning%20a%20trip%20to%20Kenya.%20Could%20you%20assist%20me?"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="w-14 h-14 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all cursor-pointer"
+    aria-label="Chat on WhatsApp"
+  >
+    <i data-lucide="message-circle" class="w-7 h-7"></i>
+  </a>
+</div>

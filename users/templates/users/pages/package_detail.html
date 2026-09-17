@@ -1,0 +1,271 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{{ pkg.title|default:"Safari Itinerary & Package Details" }} — Myriad Travel
+{% endblock %}
+
+{% block content %}
+<div class="py-12 px-4 sm:px-8 max-w-5xl mx-auto space-y-8">
+  <!-- Breadcrumb -->
+  <nav class="flex items-center gap-2 text-xs text-slate-500">
+    <a href="/" class="hover:text-amber-700">Home</a>
+    <span>/</span>
+    <a href="/packages/" class="hover:text-amber-700">Packages</a>
+    <span>/</span>
+    <span class="text-slate-800 font-semibold truncate max-w-xs">{{ pkg.title|default:"Package Detail" }}</span>
+  </nav>
+
+  <!-- Package Header Card -->
+  <div class="relative rounded-3xl overflow-hidden bg-slate-900 text-white min-h-[360px] flex flex-col justify-end p-6 sm:p-10 shadow-2xl">
+    <img 
+      src="{{ pkg.featured_image|default:'https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=1200&auto=format&fit=crop' }}" 
+      alt="{{ pkg.title }}" 
+      class="absolute inset-0 w-full h-full object-cover opacity-80"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent"></div>
+
+    <div class="relative z-10 space-y-3 max-w-3xl">
+      <div class="flex flex-wrap items-center gap-2 text-xs">
+        <span class="px-3 py-1 bg-amber-600 text-white font-bold rounded-full">
+          {{ pkg.category|default:"Big Five Safari" }}
+        </span>
+        <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full flex items-center gap-1">
+          <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+          <span>{{ pkg.duration|default:"4 Days / 3 Nights" }}</span>
+        </span>
+        {% if pkg.lipa_pole_pole %}
+        <span class="px-3 py-1 bg-emerald-600 font-bold rounded-full flex items-center gap-1">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+          <span>Lipa Pole Pole Eligible</span>
+        </span>
+        {% endif %}
+      </div>
+
+      <h1 class="text-2xl sm:text-4xl font-bold font-serif leading-tight">
+        {{ pkg.title|default:"4-Day Maasai Mara Great Migration & Big Five Safari" }}
+      </h1>
+
+      <p class="text-xs sm:text-sm text-slate-200 leading-relaxed">
+        {{ pkg.subtitle|default:"Witness the iconic spectacle of wildlife drama in world-renowned Mara." }}
+      </p>
+
+      <div class="flex flex-wrap items-center gap-4 text-xs text-amber-300 pt-2">
+        <span class="flex items-center gap-1.5 font-medium">
+          <i data-lucide="map-pin" class="w-4 h-4"></i>
+          <span>{{ pkg.destination|default:"Maasai Mara National Reserve, Kenya" }}</span>
+        </span>
+        <span class="flex items-center gap-1.5 font-semibold text-white">
+          <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
+          <span>{{ pkg.rating|default:"4.98" }} ({{ pkg.reviews_count|default:"142" }} verified reviews)</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Grid: Left Details & Right Booking Card -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Left Column (8 cols) -->
+    <div class="lg:col-span-8 space-y-8">
+      <!-- Highlights Box -->
+      <div class="bg-amber-50/60 p-6 rounded-2xl border border-amber-200/70 space-y-3">
+        <h3 class="text-sm font-bold uppercase text-amber-900 tracking-wider flex items-center gap-2">
+          <i data-lucide="sparkles" class="w-4 h-4 text-amber-600"></i>
+          <span>Trip Highlights &amp; Inclusions</span>
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-700">
+          {% for hl in pkg.highlights %}
+          <div class="flex items-start gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+            <span>{{ hl }}</span>
+          </div>
+          {% empty %}
+          <div class="flex items-start gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+            <span>Extensive game drives in custom 4x4 Land Cruiser with pop-up roof</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+            <span>Unrivaled sightings of Lions, Leopards, Cheetahs, and Mara River crossings</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+            <span>Full-board luxury tented camp accommodation</span>
+          </div>
+          <div class="flex items-start gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+            <span>Authentic Maasai cultural village visit with tribal dancing</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Day-by-Day Program -->
+      <div class="space-y-4">
+        <h2 class="text-xl font-bold font-serif text-slate-900">Day-by-Day Safari Itinerary</h2>
+        <div class="relative border-l-2 border-amber-200/80 ml-3 pl-6 space-y-6">
+          {% for day in pkg.itinerary %}
+          <div class="relative group">
+            <span class="absolute -left-[31px] top-1 w-6 h-6 rounded-full bg-amber-600 text-white text-[11px] font-bold flex items-center justify-center shadow-xs">
+              {{ day.day }}
+            </span>
+            <div class="space-y-1.5 bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <h4 class="text-sm font-bold text-slate-900">Day {{ day.day }}: {{ day.title }}</h4>
+                {% if day.meals %}
+                <span class="text-[11px] font-semibold text-amber-700 bg-amber-100/70 px-2 py-0.5 rounded-md">
+                  🍽️ Meals: {{ day.meals }}
+                </span>
+                {% endif %}
+              </div>
+              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">{{ day.description }}</p>
+              {% if day.stay %}
+              <div class="text-[11px] text-slate-500 font-medium pt-1">
+                🏨 <strong>Stay:</strong> {{ day.stay }}
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          {% empty %}
+          <div class="relative group">
+            <span class="absolute -left-[31px] top-1 w-6 h-6 rounded-full bg-amber-600 text-white text-[11px] font-bold flex items-center justify-center shadow-xs">1</span>
+            <div class="space-y-1.5 bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs">
+              <h4 class="text-sm font-bold text-slate-900">Day 1: Nairobi to Game Reserve</h4>
+              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Early morning pickup and drive across the Great Rift Valley. Check in for lunch and late afternoon predator tracking.</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Inclusions & Exclusions -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div class="bg-emerald-50/50 p-5 rounded-2xl border border-emerald-200 space-y-3">
+          <h3 class="text-sm font-bold text-emerald-900 flex items-center gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-emerald-600"></i>
+            <span>Included in Rate</span>
+          </h3>
+          <ul class="space-y-2 text-xs text-slate-700">
+            {% for inc in pkg.inclusions %}
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 mt-1.5 shrink-0"></span>
+              <span>{{ inc }}</span>
+            </li>
+            {% empty %}
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 mt-1.5 shrink-0"></span>
+              <span>Transport in custom 4x4 Land Cruiser with pop-up roof</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 mt-1.5 shrink-0"></span>
+              <span>Full-board accommodation at premier camps</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 mt-1.5 shrink-0"></span>
+              <span>Park entrance and conservation levies</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="bg-rose-50/50 p-5 rounded-2xl border border-rose-200 space-y-3">
+          <h3 class="text-sm font-bold text-rose-900 flex items-center gap-2">
+            <i data-lucide="x-circle" class="w-4 h-4 text-rose-600"></i>
+            <span>Excluded from Rate</span>
+          </h3>
+          <ul class="space-y-2 text-xs text-slate-700">
+            {% for exc in pkg.exclusions %}
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0"></span>
+              <span>{{ exc }}</span>
+            </li>
+            {% empty %}
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0"></span>
+              <span>Personal travel insurance</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0"></span>
+              <span>Gratuities to safari guide and camp staff</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Booking / Enquiry Form (4 cols) -->
+    <div class="lg:col-span-4 space-y-6">
+      <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xl space-y-5 sticky top-24">
+        <div class="space-y-1">
+          <span class="text-[11px] text-slate-500 uppercase font-bold block">Starting From</span>
+          <div class="text-2xl sm:text-3xl font-bold text-slate-900" data-price-kes="{{ pkg.price_kes|default:68500 }}" data-price-usd="{{ pkg.price_usd|default:680 }}">
+            KSh {{ pkg.price_kes|default:"68,500" }}
+          </div>
+          <span class="text-xs text-slate-500 block">per person sharing</span>
+        </div>
+
+        {% if pkg.lipa_pole_pole %}
+        <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 space-y-1">
+          <span class="text-xs font-bold text-emerald-800 flex items-center gap-1">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+            <span>Lipa Pole Pole Option</span>
+          </span>
+          <p class="text-[11px] text-emerald-900 leading-snug">
+            Split this trip across {{ pkg.lipa_pole_pole_months|default:4 }} monthly installments before departure!
+          </p>
+        </div>
+        {% endif %}
+
+        <!-- Django POST Booking Form -->
+        <form method="POST" action="/enquiry/" class="space-y-3">
+          {% csrf_token %}
+          <input type="hidden" name="package_title" value="{{ pkg.title|default:'Safari Package' }}" />
+
+          <div class="space-y-1">
+            <label class="text-[11px] font-bold text-slate-600 uppercase">Your Name *</label>
+            <input type="text" name="full_name" required placeholder="John Doe" class="w-full p-2 text-xs border border-slate-300 rounded-lg" />
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-[11px] font-bold text-slate-600 uppercase">Phone / WhatsApp *</label>
+            <input type="tel" name="phone" required placeholder="+254 712 345 678" class="w-full p-2 text-xs border border-slate-300 rounded-lg" />
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-[11px] font-bold text-slate-600 uppercase">Email Address</label>
+            <input type="email" name="email" placeholder="john@example.com" class="w-full p-2 text-xs border border-slate-300 rounded-lg" />
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-[11px] font-bold text-slate-600 uppercase">Travel Date</label>
+            <input type="date" name="departure_date" class="w-full p-2 text-xs border border-slate-300 rounded-lg" />
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-[11px] font-bold text-slate-600 uppercase">Notes / Preferences</label>
+            <textarea name="notes" rows="2" placeholder="Dietary needs, private cruiser, etc." class="w-full p-2 text-xs border border-slate-300 rounded-lg"></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-xs transition-colors cursor-pointer"
+          >
+            Submit Booking Request
+          </button>
+
+          <a
+            href="https://wa.me/{{ company.contacts.whatsapp|default:'254712236522' }}?text=Hello%20Myriad%20Travel,%20I%20am%20interested%20in%20booking%20{{ pkg.title|default:'Safari'|urlencode }}."
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-xl transition-colors flex items-center justify-center gap-2 text-center"
+          >
+            <i data-lucide="send" class="w-3.5 h-3.5"></i>
+            <span>WhatsApp Specialist</span>
+          </a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

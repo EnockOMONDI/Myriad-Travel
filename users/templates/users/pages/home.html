@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Myriad Travel — Beyond Imagination | Kenya Safaris, Beach Escapes &amp; Global Holidays
+{% endblock %}
+
+{% block content %}
+  <!-- Hero Section -->
+  {% include 'components/hero_section.html' %}
+
+  <!-- Official Accreditation & Partner Authorities Bar -->
+  {% include 'components/accreditation_bar.html' %}
+
+  <!-- Curated Packages & Tours Grid -->
+  {% include 'components/featured_packages.html' %}
+
+  <!-- Extraordinary Destinations Showcase -->
+  {% include 'components/destination_showcase.html' %}
+
+  <!-- Lipa Pole Pole Installment Program Section -->
+  {% include 'components/lipa_pole_pole_section.html' %}
+
+  <!-- The 4 Pillars of Excellence: Why Myriad Travel -->
+  {% include 'components/why_myriad.html' %}
+
+  <!-- Comprehensive Travel Services & Corporate MICE -->
+  {% include 'components/services_section.html' %}
+
+  <!-- Verified Traveler Reviews -->
+  {% include 'components/testimonials_section.html' %}
+
+  <!-- Travel Guides & Entry Advisory -->
+  {% include 'components/travel_guides_section.html' %}
+{% endblock %}

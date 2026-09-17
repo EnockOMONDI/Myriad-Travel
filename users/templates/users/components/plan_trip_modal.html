@@ -1,0 +1,338 @@
+{% load static %}
+<div 
+  id="plan-trip-modal" 
+  class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6"
+>
+  <div 
+    class="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200 my-auto"
+    onclick="event.stopPropagation()"
+  >
+    <!-- Modal Top Header -->
+    <div class="bg-[#0B192C] text-white p-5 sm:p-6 flex items-center justify-between border-b border-slate-800">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold uppercase tracking-widest text-amber-400 flex items-center gap-1">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+            <span>Myriad Travel Concierge</span>
+          </span>
+        </div>
+        <h2 class="text-lg sm:text-xl font-bold font-serif text-white">
+          Design Your Custom Dream Itinerary
+        </h2>
+        <p class="text-xs text-slate-300">
+          Get a customized quote in under 2 hours from our Nairobi safari designers.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        id="close-plan-modal-btn"
+        class="p-2 text-slate-400 hover:text-white rounded-full bg-slate-800/80 hover:bg-slate-700 transition-colors cursor-pointer"
+      >
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Step Indicator Bar -->
+    <div class="bg-slate-50 px-6 py-3 border-b border-slate-200 flex items-center justify-between text-xs font-bold text-slate-600">
+      <div class="plan-step-indicator flex items-center gap-1.5 text-amber-700">
+        <span class="step-circle w-5 h-5 rounded-full flex items-center justify-center text-[10px] bg-amber-600 text-white">1</span>
+        <span>Style &amp; Places</span>
+      </div>
+      <span class="text-slate-300">——</span>
+      <div class="plan-step-indicator flex items-center gap-1.5">
+        <span class="step-circle w-5 h-5 rounded-full flex items-center justify-center text-[10px] bg-slate-200 text-slate-600">2</span>
+        <span>Dates &amp; Party</span>
+      </div>
+      <span class="text-slate-300">——</span>
+      <div class="plan-step-indicator flex items-center gap-1.5">
+        <span class="step-circle w-5 h-5 rounded-full flex items-center justify-center text-[10px] bg-slate-200 text-slate-600">3</span>
+        <span>Details &amp; Quote</span>
+      </div>
+    </div>
+
+    <!-- Modal Form (Django POST Action) -->
+    <form method="POST" action="/plan-trip/" class="p-6 text-slate-800">
+      {% csrf_token %}
+
+      <!-- STEP 1 -->
+      <div class="plan-step-content space-y-5">
+        <div class="space-y-2">
+          <label class="text-xs font-bold uppercase text-slate-700 block">
+            What kind of travel experience are you looking for?
+          </label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <button
+              type="button"
+              class="travel-style-btn p-3 rounded-xl text-left border transition-all cursor-pointer bg-amber-50/80 border-amber-600 text-amber-900 shadow-xs"
+              data-style="Kenya Bush Safari"
+            >
+              <div class="text-xs font-bold">Bush Safari</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Big Five &amp; Migration</div>
+            </button>
+            <button
+              type="button"
+              class="travel-style-btn p-3 rounded-xl text-left border transition-all cursor-pointer bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
+              data-style="Kenya Coast & Beach"
+            >
+              <div class="text-xs font-bold">Coastal Beach</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Diani, Watamu, Lamu</div>
+            </button>
+            <button
+              type="button"
+              class="travel-style-btn p-3 rounded-xl text-left border transition-all cursor-pointer bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
+              data-style="Bush & Beach Combo"
+            >
+              <div class="text-xs font-bold">Bush + Beach</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Safari &amp; Ocean Chill</div>
+            </button>
+            <button
+              type="button"
+              class="travel-style-btn p-3 rounded-xl text-left border transition-all cursor-pointer bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
+              data-style="International Escape"
+            >
+              <div class="text-xs font-bold">International</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Zanzibar, Dubai, Cape Town</div>
+            </button>
+            <button
+              type="button"
+              class="travel-style-btn p-3 rounded-xl text-left border transition-all cursor-pointer bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
+              data-style="Day Hike & Adventure"
+            >
+              <div class="text-xs font-bold">Weekend Hike</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Mt. Longonot &amp; Naivasha</div>
+            </button>
+            <button
+              type="button"
+              class="travel-style-btn p-3 rounded-xl text-left border transition-all cursor-pointer bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
+              data-style="Corporate Retreat / MICE"
+            >
+              <div class="text-xs font-bold">Corporate MICE</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Team Building &amp; Retreats</div>
+            </button>
+            <button
+              type="button"
+              class="travel-style-btn p-3 rounded-xl text-left border transition-all cursor-pointer bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
+              data-style="Romantic Honeymoon"
+            >
+              <div class="text-xs font-bold">💍 Honeymoon</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Luxury Private Escapes</div>
+            </button>
+            <button
+              type="button"
+              class="travel-style-btn p-3 rounded-xl text-left border transition-all cursor-pointer bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
+              data-style="Family Safari"
+            >
+              <div class="text-xs font-bold">👨‍👩‍👧 Family Safari</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Child-Friendly Pacing</div>
+            </button>
+          </div>
+          <input type="hidden" name="travel_style" id="selected-travel-style" value="Kenya Bush Safari" />
+        </div>
+
+        <div class="space-y-2">
+          <label class="text-xs font-bold uppercase text-slate-700 block">
+            Which destinations interest you? (Select all that apply)
+          </label>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-amber-600 text-white font-semibold">Maasai Mara</button>
+            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">Amboseli</button>
+            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">Samburu</button>
+            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">Diani Beach</button>
+            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">Watamu &amp; Malindi</button>
+            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">Lamu Island</button>
+            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">Lake Naivasha</button>
+            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">Mt. Longonot</button>
+            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">Zanzibar</button>
+            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">Dubai</button>
+            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">Cape Town</button>
+          </div>
+          <input type="hidden" name="destinations_selected" id="destinations-selected-input" value="Maasai Mara" />
+        </div>
+
+        <div class="pt-3 flex justify-end">
+          <button
+            type="button"
+            class="plan-next-btn px-6 py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer"
+            data-next-step="2"
+          >
+            Next: Dates &amp; Travelers &rarr;
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="plan-step-content hidden space-y-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <label class="text-xs font-bold uppercase text-slate-700">When do you plan to travel?</label>
+            <select
+              name="departure_month"
+              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium"
+            >
+              <option value="Immediately (This Month)">Immediately (This Month)</option>
+              <option value="Next 1-3 Months" selected>Next 1–3 Months</option>
+              <option value="July - October (Great Migration)">July – October (Great Migration)</option>
+              <option value="December - January (Festive Holidays)">December – January (Festive Holidays)</option>
+              <option value="Dates Flexible">Dates are Flexible</option>
+            </select>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-bold uppercase text-slate-700">Trip Duration</label>
+            <select
+              name="trip_duration"
+              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium"
+            >
+              <option value="1-2 Days (Weekend Trip)">1–2 Days (Weekend Excursion)</option>
+              <option value="3-4 Days">3–4 Days</option>
+              <option value="5-7 Days" selected>5–7 Days</option>
+              <option value="8-12 Days (Grand Safari)">8–12 Days (Grand Safari)</option>
+              <option value="12+ Days">12+ Days</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <label class="text-xs font-bold uppercase text-slate-700">Number of Travelers</label>
+            <select
+              name="travelers"
+              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium"
+            >
+              <option value="Solo Traveler">1 Guest (Solo)</option>
+              <option value="2 Adults (Couple/Pair)" selected>2 Adults (Couple/Pair)</option>
+              <option value="Family with 1-2 Kids">Family with 1–2 Children</option>
+              <option value="Family with 3+ Kids">Family with 3+ Children</option>
+              <option value="Small Group (4-6 Friends)">Small Group (4–6 Friends)</option>
+              <option value="Corporate Group (10+ Pax)">Corporate / Large Group (10+ Pax)</option>
+            </select>
+          </div>
+
+          <div class="space-y-1.5">
+            <label class="text-xs font-bold uppercase text-slate-700">Accommodation Preference</label>
+            <select
+              name="accommodation_style"
+              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium"
+            >
+              <option value="Comfort Mid-Range Lodges">Comfort Mid-Range Lodges &amp; Tents</option>
+              <option value="Mid-range to Luxury Safari Tented Camps" selected>Premium 4-Star &amp; Luxury Tented Camps</option>
+              <option value="Ultra-Luxury 5-Star Exclusive Lodges">Ultra-Luxury 5-Star Exclusive Lodges</option>
+              <option value="Budget-Friendly / Camping">Budget-Friendly / Camping</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pt-3 flex items-center justify-between">
+          <button
+            type="button"
+            class="plan-prev-btn px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer"
+            data-prev-step="1"
+          >
+            &larr; Back
+          </button>
+          <button
+            type="button"
+            class="plan-next-btn px-6 py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer"
+            data-next-step="3"
+          >
+            Next: Contact &amp; Quote &rarr;
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="plan-step-content hidden space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="space-y-1">
+            <label class="text-[11px] font-bold text-slate-700 uppercase">Full Name *</label>
+            <input
+              type="text"
+              name="full_name"
+              required
+              placeholder="e.g. David Mwangi"
+              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm"
+            />
+          </div>
+
+          <div class="space-y-1">
+            <label class="text-[11px] font-bold text-slate-700 uppercase">Phone / WhatsApp Number *</label>
+            <input
+              type="tel"
+              name="phone"
+              required
+              placeholder="e.g. +254 712 345 678"
+              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm"
+            />
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-[11px] font-bold text-slate-700 uppercase">Email Address</label>
+          <input
+            type="email"
+            name="email"
+            placeholder="e.g. david@example.com"
+            class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm"
+          />
+        </div>
+
+        <!-- Lipa Pole Pole Checkbox -->
+        <div class="p-3 bg-emerald-50 rounded-xl border border-emerald-200 flex items-center justify-between">
+          <div class="space-y-0.5">
+            <span class="text-xs font-bold text-emerald-900 block">
+              Interested in Lipa Pole Pole Installment Plan?
+            </span>
+            <span class="text-[11px] text-emerald-700">
+              Pay for your trip in easy, zero-interest monthly installments before travel.
+            </span>
+          </div>
+          <input
+            type="checkbox"
+            name="lipa_pole_pole"
+            checked
+            class="w-5 h-5 text-emerald-600 rounded-sm focus:ring-emerald-500 cursor-pointer"
+          />
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-[11px] font-bold text-slate-700 uppercase">Special Notes or Specific Requests</label>
+          <textarea
+            name="notes"
+            rows="2"
+            placeholder="Tell us about special dietary needs, flight preferences, or celebrations (honeymoon, anniversary, team building)..."
+            class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm"
+          ></textarea>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="pt-2 flex flex-col sm:flex-row gap-3">
+          <button
+            type="button"
+            class="plan-prev-btn py-2.5 px-4 text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer"
+            data-prev-step="2"
+          >
+            &larr; Back
+          </button>
+
+          <button
+            type="submit"
+            class="flex-1 py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-xs transition-colors cursor-pointer"
+          >
+            Submit Website Request
+          </button>
+
+          <a
+            href="https://wa.me/254712236522?text=Hello%20Myriad%20Travel,%20I%20would%20like%20to%20plan%20a%20custom%20itinerary."
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer text-center"
+          >
+            <i data-lucide="send" class="w-4 h-4"></i>
+            <span>Send to WhatsApp</span>
+          </a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -234,10 +234,10 @@ class PackageBookingInline(admin.TabularInline):
 @admin.register(Package)
 class PackageAdmin(admin.ModelAdmin):
     form = PackageAdminForm
-    list_display = ('name', 'display_image', 'category', 'main_destination', 'adult_price',
-                   'child_price', 'duration_days', 'status', 'is_featured', 'total_bookings')
-    list_filter = ('category', 'main_destination', 'status', 'is_featured', 'duration_days')
-    search_fields = ('name', 'description', 'inclusions', 'exclusions')
+    list_display = ('name', 'display_image', 'category', 'region', 'main_destination', 'adult_price',
+                   'child_price', 'duration_days', 'lipa_pole_pole', 'status', 'is_featured', 'total_bookings')
+    list_filter = ('category', 'region', 'main_destination', 'status', 'lipa_pole_pole', 'is_featured', 'duration_days')
+    search_fields = ('name', 'subtitle', 'description', 'highlights', 'inclusions', 'exclusions')
     filter_horizontal = ('available_accommodations', 'available_travel_modes')
     readonly_fields = ('total_bookings', 'total_reviews')
     prepopulated_fields = {'slug': ('name',)}
@@ -246,7 +246,7 @@ class PackageAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Basic Information', {
-            'fields': ('name', 'slug', 'category', 'main_destination', 'duration_days', 'duration_nights')
+            'fields': ('name', 'slug', 'subtitle', 'category', 'region', 'main_destination', 'duration_days', 'duration_nights')
         }),
         ('Media', {
             'fields': ('featured_image',)
@@ -256,13 +256,13 @@ class PackageAdmin(admin.ModelAdmin):
             'classes': ('wide',)
         }),
         ('Pricing', {
-            'fields': ('adult_price', 'child_price')
+            'fields': ('adult_price', 'child_price', 'lipa_pole_pole', 'lipa_pole_pole_months')
         }),
         ('Available Options', {
             'fields': ('available_accommodations', 'available_travel_modes')
         }),
         ('Package Details', {
-            'fields': ('inclusions', 'exclusions'),
+            'fields': ('highlights', 'inclusions', 'exclusions'),
             'classes': ('wide',)
         }),
         ('SEO', {
