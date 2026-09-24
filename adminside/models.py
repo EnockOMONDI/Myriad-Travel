@@ -380,7 +380,7 @@ class Package(models.Model):
     exclusions = CKEditor5Field(config_name='default', help_text="What's NOT included in the package")
     
     # Media
-    featured_image = ImageField(blank=False, null=False, manual_crop="4:4")
+    featured_image = ImageField(blank=True, null=True, manual_crop="4:4")
     
     # Accommodation and travel options
     available_accommodations = models.ManyToManyField(
