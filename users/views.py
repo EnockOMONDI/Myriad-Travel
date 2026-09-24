@@ -79,7 +79,7 @@ def _package_presenter(package):
         'category': category,
         'region': package.region or slugify(category) or 'kenya-safari',
         'destination': destination,
-        'featured_image': _image_url(package.featured_image, 'https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=1200&auto=format&fit=crop'),
+        'featured_image': _image_url(package.featured_image, '/static/images/placeholders/myriad-package-placeholder.png'),
         'duration': f'{package.duration_days} Days / {package.duration_nights} Nights',
         'rating': package.rating,
         'reviews_count': package.total_reviews,
