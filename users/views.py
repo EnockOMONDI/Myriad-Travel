@@ -39,8 +39,8 @@ from .forms import UserRegisterForm
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from .utils import send_booking_confirmation_email
-from .forms import MICEInquiryForm, StudentTravelInquiryForm, NGOTravelInquiryForm, JobApplicationForm, NewsletterSubscriptionSimpleForm, QuoteRequestForm
-from .models import QuoteRequest
+from .forms import MICEInquiryForm, StudentTravelInquiryForm, NGOTravelInquiryForm, JobApplicationForm, NewsletterSubscriptionSimpleForm, QuoteRequestForm, TripFeedbackForm
+from .models import QuoteRequest, TripFeedback
 from django.contrib.auth.models import User
 from blog.models import Post, Category
 from adminside.models import Destination, Package, Accommodation
@@ -145,10 +145,16 @@ def _public_page_context(package_limit=None):
         packages_qs = packages_qs[:package_limit]
 
     destinations_qs = Destination.objects.filter(is_active=True).order_by('-is_featured', 'display_order', 'name')[:12]
+    trip_feedbacks = TripFeedback.objects.filter(
+        is_visible_on_site=True,
+        permission_to_publish=True,
+        status__in=[TripFeedback.SUBMITTED, TripFeedback.REVIEWED],
+    ).order_by('-is_featured', '-submitted_at', '-created_at')[:6]
     return {
         'packages': [_package_presenter(package) for package in packages_qs],
         'featured_destinations': [_destination_presenter(dest) for dest in destinations_qs],
         'all_destinations': destinations_qs,
+        'trip_feedbacks': trip_feedbacks,
     }
 
 
@@ -1248,6 +1254,28 @@ def quote_success(request):
     """
     return render(request, 'users/quote_success.html', {
         'page_title': 'Quote Request Submitted',
+    })
+
+
+def trip_feedback(request, token):
+    feedback = get_object_or_404(TripFeedback, token=token)
+
+    if request.method == 'POST':
+        form = TripFeedbackForm(request.POST, instance=feedback)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.mark_submitted()
+            feedback.save()
+            messages.success(request, 'Thank you. Your trip feedback has been saved for our team to review.')
+            return redirect('users:trip_feedback', token=feedback.token)
+        messages.error(request, 'Please correct the errors below.')
+    else:
+        form = TripFeedbackForm(instance=feedback)
+
+    return render(request, 'users/trip_feedback.html', {
+        'feedback_request': feedback,
+        'form': form,
+        'page_title': 'Trip Feedback',
     })
 
 

@@ -117,6 +117,13 @@ htmlcov/
 *~
 
 # ============================================
+# LOCAL WORKSPACE NOTES & AUDIT ARTIFACTS
+# ============================================
+PLAN.md
+data/
+package_upload_images/
+
+# ============================================
 # SECRETS & CREDENTIALS
 # ============================================
 secrets.json

@@ -1,0 +1,225 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page_title }} | Myriad Travel</title>
+    <link rel="icon" type="image/png" href="{% static 'images/myriad-logo.png' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+              serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            },
+            colors: {
+              myriad: {
+                navy: '#071321',
+                teal: '#079b8e',
+                orange: '#e07900',
+                mist: '#f9f2f2',
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-myriad-mist text-slate-900 font-sans">
+    <header class="bg-myriad-navy text-white border-b border-white/10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div class="flex items-center gap-4">
+          <div class="h-16 w-16 rounded-md bg-white flex items-center justify-center overflow-hidden">
+            <img src="{% static 'images/myriad-logo.png' %}" alt="Myriad Travel" class="h-14 w-14 object-contain">
+          </div>
+          <div>
+            <p class="text-xs uppercase tracking-[0.2em] text-amber-300 font-bold">Owner Cockpit</p>
+            <h1 class="text-2xl sm:text-3xl font-serif font-bold">Myriad Travel Dashboard</h1>
+            <p class="text-sm text-slate-300">Last updated {{ last_updated|date:"M d, Y H:i" }}</p>
+          </div>
+        </div>
+        <nav class="flex flex-wrap gap-2 text-sm font-semibold">
+          <a href="{% url 'owner_dashboard:dashboard' %}" class="rounded-md bg-white text-myriad-navy px-4 py-2">Dashboard</a>
+          <a href="{% url 'admin:index' %}" class="rounded-md bg-white/10 hover:bg-white/20 px-4 py-2">Manage Records</a>
+          <a href="#guide" class="rounded-md bg-white/10 hover:bg-white/20 px-4 py-2">Guide / How It Works</a>
+          <a href="/" class="rounded-md bg-myriad-orange hover:bg-amber-600 px-4 py-2">View Site</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <section>
+        <div class="flex items-end justify-between gap-4 mb-4">
+          <div>
+            <p class="text-sm font-bold uppercase tracking-[0.18em] text-myriad-orange">Business Overview</p>
+            <h2 class="text-2xl font-serif font-bold text-myriad-navy">Today at a glance</h2>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          {% for item in metrics %}
+          <article class="bg-white border border-slate-200 rounded-lg p-5 shadow-sm">
+            <p class="text-xs font-bold uppercase tracking-wide text-slate-500">{{ item.label }}</p>
+            <p class="mt-3 text-3xl font-extrabold text-myriad-navy">{{ item.value }}</p>
+            <p class="mt-2 text-sm text-slate-500">{{ item.helper }}</p>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div class="xl:col-span-2 bg-white border border-slate-200 rounded-lg shadow-sm">
+          <div class="p-5 border-b border-slate-100">
+            <p class="text-sm font-bold uppercase tracking-[0.18em] text-myriad-orange">Needs Attention</p>
+            <h2 class="text-xl font-serif font-bold text-myriad-navy">Work that should not sit idle</h2>
+          </div>
+          <div class="divide-y divide-slate-100">
+            {% for item in needs_attention %}
+            <a href="{{ item.url }}" class="flex items-start justify-between gap-4 p-5 hover:bg-slate-50">
+              <div>
+                <p class="font-bold text-slate-900">{{ item.title }}</p>
+                <p class="mt-1 text-sm text-slate-500">{{ item.description }}</p>
+              </div>
+              <span class="shrink-0 rounded-md px-3 py-1 text-sm font-extrabold {% if item.urgent %}bg-red-100 text-red-700{% else %}bg-amber-100 text-amber-700{% endif %}">{{ item.count }}</span>
+            </a>
+            {% empty %}
+            <div class="p-5 text-sm text-slate-500">No urgent operational items right now.</div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <aside class="bg-myriad-navy text-white rounded-lg shadow-sm p-5">
+          <p class="text-sm font-bold uppercase tracking-[0.18em] text-amber-300">Finance Snapshot</p>
+          <h2 class="mt-1 text-xl font-serif font-bold">Manual booking value</h2>
+          <dl class="mt-5 space-y-4">
+            <div class="flex justify-between gap-4">
+              <dt class="text-slate-300">Total value</dt>
+              <dd class="font-extrabold">{{ finance.total_booking_value }}</dd>
+            </div>
+            <div class="flex justify-between gap-4">
+              <dt class="text-slate-300">Confirmed value</dt>
+              <dd class="font-extrabold">{{ finance.confirmed_booking_value }}</dd>
+            </div>
+            <div class="flex justify-between gap-4">
+              <dt class="text-slate-300">Pending value</dt>
+              <dd class="font-extrabold">{{ finance.pending_booking_value }}</dd>
+            </div>
+            <div class="pt-4 border-t border-white/10 text-sm text-slate-300">
+              Online payments are not enabled. This section reads current booking records only.
+            </div>
+          </dl>
+        </aside>
+      </section>
+
+      <section>
+        <p class="text-sm font-bold uppercase tracking-[0.18em] text-myriad-orange">Quick Actions</p>
+        <h2 class="text-2xl font-serif font-bold text-myriad-navy mb-4">Jump by workflow</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
+          {% for group in quick_actions %}
+          <article class="bg-white border border-slate-200 rounded-lg p-5 shadow-sm">
+            <h3 class="font-bold text-myriad-navy">{{ group.title }}</h3>
+            <div class="mt-4 space-y-2">
+              {% for action in group.actions %}
+              <a href="{{ action.url }}" class="block rounded-md border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 hover:border-myriad-teal hover:text-myriad-teal">{{ action.label }}</a>
+              {% endfor %}
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <article class="bg-white border border-slate-200 rounded-lg shadow-sm">
+          <div class="p-5 border-b border-slate-100">
+            <p class="text-sm font-bold uppercase tracking-[0.18em] text-myriad-orange">Operations</p>
+            <h2 class="text-xl font-serif font-bold text-myriad-navy">Upcoming trips and follow-ups</h2>
+          </div>
+          <div class="p-5 space-y-5">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900">Upcoming bookings</h3>
+              <div class="mt-3 space-y-3">
+                {% for booking in operations.upcoming_bookings %}
+                <div class="flex justify-between gap-3 text-sm">
+                  <span class="font-semibold">{{ booking.booking_reference }} - {{ booking.full_name }}</span>
+                  <span class="text-slate-500">{{ booking.travel_date|date:"M d" }}</span>
+                </div>
+                {% empty %}
+                <p class="text-sm text-slate-500">No upcoming bookings found.</p>
+                {% endfor %}
+              </div>
+            </div>
+            <div class="border-t border-slate-100 pt-5">
+              <h3 class="text-sm font-bold text-slate-900">Open follow-ups</h3>
+              <div class="mt-3 space-y-3">
+                {% for followup in operations.open_followups %}
+                <div class="flex justify-between gap-3 text-sm">
+                  <span class="font-semibold">{{ followup.title }}</span>
+                  <span class="{% if followup.is_overdue %}text-red-600{% else %}text-slate-500{% endif %}">{{ followup.due_at|date:"M d H:i" }}</span>
+                </div>
+                {% empty %}
+                <p class="text-sm text-slate-500">No open follow-ups yet.</p>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="bg-white border border-slate-200 rounded-lg shadow-sm">
+          <div class="p-5 border-b border-slate-100">
+            <p class="text-sm font-bold uppercase tracking-[0.18em] text-myriad-orange">Recent Activity</p>
+            <h2 class="text-xl font-serif font-bold text-myriad-navy">Newest movement</h2>
+          </div>
+          <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <h3 class="text-sm font-bold text-slate-900">Bookings</h3>
+              <div class="mt-3 space-y-3">
+                {% for booking in recent_activity.bookings %}
+                <p class="text-sm"><span class="font-semibold">{{ booking.full_name }}</span><br><span class="text-slate-500">{{ booking.status|title }} - {{ booking.created_at|date:"M d" }}</span></p>
+                {% empty %}
+                <p class="text-sm text-slate-500">No bookings yet.</p>
+                {% endfor %}
+              </div>
+            </div>
+            <div>
+              <h3 class="text-sm font-bold text-slate-900">Quotes and inquiries</h3>
+              <div class="mt-3 space-y-3">
+                {% for quote in recent_activity.quotes %}
+                <p class="text-sm"><span class="font-semibold">{{ quote.full_name }}</span><br><span class="text-slate-500">{{ quote.destination }} - {{ quote.status|title }}</span></p>
+                {% endfor %}
+                {% for inquiry in recent_activity.inquiries %}
+                <p class="text-sm"><span class="font-semibold">{{ inquiry.name }}</span><br><span class="text-slate-500">{{ inquiry.kind }} - {{ inquiry.created_at|date:"M d" }}</span></p>
+                {% empty %}
+                {% if not recent_activity.quotes %}<p class="text-sm text-slate-500">No inquiries yet.</p>{% endif %}
+                {% endfor %}
+              </div>
+            </div>
+            <div class="md:col-span-2 border-t border-slate-100 pt-5">
+              <h3 class="text-sm font-bold text-slate-900">Trip feedback</h3>
+              <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                {% for feedback in recent_activity.feedback %}
+                <p class="text-sm"><span class="font-semibold">{{ feedback.client_name }}</span><br><span class="text-slate-500">{{ feedback.get_status_display }}{% if feedback.rating %} - {{ feedback.rating }}/5{% endif %}</span></p>
+                {% empty %}
+                <p class="text-sm text-slate-500">No trip feedback yet.</p>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section id="guide" class="bg-white border border-slate-200 rounded-lg shadow-sm p-5">
+        <p class="text-sm font-bold uppercase tracking-[0.18em] text-myriad-orange">Guide / How It Works</p>
+        <h2 class="mt-1 text-xl font-serif font-bold text-myriad-navy">Dashboard vs Django admin</h2>
+        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-5 text-sm text-slate-600">
+          <p><strong class="text-slate-900">Use this dashboard</strong> to see business health, urgent work, follow-ups, bookings, and shortcuts grouped by workflow.</p>
+          <p><strong class="text-slate-900">Use Django admin</strong> for detailed editing, publishing packages/blogs, managing records, and staff-only operations.</p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

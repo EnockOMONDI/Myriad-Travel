@@ -34,6 +34,7 @@ urlpatterns = [
     # Quote Request URLs
     path('quote/', views.quote_request_view, name='quote_request'),
     path('quote/success/', views.quote_success, name='quote_success'),
+    path('trip-feedback/<uuid:token>/', views.trip_feedback, name='trip_feedback'),
 
     # User Profile URLs
     path('profile/', views.user_profile, name='user_profile'),

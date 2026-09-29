@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     # 'django_q',  # Removed - migrated to synchronous Mailtrap HTTP API
     'adminside',
     'users',
+    'owner_dashboard',
     'blog',
     'status',
     'taggit',

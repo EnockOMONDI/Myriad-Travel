@@ -3,7 +3,8 @@ from django import forms
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.html import format_html
-from .models import UserBookings, MICEInquiry, StudentTravelInquiry, NGOTravelInquiry, UserProfile, BucketList, Booking, JobApplication, NewsletterSubscription, JobListing, QuoteRequest
+from django.utils import timezone
+from .models import UserBookings, MICEInquiry, StudentTravelInquiry, NGOTravelInquiry, UserProfile, BucketList, Booking, JobApplication, NewsletterSubscription, JobListing, QuoteRequest, FollowUp, TripFeedback
 from django_ckeditor_5.widgets import CKEditor5Widget
 
 class UserBookingsAdminForm(forms.ModelForm):
@@ -183,6 +184,139 @@ class UserAdmin(BaseUserAdmin):
     inlines = (UserProfileInline,)
     list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'date_joined')
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'date_joined')
+
+
+@admin.register(FollowUp)
+class FollowUpAdmin(admin.ModelAdmin):
+    list_display = ('title', 'follow_up_type', 'status', 'priority', 'due_at', 'assigned_to', 'customer_name', 'is_overdue_display')
+    list_filter = ('status', 'priority', 'follow_up_type', 'assigned_to', 'due_at')
+    search_fields = ('title', 'customer_name', 'customer_email', 'customer_phone', 'notes')
+    readonly_fields = ('created_at', 'updated_at', 'completed_at')
+    date_hierarchy = 'due_at'
+    actions = ('mark_completed', 'mark_in_progress')
+
+    fieldsets = (
+        ('Follow-up Details', {
+            'fields': ('title', 'follow_up_type', 'status', 'priority', 'due_at', 'assigned_to')
+        }),
+        ('Customer Contact', {
+            'fields': ('customer_name', 'customer_email', 'customer_phone')
+        }),
+        ('Related Records', {
+            'fields': ('booking', 'quote_request', 'mice_inquiry', 'student_inquiry', 'ngo_inquiry', 'job_application'),
+            'classes': ('collapse',)
+        }),
+        ('Notes', {
+            'fields': ('notes',),
+            'classes': ('wide',)
+        }),
+        ('System Information', {
+            'fields': ('created_by', 'created_at', 'updated_at', 'completed_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    def save_model(self, request, obj, form, change):
+        if not obj.created_by_id:
+            obj.created_by = request.user
+        super().save_model(request, obj, form, change)
+
+    def is_overdue_display(self, obj):
+        if obj.is_overdue:
+            return format_html('<span style="color:#dc2626;font-weight:700;">Overdue</span>')
+        return format_html('<span style="color:#059669;font-weight:700;">On track</span>')
+    is_overdue_display.short_description = 'Timing'
+
+    def mark_completed(self, request, queryset):
+        for follow_up in queryset:
+            follow_up.mark_completed(request.user)
+        self.message_user(request, f"{queryset.count()} follow-up(s) marked completed.")
+    mark_completed.short_description = "Mark selected follow-ups completed"
+
+    def mark_in_progress(self, request, queryset):
+        updated = queryset.update(status=FollowUp.IN_PROGRESS)
+        self.message_user(request, f"{updated} follow-up(s) marked in progress.")
+    mark_in_progress.short_description = "Mark selected follow-ups in progress"
+
+
+@admin.register(TripFeedback)
+class TripFeedbackAdmin(admin.ModelAdmin):
+    list_display = ('client_name', 'destination_or_trip', 'package', 'rating', 'status', 'permission_to_publish', 'is_visible_on_site', 'is_featured', 'submitted_at')
+    list_filter = ('status', 'rating', 'permission_to_publish', 'is_visible_on_site', 'is_featured', 'submitted_at', 'created_at')
+    search_fields = ('client_name', 'client_email', 'client_phone', 'destination_or_trip', 'feedback', 'highlights')
+    readonly_fields = ('token', 'feedback_link', 'submitted_at', 'created_at', 'updated_at', 'reviewed_at')
+    date_hierarchy = 'submitted_at'
+    actions = ('mark_reviewed', 'show_on_site', 'hide_from_site', 'mark_featured', 'remove_featured')
+    list_editable = ('is_visible_on_site', 'is_featured')
+    list_per_page = 20
+
+    fieldsets = (
+        ('Client & Trip', {
+            'fields': ('client_name', 'client_email', 'client_phone', 'booking', 'package', 'destination_or_trip', 'travel_date')
+        }),
+        ('Private Feedback Link', {
+            'fields': ('token', 'feedback_link'),
+            'description': 'Share this private link with a client after their trip. It is not linked publicly on the website.'
+        }),
+        ('Feedback', {
+            'fields': ('rating', 'feedback', 'highlights', 'improvements', 'permission_to_publish'),
+            'classes': ('wide',)
+        }),
+        ('Admin Review & Visibility', {
+            'fields': ('status', 'is_visible_on_site', 'is_featured', 'admin_notes', 'reviewed_by', 'reviewed_at')
+        }),
+        ('System Information', {
+            'fields': ('submitted_at', 'created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+    def save_model(self, request, obj, form, change):
+        if obj.is_visible_on_site and not obj.reviewed_by_id:
+            obj.reviewed_by = request.user
+            obj.reviewed_at = timezone.now()
+            if obj.status == TripFeedback.SUBMITTED:
+                obj.status = TripFeedback.REVIEWED
+        super().save_model(request, obj, form, change)
+
+    def feedback_link(self, obj):
+        if not obj.pk:
+            return 'Save first to generate a private feedback link.'
+        return format_html(
+            '<a href="{}" target="_blank" style="color:#b45309;font-weight:700;">Open private feedback form</a>',
+            obj.get_feedback_url()
+        )
+    feedback_link.short_description = 'Private feedback URL'
+
+    def mark_reviewed(self, request, queryset):
+        updated = queryset.update(status=TripFeedback.REVIEWED, reviewed_by=request.user, reviewed_at=timezone.now())
+        self.message_user(request, f'{updated} feedback record(s) marked reviewed.')
+    mark_reviewed.short_description = 'Mark selected feedback reviewed'
+
+    def show_on_site(self, request, queryset):
+        updated = queryset.filter(permission_to_publish=True).update(
+            is_visible_on_site=True,
+            status=TripFeedback.REVIEWED,
+            reviewed_by=request.user,
+            reviewed_at=timezone.now(),
+        )
+        self.message_user(request, f'{updated} publish-approved feedback record(s) set visible on site.')
+    show_on_site.short_description = 'Show selected feedback on site when permission was granted'
+
+    def hide_from_site(self, request, queryset):
+        updated = queryset.update(is_visible_on_site=False)
+        self.message_user(request, f'{updated} feedback record(s) hidden from site.')
+    hide_from_site.short_description = 'Hide selected feedback from site'
+
+    def mark_featured(self, request, queryset):
+        updated = queryset.update(is_featured=True)
+        self.message_user(request, f'{updated} feedback record(s) marked featured.')
+    mark_featured.short_description = 'Mark selected feedback featured'
+
+    def remove_featured(self, request, queryset):
+        updated = queryset.update(is_featured=False)
+        self.message_user(request, f'{updated} feedback record(s) removed from featured.')
+    remove_featured.short_description = 'Remove featured status'
 
 
 @admin.register(Booking)
