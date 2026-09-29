@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import UserBookings
 from django import forms
 from django.contrib.auth.models import User
-from .models import MICEInquiry, StudentTravelInquiry, NGOTravelInquiry, JobApplication, NewsletterSubscription, NewsletterSubscription, QuoteRequest
+from .models import MICEInquiry, StudentTravelInquiry, NGOTravelInquiry, JobApplication, NewsletterSubscription, NewsletterSubscription, QuoteRequest, TripFeedback
 import re
 
 
@@ -288,6 +288,51 @@ class QuoteRequestForm(forms.ModelForm):
         if num_travelers and (num_travelers < 1 or num_travelers > 50):
             raise forms.ValidationError('Number of travelers must be between 1 and 50.')
         return num_travelers
+
+
+class TripFeedbackForm(forms.ModelForm):
+    class Meta:
+        model = TripFeedback
+        fields = [
+            'client_name',
+            'client_email',
+            'rating',
+            'feedback',
+            'highlights',
+            'improvements',
+            'permission_to_publish',
+        ]
+        widgets = {
+            'client_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Your full name',
+            }),
+            'client_email': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Your email address',
+            }),
+            'rating': forms.Select(attrs={
+                'class': 'form-control',
+            }),
+            'feedback': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Tell us how your trip went...',
+                'rows': 5,
+            }),
+            'highlights': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'What did you enjoy most?',
+                'rows': 3,
+            }),
+            'improvements': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'What could we improve next time?',
+                'rows': 3,
+            }),
+            'permission_to_publish': forms.CheckboxInput(attrs={
+                'class': 'h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500',
+            }),
+        }
 
 
 class NewsletterSubscriptionForm(forms.ModelForm):

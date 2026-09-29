@@ -43,6 +43,44 @@
 
     <!-- Testimonials Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+      {% if trip_feedbacks %}
+      {% for feedback in trip_feedbacks %}
+      <div class="bg-[#FAF9F6] p-6 sm:p-7 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all flex flex-col justify-between space-y-4">
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex text-amber-400">
+              {% for _ in "12345" %}
+                <i data-lucide="star" class="w-4 h-4 {% if forloop.counter <= feedback.rating %}fill-amber-400 text-amber-400{% else %}text-slate-300{% endif %}"></i>
+              {% endfor %}
+            </div>
+            <i data-lucide="quote" class="w-6 h-6 text-amber-300/60"></i>
+          </div>
+          <div class="text-[11px] font-semibold text-amber-700 uppercase tracking-wider bg-amber-100/50 px-2.5 py-1 rounded-md inline-block">
+            {% if feedback.destination_or_trip %}
+              {{ feedback.destination_or_trip }}
+            {% elif feedback.package %}
+              {{ feedback.package.name }}
+            {% else %}
+              Myriad Travel Experience
+            {% endif %}
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 italic leading-relaxed">
+            &ldquo;{{ feedback.feedback|default:feedback.highlights }}&rdquo;
+          </p>
+        </div>
+        <div class="pt-4 border-t border-slate-200/60 flex items-center justify-between">
+          <div>
+            <h4 class="text-sm font-bold text-slate-900">{{ feedback.client_name }}</h4>
+            <span class="text-[11px] text-slate-500 font-medium">{{ feedback.submitted_at|date:"F Y" }}</span>
+          </div>
+          <div class="flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+            <i data-lucide="shield-check" class="w-3 h-3 text-emerald-600"></i>
+            <span>Verified</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+      {% else %}
       <!-- 1. Lilian -->
       <div class="bg-[#FAF9F6] p-6 sm:p-7 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all flex flex-col justify-between space-y-4">
         <div class="space-y-3">
@@ -124,7 +162,7 @@
             4-Day Family Maasai Mara Safari
           </div>
           <p class="text-xs sm:text-sm text-slate-700 italic leading-relaxed">
-            &ldquo;Myriad arranged our family safari with two kids under 10. The 4x4 Land Cruiser was pristine, our driver Jackson was exceptionally patient and knowledgeable with the children, and the Lipa Pole Pole option made budget planning seamless.&rdquo;
+            &ldquo;Myriad arranged our family safari with two kids under 10. The 4x4 Land Cruiser was pristine, our driver Jackson was exceptionally patient and knowledgeable with the children, and the planning process felt seamless.&rdquo;
           </p>
         </div>
         <div class="pt-4 border-t border-slate-200/60 flex items-center justify-between">
@@ -138,6 +176,7 @@
           </div>
         </div>
       </div>
+      {% endif %}
     </div>
   </div>
 </section>

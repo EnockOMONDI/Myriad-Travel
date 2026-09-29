@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Trip Feedback — Myriad Travel{% endblock %}
+
+{% block content %}
+<section class="py-14 sm:py-20 px-4 sm:px-8 bg-[#F9F2F2]">
+  <div class="max-w-3xl mx-auto">
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+      <div class="bg-[#071321] text-white p-6 sm:p-8">
+        <div class="flex items-center gap-3">
+          <img src="{% static 'images/myriad-logo.png' %}" alt="Myriad Travel" class="h-14 w-14 object-contain bg-white rounded-lg p-1.5">
+          <div>
+            <p class="text-xs uppercase tracking-[0.2em] text-amber-300 font-bold">Private Client Feedback</p>
+            <h1 class="text-2xl sm:text-3xl font-serif font-bold">How was your trip?</h1>
+          </div>
+        </div>
+        <p class="mt-4 text-sm text-slate-300 max-w-2xl">
+          Thank you for travelling with Myriad. Your feedback helps our team improve future experiences.
+        </p>
+      </div>
+
+      <div class="p-6 sm:p-8">
+        {% if feedback_request.status == feedback_request.SUBMITTED or feedback_request.status == feedback_request.REVIEWED %}
+          <div class="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+            We have received feedback for this trip. You may update it below if you need to add anything.
+          </div>
+        {% endif %}
+
+        <div class="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
+          <strong>Trip:</strong>
+          {% if feedback_request.destination_or_trip %}
+            {{ feedback_request.destination_or_trip }}
+          {% elif feedback_request.package %}
+            {{ feedback_request.package.name }}
+          {% else %}
+            Myriad Travel Experience
+          {% endif %}
+        </div>
+
+        <form method="post" class="space-y-5">
+          {% csrf_token %}
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="{{ form.client_name.id_for_label }}">Name</label>
+              {{ form.client_name }}
+              {{ form.client_name.errors }}
+            </div>
+            <div>
+              <label for="{{ form.client_email.id_for_label }}">Email</label>
+              {{ form.client_email }}
+              {{ form.client_email.errors }}
+            </div>
+          </div>
+
+          <div>
+            <label for="{{ form.rating.id_for_label }}">Overall Rating</label>
+            {{ form.rating }}
+            {{ form.rating.errors }}
+          </div>
+
+          <div>
+            <label for="{{ form.feedback.id_for_label }}">Your Feedback</label>
+            {{ form.feedback }}
+            {{ form.feedback.errors }}
+          </div>
+
+          <div>
+            <label for="{{ form.highlights.id_for_label }}">What Went Well?</label>
+            {{ form.highlights }}
+            {{ form.highlights.errors }}
+          </div>
+
+          <div>
+            <label for="{{ form.improvements.id_for_label }}">What Could We Improve?</label>
+            {{ form.improvements }}
+            {{ form.improvements.errors }}
+          </div>
+
+          <label class="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700 normal-case font-medium">
+            {{ form.permission_to_publish }}
+            <span>I allow Myriad Travel to publish my feedback on the website after admin review.</span>
+          </label>
+
+          <button type="submit" class="w-full rounded-xl bg-amber-600 px-5 py-3 text-sm font-bold text-white hover:bg-amber-700 transition-colors">
+            Submit Feedback
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

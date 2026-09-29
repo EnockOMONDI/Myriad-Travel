@@ -18,6 +18,7 @@ from .health_check import (
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('admin-dashboard/', include(('owner_dashboard.urls', 'owner_dashboard'), namespace='owner_dashboard')),
     path("ckeditor5/", include('django_ckeditor_5.urls')),  # CKEditor 5 file uploads
 
     # Health check endpoints

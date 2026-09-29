@@ -10,6 +10,182 @@ from django.dispatch import receiver
 
 
 
+class FollowUpQuerySet(models.QuerySet):
+    def open(self):
+        return self.exclude(status__in=[FollowUp.COMPLETED, FollowUp.CANCELLED])
+
+    def overdue(self):
+        return self.open().filter(due_at__lt=timezone.now())
+
+
+class FollowUp(models.Model):
+    PENDING = 'pending'
+    IN_PROGRESS = 'in_progress'
+    COMPLETED = 'completed'
+    CANCELLED = 'cancelled'
+
+    STATUS_CHOICES = [
+        (PENDING, 'Pending'),
+        (IN_PROGRESS, 'In Progress'),
+        (COMPLETED, 'Completed'),
+        (CANCELLED, 'Cancelled'),
+    ]
+
+    BOOKING = 'booking'
+    QUOTE = 'quote'
+    MICE = 'mice'
+    STUDENT = 'student'
+    NGO = 'ngo'
+    JOB = 'job'
+    GENERAL = 'general'
+
+    FOLLOW_UP_TYPE_CHOICES = [
+        (BOOKING, 'Booking'),
+        (QUOTE, 'Quote Request'),
+        (MICE, 'MICE Inquiry'),
+        (STUDENT, 'Student Travel'),
+        (NGO, 'NGO Travel'),
+        (JOB, 'Job Application'),
+        (GENERAL, 'General'),
+    ]
+
+    LOW = 'low'
+    NORMAL = 'normal'
+    HIGH = 'high'
+    URGENT = 'urgent'
+
+    PRIORITY_CHOICES = [
+        (LOW, 'Low'),
+        (NORMAL, 'Normal'),
+        (HIGH, 'High'),
+        (URGENT, 'Urgent'),
+    ]
+
+    title = models.CharField(max_length=180)
+    follow_up_type = models.CharField(max_length=20, choices=FOLLOW_UP_TYPE_CHOICES, default=GENERAL)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PENDING)
+    priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default=NORMAL)
+    due_at = models.DateTimeField()
+    assigned_to = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='assigned_followups',
+        limit_choices_to={'is_staff': True},
+    )
+
+    customer_name = models.CharField(max_length=120, blank=True)
+    customer_email = models.EmailField(blank=True)
+    customer_phone = models.CharField(max_length=30, blank=True)
+    notes = models.TextField(blank=True)
+
+    booking = models.ForeignKey('Booking', on_delete=models.SET_NULL, null=True, blank=True, related_name='followups')
+    quote_request = models.ForeignKey('QuoteRequest', on_delete=models.SET_NULL, null=True, blank=True, related_name='followups')
+    mice_inquiry = models.ForeignKey('MICEInquiry', on_delete=models.SET_NULL, null=True, blank=True, related_name='followups')
+    student_inquiry = models.ForeignKey('StudentTravelInquiry', on_delete=models.SET_NULL, null=True, blank=True, related_name='followups')
+    ngo_inquiry = models.ForeignKey('NGOTravelInquiry', on_delete=models.SET_NULL, null=True, blank=True, related_name='followups')
+    job_application = models.ForeignKey('JobApplication', on_delete=models.SET_NULL, null=True, blank=True, related_name='followups')
+
+    completed_at = models.DateTimeField(null=True, blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='created_followups')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    objects = FollowUpQuerySet.as_manager()
+
+    class Meta:
+        ordering = ['status', 'due_at', '-priority', '-created_at']
+        indexes = [
+            models.Index(fields=['status', 'due_at']),
+            models.Index(fields=['follow_up_type', 'status']),
+            models.Index(fields=['assigned_to', 'status']),
+            models.Index(fields=['priority', 'due_at']),
+        ]
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def is_overdue(self):
+        return self.status not in [self.COMPLETED, self.CANCELLED] and self.due_at < timezone.now()
+
+    def mark_completed(self, user=None):
+        self.status = self.COMPLETED
+        self.completed_at = timezone.now()
+        self.save(update_fields=['status', 'completed_at', 'updated_at'])
+
+
+class TripFeedback(models.Model):
+    DRAFT = 'draft'
+    SENT = 'sent'
+    SUBMITTED = 'submitted'
+    REVIEWED = 'reviewed'
+    ARCHIVED = 'archived'
+
+    STATUS_CHOICES = [
+        (DRAFT, 'Draft'),
+        (SENT, 'Sent to Client'),
+        (SUBMITTED, 'Submitted'),
+        (REVIEWED, 'Reviewed'),
+        (ARCHIVED, 'Archived'),
+    ]
+
+    RATING_CHOICES = [(value, f'{value} Star{"s" if value != 1 else ""}') for value in range(1, 6)]
+
+    token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    booking = models.ForeignKey('Booking', on_delete=models.SET_NULL, null=True, blank=True, related_name='trip_feedback')
+    package = models.ForeignKey('adminside.Package', on_delete=models.SET_NULL, null=True, blank=True, related_name='trip_feedback')
+
+    client_name = models.CharField(max_length=120)
+    client_email = models.EmailField(blank=True)
+    client_phone = models.CharField(max_length=30, blank=True)
+    destination_or_trip = models.CharField(max_length=180, blank=True)
+    travel_date = models.DateField(null=True, blank=True)
+
+    rating = models.PositiveSmallIntegerField(choices=RATING_CHOICES, null=True, blank=True)
+    feedback = models.TextField(blank=True)
+    highlights = models.TextField(blank=True, help_text='What went especially well?')
+    improvements = models.TextField(blank=True, help_text='What could Myriad improve?')
+    permission_to_publish = models.BooleanField(default=False)
+
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=DRAFT)
+    is_visible_on_site = models.BooleanField(default=False, help_text='Show this feedback on public review sections.')
+    is_featured = models.BooleanField(default=False, help_text='Prioritize this feedback in public review sections.')
+    admin_notes = models.TextField(blank=True)
+    reviewed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='reviewed_trip_feedback')
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+    submitted_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-is_featured', '-submitted_at', '-created_at']
+        indexes = [
+            models.Index(fields=['status', 'created_at']),
+            models.Index(fields=['is_visible_on_site', 'is_featured']),
+            models.Index(fields=['token']),
+        ]
+        verbose_name = 'Trip Feedback'
+        verbose_name_plural = 'Trip Feedback'
+
+    def __str__(self):
+        trip = self.destination_or_trip or (self.package.name if self.package else 'Trip')
+        return f'{self.client_name} - {trip}'
+
+    def get_feedback_url(self):
+        from django.urls import reverse
+        return reverse('users:trip_feedback', kwargs={'token': self.token})
+
+    def mark_submitted(self):
+        self.status = self.SUBMITTED
+        self.submitted_at = timezone.now()
+
+    @property
+    def can_show_publicly(self):
+        return self.is_visible_on_site and self.permission_to_publish and self.status in [self.SUBMITTED, self.REVIEWED]
+
+
 class UserBookings(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     package = models.ForeignKey("adminside.Package", on_delete=models.CASCADE)
