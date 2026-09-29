@@ -203,23 +203,21 @@ UPLOADCARE = {
 # Default Image Configuration
 DEFAULT_IMAGES = {
     # Primary default image for most content types
-    'DEFAULT': 'assets/images/logo/websitelogo.png',
+    'DEFAULT': 'images/placeholders/myriad-package-placeholder.png',
 
-    # Category-specific default images - Updated for Mbugani Luxe Adventures
-    'DESTINATIONS': 'assets/images/about/about-1.png',
-    'ACCOMMODATIONS': 'assets/images/about/accomodationdefault.png',
-    'PACKAGES': 'assets/images/hero/2.png',
-    'BLOG_POSTS': 'assets/images/about/about-2.jpg',
+    # Category-specific default images
+    'DESTINATIONS': 'images/hero/discover-kenya.jpeg',
+    'ACCOMMODATIONS': 'images/placeholders/myriad-package-placeholder.png',
+    'PACKAGES': 'images/placeholders/myriad-package-placeholder.png',
+    'BLOG_POSTS': 'images/hero/beyond-imagination.jpeg',
 
-    # Keep existing job thumbnail (do not change)
-    'JOB_LISTINGS': 'images/jobsthumbnail.png',
-
-    # Legacy placeholder (maintain for backward compatibility)
-    'PLACEHOLDER_SVG': 'images/mbuganiluxeadventuresplaceholder.svg',
+    # Fallback for job listings and older placeholder helpers
+    'JOB_LISTINGS': 'images/placeholders/myriad-package-placeholder.png',
+    'PLACEHOLDER_SVG': 'images/placeholders/myriad-package-placeholder.png',
 
     # Fallback images for specific use cases
-    'HERO_BACKGROUND': 'assets/images/place/place-1.jpg',
-    'CAROUSEL_FALLBACK': 'assets/images/place/place-12.jpg',
+    'HERO_BACKGROUND': 'images/hero/discover-kenya.jpeg',
+    'CAROUSEL_FALLBACK': 'images/hero/beyond-imagination.jpeg',
 }
 
 TEMPLATE_DIRS = (
@@ -228,30 +226,30 @@ TEMPLATE_DIRS = (
 )
 
 
-# Email settings for Mbugani Luxe Adventures
+# Email settings for Myriad Travel
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-# Mbugani Luxe Adventures email credentials
+# Myriad Travel email credentials
 # For development, these can have defaults. For production, MUST be set via environment variables
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='MBUGANI LUXE ADVENTURES')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='Myriad Travel <info@myriad-travel.com>')
 
 # Admin email for notifications
-ADMIN_EMAIL = 'info@mbuganiluxeadventures.com'
+ADMIN_EMAIL = config('ADMIN_EMAIL', default='info@myriad-travel.com')
 
 # Jobs email for career applications
-JOBS_EMAIL = 'careers@mbuganiluxeadventures.com'
+JOBS_EMAIL = config('JOBS_EMAIL', default='info@myriad-travel.com')
 
 # Newsletter email for subscriptions
-NEWSLETTER_EMAIL = 'news@mbuganiluxeadventures.com'
+NEWSLETTER_EMAIL = config('NEWSLETTER_EMAIL', default='info@myriad-travel.com')
 
 # Django-Q Configuration (Base settings)
 Q_CLUSTER = {
-    'name': 'mbugani_luxe',
+    'name': 'myriad_travel',
     'workers': 2,
     'recycle': 500,
     'timeout': 60,  # Task timeout in seconds (well under Gunicorn's 240s)
@@ -287,15 +285,11 @@ UNFOLD = {
     "ENVIRONMENT": "tours_travels.settings.environment_callback",
     "DASHBOARD_CALLBACK": "tours_travels.settings.dashboard_callback",
     "LOGIN": {
-        "image": lambda request: static("assets/images/place/place-1.jpg"),
+        "image": lambda request: static("images/hero/discover-kenya.jpeg"),
         "redirect_after": lambda request: reverse_lazy("admin:index"),
     },
-    "STYLES": [
-        lambda request: static("assets/css/unfold-custom.css"),
-    ],
-    "SCRIPTS": [
-        lambda request: static("assets/js/unfold-custom.js"),
-    ],
+    "STYLES": [],
+    "SCRIPTS": [],
     "COLORS": {
         "primary": {
             "50": "250 245 255",

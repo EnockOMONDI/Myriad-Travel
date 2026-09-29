@@ -160,7 +160,7 @@ class Destination(models.Model):
         """Get the image URL with fallback to default destination image"""
         if self.image:
             return self.image.cdn_url
-        return '/static/assets/images/about/about-1.png'
+        return '/static/images/hero/discover-kenya.jpeg'
 
 
 class Accommodation(models.Model):
@@ -241,7 +241,7 @@ class Accommodation(models.Model):
         """Get the image URL with fallback to default accommodation image"""
         if self.image:
             return self.image.cdn_url
-        return '/static/assets/images/about/accomodationdefault.png'
+        return '/static/images/placeholders/myriad-package-placeholder.png'
 
     def get_absolute_url(self):
         return reverse('accommodation_detail', kwargs={'slug': self.slug})
@@ -640,4 +640,4 @@ class HeroSlider(models.Model):
         """Get the image URL with fallback to default"""
         if self.image:
             return self.image.cdn_url
-        return '/static/assets/images/hero/2.png'
+        return '/static/images/placeholders/myriad-package-placeholder.png'

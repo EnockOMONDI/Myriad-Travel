@@ -1,9 +1,77 @@
 {% extends 'base.html' %}
-{% block title %}Travel Blog — Myriad Travel{% endblock %}
+
+{% block title %}{{ page_title|default:"Travel Blog - Myriad Travel" }}{% endblock %}
+{% block meta_description %}{{ meta_description|default:"Travel stories, safari tips, destination guides, and planning advice from Myriad Travel." }}{% endblock %}
+
 {% block content %}
-<section class="bg-slate-900 text-white py-16 px-4 sm:px-8"><div class="max-w-7xl mx-auto"><h1 class="text-3xl sm:text-5xl font-bold font-serif">Myriad Travel Guides</h1><p class="text-slate-300 mt-3 max-w-2xl">Safari tips, destination notes, travel advisories, and holiday inspiration.</p></div></section>
-<section class="py-16 px-4 sm:px-8 max-w-7xl mx-auto">
-  <form method="get" class="mb-8 flex gap-2"><input name="q" value="{{ query }}" placeholder="Search articles"><button class="px-5 py-3 bg-amber-600 text-white font-bold rounded-xl">Search</button></form>
-  <div class="grid md:grid-cols-3 gap-6">{% for post in blog %}<a href="{{ post.get_absolute_url }}" class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:border-amber-300">{% if post.image %}<img src="{{ post.image.cdn_url }}" class="w-full h-48 object-cover" alt="{{ post.title }}">{% endif %}<div class="p-5"><span class="text-xs font-bold text-amber-700 uppercase">{{ post.category.title|default:"Guide" }}</span><h2 class="text-lg font-bold font-serif mt-2">{{ post.title }}</h2><p class="text-sm text-slate-600 mt-2">{{ post.get_meta_description }}</p></div></a>{% empty %}<p class="text-slate-600">No articles found.</p>{% endfor %}</div>
+<section class="bg-slate-900 text-white py-14 px-4 sm:px-8">
+  <div class="max-w-7xl mx-auto">
+    <p class="text-xs font-bold uppercase tracking-widest text-amber-300 mb-3">Travel Guides</p>
+    <h1 class="text-3xl sm:text-5xl font-bold font-serif">Myriad Travel Blog</h1>
+    <p class="text-slate-300 mt-3 max-w-2xl">Safari tips, destination notes, travel advisories, and holiday inspiration for Kenya and beyond.</p>
+  </div>
+</section>
+
+<section class="py-12 px-4 sm:px-8 max-w-7xl mx-auto w-full">
+  <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
+    <form method="get" action="{% url 'blog:blog-search' %}" class="flex flex-col sm:flex-row gap-2 w-full lg:max-w-xl">
+      <input name="q" value="{{ query }}" placeholder="Search articles" class="w-full">
+      <button class="px-5 py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl whitespace-nowrap">Search</button>
+    </form>
+    <div class="flex flex-wrap gap-2 text-sm">
+      <a href="{% url 'blog:blog-rss' %}" class="px-3 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 hover:border-amber-300">RSS</a>
+      <a href="{% url 'blog:blog-sitemap' %}" class="px-3 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 hover:border-amber-300">Sitemap</a>
+    </div>
+  </div>
+
+  {% if categories %}
+    <div class="flex flex-wrap gap-2 mb-8">
+      <a href="{% url 'blog:blog-list' %}" class="px-3 py-2 rounded-full text-sm font-semibold {% if not category_slug %}bg-amber-600 text-white{% else %}bg-white border border-slate-200 text-slate-700{% endif %}">All Articles</a>
+      {% for cat in categories %}
+        <a href="{{ cat.get_absolute_url }}" class="px-3 py-2 rounded-full text-sm font-semibold bg-white border border-slate-200 text-slate-700 hover:border-amber-300">
+          {{ cat.title }}{% if cat.post_count is not None %} ({{ cat.post_count }}){% endif %}
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if blog_count is not None %}
+    <p class="text-sm text-slate-500 mb-5">{{ blog_count }} published article{{ blog_count|pluralize }}</p>
+  {% endif %}
+
+  <div class="grid md:grid-cols-3 gap-6">
+    {% for post in blog %}
+      <a href="{{ post.get_absolute_url }}" class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:border-amber-300 hover:shadow-md transition">
+        {% if post.image %}
+          <img src="{{ post.image.cdn_url }}" class="w-full h-48 object-cover" alt="{{ post.title }}">
+        {% else %}
+          <div class="h-48 bg-slate-100 flex items-center justify-center text-slate-400 text-sm font-semibold">Myriad Travel</div>
+        {% endif %}
+        <div class="p-5">
+          <span class="text-xs font-bold text-amber-700 uppercase">{{ post.category.title|default:"Guide" }}</span>
+          <h2 class="text-lg font-bold font-serif mt-2 text-slate-900">{{ post.title }}</h2>
+          <p class="text-sm text-slate-600 mt-2">{{ post.get_meta_description }}</p>
+          <p class="text-xs text-slate-400 mt-4">{{ post.date|date:"M d, Y" }} · {{ post.get_reading_time_display }}</p>
+        </div>
+      </a>
+    {% empty %}
+      <div class="md:col-span-3 bg-white border border-slate-200 rounded-2xl p-8 text-center">
+        <h2 class="text-xl font-bold font-serif text-slate-900">No articles found</h2>
+        <p class="text-slate-600 mt-2">Published travel guides will appear here once they are added in admin.</p>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if blog.has_other_pages %}
+    <nav class="mt-10 flex items-center justify-center gap-2 text-sm font-semibold">
+      {% if blog.has_previous %}
+        <a href="?page={{ blog.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" class="px-4 py-2 rounded-lg bg-white border border-slate-200">Previous</a>
+      {% endif %}
+      <span class="px-4 py-2 rounded-lg bg-amber-600 text-white">Page {{ blog.number }} of {{ blog.paginator.num_pages }}</span>
+      {% if blog.has_next %}
+        <a href="?page={{ blog.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" class="px-4 py-2 rounded-lg bg-white border border-slate-200">Next</a>
+      {% endif %}
+    </nav>
+  {% endif %}
 </section>
 {% endblock %}

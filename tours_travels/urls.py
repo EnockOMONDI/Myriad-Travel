@@ -33,9 +33,6 @@ urlpatterns = [
     # Favicon handling
     path('favicon.ico', RedirectView.as_view(url='/static/images/myriad-logo.png', permanent=True)),
 
-    # Font testing (development only)
-    path('font-test/', tours_travels_views.font_test, name='font_test'),
-
     #path('',tours_travels_views.home,name = 'home'),
 
     path('', include(('users.urls', 'users'), namespace='home')),
@@ -43,13 +40,14 @@ urlpatterns = [
     path('blog/', include(('blog.urls', 'blog'), namespace='blog')),
     path('login/',auth_views.LoginView.as_view(template_name='users/login.html'),name='login'),
     path('logout/',auth_views.LogoutView.as_view(template_name='users/index.html'),name='logout'),
-    path('mail/',tours_travels_views.mail,name='mail'),
     path('system-status/', include(('status.urls', 'status'), namespace='system-status')),
-
-    path('', include('users.urls')),
-
-
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        path('font-test/', tours_travels_views.font_test, name='font_test'),
+        path('mail/', tours_travels_views.mail, name='mail'),
+    ]
 
 # Serve media files in development
 if settings.DEBUG == True:

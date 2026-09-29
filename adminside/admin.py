@@ -413,12 +413,6 @@ class HeroSliderAdmin(admin.ModelAdmin):
     display_image_thumbnail.short_description = 'Image'
     display_image_thumbnail.allow_tags = True
 
-    class Media:
-        css = {
-            'all': ('assets/css/unfold-custom.css',)
-        }
-        js = ('assets/js/unfold-custom.js',)
-
 # Customize admin site header and title
 admin.site.site_header = 'Myriad Travel Administration'
 admin.site.site_title = 'Myriad Travel Admin Portal'

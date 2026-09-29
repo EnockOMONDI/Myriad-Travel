@@ -1,5 +1,5 @@
 """
-Synchronous email sending using Mailtrap HTTP API for Mbugani Luxe Adventures
+Synchronous email sending using Mailtrap HTTP API for Myriad Travel
 
 This module contains all email sending functions that use Mailtrap's HTTP API
 for direct, synchronous email delivery. No background workers required.
@@ -22,7 +22,7 @@ def send_email_via_mailtrap(subject, html_message, from_email, recipient_list):
     Args:
         subject (str): Email subject
         html_message (str): HTML message content
-        from_email (str): From email address (e.g., "Mbugani Luxe Adventures <info@mbuganiluxeadventures.com>")
+        from_email (str): From email address (e.g., "Myriad Travel <info@myriad-travel.com>")
         recipient_list (list): List of recipient email addresses
 
     Returns:
@@ -40,7 +40,7 @@ def send_email_via_mailtrap(subject, html_message, from_email, recipient_list):
             from_name = from_email.split('<')[0].strip()
             from_email_addr = from_email.split('<')[1].split('>')[0].strip()
         else:
-            from_name = "Mbugani Luxe Adventures"
+            from_name = "Myriad Travel"
             from_email_addr = from_email.strip()
 
         # Create mail object
@@ -104,7 +104,7 @@ def send_quote_request_emails(quote_request_id):
                 'quote_request': quote_request
             })
 
-            admin_email = getattr(settings, 'ADMIN_EMAIL', 'info@mbuganiluxeadventures.com')
+            admin_email = getattr(settings, 'ADMIN_EMAIL', 'info@myriad-travel.com')
 
             admin_sent = send_email_via_mailtrap(
                 subject=admin_subject,
@@ -123,7 +123,7 @@ def send_quote_request_emails(quote_request_id):
 
         # Send user confirmation email
         try:
-            user_subject = f'Quote Request Received - Mbugani Luxe Adventures'
+            user_subject = 'Quote Request Received - Myriad Travel'
             user_message_html = render_to_string('users/emails/quote_request_confirmation.html', {
                 'quote_request': quote_request
             })
@@ -207,8 +207,8 @@ def send_job_application_emails(application_id):
                 'application': job_application
             })
 
-            careers_email = getattr(settings, 'JOBS_EMAIL', 'careers@mbuganiluxeadventures.com')
-            info_email = getattr(settings, 'ADMIN_EMAIL', 'info@mbuganiluxeadventures.com')
+            careers_email = getattr(settings, 'JOBS_EMAIL', 'info@myriad-travel.com')
+            info_email = getattr(settings, 'ADMIN_EMAIL', 'info@myriad-travel.com')
             recipient_list = [careers_email, info_email]
 
             admin_sent = send_email_via_mailtrap(
@@ -306,7 +306,7 @@ def send_newsletter_subscription_emails(subscription_id):
                 'subscription': subscription
             })
 
-            newsletter_email = getattr(settings, 'NEWSLETTER_EMAIL', 'news@mbuganiluxeadventures.com')
+            newsletter_email = getattr(settings, 'NEWSLETTER_EMAIL', 'info@myriad-travel.com')
 
             admin_sent = send_email_via_mailtrap(
                 subject=admin_subject,
@@ -325,7 +325,7 @@ def send_newsletter_subscription_emails(subscription_id):
 
         # Send subscriber confirmation
         try:
-            subscriber_subject = 'Welcome to Mbugani Luxe Adventures Newsletter!'
+            subscriber_subject = 'Welcome to the Myriad Travel Newsletter!'
             subscriber_message = render_to_string('users/emails/newsletter_confirmation.html', {
                 'subscription': subscription
             })
@@ -416,7 +416,7 @@ def send_booking_confirmation_email(booking_id):
             subject=subject,
             html_message=email_body,
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=['info@mbuganiluxeadventures.com'],
+            recipient_list=[getattr(settings, 'ADMIN_EMAIL', 'info@myriad-travel.com')],
         )
 
         if email_sent:

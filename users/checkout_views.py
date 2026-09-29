@@ -484,7 +484,7 @@ def send_booking_confirmation_email(booking, is_new_user=False):
         whatsapp_link = f"https://api.whatsapp.com/send?phone=254798197430&text={quote(whatsapp_message)}"
 
         # Generate dashboard URL
-        dashboard_url = f"{getattr(settings, 'SITE_URL', 'https://mbuganiluxeadventures.com')}/profile/"
+        dashboard_url = f"{getattr(settings, 'SITE_URL', 'https://www.myriad-travel.com')}/profile/"
 
         html_message = render_to_string('users/emails/booking_confirmation.html', {
             'booking': booking,
@@ -541,7 +541,7 @@ def send_welcome_email(user, password):
     """
     from users.tasks import send_email_via_mailtrap
 
-    subject = 'Welcome to Mbugani Luxe Adventures'
+    subject = 'Welcome to Myriad Travel'
 
     html_message = render_to_string('users/emails/welcome.html', {
         'user': user,

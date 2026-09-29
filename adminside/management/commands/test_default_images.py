@@ -55,7 +55,7 @@ class Command(BaseCommand):
                 
                 # Test with no image
                 if not destination.image:
-                    expected_default = '/static/assets/images/about/about-1.png'
+                    expected_default = '/static/images/hero/discover-kenya.jpeg'
                     if image_url == expected_default:
                         self.stdout.write('✅ Destination fallback working correctly')
                     else:
@@ -74,7 +74,7 @@ class Command(BaseCommand):
                 
                 # Test with no image
                 if not accommodation.image:
-                    expected_default = '/static/assets/images/about/accomodationdefault.png'
+                    expected_default = '/static/images/placeholders/myriad-package-placeholder.png'
                     if image_url == expected_default:
                         self.stdout.write('✅ Accommodation fallback working correctly')
                     else:

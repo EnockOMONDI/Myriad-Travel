@@ -80,7 +80,7 @@ class CheckoutForm(forms.Form):
         widget=forms.CheckboxInput(attrs={
             'class': 'form-check-input'
         }),
-        label='I would like to receive travel updates and special offers from Mbugani Luxe Adventures'
+        label='I would like to receive travel updates and special offers from Myriad Travel'
     )
 
     def clean_full_name(self):
