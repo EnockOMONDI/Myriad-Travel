@@ -276,11 +276,11 @@ from django.templatetags.static import static
 from django.urls import reverse_lazy
 
 UNFOLD = {
-    "SITE_TITLE": "Mbugani Luxe Adventures Admin",
-    "SITE_HEADER": "Mbugani Luxe Adventures Administration",
+    "SITE_TITLE": "Myriad Travel Admin",
+    "SITE_HEADER": "Myriad Travel Administration",
     "SITE_URL": "/",
-    "SITE_ICON": lambda request: static("assets/images/favicon_io/favicon-32x32.png"),
-    "SITE_LOGO": lambda request: static("assets/images/logo/websitelogo.png"),
+    "SITE_ICON": lambda request: static("images/myriad-logo.png"),
+    "SITE_LOGO": lambda request: static("images/myriad-logo.png"),
     "SITE_SYMBOL": "🌍",  # Travel symbol
     "SHOW_HISTORY": True,
     "SHOW_VIEW_ON_SITE": True,
