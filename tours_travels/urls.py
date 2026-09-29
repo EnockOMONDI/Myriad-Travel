@@ -31,7 +31,7 @@ urlpatterns = [
     path('version/', version_info, name='version_info'),
 
     # Favicon handling
-    path('favicon.ico', RedirectView.as_view(url='/static/assets/images/favicon_io/favicon.ico', permanent=True)),
+    path('favicon.ico', RedirectView.as_view(url='/static/images/myriad-logo.png', permanent=True)),
 
     # Font testing (development only)
     path('font-test/', tours_travels_views.font_test, name='font_test'),

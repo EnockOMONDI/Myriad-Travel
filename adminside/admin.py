@@ -420,6 +420,6 @@ class HeroSliderAdmin(admin.ModelAdmin):
         js = ('assets/js/unfold-custom.js',)
 
 # Customize admin site header and title
-admin.site.site_header = 'Mbugani Luxe Adventures Administration'
-admin.site.site_title = 'Mbugani Luxe Adventures Admin Portal'
-admin.site.index_title = 'Welcome to Mbugani Luxe Adventures Admin Portal'
+admin.site.site_header = 'Myriad Travel Administration'
+admin.site.site_title = 'Myriad Travel Admin Portal'
+admin.site.index_title = 'Welcome to Myriad Travel Admin Portal'
