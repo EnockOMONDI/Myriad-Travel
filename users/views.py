@@ -733,8 +733,8 @@ def send_booking_email(booking):
 
         # Email content
         msg = MIMEMultipart()
-        msg['From'] = f"Mbugani Luxe Adventures <{sender_email}>"
-        msg['To'] = "info@mbuganiluxeadventures.com"
+        msg['From'] = f"Myriad Travel <{sender_email}>"
+        msg['To'] = getattr(settings, 'ADMIN_EMAIL', 'info@myriad-travel.com')
         msg['Subject'] = f"New Booking: {booking.full_name} for {booking.package.name}"
 
         message = f"""
@@ -1051,87 +1051,6 @@ def booking_detail(request, booking_reference):
 
     return render(request, 'users/booking_detail.html', context)
 
-
-@login_required
-def add_to_bucket_list(request):
-    """
-    Add item to user's bucket list via AJAX
-    """
-    if request.method == 'POST':
-        item_type = request.POST.get('item_type')
-        item_id = request.POST.get('item_id')
-        notes = request.POST.get('notes', '')
-        priority = request.POST.get('priority', 'medium')
-
-        try:
-            # Check if item already exists in bucket list
-            existing_item = None
-            if item_type == 'package':
-                existing_item = BucketList.objects.filter(user=request.user, package_id=item_id).first()
-            elif item_type == 'accommodation':
-                existing_item = BucketList.objects.filter(user=request.user, accommodation_id=item_id).first()
-            elif item_type == 'destination':
-                existing_item = BucketList.objects.filter(user=request.user, destination_id=item_id).first()
-
-            if existing_item:
-                return JsonResponse({'success': False, 'message': 'Item already in your bucket list!'})
-
-            # Create new bucket list item
-            bucket_item = BucketList.objects.create(
-                user=request.user,
-                item_type=item_type,
-                notes=notes,
-                priority=priority
-            )
-
-            # Set the appropriate foreign key
-            if item_type == 'package':
-                bucket_item.package_id = item_id
-            elif item_type == 'accommodation':
-                bucket_item.accommodation_id = item_id
-            elif item_type == 'destination':
-                bucket_item.destination_id = item_id
-
-            bucket_item.save()
-
-            return JsonResponse({'success': True, 'message': 'Added to your bucket list!'})
-
-        except Exception as e:
-            return JsonResponse({'success': False, 'message': f'Error: {str(e)}'})
-
-    return JsonResponse({'success': False, 'message': 'Invalid request method'})
-
-
-@login_required
-def remove_from_bucket_list(request, item_id):
-    """
-    Remove item from user's bucket list
-    """
-    try:
-        bucket_item = BucketList.objects.get(id=item_id, user=request.user)
-        bucket_item.delete()
-        messages.success(request, 'Item removed from your bucket list!')
-    except BucketList.DoesNotExist:
-        messages.error(request, 'Item not found in your bucket list.')
-
-    return redirect('users:bucket_list')
-
-
-@login_required
-def booking_detail(request, booking_reference):
-    """
-    Detailed view of a specific booking
-    """
-    booking = get_object_or_404(Booking, booking_reference=booking_reference, user=request.user)
-
-    context = {
-        'booking': booking,
-        'page_title': f'Booking {booking.booking_reference}',
-    }
-
-    return render(request, 'users/booking_detail.html', context)
-
-
 def generate_user_friendly_error_message(error_report):
     """
     Generate user-friendly error messages based on error report
@@ -1160,7 +1079,7 @@ def generate_user_friendly_error_message(error_report):
 
     # Add specific recommendations for production issues
     if not error_report['environment']['debug_mode'] and not error_report['overall_success']:
-        messages.append("Please contact us directly at info@mbuganiluxeadventures.com if you don't receive a confirmation email.")
+        messages.append("Please contact us directly at info@myriad-travel.com if you don't receive a confirmation email.")
 
     return messages
 

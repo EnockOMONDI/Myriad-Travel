@@ -1,1 +1,50 @@
-{% extends 'users/bloglist.html' %}
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block meta_description %}{{ meta_description }}{% endblock %}
+
+{% block content %}
+<section class="bg-slate-900 text-white py-14 px-4 sm:px-8">
+  <div class="max-w-7xl mx-auto">
+    <p class="text-xs font-bold uppercase tracking-widest text-amber-300 mb-3">Blog Category</p>
+    <h1 class="text-3xl sm:text-5xl font-bold font-serif">{{ category.title }}</h1>
+    {% if category.description %}
+      <p class="text-slate-300 mt-3 max-w-2xl">{{ category.description }}</p>
+    {% endif %}
+  </div>
+</section>
+
+<section class="py-12 px-4 sm:px-8 max-w-7xl mx-auto w-full">
+  <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
+    <form method="get" class="flex flex-col sm:flex-row gap-2 w-full lg:max-w-xl">
+      <input name="q" value="{{ query }}" placeholder="Search within {{ category.title }}" class="w-full">
+      <button class="px-5 py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl whitespace-nowrap">Search</button>
+    </form>
+    <a href="{% url 'blog:blog-list' %}" class="text-sm font-bold text-amber-700">All blog articles</a>
+  </div>
+
+  <p class="text-sm text-slate-500 mb-5">{{ blog_count }} article{{ blog_count|pluralize }} in this category</p>
+
+  <div class="grid md:grid-cols-3 gap-6">
+    {% for post in blog %}
+      <a href="{{ post.get_absolute_url }}" class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:border-amber-300 hover:shadow-md transition">
+        {% if post.image %}
+          <img src="{{ post.image.cdn_url }}" class="w-full h-48 object-cover" alt="{{ post.title }}">
+        {% else %}
+          <div class="h-48 bg-slate-100 flex items-center justify-center text-slate-400 text-sm font-semibold">Myriad Travel</div>
+        {% endif %}
+        <div class="p-5">
+          <span class="text-xs font-bold text-amber-700 uppercase">{{ post.category.title|default:"Guide" }}</span>
+          <h2 class="text-lg font-bold font-serif mt-2 text-slate-900">{{ post.title }}</h2>
+          <p class="text-sm text-slate-600 mt-2">{{ post.get_meta_description }}</p>
+        </div>
+      </a>
+    {% empty %}
+      <div class="md:col-span-3 bg-white border border-slate-200 rounded-2xl p-8 text-center">
+        <h2 class="text-xl font-bold font-serif text-slate-900">No articles in this category yet</h2>
+        <p class="text-slate-600 mt-2">Publish articles in admin to populate this category.</p>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

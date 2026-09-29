@@ -1,4 +1,5 @@
-from django.urls import path,include
+from django.conf import settings
+from django.urls import path, include
 from . import views
 from . import checkout_views
 
@@ -57,6 +58,7 @@ urlpatterns = [
     path('cart/remove/<int:package_id>/', checkout_views.remove_from_cart, name='remove_from_cart'),
     path('cart/update/<int:package_id>/', checkout_views.update_cart_item, name='update_cart_item'),
 
-    # Test Error Pages (for development/testing only)
-    path('test-500-error/', views.test_500_error, name='test_500_error'),
 ]
+
+if settings.DEBUG:
+    urlpatterns.append(path('test-500-error/', views.test_500_error, name='test_500_error'))

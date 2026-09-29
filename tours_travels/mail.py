@@ -26,23 +26,23 @@ def verification_mail(link, user):
         client = MailtrapClient(token=settings.MAILTRAP_API_TOKEN)
 
         # Build email HTML content
-        message = f'Hi {user.username}, welcome to Mbugani Luxe Adventures.<br>To activate your account, click the link below:<br><a href="{link}">Activate Account</a><br><br>'
+        message = f'Hi {user.username}, welcome to Myriad Travel.<br>To activate your account, click the link below:<br><a href="{link}">Activate Account</a><br><br>'
 
         directors_message = """
         <p><strong>Directors message</strong></p>
         """
 
         advantages_message = """
-        <p>We are delighted to have you as part of the Mbugani Luxe Adventures community. Our goal is simple: We want every trip you take with us to be <strong>affordable</strong> and wonderfully <strong>memorable</strong>. That's where we come in, we take care of all the little things to ensure your journey is smooth and effortless, creating moments you'll treasure forever.</p>
+        <p>We are delighted to have you as part of the Myriad Travel community. Our goal is simple: every trip should feel well planned, memorable, and effortless. Our team handles the details so you can focus on the experience.</p>
         """
 
         html_content = message + directors_message + advantages_message
 
         # Create mail object
         mail = Mail(
-            sender=Address(email="info@mbuganiluxeadventures.com", name="Mbugani Luxe Adventures"),
+            sender=Address(email=getattr(settings, 'ADMIN_EMAIL', 'info@myriad-travel.com'), name="Myriad Travel"),
             to=[Address(email=user.email)],
-            subject="Welcome to Mbugani Luxe Adventures",
+            subject="Welcome to Myriad Travel",
             html=html_content,
         )
 

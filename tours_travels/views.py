@@ -9,8 +9,7 @@ def home(request):
     return HttpResponse('<h1>Welcome</h1>')
 
 def mail(request):
-	mail_f.verification_mail()
-	return HttpResponse('<h1>mail is sent</h1>')
+    return HttpResponseBadRequest('Verification email requires a user and activation link context.')
 
 
 def _render_error_response(request, template_name, context, response_class, fallback_title, fallback_message):

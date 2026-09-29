@@ -65,7 +65,7 @@ def default_images(request):
         if config_key in default_images_urls:
             return default_images_urls[config_key]
         else:
-            return default_images_urls.get('DEFAULT', static('assets/images/logo/websitelogo.png'))
+            return default_images_urls.get('DEFAULT', static('images/placeholders/myriad-package-placeholder.png'))
     
     # Helper function to get image URL with fallback
     def get_image_url_with_fallback(image_field, content_type='default', use_placeholder=False):
@@ -97,7 +97,7 @@ def default_images(request):
         
         # Use placeholder SVG if requested
         if use_placeholder:
-            return default_images_urls.get('PLACEHOLDER_SVG', static('images/mbuganiluxeadventuresplaceholder.svg'))
+            return default_images_urls.get('PLACEHOLDER_SVG', static('images/placeholders/myriad-package-placeholder.png'))
         
         # Use content-type specific default
         return get_default_for_content_type(content_type)

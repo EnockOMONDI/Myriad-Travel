@@ -60,9 +60,8 @@ def _csv_env(name):
 
 # Production allowed hosts. Keep production domain defaults, but also honor Render envs.
 ALLOWED_HOSTS = [
-    'mbuganiapp.onrender.com',
-    'www.mbuganiluxeadventures.com',
-    'mbuganiluxeadventures.com',
+    'www.myriad-travel.com',
+    'myriad-travel.com',
     '.onrender.com',
     os.getenv('RENDER_EXTERNAL_HOSTNAME', ''),
     *_csv_env('ALLOWED_HOSTS'),
@@ -187,17 +186,15 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024  # 5MB
 # Production CORS settings
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = list(dict.fromkeys([
-    "https://mbuganiapp.onrender.com",
-    "https://www.mbuganiluxeadventures.com",
-    "https://mbuganiluxeadventures.com",
+    "https://www.myriad-travel.com",
+    "https://myriad-travel.com",
     *_csv_env('CORS_ALLOWED_ORIGINS'),
 ]))
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = list(dict.fromkeys([
-    "https://mbuganiapp.onrender.com",
-    "https://www.mbuganiluxeadventures.com",
-    "https://mbuganiluxeadventures.com",
+    "https://www.myriad-travel.com",
+    "https://myriad-travel.com",
     *_csv_env('CSRF_TRUSTED_ORIGINS'),
 ]))
 
@@ -246,7 +243,7 @@ TEMPLATES[0]['OPTIONS']['debug'] = False
 
 # Production email error reporting
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
-EMAIL_SUBJECT_PREFIX = '[Mbugani Luxe Adventures] '
+EMAIL_SUBJECT_PREFIX = '[Myriad Travel] '
 
 # Production health check
 

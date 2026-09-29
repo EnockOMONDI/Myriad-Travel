@@ -9,6 +9,7 @@ from django.db.models import Q, Count, Prefetch, F
 from django.db import models
 from django.core.paginator import Paginator
 from django.utils import timezone
+from django.utils.html import escape, strip_tags
 from blog.models import Post, Category, Comment
 
 
@@ -296,13 +297,49 @@ def blog_detail_redirect(request, pid):
 
 def blog_rss(request):
     """RSS feed for blog posts"""
-    # This would implement RSS feed functionality
-    # For now, return a simple response
-    return HttpResponse("RSS feed coming soon", content_type="text/plain")
+    posts = Post.objects.filter(status="published").order_by("-date")[:20]
+    site_url = request.build_absolute_uri("/").rstrip("/")
+    items = []
+    for post in posts:
+        post_url = request.build_absolute_uri(reverse("blog:blog-detail", kwargs={"slug": post.slug}))
+        excerpt = strip_tags(post.excerpt or post.content or "")
+        items.append(f"""
+        <item>
+          <title>{escape(post.title)}</title>
+          <link>{escape(post_url)}</link>
+          <guid>{escape(post_url)}</guid>
+          <description>{escape(excerpt[:300])}</description>
+          <pubDate>{post.date.strftime('%a, %d %b %Y %H:%M:%S %z')}</pubDate>
+        </item>""")
+
+    rss = f"""<?xml version="1.0" encoding="UTF-8"?>
+    <rss version="2.0">
+      <channel>
+        <title>Myriad Travel Blog</title>
+        <link>{escape(site_url)}</link>
+        <description>Travel stories, safari tips, destination guides, and planning advice from Myriad Travel.</description>
+        {''.join(items)}
+      </channel>
+    </rss>"""
+    return HttpResponse(rss, content_type="application/rss+xml")
 
 
 def blog_sitemap(request):
     """XML sitemap for blog posts"""
-    # This would implement XML sitemap functionality
-    # For now, return a simple response
-    return HttpResponse("Sitemap coming soon", content_type="text/plain")
+    posts = Post.objects.filter(status="published").order_by("-date")
+    urls = []
+    for post in posts:
+        post_url = request.build_absolute_uri(reverse("blog:blog-detail", kwargs={"slug": post.slug}))
+        urls.append(f"""
+        <url>
+          <loc>{escape(post_url)}</loc>
+          <lastmod>{post.updated.date().isoformat()}</lastmod>
+          <changefreq>monthly</changefreq>
+          <priority>0.7</priority>
+        </url>""")
+
+    sitemap = f"""<?xml version="1.0" encoding="UTF-8"?>
+    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+      {''.join(urls)}
+    </urlset>"""
+    return HttpResponse(sitemap, content_type="application/xml")
