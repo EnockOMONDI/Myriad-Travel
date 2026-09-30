@@ -380,7 +380,12 @@ class Package(models.Model):
     exclusions = CKEditor5Field(config_name='default', help_text="What's NOT included in the package")
     
     # Media
-    featured_image = ImageField(blank=True, null=True, manual_crop="4:4")
+    featured_image = ImageField(
+        blank=True,
+        null=True,
+        manual_crop="4:4,16:10,16:9,4:3,3:2,1:1,9:16,4:5",
+        help_text="Package image. Uploadcare crop options include square, card, hero and poster ratios.",
+    )
     
     # Accommodation and travel options
     available_accommodations = models.ManyToManyField(
