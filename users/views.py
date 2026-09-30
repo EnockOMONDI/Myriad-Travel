@@ -204,7 +204,7 @@ def _public_page_context(package_limit=None):
         'available_accommodations',
         'available_travel_modes',
         'itinerary__days',
-    ).filter(status=Package.PUBLISHED).order_by('-is_featured', '-published_at', '-created_at')
+    ).filter(status=Package.PUBLISHED).order_by('home_rank', '-is_featured', '-published_at', '-created_at')
     if package_limit:
         packages_qs = packages_qs[:package_limit]
 
@@ -604,7 +604,7 @@ def home(request):
         packages_queryset = Package.objects.select_related('main_destination', 'category').prefetch_related(
             'available_accommodations',
             'available_travel_modes'
-        ).filter(status=Package.PUBLISHED).order_by('-is_featured', 'total_bookings')[:12]
+        ).filter(status=Package.PUBLISHED).order_by('home_rank', '-is_featured', '-published_at', '-created_at')[:4]
 
         # Process package data efficiently with minimal loops
         package_data = []
@@ -656,7 +656,7 @@ def home(request):
             'hero_slides': hero_slides,  # Dynamic hero slider data
         }
 
-        context.update(_public_page_context(package_limit=12))
+        context.update(_public_page_context(package_limit=4))
         return render(request, 'users/pages/home.html', context)
 
 
@@ -675,7 +675,7 @@ def home(request):
                 'hero_slides': [],  # Empty hero slides for fallback
             }
             logger.debug("Using basic context fallback")
-            basic_context.update(_public_page_context(package_limit=12))
+            basic_context.update(_public_page_context(package_limit=4))
             return render(request, 'users/pages/home.html', basic_context)
         except Exception as e2:
             logger.error(f"Error in home view fallback: {e2}")
