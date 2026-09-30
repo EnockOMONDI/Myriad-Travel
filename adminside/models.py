@@ -409,6 +409,10 @@ class Package(models.Model):
     # Status and visibility
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=DRAFT)
     is_featured = models.BooleanField(default=False)
+    home_rank = models.PositiveIntegerField(
+        default=100,
+        help_text="Homepage selling order. Lower numbers appear first in the homepage package showcase."
+    )
     
     # SEO
     meta_title = models.CharField(max_length=200, blank=True)
@@ -420,11 +424,12 @@ class Package(models.Model):
     published_at = models.DateTimeField(null=True, blank=True)
 
     class Meta:
-        ordering = ['-is_featured', '-published_at', '-created_at']
+        ordering = ['home_rank', '-is_featured', '-published_at', '-created_at']
         indexes = [
             models.Index(fields=['category', 'status']),
             models.Index(fields=['main_destination', 'status']),
             models.Index(fields=['status', 'is_featured']),
+            models.Index(fields=['status', 'home_rank']),
         ]
 
     def save(self, *args, **kwargs):

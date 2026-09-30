@@ -235,13 +235,13 @@ class PackageBookingInline(admin.TabularInline):
 class PackageAdmin(admin.ModelAdmin):
     form = PackageAdminForm
     list_display = ('name', 'display_image', 'category', 'region', 'main_destination', 'adult_price',
-                   'child_price', 'duration_days', 'lipa_pole_pole', 'status', 'is_featured', 'total_bookings')
+                   'child_price', 'duration_days', 'lipa_pole_pole', 'status', 'is_featured', 'home_rank', 'total_bookings')
     list_filter = ('category', 'region', 'main_destination', 'status', 'lipa_pole_pole', 'is_featured', 'duration_days')
     search_fields = ('name', 'subtitle', 'description', 'highlights', 'inclusions', 'exclusions')
     filter_horizontal = ('available_accommodations', 'available_travel_modes')
     readonly_fields = ('total_bookings', 'total_reviews')
     prepopulated_fields = {'slug': ('name',)}
-    list_editable = ('status', 'is_featured')
+    list_editable = ('status', 'is_featured', 'home_rank')
 
     fieldsets = (
         ('Basic Information', {
@@ -269,7 +269,7 @@ class PackageAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
         ('Status & Statistics', {
-            'fields': ('status', 'is_featured', 'published_at', 'total_bookings', 'rating', 'total_reviews'),
+            'fields': ('status', 'is_featured', 'home_rank', 'published_at', 'total_bookings', 'rating', 'total_reviews'),
             'classes': ('collapse',)
         }),
     )
