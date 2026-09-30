@@ -1,7 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from django.http import Http404
 import os
-import smtplib
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -10,10 +9,6 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.db.models import Q
 from django.http import JsonResponse
-
-
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 
 
 from adminside.models import *
@@ -859,22 +854,9 @@ def bookings(request, package_id):
 
 
 def send_booking_email(booking):
-    """Send an email notification about the new booking."""
+    """Send an admin notification about the legacy booking form."""
     try:
-        s = smtplib.SMTP('smtp.gmail.com', 587)
-        s.starttls()
-
-        # Use email credentials from settings
-        sender_email = settings.EMAIL_HOST_USER
-        password = settings.EMAIL_HOST_PASSWORD
-
-        s.login(sender_email, password)
-
-        # Email content
-        msg = MIMEMultipart()
-        msg['From'] = f"Myriad Travel <{sender_email}>"
-        msg['To'] = getattr(settings, 'ADMIN_EMAIL', 'info@myriad-travel.com')
-        msg['Subject'] = f"New Booking: {booking.full_name} for {booking.package.name}"
+        from users.tasks import send_email_via_mailtrap
 
         message = f"""
         <p><strong>New Booking Alert</strong></p>
@@ -887,13 +869,12 @@ def send_booking_email(booking):
         <p><strong>Include Travelling:</strong> {'Yes' if booking.include_travelling else 'No'}</p>
         """
 
-        msg.attach(MIMEText(message, 'html'))
-
-        # Send the email
-        s.send_message(msg)
-        s.quit()
-        print("Booking email sent successfully!")
-        return True
+        return send_email_via_mailtrap(
+            subject=f"New Booking: {booking.full_name} for {booking.package.name}",
+            html_message=message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[getattr(settings, 'ADMIN_EMAIL', 'info@myriad-travel.com')],
+        )
 
     except Exception as e:
         print(f"Error sending booking email: {e}")
