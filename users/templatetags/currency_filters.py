@@ -9,6 +9,27 @@ register = template.Library()
 
 
 @register.filter
+def kes_format(value):
+    """
+    Format a number as Kenyan shillings.
+    """
+    try:
+        if value is None:
+            return "KSh 0"
+
+        if isinstance(value, str):
+            value = Decimal(value)
+        elif not isinstance(value, Decimal):
+            value = Decimal(str(value))
+
+        if value % 1 == 0:
+            return f"KSh {value:,.0f}"
+        return f"KSh {value:,.2f}"
+    except (ValueError, TypeError, Decimal.InvalidOperation):
+        return "KSh 0"
+
+
+@register.filter
 def currency_format(value):
     """
     Format a number as currency with $ symbol and proper formatting
