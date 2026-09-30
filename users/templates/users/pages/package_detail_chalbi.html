@@ -1,0 +1,402 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load currency_filters %}
+
+{% block title %}{{ pkg.title|default:"Safari Itinerary & Package Details" }} - Myriad Travel{% endblock %}
+{% block site_navbar %}{% endblock %}
+{% block site_footer %}{% endblock %}
+{% block site_floating_widgets %}{% endblock %}
+{% block site_modals %}{% endblock %}
+
+{% block content %}
+<div class="bg-[#fbfaf7] text-[#23302f]">
+  <div class="bg-[#1f3031] text-white">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 text-xs sm:px-8">
+      <span class="font-semibold">A little further. A little wilder.</span>
+      <span class="hidden sm:inline">Talk to our Nairobi team - <a href="tel:+254712236522" class="font-bold hover:underline">+254 712 236 522</a></span>
+    </div>
+  </div>
+
+  <section id="overview" class="mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-12">
+    <div class="mb-8 flex items-center justify-between gap-6">
+      <a href="/" class="block" aria-label="Myriad Travel home">
+        <img src="{% static 'images/myriad-logo.png' %}" alt="Myriad Travel" class="h-14 w-auto object-contain" />
+      </a>
+      <nav class="hidden items-center gap-10 text-sm font-semibold text-[#243131] md:flex">
+        <a href="#overview" class="hover:text-[#4c8876]">The experience</a>
+        <a href="#itinerary" class="hover:text-[#4c8876]">Your itinerary</a>
+        <a href="#included" class="hover:text-[#4c8876]">What's included</a>
+      </nav>
+      <a
+        href="https://wa.me/{{ company.contacts.whatsapp|default:'254712236522' }}?text=Hello%20Myriad%20Travel,%20I%20would%20like%20to%20talk%20about%20{{ pkg.title|urlencode }}."
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-3 rounded-md border border-[#d8dedb] bg-white px-5 py-3 text-sm font-semibold text-[#243131] shadow-sm transition hover:border-[#4c8876]"
+      >
+        <span>Let's talk</span>
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+
+    <div class="mb-8 flex flex-wrap items-center gap-3 text-sm text-[#66736f]">
+      <a href="/" class="hover:text-[#4c8876]">Explore Kenya</a>
+      <span>/</span>
+      <span>Northern Kenya</span>
+      <span>/</span>
+      <span class="font-medium text-[#243131]">Twende Chalbi</span>
+    </div>
+
+    <div class="grid gap-8 lg:grid-cols-[1fr_300px] lg:items-end">
+      <div>
+        <div class="mb-5 flex flex-wrap items-center gap-3 text-[11px] font-black uppercase tracking-[0.22em] text-[#4c8876]">
+          <span class="bg-[#e9f1ec] px-3 py-2">Featured Departure</span>
+          <span>{{ pkg.category|default:"Northern Kenya Adventure" }}</span>
+        </div>
+        <h1 class="max-w-3xl font-serif text-5xl font-black leading-[0.95] tracking-[-0.04em] text-[#23302f] sm:text-7xl">
+          Twende Chalbi
+          <span class="block text-3xl italic text-[#66736f] sm:text-5xl">Kenya, beyond the familiar.</span>
+        </h1>
+        <p class="mt-5 max-w-2xl text-base font-semibold text-[#66736f] sm:text-lg">
+          Desert horizons. Jade-green waters. A road trip worth sharing.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="chalbi-share-btn inline-flex items-center justify-center gap-2 rounded-md border border-[#cbd8d2] bg-white px-5 py-4 text-sm font-bold text-[#4c665d] shadow-sm transition hover:border-[#4c8876]"
+      >
+        <i data-lucide="share-2" class="h-4 w-4"></i>
+        <span>Share with friends on WhatsApp</span>
+      </button>
+    </div>
+
+    <div class="relative mt-8 overflow-hidden rounded-lg bg-[#1f3031] shadow-sm">
+      <img
+        src="{{ pkg.hero_image|default:pkg.featured_image }}"
+        alt="{{ pkg.title }}"
+        class="h-[330px] w-full object-cover sm:h-[430px] lg:h-[500px]"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-black/5 to-transparent"></div>
+      {% if pkg.special_offer.date %}
+      <div class="absolute right-6 top-6 rounded-sm bg-white/95 px-8 py-6 text-center shadow-sm">
+        <div class="font-serif text-3xl font-black tracking-wide text-[#23302f]">10-14</div>
+        <div class="mt-1 text-[11px] font-black uppercase tracking-[0.22em] text-[#66736f]">December 2026</div>
+      </div>
+      {% endif %}
+      <div class="absolute bottom-7 left-7 text-white">
+        <div class="text-[11px] font-black uppercase tracking-[0.25em]">01 / The Great Northern Escape</div>
+        <h2 class="mt-2 font-serif text-3xl font-black sm:text-4xl">Take the scenic way out.</h2>
+      </div>
+    </div>
+
+    <dl class="grid border-b border-[#dce3df] border-t border-[#dce3df] py-7 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="border-[#dce3df] py-3 sm:border-r sm:px-6 lg:pl-0">
+        <dt class="text-[11px] font-black uppercase tracking-[0.2em] text-[#8a9692]">When</dt>
+        <dd class="mt-2 text-lg font-black text-[#243131]">10-14 Dec 2026</dd>
+      </div>
+      <div class="border-[#dce3df] py-3 sm:px-6 lg:border-r">
+        <dt class="text-[11px] font-black uppercase tracking-[0.2em] text-[#8a9692]">How long</dt>
+        <dd class="mt-2 text-lg font-black text-[#243131]">{{ pkg.duration }}</dd>
+      </div>
+      <div class="border-[#dce3df] py-3 sm:border-r sm:px-6">
+        <dt class="text-[11px] font-black uppercase tracking-[0.2em] text-[#8a9692]">Getting there</dt>
+        <dd class="mt-2 text-lg font-black text-[#243131]">Safari Land Cruiser</dd>
+      </div>
+      <div class="py-3 sm:px-6 lg:pr-0">
+        <dt class="text-[11px] font-black uppercase tracking-[0.2em] text-[#8a9692]">We start in</dt>
+        <dd class="mt-2 text-lg font-black text-[#243131]">Nairobi - 3:30 AM</dd>
+      </div>
+    </dl>
+
+    <div class="mt-8 grid gap-10 lg:grid-cols-[1fr_350px] lg:items-start">
+      <main class="min-w-0">
+        <nav class="sticky top-0 z-10 mb-10 flex gap-8 border-b border-[#dce3df] bg-[#fbfaf7]/95 py-4 text-sm font-bold text-[#243131] backdrop-blur">
+          <a href="#highlights" class="text-[#4c8876]">Highlights</a>
+          <a href="#itinerary" class="hover:text-[#4c8876]">Itinerary</a>
+          <a href="#included" class="hover:text-[#4c8876]">Inclusions</a>
+          <a href="#before" class="hover:text-[#4c8876]">Good to know</a>
+        </nav>
+
+        <section id="highlights" class="scroll-mt-24">
+          <p class="text-[12px] font-black uppercase tracking-[0.24em] text-[#4c8876]">Five days. A different side of Kenya.</p>
+          <h2 class="mt-4 font-serif text-4xl font-black tracking-[-0.03em] text-[#23302f] sm:text-5xl">Leave the everyday behind.</h2>
+          <p class="mt-4 max-w-3xl text-base leading-8 text-[#66736f]">
+            From Marsabit's green highlands to the open salt flats of Chalbi and the shores of Lake Turkana, discover the north with local guides and a crew of fellow explorers.
+          </p>
+          <div class="mt-10 grid gap-5 md:grid-cols-3">
+            <article class="border-t border-[#dce3df] pt-6">
+              <div class="text-sm font-black text-[#4c8876]">01</div>
+              <h3 class="mt-3 font-serif text-2xl font-black text-[#23302f]">Chase desert sunsets</h3>
+              <p class="mt-3 text-sm leading-6 text-[#66736f]">Chalbi salt flats, Kalacha Oasis and the dunes of North Horr.</p>
+            </article>
+            <article class="border-t border-[#dce3df] pt-6">
+              <div class="text-sm font-black text-[#4c8876]">02</div>
+              <h3 class="mt-3 font-serif text-2xl font-black text-[#23302f]">Meet the Jade Sea</h3>
+              <p class="mt-3 text-sm leading-6 text-[#66736f]">A Lake Turkana boat experience, lakeside time and El Molo cultural learning.</p>
+            </article>
+            <article class="border-t border-[#dce3df] pt-6">
+              <div class="text-sm font-black text-[#4c8876]">03</div>
+              <h3 class="mt-3 font-serif text-2xl font-black text-[#23302f]">Make the road the story</h3>
+              <p class="mt-3 text-sm leading-6 text-[#66736f]">Marsabit, Lake Paradise and remarkable landscapes from your Land Cruiser.</p>
+            </article>
+          </div>
+        </section>
+
+        <section id="itinerary" class="mt-16 scroll-mt-24">
+          <div class="flex items-end justify-between gap-6">
+            <div>
+              <p class="text-[12px] font-black uppercase tracking-[0.24em] text-[#4c8876]">Your route north</p>
+              <h2 class="mt-4 font-serif text-4xl font-black tracking-[-0.03em] text-[#23302f] sm:text-5xl">Five days, beautifully spent.</h2>
+              <p class="mt-5 text-sm font-semibold text-[#66736f]">Nairobi - Marsabit - Chalbi - North Horr - Lake Turkana - Isiolo - Nairobi</p>
+            </div>
+            <button type="button" class="expand-all-btn hidden text-sm font-semibold text-[#4c8876] underline sm:block">Expand all</button>
+          </div>
+
+          <div class="mt-8 border-t border-[#dce3df]">
+            {% for day in pkg.itinerary %}
+            <article class="chalbi-accordion border-b border-[#dce3df]" data-open="{% if forloop.first %}true{% else %}false{% endif %}">
+              <button type="button" class="chalbi-accordion-btn flex w-full gap-6 py-7 text-left">
+                <div class="w-14 shrink-0 text-center">
+                  <div class="font-serif text-3xl font-black text-[#8a9692]">{{ day.day|stringformat:"02d" }}</div>
+                  <div class="text-[10px] font-black uppercase tracking-[0.18em] text-[#8a9692]">Day</div>
+                </div>
+                <div class="min-w-0 flex-1">
+                  <p class="text-[11px] font-black uppercase tracking-[0.22em] text-[#4c8876]">{{ day.date }} - {{ day.theme }}</p>
+                  <h3 class="mt-2 text-xl font-black text-[#243131]">{{ day.title }}</h3>
+                  <p class="mt-1 text-sm font-semibold text-[#66736f]">{{ day.summary }}</p>
+                  <div class="chalbi-accordion-panel mt-6 text-base leading-8 text-[#66736f] {% if not forloop.first %}hidden{% endif %}">
+                    <p>{{ day.description }}</p>
+                    <p class="mt-4 inline-block bg-[#edf4ef] px-3 py-2 text-xs font-semibold text-[#4c665d]">
+                      {% if day.overnight %}Overnight: {{ day.overnight }} - {% endif %}{{ day.meals|default:"Meals confirmed by the team" }}
+                    </p>
+                  </div>
+                </div>
+                <span class="chalbi-accordion-icon mt-4 text-2xl font-bold text-[#4c8876]">{% if forloop.first %}-{% else %}+{% endif %}</span>
+              </button>
+            </article>
+            {% endfor %}
+          </div>
+          <p class="mt-5 text-sm text-[#66736f]">Timings and activities depend on weather, roads and operating conditions.</p>
+        </section>
+
+        <section id="included" class="mt-16 scroll-mt-24">
+          <p class="text-[12px] font-black uppercase tracking-[0.24em] text-[#4c8876]">Know what you're booking</p>
+          <h2 class="mt-4 font-serif text-4xl font-black tracking-[-0.03em] text-[#23302f] sm:text-5xl">The essentials, taken care of.</h2>
+          <div class="mt-8 grid gap-5 md:grid-cols-2">
+            <div class="rounded-sm border border-[#dce3df] bg-white p-6">
+              <h3 class="text-lg font-black text-[#243131]">Included in your trip</h3>
+              <ul class="mt-5 space-y-3 text-sm leading-6 text-[#66736f]">
+                {% for inc in pkg.inclusions %}
+                <li class="flex gap-3"><span class="text-[#4c8876]">•</span><span>{{ inc }}</span></li>
+                {% endfor %}
+              </ul>
+            </div>
+            <div class="rounded-sm border border-[#dce3df] bg-white p-6">
+              <h3 class="text-lg font-black text-[#243131]">Plan for separately</h3>
+              <ul class="mt-5 space-y-3 text-sm leading-6 text-[#66736f]">
+                {% for exc in pkg.exclusions %}
+                <li class="flex gap-3"><span class="text-[#4c8876]">•</span><span>{{ exc }}</span></li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+          <p class="mt-4 text-xs leading-5 text-[#66736f]">Day 1 and Day 5 lunches appear in the itinerary but final meal handling will be confirmed before booking.</p>
+        </section>
+
+        <section id="before" class="mt-16 scroll-mt-24">
+          <p class="text-[12px] font-black uppercase tracking-[0.24em] text-[#4c8876]">A little preparation goes a long way</p>
+          <h2 class="mt-4 font-serif text-4xl font-black tracking-[-0.03em] text-[#23302f] sm:text-5xl">Before you head north.</h2>
+          <div class="mt-8 border-t border-[#dce3df]">
+            {% for faq in pkg.special_offer.before_faqs %}
+            <article class="chalbi-accordion border-b border-[#dce3df]" data-open="false">
+              <button type="button" class="chalbi-accordion-btn flex w-full items-center justify-between gap-5 py-5 text-left">
+                <h3 class="text-lg font-black text-[#243131]">{{ faq.question }}</h3>
+                <span class="chalbi-accordion-icon text-2xl font-bold text-[#4c8876]">+</span>
+              </button>
+              <div class="chalbi-accordion-panel hidden pb-6 text-sm leading-7 text-[#66736f]">
+                <p>{{ faq.answer }}</p>
+              </div>
+            </article>
+            {% endfor %}
+          </div>
+        </section>
+
+        <section class="mt-16 rounded-sm bg-[#1f3031] p-8 text-white sm:flex sm:items-center sm:justify-between sm:gap-8">
+          <div>
+            <h3 class="font-serif text-3xl font-black">Good trips are better together.</h3>
+            <p class="mt-2 text-sm text-white/75">Send the plan to your travel crew.</p>
+          </div>
+          <button type="button" class="chalbi-share-btn mt-6 rounded-md bg-white px-5 py-3 text-sm font-bold text-[#1f3031] sm:mt-0">
+            Share on WhatsApp
+          </button>
+        </section>
+      </main>
+
+      <aside id="booking" class="lg:sticky lg:top-8">
+        <div class="rounded-lg border border-[#dce3df] bg-white p-7 shadow-[0_18px_55px_rgba(31,48,49,0.08)]">
+          <p class="text-[11px] font-black uppercase tracking-[0.24em] text-[#4c8876]">Your next great story</p>
+          <div class="mt-6">
+            <span class="text-sm text-[#66736f]">From</span>
+            <div class="mt-1 text-4xl font-black tracking-[-0.04em] text-[#23302f]">{{ pkg.price_kes|kes_format }}</div>
+            <p class="mt-1 text-sm font-semibold text-[#66736f]">per adult sharing</p>
+          </div>
+
+          <div class="mt-7 rounded-sm bg-[#eef4ef] p-5 text-[#243131]">
+            <div class="flex items-start gap-3">
+              <i data-lucide="calendar-days" class="mt-0.5 h-4 w-4 text-[#4c8876]"></i>
+              <div>
+                <p class="font-black">10-14 December 2026</p>
+                <p class="mt-1 text-sm font-semibold text-[#66736f]">{{ pkg.duration }}</p>
+              </div>
+            </div>
+          </div>
+
+          <label for="chalbi-room" class="mt-6 block text-sm font-black text-[#243131]">Your room preference</label>
+          <select id="chalbi-room" class="mt-3 w-full rounded-sm border border-[#dce3df] bg-white px-4 py-4 text-sm font-semibold text-[#243131]">
+            <option value="sharing" data-price="{{ pkg.price_kes }}">Sharing - {{ pkg.price_kes|kes_format }} / adult</option>
+            {% if pkg.single_price_kes %}
+            <option value="single" data-price="{{ pkg.single_price_kes }}">Single - {{ pkg.single_price_kes|kes_format }} / adult</option>
+            {% endif %}
+          </select>
+
+          <div class="mt-6 flex items-center justify-between">
+            <div>
+              <p class="text-sm font-black text-[#243131]">Adults</p>
+              <p class="text-xs text-[#66736f]">Travellers in your party</p>
+            </div>
+            <div class="flex items-center gap-4">
+              <button type="button" id="chalbi-minus" class="h-10 w-10 rounded-full border border-[#dce3df] text-lg font-bold text-[#8a9692] disabled:opacity-30">-</button>
+              <span id="chalbi-adults" class="w-5 text-center font-bold">1</span>
+              <button type="button" id="chalbi-plus" class="h-10 w-10 rounded-full border border-[#dce3df] text-lg font-bold text-[#243131]">+</button>
+            </div>
+          </div>
+
+          <label class="mt-6 flex items-center gap-3 text-sm text-[#243131]">
+            <input id="chalbi-children" type="checkbox" class="h-4 w-4 rounded border-[#dce3df]" />
+            <span>Travelling with children?</span>
+          </label>
+
+          <div id="chalbi-child-note" class="mt-3 hidden rounded-sm bg-[#fff7ed] px-4 py-3 text-xs leading-5 text-[#7c4a03]">
+            Child rate starts from {{ pkg.child_price_kes|kes_format }}. The team will confirm age policy and rooming before booking.
+          </div>
+
+          <div class="mt-7 border-t border-[#dce3df] pt-6">
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-[#243131]">Adult trip estimate</span>
+              <strong id="chalbi-estimate" class="text-xl font-black text-[#243131]">{{ pkg.price_kes|kes_format }}</strong>
+            </div>
+          </div>
+
+          <a
+            id="chalbi-booking-link"
+            href="https://wa.me/{{ company.contacts.whatsapp|default:'254712236522' }}?text=Hello%20Myriad%20Travel,%20I%20would%20like%20to%20plan%20my%20booking%20for%20Twende%20Chalbi%20on%2010-14%20December%202026."
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-6 flex w-full items-center justify-center rounded-md bg-[#4c8876] px-5 py-4 text-sm font-black text-white transition hover:bg-[#3f7464]"
+          >
+            Plan my booking
+          </a>
+          <p class="mt-3 text-center text-xs font-semibold text-[#8a9692]">No payment now - Availability confirmed by our team</p>
+          <a
+            href="https://wa.me/{{ company.contacts.whatsapp|default:'254712236522' }}?text=Hi%20Myriad,%20I%20have%20a%20question%20about%20Twende%20Chalbi%20on%2010-14%20December%202026."
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-5 flex w-full items-center justify-center rounded-md border border-[#cbd8d2] bg-white px-5 py-4 text-sm font-bold text-[#4c665d] transition hover:border-[#4c8876]"
+          >
+            Chat with a trip specialist
+          </a>
+          <p class="mt-6 text-center text-xs text-[#66736f]">Safari transport - Stays - Guided experiences</p>
+        </div>
+        <p class="mt-6 text-center text-sm leading-7 text-[#66736f]">
+          A guided group adventure.<br />A personal team behind every journey.
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <footer class="border-t border-[#dce3df] bg-white">
+    <div class="mx-auto grid max-w-7xl gap-6 px-5 py-10 sm:px-8 md:grid-cols-[220px_1fr] md:items-center">
+      <img src="{% static 'images/myriad-logo.png' %}" alt="Myriad Travel" class="h-20 w-auto object-contain" />
+      <div>
+        <h2 class="font-serif text-3xl font-black tracking-[-0.03em] text-[#23302f]">Beyond imagination. Closer than you think.</h2>
+        <p class="mt-3 text-sm text-[#66736f]">
+          Nairobi, Kenya -
+          <a href="mailto:info@myriad-travel.com" class="font-semibold hover:text-[#4c8876]">info@myriad-travel.com</a> -
+          <a href="tel:+254712236522" class="font-semibold hover:text-[#4c8876]">+254 712 236 522</a>
+        </p>
+        <p class="mt-3 text-xs text-[#8a9692]">© 2026 Myriad Travel</p>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+  (function () {
+    const formatKes = (value) => new Intl.NumberFormat('en-KE', {
+      style: 'currency',
+      currency: 'KES',
+      maximumFractionDigits: 0
+    }).format(value).replace('KES', 'KSh');
+
+    const room = document.getElementById('chalbi-room');
+    const adultsLabel = document.getElementById('chalbi-adults');
+    const estimate = document.getElementById('chalbi-estimate');
+    const minus = document.getElementById('chalbi-minus');
+    const plus = document.getElementById('chalbi-plus');
+    const childToggle = document.getElementById('chalbi-children');
+    const childNote = document.getElementById('chalbi-child-note');
+    let adults = 1;
+
+    function selectedAdultPrice() {
+      if (!room) return {{ pkg.price_kes|default:58000 }};
+      return Number(room.options[room.selectedIndex].dataset.price || {{ pkg.price_kes|default:58000 }});
+    }
+
+    function updateEstimate() {
+      if (!adultsLabel || !estimate) return;
+      adultsLabel.textContent = adults;
+      estimate.textContent = formatKes(selectedAdultPrice() * adults);
+      if (minus) minus.disabled = adults <= 1;
+    }
+
+    if (room) room.addEventListener('change', updateEstimate);
+    if (minus) minus.addEventListener('click', () => { adults = Math.max(1, adults - 1); updateEstimate(); });
+    if (plus) plus.addEventListener('click', () => { adults = Math.min(20, adults + 1); updateEstimate(); });
+    if (childToggle && childNote) {
+      childToggle.addEventListener('change', () => childNote.classList.toggle('hidden', !childToggle.checked));
+    }
+    updateEstimate();
+
+    document.querySelectorAll('.chalbi-accordion-btn').forEach((button) => {
+      button.addEventListener('click', () => {
+        const item = button.closest('.chalbi-accordion');
+        const panel = item.querySelector('.chalbi-accordion-panel');
+        const icon = item.querySelector('.chalbi-accordion-icon');
+        const open = item.dataset.open === 'true';
+        item.dataset.open = open ? 'false' : 'true';
+        if (panel) panel.classList.toggle('hidden', open);
+        if (icon) icon.textContent = open ? '+' : '-';
+      });
+    });
+
+    document.querySelectorAll('.expand-all-btn').forEach((button) => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.chalbi-accordion').forEach((item) => {
+          const panel = item.querySelector('.chalbi-accordion-panel');
+          const icon = item.querySelector('.chalbi-accordion-icon');
+          item.dataset.open = 'true';
+          if (panel) panel.classList.remove('hidden');
+          if (icon) icon.textContent = '-';
+        });
+      });
+    });
+
+    document.querySelectorAll('.chalbi-share-btn').forEach((button) => {
+      button.addEventListener('click', () => {
+        const text = encodeURIComponent('Twende Chalbi with Myriad Travel - 10-14 December 2026. ' + window.location.href);
+        window.open('https://wa.me/?text=' + text, '_blank', 'noopener,noreferrer');
+      });
+    });
+  })();
+</script>
+{% endblock %}
