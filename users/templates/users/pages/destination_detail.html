@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ destination.name }} Packages - Myriad Travel{% endblock %}
+
+{% block content %}
+<div class="bg-[#f7f4ef]">
+  <section class="px-4 py-14 sm:px-8">
+    <div class="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1fr_460px] lg:items-center">
+      <div>
+        <p class="text-[11px] font-black uppercase tracking-[0.24em] text-amber-700">{{ collection_eyebrow }}</p>
+        <h1 class="mt-4 font-serif text-4xl font-black leading-tight tracking-[-0.03em] text-slate-950 sm:text-6xl">
+          {{ destination.name }}
+        </h1>
+        <p class="mt-5 max-w-3xl text-base leading-8 text-slate-600">
+          {{ collection_description }}
+        </p>
+        <button type="button" class="open-plan-modal-btn mt-7 inline-flex items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-amber-700">
+          <i data-lucide="send" class="h-4 w-4"></i>
+          <span>Plan this destination</span>
+        </button>
+      </div>
+      <div class="overflow-hidden rounded-2xl border border-white bg-slate-200 shadow-xl">
+        <img src="{{ destination.image }}" alt="{{ destination.name }}" class="aspect-[4/3] w-full object-cover" />
+      </div>
+    </div>
+  </section>
+
+  <section class="px-4 pb-16 sm:px-8">
+    <div class="mx-auto max-w-7xl">
+      <div class="mb-8">
+        <h2 class="font-serif text-3xl font-black text-slate-950">Available packages</h2>
+        <p class="mt-2 text-sm text-slate-600">Published packages linked to this destination appear here automatically.</p>
+      </div>
+      {% if collection_packages %}
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {% for pkg in collection_packages %}
+          {% include 'components/package_card.html' with pkg=pkg %}
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
+        <h3 class="font-serif text-2xl font-black text-slate-950">No published packages yet.</h3>
+        <p class="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600">
+          The Myriad team can add packages for this destination in admin.
+        </p>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+</div>
+{% endblock %}

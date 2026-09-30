@@ -98,11 +98,12 @@
             <div class="px-4 py-1.5 text-[11px] font-semibold text-amber-700 uppercase tracking-wider bg-amber-50/60 border-b border-amber-100/40 mb-1">
               Kenya Highlights
             </div>
-            <a href="/#packages-section" class="cat-link-trigger block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors" data-target-category="kenya-safari">Amboseli</a>
-            <a href="/#packages-section" class="cat-link-trigger block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors" data-target-category="kenya-safari">Maasai Mara</a>
-            <a href="/#packages-section" class="cat-link-trigger block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors" data-target-category="kenya-coast">Coast</a>
-            <a href="/#packages-section" class="cat-link-trigger block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors" data-target-category="kenya-coast">Malindi</a>
-            <a href="/#packages-section" class="cat-link-trigger block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors" data-target-category="kenya-coast">Watamu</a>
+            {% for item in nav_explore_kenya %}
+            <a href="/destinations/{{ item.slug }}/" class="block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors">{{ item.name }}</a>
+            {% empty %}
+            <a href="/explore-kenya/" class="block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors">Kenya Packages</a>
+            {% endfor %}
+            <a href="/explore-kenya/" class="mt-1 block border-t border-slate-100 px-4 py-2 text-xs font-bold uppercase tracking-wider text-amber-700 hover:bg-amber-50">View all Kenya</a>
           </div>
         </div>
 
@@ -118,29 +119,50 @@
             <div class="px-4 py-1.5 text-[11px] font-semibold text-amber-700 uppercase tracking-wider bg-amber-50/60 border-b border-amber-100/40 mb-1">
               Global Holidays
             </div>
-            <a href="/#packages-section" class="cat-link-trigger block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors" data-target-category="international">Dubai</a>
-            <a href="/#packages-section" class="cat-link-trigger block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors" data-target-category="international">South Africa</a>
-            <a href="/#packages-section" class="cat-link-trigger block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors" data-target-category="international">Egypt</a>
-            <a href="/#packages-section" class="cat-link-trigger block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors" data-target-category="international">Rwanda</a>
-            <a href="/#packages-section" class="cat-link-trigger block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors" data-target-category="international">Seychelles</a>
+            {% for item in nav_explore_world %}
+            <a href="/destinations/{{ item.slug }}/" class="block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors">{{ item.name }}</a>
+            {% empty %}
+            <a href="/explore-the-world/" class="block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors">International Holidays</a>
+            {% endfor %}
+            <a href="/explore-the-world/" class="mt-1 block border-t border-slate-100 px-4 py-2 text-xs font-bold uppercase tracking-wider text-amber-700 hover:bg-amber-50">View all world destinations</a>
           </div>
         </div>
 
-        <a
-          href="/#packages-section"
-          class="cat-link-trigger px-2 xl:px-3 py-2 rounded-lg hover:text-amber-600 hover:bg-amber-50/50 transition-colors whitespace-nowrap"
-          data-target-category="kenya-safari"
-        >
-          Tours &amp; Safaris
-        </a>
+        <div class="relative group">
+          <a
+            href="/tours-safaris/"
+            class="flex items-center gap-1 px-2 xl:px-3 py-2 rounded-lg hover:text-amber-600 hover:bg-amber-50/50 transition-colors whitespace-nowrap"
+          >
+            <span>Tours &amp; Safaris</span>
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 group-hover:rotate-180 transition-transform"></i>
+          </a>
+          <div class="absolute top-full left-0 w-64 bg-white rounded-xl shadow-xl border border-slate-100 py-2 hidden group-hover:block z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+            {% for item in nav_tours_safaris %}
+            <a href="/tours-safaris/?category={{ item.slug }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors">{{ item.name }}</a>
+            {% empty %}
+            <a href="/tours-safaris/" class="block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors">Safari Packages</a>
+            {% endfor %}
+            <a href="/tours-safaris/" class="mt-1 block border-t border-slate-100 px-4 py-2 text-xs font-bold uppercase tracking-wider text-amber-700 hover:bg-amber-50">View all tours</a>
+          </div>
+        </div>
 
-        <a
-          href="/#packages-section"
-          class="cat-link-trigger px-2 xl:px-3 py-2 rounded-lg hover:text-amber-600 hover:bg-amber-50/50 transition-colors whitespace-nowrap"
-          data-target-category="day-trips"
-        >
-          Signature Experiences
-        </a>
+        <div class="relative group">
+          <a
+            href="/signature-experiences/"
+            class="flex items-center gap-1 px-2 xl:px-3 py-2 rounded-lg hover:text-amber-600 hover:bg-amber-50/50 transition-colors whitespace-nowrap"
+          >
+            <span>Signature Experiences</span>
+            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 group-hover:rotate-180 transition-transform"></i>
+          </a>
+          <div class="absolute top-full left-0 w-64 bg-white rounded-xl shadow-xl border border-slate-100 py-2 hidden group-hover:block z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+            {% for item in nav_signature_experiences %}
+            <a href="/signature-experiences/#{{ item.slug }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors">{{ item.name }}</a>
+            {% empty %}
+            <a href="/signature-experiences/" class="block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors">Signature Experiences</a>
+            {% endfor %}
+            <a href="/signature-experiences/" class="mt-1 block border-t border-slate-100 px-4 py-2 text-xs font-bold uppercase tracking-wider text-amber-700 hover:bg-amber-50">View all signature experiences</a>
+          </div>
+        </div>
 
         <a
           href="{% url 'blog:blog-list' %}"
@@ -208,26 +230,26 @@
     <div id="mobile-menu-drawer" class="hidden lg:hidden border-t border-slate-100 bg-white px-4 pt-3 pb-6 space-y-3 shadow-xl">
       <div class="grid grid-cols-2 gap-2 pb-3 border-b border-slate-100">
         <a
-          href="/#packages-section"
+          href="/explore-kenya/"
           class="mobile-nav-link flex items-center gap-2 p-2.5 bg-slate-50 border border-slate-100 rounded-lg text-slate-800 text-xs font-semibold"
         >
           <i data-lucide="compass" class="w-4 h-4 text-slate-500"></i>
           <span>Explore Kenya</span>
         </a>
         <a
-          href="/#packages-section"
+          href="/explore-the-world/"
           class="mobile-nav-link flex items-center gap-2 p-2.5 bg-slate-50 border border-slate-100 rounded-lg text-slate-800 text-xs font-semibold"
         >
           <span>Explore The World</span>
         </a>
         <a
-          href="/#packages-section"
+          href="/tours-safaris/"
           class="mobile-nav-link flex items-center gap-2 p-2.5 bg-slate-50 border border-slate-100 rounded-lg text-slate-800 text-xs font-semibold"
         >
           <span>Tours &amp; Safaris</span>
         </a>
         <a
-          href="/#packages-section"
+          href="/signature-experiences/"
           class="mobile-nav-link flex items-center gap-2 p-2.5 bg-slate-50 border border-slate-100 rounded-lg text-slate-800 text-xs font-semibold"
         >
           <i data-lucide="sparkles" class="w-4 h-4 text-slate-500"></i>

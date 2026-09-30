@@ -417,8 +417,130 @@ def packages(request):
     return render(request, 'users/pages/packages.html', _public_page_context())
 
 
+SIGNATURE_CATEGORY_SLUGS = [
+    'cruises',
+    'wellness-retreats',
+    'shopping-tours',
+    'religious-pilgrimages',
+    'honeymoon-packages',
+]
+
+
+def _packages_for_collection():
+    return Package.objects.select_related('main_destination', 'category').prefetch_related(
+        'available_accommodations',
+        'available_travel_modes',
+        'itinerary__days',
+    ).filter(status=Package.PUBLISHED).order_by('home_rank', '-is_featured', '-published_at', '-created_at')
+
+
+def _collection_context(title, eyebrow, description, packages_qs, destination_qs=None, groups=None):
+    context = _public_page_context(package_limit=4)
+    packages = list(packages_qs)
+    context.update({
+        'collection_title': title,
+        'collection_eyebrow': eyebrow,
+        'collection_description': description,
+        'collection_packages': [_package_presenter(package) for package in packages],
+        'collection_destinations': destination_qs or [],
+        'collection_groups': groups or [],
+    })
+    return context
+
+
+def explore_kenya(request):
+    packages_qs = _packages_for_collection().filter(region__in=['kenya-safari', 'kenya-coast', 'day-trips'])
+    destinations_qs = Destination.objects.filter(
+        is_active=True,
+        packages__status=Package.PUBLISHED,
+        packages__region__in=['kenya-safari', 'kenya-coast', 'day-trips'],
+    ).distinct().order_by('-is_featured', 'display_order', 'name')[:12]
+    context = _collection_context(
+        'Explore Kenya',
+        'Kenya holidays, safaris and coast escapes',
+        'Find the Kenya experiences Myriad Travel can shape around your dates, from desert campaigns and wildlife safaris to coast stays and weekend escapes.',
+        packages_qs,
+        destinations_qs,
+    )
+    return render(request, 'users/pages/collection.html', context)
+
+
+def explore_the_world(request):
+    packages_qs = _packages_for_collection().filter(region='international').exclude(category__slug__in=SIGNATURE_CATEGORY_SLUGS)
+    destinations_qs = Destination.objects.filter(
+        is_active=True,
+        packages__status=Package.PUBLISHED,
+        packages__region='international',
+    ).distinct().order_by('-is_featured', 'display_order', 'name')[:12]
+    context = _collection_context(
+        'Explore World Destinations',
+        'International holidays from Myriad Travel',
+        'Browse global holidays, city breaks and island escapes with planning support from enquiry to confirmed itinerary.',
+        packages_qs,
+        destinations_qs,
+    )
+    return render(request, 'users/pages/collection.html', context)
+
+
+def tours_safaris(request):
+    packages_qs = _packages_for_collection().filter(
+        Q(region__in=['kenya-safari', 'kenya-coast', 'day-trips']) |
+        Q(category__slug__in=[
+            'northern-kenya-adventure',
+            'big-five-migration-safari',
+            'wildlife-photography',
+            'hiking-day-adventure',
+            'beach-holiday-water-sports',
+        ])
+    ).exclude(category__slug__in=SIGNATURE_CATEGORY_SLUGS)
+    selected_category = request.GET.get('category', '').strip()
+    if selected_category:
+        packages_qs = packages_qs.filter(category__slug=selected_category)
+    context = _collection_context(
+        'Tours & Safaris',
+        'Safari, coast and adventure planning',
+        'A focused collection of wildlife safaris, scenic routes, coast escapes and active trips for travellers who want Kenya planned properly.',
+        packages_qs,
+    )
+    return render(request, 'users/pages/collection.html', context)
+
+
+def signature_experiences(request):
+    groups = []
+    packages_qs = _packages_for_collection().filter(category__slug__in=SIGNATURE_CATEGORY_SLUGS)
+    for category in PackageCategory.objects.filter(slug__in=SIGNATURE_CATEGORY_SLUGS, is_active=True).order_by('display_order', 'name'):
+        group_packages = [pkg for pkg in packages_qs if pkg.category_id == category.id]
+        if group_packages:
+            groups.append({
+                'title': category.name,
+                'description': category.description,
+                'packages': [_package_presenter(package) for package in group_packages],
+            })
+    context = _collection_context(
+        'Signature Experiences',
+        'Curated journeys for a specific reason to travel',
+        'Cruises, wellness retreats, shopping tours, pilgrimages and honeymoon escapes prepared as ready-to-enquire Myriad Travel experiences.',
+        packages_qs,
+        groups=groups,
+    )
+    return render(request, 'users/pages/signature_experiences.html', context)
+
+
 def destinations(request):
     return render(request, 'users/pages/destinations.html', _public_page_context())
+
+
+def destination_detail(request, slug):
+    destination = get_object_or_404(Destination, slug=slug, is_active=True)
+    packages_qs = _packages_for_collection().filter(main_destination=destination)
+    context = _collection_context(
+        destination.name,
+        'Destination guide',
+        destination.meta_description or strip_tags(str(destination.description or '')),
+        packages_qs,
+    )
+    context['destination'] = _destination_presenter(destination)
+    return render(request, 'users/pages/destination_detail.html', context)
 
 
 def package_detail(request, slug):

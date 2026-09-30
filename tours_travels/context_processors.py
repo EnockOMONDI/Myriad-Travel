@@ -145,3 +145,53 @@ def site_settings(request):
             },
         },
     }
+
+
+def navigation_collections(request):
+    """
+    Lightweight public navigation data driven by admin records.
+    """
+    try:
+        from adminside.models import Destination, PackageCategory
+
+        kenya_items = Destination.objects.filter(
+            is_active=True,
+            packages__status='published',
+            packages__region__in=['kenya-safari', 'kenya-coast', 'day-trips'],
+        ).distinct().order_by('-is_featured', 'display_order', 'name')[:5]
+
+        world_items = Destination.objects.filter(
+            is_active=True,
+            packages__status='published',
+            packages__region='international',
+        ).distinct().order_by('-is_featured', 'display_order', 'name')[:5]
+
+        safari_items = PackageCategory.objects.filter(
+            is_active=True,
+            packages__status='published',
+            packages__region__in=['kenya-safari', 'kenya-coast', 'day-trips'],
+        ).exclude(slug='signature-experiences').distinct().order_by('display_order', 'name')[:5]
+
+        signature_items = PackageCategory.objects.filter(
+            is_active=True,
+            packages__status='published',
+            slug__in=[
+                'cruises',
+                'wellness-retreats',
+                'shopping-tours',
+                'religious-pilgrimages',
+                'honeymoon-packages',
+            ],
+        ).distinct().order_by('display_order', 'name')[:5]
+    except Exception:
+        kenya_items = []
+        world_items = []
+        safari_items = []
+        signature_items = []
+
+    return {
+        'nav_explore_kenya': kenya_items,
+        'nav_explore_world': world_items,
+        'nav_tours_safaris': safari_items,
+        'nav_signature_experiences': signature_items,
+    }

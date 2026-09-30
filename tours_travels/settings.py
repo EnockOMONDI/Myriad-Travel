@@ -104,6 +104,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'tours_travels.context_processors.default_images',
                 'tours_travels.context_processors.site_settings',
+                'tours_travels.context_processors.navigation_collections',
             ],
         },
     },

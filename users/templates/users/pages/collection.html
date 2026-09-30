@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ collection_title }} - Myriad Travel{% endblock %}
+
+{% block content %}
+<div class="bg-[#f7f4ef]">
+  <section class="px-4 py-14 sm:px-8">
+    <div class="mx-auto max-w-7xl">
+      <div class="max-w-3xl">
+        <p class="text-[11px] font-black uppercase tracking-[0.24em] text-amber-700">{{ collection_eyebrow }}</p>
+        <h1 class="mt-4 font-serif text-4xl font-black leading-tight tracking-[-0.03em] text-slate-950 sm:text-6xl">
+          {{ collection_title }}
+        </h1>
+        <p class="mt-5 text-base leading-8 text-slate-600">
+          {{ collection_description }}
+        </p>
+      </div>
+
+      {% if collection_destinations %}
+      <div class="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {% for destination in collection_destinations %}
+        <a href="/destinations/{{ destination.slug }}/" class="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
+          <span class="text-[11px] font-bold uppercase tracking-[0.18em] text-amber-700">Destination</span>
+          <h2 class="mt-2 font-serif text-xl font-black text-slate-950 group-hover:text-amber-700">{{ destination.name }}</h2>
+          <p class="mt-2 line-clamp-2 text-xs leading-5 text-slate-500">{{ destination.meta_description|default:destination.description|striptags }}</p>
+        </a>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="px-4 pb-16 sm:px-8">
+    <div class="mx-auto max-w-7xl">
+      {% if collection_packages %}
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {% for pkg in collection_packages %}
+          {% include 'components/package_card.html' with pkg=pkg %}
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
+        <h2 class="font-serif text-2xl font-black text-slate-950">Packages are being prepared.</h2>
+        <p class="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600">
+          The Myriad team can publish matching packages from admin and they will appear here automatically.
+        </p>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+</div>
+{% endblock %}
