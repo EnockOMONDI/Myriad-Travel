@@ -66,6 +66,20 @@ class ServiceInquiryTests(SimpleTestCase):
                 post.return_value.json.return_value = {'success': accepted}
                 self.assertEqual(send_email_via_mailtrap('Test', '<p>Test</p>', 'info@example.com', ['qa@example.com']), accepted)
 
+    @override_settings(EMAIL_PROVIDER='resend', RESEND_API_KEY='test-resend-key')
+    def test_resend_provider_uses_resend_api_and_requires_message_id(self):
+        for response_body, accepted in [({'id': 'email_123'}, True), ({'error': 'Rejected'}, False)]:
+            with self.subTest(response_body=response_body), patch('users.tasks.requests.post') as post:
+                post.return_value.json.return_value = response_body
+                self.assertEqual(
+                    send_email_via_mailtrap('Test', '<p>Test</p>', 'Myriad <info@example.com>', ['qa@example.com']),
+                    accepted,
+                )
+                self.assertEqual(post.call_args.args[0], 'https://api.resend.com/emails')
+                self.assertEqual(post.call_args.kwargs['timeout'], (3, 8))
+                self.assertEqual(post.call_args.kwargs['headers']['Authorization'], 'Bearer test-resend-key')
+                self.assertEqual(post.call_args.kwargs['json']['from'], 'Myriad <info@example.com>')
+
 
 from django.test import TestCase
 from users.models import MICEInquiry, StudentTravelInquiry, NGOTravelInquiry

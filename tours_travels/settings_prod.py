@@ -13,7 +13,8 @@ import logging
 
 # Production-specific settings
 print("🚀 Production settings loaded")
-print("📧 Production mode: Using Mailtrap HTTP API (synchronous)")
+EMAIL_PROVIDER = os.getenv('EMAIL_PROVIDER', 'mailtrap').strip().lower()
+print(f"📧 Production mode: Using {EMAIL_PROVIDER.title()} HTTP API (synchronous)")
 print(f"🗄️ Database: {os.getenv('DATABASE_URL', 'Not set')[:50]}...")
 print(f"🌐 Site URL: {os.getenv('SITE_URL', 'Not set')}")
 print(f"🔒 SSL redirect: True")
@@ -41,10 +42,13 @@ DATABASES = {
     )
 }
 
-# Production email configuration - Mailtrap HTTP API
-# Using Mailtrap HTTP API for synchronous email sending (no background worker needed)
+# Production email configuration - HTTP API
+# Supports Resend or Mailtrap for synchronous email sending (no background worker needed).
+RESEND_API_KEY = os.getenv('RESEND_API_KEY')
 MAILTRAP_API_TOKEN = os.getenv('MAILTRAP_API_TOKEN')
-if not MAILTRAP_API_TOKEN:
+if EMAIL_PROVIDER == 'resend' and not RESEND_API_KEY:
+    raise ValueError("RESEND_API_KEY environment variable is required when EMAIL_PROVIDER=resend")
+if EMAIL_PROVIDER == 'mailtrap' and not MAILTRAP_API_TOKEN:
     raise ValueError("MAILTRAP_API_TOKEN environment variable is required for production")
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
@@ -270,6 +274,6 @@ if SENTRY_DSN:
 
 print("🚀 Production settings loaded")
 print(f"🌐 Site URL: {SITE_URL}")
-print(f"📧 Email: Mailtrap HTTP API (synchronous)")
+print(f"📧 Email: {EMAIL_PROVIDER.title()} HTTP API (synchronous)")
 print(f"🔒 SSL redirect: {SECURE_SSL_REDIRECT}")
 print(f"📊 Debug mode: {DEBUG}")

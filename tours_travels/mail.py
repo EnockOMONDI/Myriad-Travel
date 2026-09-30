@@ -1,9 +1,7 @@
-"""
-Email verification module using Mailtrap HTTP API
-"""
+"""Email verification module using the configured HTTP email provider."""
 from django.conf import settings
-from mailtrap import Mail, Address, MailtrapClient
 import logging
+from users.tasks import send_email_via_mailtrap
 
 logger = logging.getLogger(__name__)
 
@@ -22,9 +20,6 @@ def verification_mail(link, user):
     try:
         logger.info(f"Sending verification email to {user.email}")
 
-        # Initialize Mailtrap client
-        client = MailtrapClient(token=settings.MAILTRAP_API_TOKEN)
-
         # Build email HTML content
         message = f'Hi {user.username}, welcome to Myriad Travel.<br>To activate your account, click the link below:<br><a href="{link}">Activate Account</a><br><br>'
 
@@ -38,19 +33,15 @@ def verification_mail(link, user):
 
         html_content = message + directors_message + advantages_message
 
-        # Create mail object
-        mail = Mail(
-            sender=Address(email=getattr(settings, 'ADMIN_EMAIL', 'info@myriad-travel.com'), name="Myriad Travel"),
-            to=[Address(email=user.email)],
+        sent = send_email_via_mailtrap(
             subject="Welcome to Myriad Travel",
-            html=html_content,
+            html_message=html_content,
+            from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'Myriad Travel <info@myriad-travel.com>'),
+            recipient_list=[user.email],
         )
-
-        # Send email
-        response = client.send(mail)
-
-        logger.info(f"Verification email sent successfully to {user.email}: {response}")
-        return True
+        if sent:
+            logger.info(f"Verification email sent successfully to {user.email}")
+        return sent
 
     except Exception as e:
         logger.error(f"Error sending verification email to {user.email}: {e}")

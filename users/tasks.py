@@ -1,13 +1,14 @@
 """
-Synchronous email sending using Mailtrap HTTP API for Myriad Travel
+Synchronous email sending using an HTTP email provider for Myriad Travel
 
-This module contains all email sending functions that use Mailtrap's HTTP API
+This module contains all email sending functions that use Resend or Mailtrap
 for direct, synchronous email delivery. No background workers required.
 """
 
 import logging
 import requests
 from mailtrap import Mail, Address, MailtrapClient
+from email.utils import parseaddr
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.utils import timezone
@@ -15,9 +16,70 @@ from django.utils import timezone
 logger = logging.getLogger(__name__)
 
 
+def _provider_name():
+    return getattr(settings, 'EMAIL_PROVIDER', 'mailtrap').lower()
+
+
+def _parse_from_email(from_email):
+    from_name, from_email_addr = parseaddr(from_email)
+    return from_name or "Myriad Travel", from_email_addr or from_email.strip()
+
+
+def _send_email_via_resend(subject, html_message, from_email, recipient_list):
+    api_key = getattr(settings, 'RESEND_API_KEY', None)
+    if not api_key:
+        logger.error("RESEND_API_KEY is not configured")
+        return False
+
+    from_name, from_email_addr = _parse_from_email(from_email)
+    sender = f"{from_name} <{from_email_addr}>" if from_name else from_email_addr
+    payload = {
+        'from': sender,
+        'to': [email.strip() for email in recipient_list],
+        'subject': subject,
+        'html': html_message,
+    }
+    headers = {
+        'Authorization': f'Bearer {api_key}',
+        'Content-Type': 'application/json',
+    }
+    response = requests.post(
+        'https://api.resend.com/emails',
+        headers=headers,
+        json=payload,
+        timeout=(3, 8),
+    )
+    response.raise_for_status()
+    data = response.json()
+    return bool(data.get('id'))
+
+
+def _send_email_via_mailtrap(subject, html_message, from_email, recipient_list):
+    # Initialize Mailtrap client
+    client = MailtrapClient(token=settings.MAILTRAP_API_TOKEN)
+
+    from_name, from_email_addr = _parse_from_email(from_email)
+
+    # Create mail object
+    mail = Mail(
+        sender=Address(email=from_email_addr, name=from_name),
+        to=[Address(email=email.strip()) for email in recipient_list],
+        subject=subject,
+        html=html_message,
+    )
+
+    # Send email. The installed SDK sends without a timeout. Bound HTTPS requests
+    # so unavailable email infrastructure cannot exhaust the web worker.
+    response = requests.post(client.api_send_url, headers=client.headers,
+                             json=mail.api_data, timeout=(3, 8))
+    response.raise_for_status()
+    response = response.json()
+    return response.get('success') is True
+
+
 def send_email_via_mailtrap(subject, html_message, from_email, recipient_list):
     """
-    Send email using Mailtrap HTTP API
+    Send email using the configured HTTP email provider.
 
     Args:
         subject (str): Email subject
@@ -29,43 +91,20 @@ def send_email_via_mailtrap(subject, html_message, from_email, recipient_list):
         bool: True if email sent successfully, False otherwise
     """
     try:
-        logger.info(f"Sending email via Mailtrap API: subject='{subject}', recipients={recipient_list}")
+        provider = _provider_name()
+        logger.info(f"Sending email via {provider} API: subject='{subject}', recipients={recipient_list}")
 
-        # Initialize Mailtrap client
-        client = MailtrapClient(token=settings.MAILTRAP_API_TOKEN)
-
-        # Parse from_email to extract name and email
-        # Format: "Name <email@example.com>" or just "email@example.com"
-        if '<' in from_email and '>' in from_email:
-            from_name = from_email.split('<')[0].strip()
-            from_email_addr = from_email.split('<')[1].split('>')[0].strip()
+        if provider == 'resend':
+            sent = _send_email_via_resend(subject, html_message, from_email, recipient_list)
         else:
-            from_name = "Myriad Travel"
-            from_email_addr = from_email.strip()
+            sent = _send_email_via_mailtrap(subject, html_message, from_email, recipient_list)
 
-        # Create mail object
-        mail = Mail(
-            sender=Address(email=from_email_addr, name=from_name),
-            to=[Address(email=email.strip()) for email in recipient_list],
-            subject=subject,
-            html=html_message,
-        )
-
-        # Send email
-        # The installed SDK sends without a timeout. Bound HTTPS requests so
-        # unavailable email infrastructure cannot exhaust the web worker.
-        response = requests.post(client.api_send_url, headers=client.headers,
-                                 json=mail.api_data, timeout=(3, 8))
-        response.raise_for_status()
-        response = response.json()
-        if response.get('success') is not True:
-            return False
-
-        logger.info(f"Email sent successfully via Mailtrap API: {response}")
-        return True
+        if sent:
+            logger.info(f"Email sent successfully via {provider} API")
+        return sent
 
     except Exception as e:
-        logger.error(f"Failed to send email via Mailtrap API: {e}")
+        logger.error(f"Failed to send email via {_provider_name()} API: {e}")
         return False
 
 
