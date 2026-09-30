@@ -242,7 +242,6 @@ class PackageAdmin(admin.ModelAdmin):
     readonly_fields = ('total_bookings', 'total_reviews')
     prepopulated_fields = {'slug': ('name',)}
     list_editable = ('status', 'is_featured')
-    inlines = [PackageBookingInline]
 
     fieldsets = (
         ('Basic Information', {
