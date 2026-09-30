@@ -68,7 +68,7 @@
   </div>
 
   <!-- Packages Grid -->
-  <div id="packages-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+  <div id="packages-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
     {% if packages %}
       {% for pkg in packages %}
         {% include 'components/package_card.html' with pkg=pkg %}

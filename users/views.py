@@ -184,20 +184,35 @@ def _package_presenter(package):
     destination = package.main_destination.get_full_name() if package.main_destination else 'Kenya'
     price_kes = int(package.adult_price or 0)
     highlights = [line.strip() for line in (package.highlights or '').splitlines() if line.strip()]
-    if not highlights:
-        highlights = [
-            'Customizable private itinerary',
-            'Trusted Myriad Travel concierge support',
-        ]
+    region_label = package.get_region_display() if hasattr(package, 'get_region_display') else category
     lipa_months = package.lipa_pole_pole_months or 4
     special_offer = CHALBI_SPECIAL_OFFER if package.slug == 'twende-chalbi-4-nights-5-days' else None
+    itinerary_days = _itinerary_presenter(package)
+    accommodations = list(package.available_accommodations.all())
+    travel_modes = list(package.available_travel_modes.all())
+    accommodation_names = [item.name for item in accommodations[:3]]
+    transport_names = [item.get_transport_type_display() for item in travel_modes[:3]]
+    plain_description = ' '.join(strip_tags(str(package.description or '')).split())
+    intro = package.subtitle or package.meta_description or plain_description
+    if len(intro) > 260:
+        intro = f'{intro[:257].rstrip()}...'
+    best_for = {
+        'kenya-safari': 'Safari, wildlife and scenic road adventure',
+        'kenya-coast': 'Beach holidays, coastal escapes and relaxed stays',
+        'international': 'International holidays and curated city escapes',
+        'day-trips': 'Short breaks, weekend escapes and group outings',
+    }.get(package.region, 'Curated Myriad Travel experience')
+    route_summary = ' -> '.join(day['title'] for day in itinerary_days[:4]) if itinerary_days else destination
+    if itinerary_days and len(itinerary_days) > 4:
+        route_summary = f'{route_summary} -> ...'
     return {
         'id': package.id,
         'slug': package.slug,
         'title': package.name,
-        'subtitle': package.subtitle or package.meta_description or package.description,
+        'subtitle': intro,
         'description': package.description,
         'category': category,
+        'region_label': region_label,
         'region': package.region or slugify(category) or 'kenya-safari',
         'destination': destination,
         'featured_image': _image_url(package.featured_image, '/static/images/placeholders/myriad-package-placeholder.png'),
@@ -216,7 +231,12 @@ def _package_presenter(package):
         'highlights': highlights,
         'inclusions': _rich_text_items(package.inclusions),
         'exclusions': _rich_text_items(package.exclusions),
-        'itinerary': _itinerary_presenter(package),
+        'itinerary': itinerary_days,
+        'best_for': best_for,
+        'route_summary': route_summary,
+        'accommodations': accommodation_names,
+        'transport_modes': transport_names,
+        'has_image': bool(package.featured_image),
         'special_offer': special_offer,
         'model': package,
     }

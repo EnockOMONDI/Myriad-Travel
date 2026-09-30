@@ -133,7 +133,7 @@ def site_settings(request):
             'name': 'Myriad Travel',
             'tagline': 'Beyond Imagination',
             'address': {
-                'full': 'Applewood Adams, 8th Floor, Ngong Road, Nairobi, Kenya',
+                'full': 'Parklands, Crescent Business Center, 6th Floor, Nairobi, Kenya',
             },
             'contacts': {
                 'primary_phone': '+254712236522',
