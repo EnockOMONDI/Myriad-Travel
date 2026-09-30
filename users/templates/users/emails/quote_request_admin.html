@@ -1,2 +1,77 @@
 {% extends 'users/emails/base_email.html' %}
-{% block content %}<h2>New Quote Request</h2><p>{{ quote_request.full_name }} requested a quote for {{ quote_request.destination }}.</p><p>Email: {{ quote_request.email }}<br>Phone: {{ quote_request.phone_number }}<br>Travelers: {{ quote_request.number_of_travelers }}</p><p>{{ quote_request.special_requests }}</p>{% endblock %}
+
+{% block content %}
+<h2 style="margin:0 0 14px;font-size:24px;color:#0f172a;">New quote / booking request</h2>
+
+<p style="margin:0 0 16px;line-height:1.7;color:#334155;">
+  {{ quote_request.full_name }} has submitted a new request. Please follow up
+  within <strong>2 hours</strong> where possible, and make sure the client has a
+  response within <strong>24 hours</strong>.
+</p>
+
+<div style="margin:22px 0;padding:18px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;">
+  <h3 style="margin:0 0 12px;font-size:16px;color:#0f172a;">Client details</h3>
+  <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;color:#334155;line-height:1.7;">
+    <tr>
+      <td style="padding:4px 0;color:#64748b;">Name</td>
+      <td style="padding:4px 0;text-align:right;font-weight:700;color:#0f172a;">{{ quote_request.full_name }}</td>
+    </tr>
+    <tr>
+      <td style="padding:4px 0;color:#64748b;">Email</td>
+      <td style="padding:4px 0;text-align:right;font-weight:700;color:#0f172a;">{{ quote_request.email }}</td>
+    </tr>
+    <tr>
+      <td style="padding:4px 0;color:#64748b;">Phone / WhatsApp</td>
+      <td style="padding:4px 0;text-align:right;font-weight:700;color:#0f172a;">{{ quote_request.phone_number }}</td>
+    </tr>
+  </table>
+</div>
+
+<div style="margin:22px 0;padding:18px;border:1px solid #e2e8f0;border-radius:12px;background:#ffffff;">
+  <h3 style="margin:0 0 12px;font-size:16px;color:#0f172a;">Trip details</h3>
+  <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;color:#334155;line-height:1.7;">
+    {% if quote_request.package %}
+    <tr>
+      <td style="padding:4px 0;color:#64748b;">Package</td>
+      <td style="padding:4px 0;text-align:right;font-weight:700;color:#0f172a;">{{ quote_request.package.name }}</td>
+    </tr>
+    {% endif %}
+    <tr>
+      <td style="padding:4px 0;color:#64748b;">Destination</td>
+      <td style="padding:4px 0;text-align:right;font-weight:700;color:#0f172a;">{{ quote_request.destination }}</td>
+    </tr>
+    <tr>
+      <td style="padding:4px 0;color:#64748b;">Travel dates</td>
+      <td style="padding:4px 0;text-align:right;font-weight:700;color:#0f172a;">{{ quote_request.preferred_travel_dates }}</td>
+    </tr>
+    <tr>
+      <td style="padding:4px 0;color:#64748b;">Travellers</td>
+      <td style="padding:4px 0;text-align:right;font-weight:700;color:#0f172a;">{{ quote_request.number_of_travelers }}</td>
+    </tr>
+    <tr>
+      <td style="padding:4px 0;color:#64748b;">Status</td>
+      <td style="padding:4px 0;text-align:right;font-weight:700;color:#0f172a;">{{ quote_request.get_status_display }}</td>
+    </tr>
+  </table>
+</div>
+
+{% if quote_request.special_requests %}
+<div style="margin:22px 0;">
+  <h3 style="margin:0 0 10px;font-size:16px;color:#0f172a;">Client notes / captured booking details</h3>
+  <div style="padding:14px;border-left:4px solid #d97706;background:#fff7ed;color:#334155;line-height:1.7;">
+    {{ quote_request.special_requests|safe }}
+  </div>
+</div>
+{% endif %}
+
+<div style="margin:22px 0;padding:18px;border:1px solid #bbf7d0;border-radius:12px;background:#f0fdf4;">
+  <h3 style="margin:0 0 12px;font-size:16px;color:#14532d;">Recommended follow-up</h3>
+  <ol style="margin:0;padding-left:20px;color:#14532d;line-height:1.8;font-size:14px;">
+    <li>Call or WhatsApp the client first, then email if unreachable.</li>
+    <li>Confirm dates, total pax, child ages, rooming preference, and pickup expectations.</li>
+    <li>Check package availability, accommodation status, transport capacity, and any price changes.</li>
+    <li>Update the quote/request status in the admin after contact: contacted, quoted, confirmed, or cancelled.</li>
+    <li>Create or update follow-up reminders for 24 hours, 2 days, 5 days, 10 days, 15 days, and 30 days where relevant.</li>
+  </ol>
+</div>
+{% endblock %}
