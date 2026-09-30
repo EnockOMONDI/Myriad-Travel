@@ -45,7 +45,56 @@ from django.contrib.auth.models import User
 from blog.models import Post, Category
 from adminside.models import Destination, Package, Accommodation
 from django.utils.text import slugify
+from django.utils.html import strip_tags
 from types import SimpleNamespace
+from html.parser import HTMLParser
+
+
+class _ListItemParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.items = []
+        self._in_li = False
+        self._current = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag == 'li':
+            self._in_li = True
+            self._current = []
+
+    def handle_endtag(self, tag):
+        if tag == 'li' and self._in_li:
+            item = ' '.join(''.join(self._current).split())
+            if item:
+                self.items.append(item)
+            self._in_li = False
+
+    def handle_data(self, data):
+        if self._in_li:
+            self._current.append(data)
+
+
+CHALBI_SPECIAL_OFFER = {
+    'label': 'Current Featured Activation',
+    'date': '10-14 December 2026',
+    'departure': 'Nairobi departure at 3:30 AM on 10 December 2026',
+    'return': 'Nairobi return around 4:00-5:00 PM on 14 December 2026',
+    'single_occupancy_price': 66000,
+    'notes': [
+        'Expect long stretches of rough, dusty and corrugated roads across the northern frontier.',
+        'Network coverage may be limited in some sections; download key documents and maps before departure.',
+        'The early Nairobi departure and morning starts are important because delays can affect later activities.',
+        'December days can be hot, while early mornings and evenings may feel cooler.',
+        'Accommodation may be split by capacity on some nights while meals and activities remain coordinated.',
+    ],
+    'packing_list': [
+        'Refillable water bottle, sunscreen, hat or cap, sunglasses and mosquito repellent.',
+        'Dust scarf or shuka, light comfortable clothing, warm jacket and comfortable shoes.',
+        'Swimwear and towel for Lake Turkana, plus a power bank and charging cables.',
+        'Personal medication, toiletries, wet wipes, sanitiser, tissues and identification documents.',
+        'Small cash in Kenyan shillings for personal purchases and incidentals.',
+    ],
+}
 
 
 def _image_url(image_field, fallback):
@@ -59,6 +108,18 @@ def _image_url(image_field, fallback):
     return fallback
 
 
+def _rich_text_items(value):
+    if not value:
+        return []
+    parser = _ListItemParser()
+    parser.feed(str(value))
+    if parser.items:
+        return parser.items
+
+    plain = strip_tags(str(value))
+    return [line.strip(' -*\t') for line in plain.splitlines() if line.strip(' -*\t')]
+
+
 def _package_presenter(package):
     category = package.category.name if package.category else 'Safari & Holiday'
     destination = package.main_destination.get_full_name() if package.main_destination else 'Kenya'
@@ -70,6 +131,7 @@ def _package_presenter(package):
             'Trusted Myriad Travel concierge support',
         ]
     lipa_months = package.lipa_pole_pole_months or 4
+    special_offer = CHALBI_SPECIAL_OFFER if package.slug == 'twende-chalbi-4-nights-5-days' else None
     return {
         'id': package.id,
         'slug': package.slug,
@@ -84,15 +146,17 @@ def _package_presenter(package):
         'rating': package.rating,
         'reviews_count': package.total_reviews,
         'price_kes': price_kes,
+        'child_price_kes': int(package.child_price or 0),
         'price_usd': round(price_kes / 130) if price_kes else 0,
         'lipa_pole_pole': package.lipa_pole_pole,
         'lipa_pole_pole_months': lipa_months,
         'price_kes_monthly': round(price_kes / lipa_months) if price_kes and lipa_months else 0,
         'price_usd_monthly': round((price_kes / 130) / lipa_months) if price_kes and lipa_months else 0,
         'highlights': highlights,
-        'inclusions': [package.inclusions],
-        'exclusions': [package.exclusions],
+        'inclusions': _rich_text_items(package.inclusions),
+        'exclusions': _rich_text_items(package.exclusions),
         'itinerary': _itinerary_presenter(package),
+        'special_offer': special_offer,
         'model': package,
     }
 
