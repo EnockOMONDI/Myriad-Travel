@@ -8,6 +8,7 @@ app_name = 'users'
 urlpatterns = [
     path('', views.home, name='users-home'),
     path('packages/', views.packages, name='all_packages'),
+    path('packages/<slug:slug>/gallery/', views.package_gallery, name='package_gallery'),
     path('packages/<slug:slug>/', views.package_detail, name='package_detail'),
     path('destinations/', views.destinations, name='destinations'),
     path('contact/', views.contactus, name='contact'),

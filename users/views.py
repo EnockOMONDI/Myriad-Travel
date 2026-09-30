@@ -437,6 +437,18 @@ def package_detail(request, slug):
     return render(request, template_name, context)
 
 
+def package_gallery(request, slug):
+    package = get_object_or_404(
+        Package.objects.select_related('main_destination', 'category').prefetch_related('gallery_images'),
+        slug=slug,
+        status=Package.PUBLISHED,
+    )
+    context = _public_page_context(package_limit=4)
+    context['pkg'] = _package_presenter(package)
+    context['gallery_images'] = package.gallery_images.filter(is_visible=True)
+    return render(request, 'users/pages/package_gallery.html', context)
+
+
 def send_job_application_emails(job_application):
     """
     Send job application emails synchronously using Mailtrap HTTP API
