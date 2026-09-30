@@ -1,2 +1,50 @@
 {% extends 'users/emails/base_email.html' %}
-{% block content %}<h2>Your Quote Request Is In</h2><p>Hello {{ quote_request.full_name }}, thank you for contacting Myriad Travel.</p><p>We are reviewing your request for <strong>{{ quote_request.destination }}</strong> and will respond with tailored options.</p>{% endblock %}
+
+{% block content %}
+<h2 style="margin:0 0 14px;font-size:24px;color:#0f172a;">Your request is in</h2>
+
+<p style="margin:0 0 16px;line-height:1.7;color:#334155;">
+  Hello {{ quote_request.full_name }}, thank you for contacting Myriad Travel.
+  Our team has received your trip request and will respond as soon as possible,
+  usually within <strong>2 hours</strong> during working hours and no later than
+  <strong>24 hours</strong>.
+</p>
+
+<div style="margin:22px 0;padding:18px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;">
+  <h3 style="margin:0 0 12px;font-size:16px;color:#0f172a;">Request summary</h3>
+  <table width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;color:#334155;line-height:1.7;">
+    {% if quote_request.package %}
+    <tr>
+      <td style="padding:4px 0;color:#64748b;">Package</td>
+      <td style="padding:4px 0;text-align:right;font-weight:700;color:#0f172a;">{{ quote_request.package.name }}</td>
+    </tr>
+    {% endif %}
+    <tr>
+      <td style="padding:4px 0;color:#64748b;">Destination</td>
+      <td style="padding:4px 0;text-align:right;font-weight:700;color:#0f172a;">{{ quote_request.destination }}</td>
+    </tr>
+    <tr>
+      <td style="padding:4px 0;color:#64748b;">Travel dates</td>
+      <td style="padding:4px 0;text-align:right;font-weight:700;color:#0f172a;">{{ quote_request.preferred_travel_dates }}</td>
+    </tr>
+    <tr>
+      <td style="padding:4px 0;color:#64748b;">Travellers</td>
+      <td style="padding:4px 0;text-align:right;font-weight:700;color:#0f172a;">{{ quote_request.number_of_travelers }}</td>
+    </tr>
+  </table>
+</div>
+
+{% if quote_request.special_requests %}
+<div style="margin:22px 0;">
+  <h3 style="margin:0 0 10px;font-size:16px;color:#0f172a;">Your notes</h3>
+  <div style="padding:14px;border-left:4px solid #d97706;background:#fff7ed;color:#334155;line-height:1.7;">
+    {{ quote_request.special_requests|safe }}
+  </div>
+</div>
+{% endif %}
+
+<p style="margin:18px 0 0;line-height:1.7;color:#334155;">
+  A travel specialist will review availability, rooming, pricing, inclusions,
+  and any child or special requests before sharing the next booking steps.
+</p>
+{% endblock %}
