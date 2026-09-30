@@ -169,8 +169,26 @@ def navigation_collections(request):
         safari_items = PackageCategory.objects.filter(
             is_active=True,
             packages__status='published',
-            packages__region__in=['kenya-safari', 'kenya-coast', 'day-trips'],
-        ).exclude(slug='signature-experiences').distinct().order_by('display_order', 'name')[:5]
+            slug__in=[
+                'adventure-safaris',
+                'bird-watching-safaris',
+                'budget-safaris',
+                'camping-safaris',
+                'cultural-safaris',
+                'family-safaris',
+                'flying-safaris',
+                'honeymoon-safaris',
+                'luxury-safaris',
+                'mountain-climbing-safaris',
+                'photography-safaris',
+                'bush-and-beach-safaris',
+                'northern-kenya-adventure',
+                'big-five-migration-safari',
+                'wildlife-photography',
+                'hiking-day-adventure',
+                'beach-holiday-water-sports',
+            ],
+        ).distinct().order_by('display_order', 'name')[:5]
 
         signature_items = PackageCategory.objects.filter(
             is_active=True,

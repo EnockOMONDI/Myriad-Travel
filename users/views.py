@@ -425,6 +425,26 @@ SIGNATURE_CATEGORY_SLUGS = [
     'honeymoon-packages',
 ]
 
+TOURS_SAFARI_CATEGORY_SLUGS = [
+    'adventure-safaris',
+    'bird-watching-safaris',
+    'budget-safaris',
+    'camping-safaris',
+    'cultural-safaris',
+    'family-safaris',
+    'flying-safaris',
+    'honeymoon-safaris',
+    'luxury-safaris',
+    'mountain-climbing-safaris',
+    'photography-safaris',
+    'bush-and-beach-safaris',
+    'northern-kenya-adventure',
+    'big-five-migration-safari',
+    'wildlife-photography',
+    'hiking-day-adventure',
+    'beach-holiday-water-sports',
+]
+
 
 def _packages_for_collection():
     return Package.objects.select_related('main_destination', 'category').prefetch_related(
@@ -434,15 +454,28 @@ def _packages_for_collection():
     ).filter(status=Package.PUBLISHED).order_by('home_rank', '-is_featured', '-published_at', '-created_at')
 
 
-def _collection_context(title, eyebrow, description, packages_qs, destination_qs=None, groups=None):
+def _collection_context(title, eyebrow, description, packages_qs, destination_qs=None, groups=None, active_filter='all'):
     context = _public_page_context(package_limit=4)
     packages = list(packages_qs)
+    filters = []
+    seen_filters = set()
+    for package in packages:
+        if package.category:
+            slug = slugify(package.category.name)
+            if slug not in seen_filters:
+                seen_filters.add(slug)
+                filters.append({
+                    'label': package.category.name,
+                    'slug': slug,
+                })
     context.update({
         'collection_title': title,
         'collection_eyebrow': eyebrow,
         'collection_description': description,
         'collection_packages': [_package_presenter(package) for package in packages],
         'collection_destinations': destination_qs or [],
+        'collection_filters': filters,
+        'collection_active_filter': active_filter or 'all',
         'collection_groups': groups or [],
     })
     return context
@@ -485,22 +518,16 @@ def explore_the_world(request):
 def tours_safaris(request):
     packages_qs = _packages_for_collection().filter(
         Q(region__in=['kenya-safari', 'kenya-coast', 'day-trips']) |
-        Q(category__slug__in=[
-            'northern-kenya-adventure',
-            'big-five-migration-safari',
-            'wildlife-photography',
-            'hiking-day-adventure',
-            'beach-holiday-water-sports',
-        ])
+        Q(category__slug__in=TOURS_SAFARI_CATEGORY_SLUGS)
     ).exclude(category__slug__in=SIGNATURE_CATEGORY_SLUGS)
     selected_category = request.GET.get('category', '').strip()
-    if selected_category:
-        packages_qs = packages_qs.filter(category__slug=selected_category)
+    selected_filter = slugify(selected_category) if selected_category else 'all'
     context = _collection_context(
         'Tours & Safaris',
         'Safari, coast and adventure planning',
-        'A focused collection of wildlife safaris, scenic routes, coast escapes and active trips for travellers who want Kenya planned properly.',
+        'Safari, coast, mountain, culture, photography and adventure trips gathered into one clear planning space. Start with a style, then open the package that fits your dates and group.',
         packages_qs,
+        active_filter=selected_filter,
     )
     return render(request, 'users/pages/collection.html', context)
 

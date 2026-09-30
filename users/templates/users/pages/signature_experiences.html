@@ -4,58 +4,90 @@
 {% block title %}Signature Experiences - Myriad Travel{% endblock %}
 
 {% block content %}
-<div class="bg-[#f7f4ef]">
-  <section class="px-4 py-14 sm:px-8">
+<div class="bg-slate-50">
+  <section class="px-4 py-8 sm:px-8">
     <div class="mx-auto max-w-7xl">
-      <div class="grid gap-8 lg:grid-cols-[1fr_360px] lg:items-end">
-        <div>
-          <p class="text-[11px] font-black uppercase tracking-[0.24em] text-amber-700">{{ collection_eyebrow }}</p>
-          <h1 class="mt-4 font-serif text-4xl font-black leading-tight tracking-[-0.03em] text-slate-950 sm:text-6xl">
-            {{ collection_title }}
-          </h1>
-          <p class="mt-5 max-w-3xl text-base leading-8 text-slate-600">
-            {{ collection_description }}
-          </p>
-        </div>
-        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <p class="text-sm font-semibold leading-7 text-slate-600">
-            These collections are ready for enquiries now. Final quotes are confirmed around dates, hotel class, rooming, flights and available offers.
-          </p>
-          <button type="button" class="open-plan-modal-btn mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-amber-700">
-            <i data-lucide="send" class="h-4 w-4"></i>
-            <span>Request a tailored quote</span>
-          </button>
+      <nav class="mb-6 flex items-center gap-2 text-xs text-slate-500">
+        <a href="/" class="hover:text-amber-700">Home</a>
+        <span>/</span>
+        <span class="font-semibold text-slate-800">Signature Experiences</span>
+      </nav>
+
+      <div class="relative min-h-[460px] overflow-hidden rounded-[2rem] bg-slate-950 p-6 text-white shadow-2xl sm:p-10">
+        <img src="{% static 'images/placeholders/myriad-package-placeholder.png' %}" alt="Signature Experiences" class="absolute inset-0 h-full w-full object-cover opacity-35" />
+        <div class="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-950/80 to-slate-900/20"></div>
+        <div class="relative z-10 grid h-full gap-8 lg:grid-cols-[1fr_360px] lg:items-end">
+          <div class="self-end">
+            <div class="mb-5 flex flex-wrap items-center gap-2 text-xs">
+              <span class="rounded-full bg-amber-500 px-3 py-1 font-bold text-slate-950">{{ collection_eyebrow }}</span>
+              <span class="rounded-full bg-white/15 px-3 py-1 font-semibold backdrop-blur-md">{{ collection_groups|length }} curated styles</span>
+            </div>
+            <h1 class="font-serif text-4xl font-black leading-tight tracking-[-0.03em] sm:text-6xl">
+              {{ collection_title }}
+            </h1>
+            <p class="mt-5 max-w-3xl text-sm leading-7 text-slate-200 sm:text-base">
+              {{ collection_description }}
+            </p>
+          </div>
+          <aside class="rounded-3xl border border-white/15 bg-white/10 p-5 backdrop-blur-md">
+            <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-amber-200">Choose a reason to travel</p>
+            <p class="mt-3 text-sm leading-7 text-white/85">
+              Start with cruises, wellness, shopping, pilgrimage or honeymoon travel, then request a quote with your dates and preferred comfort level.
+            </p>
+            <button type="button" class="open-plan-modal-btn mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-amber-500 px-4 py-3 text-xs font-bold text-slate-950 transition hover:bg-amber-400">
+              <i data-lucide="send" class="h-4 w-4"></i>
+              <span>Request Tailored Quote</span>
+            </button>
+          </aside>
         </div>
       </div>
     </div>
   </section>
 
   <section class="px-4 pb-16 sm:px-8">
-    <div class="mx-auto max-w-7xl space-y-14">
-      {% for group in collection_groups %}
-      <section id="{{ group.title|slugify }}">
-        <div class="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h2 class="font-serif text-3xl font-black text-slate-950">{{ group.title }}</h2>
-            {% if group.description %}
-            <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">{{ group.description }}</p>
-            {% endif %}
-          </div>
-        </div>
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {% for pkg in group.packages %}
-            {% include 'components/package_card.html' with pkg=pkg %}
+    <div class="mx-auto max-w-7xl">
+      {% if collection_groups %}
+      <div class="sticky top-[120px] z-20 mb-10 rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-sm backdrop-blur-md">
+        <div class="flex gap-2 overflow-x-auto pb-1">
+          <a href="/signature-experiences/" class="whitespace-nowrap rounded-xl bg-amber-600 px-4 py-2 text-xs font-bold text-white transition">All</a>
+          {% for group in collection_groups %}
+          <a href="#{{ group.title|slugify }}" class="whitespace-nowrap rounded-xl bg-slate-100 px-4 py-2 text-xs font-bold text-slate-700 transition hover:bg-amber-50 hover:text-amber-800">{{ group.title }}</a>
           {% endfor %}
         </div>
-      </section>
-      {% empty %}
-      <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
-        <h2 class="font-serif text-2xl font-black text-slate-950">Signature packages are being prepared.</h2>
-        <p class="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600">
-          Published Signature Experience packages will appear here once assigned to their admin categories.
-        </p>
       </div>
-      {% endfor %}
+      {% endif %}
+
+      <div class="space-y-16">
+        {% for group in collection_groups %}
+        <section id="{{ group.title|slugify }}" class="scroll-mt-36">
+          <div class="mb-6 grid gap-5 lg:grid-cols-[1fr_300px] lg:items-end">
+            <div>
+              <span class="text-[11px] font-black uppercase tracking-[0.22em] text-amber-700">Signature Collection</span>
+              <h2 class="mt-2 font-serif text-3xl font-black text-slate-950 sm:text-4xl">{{ group.title }}</h2>
+              {% if group.description %}
+              <p class="mt-3 max-w-3xl text-sm leading-7 text-slate-600">{{ group.description }}</p>
+              {% endif %}
+            </div>
+            <div class="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
+              <strong>{{ group.packages|length }} package options</strong>
+              <span class="block text-amber-900/80">Images can be refreshed later through admin.</span>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {% for pkg in group.packages %}
+              {% include 'components/package_card.html' with pkg=pkg %}
+            {% endfor %}
+          </div>
+        </section>
+        {% empty %}
+        <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
+          <h2 class="font-serif text-2xl font-black text-slate-950">Signature packages are being prepared.</h2>
+          <p class="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600">
+            Published Signature Experience packages will appear here once assigned to their admin categories.
+          </p>
+        </div>
+        {% endfor %}
+      </div>
     </div>
   </section>
 </div>
