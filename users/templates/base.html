@@ -127,23 +127,31 @@
     </div>
     {% endif %}
 
+    {% block site_navbar %}
     <!-- Top Navigation Header -->
     {% include 'components/navbar.html' %}
+    {% endblock %}
 
     <!-- Main Content Block -->
     <main class="flex-1">
       {% block content %}{% endblock %}
     </main>
 
+    {% block site_footer %}
     <!-- Footer -->
     {% include 'components/footer.html' %}
+    {% endblock %}
 
+    {% block site_floating_widgets %}
     <!-- Floating WhatsApp Specialist Chat Widget -->
     {% include 'components/floating_whatsapp.html' %}
+    {% endblock %}
 
+    {% block site_modals %}
     <!-- Modals -->
     {% include 'components/plan_trip_modal.html' %}
     {% include 'components/package_modal.html' %}
+    {% endblock %}
     
     <!-- Core UI Interaction Scripts -->
     <script src="{% static 'js/main.js' %}"></script>

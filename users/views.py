@@ -94,6 +94,63 @@ CHALBI_SPECIAL_OFFER = {
         'Personal medication, toiletries, wet wipes, sanitiser, tissues and identification documents.',
         'Small cash in Kenyan shillings for personal purchases and incidentals.',
     ],
+    'before_faqs': [
+        {
+            'question': 'Is this adventure right for me?',
+            'answer': 'This trip is best for travellers who enjoy road adventure, remote landscapes, early starts, dusty terrain and flexible timing. It is scenic, social and guided, but it is not a soft city break.',
+        },
+        {
+            'question': 'What should I pack?',
+            'answer': 'Carry sun protection, a dust scarf or shuka, comfortable shoes, warm layers, swimwear, a towel, a power bank, personal medication and identification documents.',
+        },
+        {
+            'question': 'Can children join, and how does room sharing work?',
+            'answer': 'Children can be considered with the Myriad team confirming rooming, age suitability and final pricing before booking. The current child rate is stored separately from the adult sharing rate.',
+        },
+        {
+            'question': 'What happens after I send my request?',
+            'answer': 'Myriad Travel will confirm availability, rooming preference, inclusions, final payment steps and any operational updates before your booking is locked in.',
+        },
+    ],
+}
+
+
+CHALBI_DAY_META = {
+    1: {
+        'date': 'Thu, 10 Dec',
+        'theme': 'Into the North',
+        'title': 'Nairobi to Marsabit',
+        'summary': 'Nanyuki - Samburu - Mount Ololokwe',
+        'overnight': 'Marsabit',
+    },
+    2: {
+        'date': 'Fri, 11 Dec',
+        'theme': 'Desert Days',
+        'title': 'Marsabit to Chalbi & North Horr',
+        'summary': 'Salt flats - Desert walks - Sunset dunes',
+        'overnight': 'North Horr',
+    },
+    3: {
+        'date': 'Sat, 12 Dec',
+        'theme': 'By the Jade Sea',
+        'title': 'North Horr to Lake Turkana',
+        'summary': 'Loiyangalani - Boat experience - El Molo',
+        'overnight': 'Lake Turkana / Loiyangalani',
+    },
+    4: {
+        'date': 'Sun, 13 Dec',
+        'theme': 'The Scenic Route',
+        'title': 'Lake Turkana to Isiolo',
+        'summary': 'Wind Power route - Ngurunit - Archers Post',
+        'overnight': 'Isiolo',
+    },
+    5: {
+        'date': 'Mon, 14 Dec',
+        'theme': 'Home, With Stories',
+        'title': 'Isiolo to Nairobi',
+        'summary': 'A slow breakfast - The journey home',
+        'overnight': '',
+    },
 }
 
 
@@ -106,6 +163,13 @@ def _image_url(image_field, fallback):
         except (ValueError, AttributeError):
             pass
     return fallback
+
+
+def _uploadcare_preview_url(image_field, fallback, width=1600, height=900):
+    uuid = getattr(image_field, 'uuid', None)
+    if uuid:
+        return f'https://ucarecdn.com/{uuid}/-/preview/{width}x{height}/'
+    return _image_url(image_field, fallback)
 
 
 def _rich_text_items(value):
@@ -142,11 +206,13 @@ def _package_presenter(package):
         'region': package.region or slugify(category) or 'kenya-safari',
         'destination': destination,
         'featured_image': _image_url(package.featured_image, '/static/images/placeholders/myriad-package-placeholder.png'),
+        'hero_image': _uploadcare_preview_url(package.featured_image, '/static/images/placeholders/myriad-package-placeholder.png'),
         'duration': f'{package.duration_days} Days / {package.duration_nights} Nights',
         'rating': package.rating,
         'reviews_count': package.total_reviews,
         'price_kes': price_kes,
         'child_price_kes': int(package.child_price or 0),
+        'single_price_kes': int(special_offer['single_occupancy_price']) if special_offer else 0,
         'price_usd': round(price_kes / 130) if price_kes else 0,
         'lipa_pole_pole': package.lipa_pole_pole,
         'lipa_pole_pole_months': lipa_months,
@@ -176,10 +242,14 @@ def _itinerary_presenter(package):
             ] if ok)
             days.append({
                 'day': day.day_number,
-                'title': day.title,
+                'title': CHALBI_DAY_META.get(day.day_number, {}).get('title', day.title) if package.slug == 'twende-chalbi-4-nights-5-days' else day.title,
                 'description': day.description,
                 'meals': meals,
                 'stay': day.accommodation.name if day.accommodation else '',
+                'date': CHALBI_DAY_META.get(day.day_number, {}).get('date', ''),
+                'theme': CHALBI_DAY_META.get(day.day_number, {}).get('theme', ''),
+                'summary': CHALBI_DAY_META.get(day.day_number, {}).get('summary', ''),
+                'overnight': CHALBI_DAY_META.get(day.day_number, {}).get('overnight', ''),
             })
     return days
 
@@ -344,7 +414,12 @@ def package_detail(request, slug):
     )
     context = _public_page_context(package_limit=6)
     context['pkg'] = _package_presenter(package)
-    return render(request, 'users/pages/package_detail.html', context)
+    template_name = (
+        'users/pages/package_detail_chalbi.html'
+        if package.slug == 'twende-chalbi-4-nights-5-days'
+        else 'users/pages/package_detail.html'
+    )
+    return render(request, template_name, context)
 
 
 def send_job_application_emails(job_application):
