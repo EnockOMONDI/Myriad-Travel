@@ -4,7 +4,7 @@ django-crispy-forms>=2.1.0
 django-import-export>=3.3.7
 django-taggit>=5.0.1
 djangorestframework>=3.14.0
-django-unfold>=0.22.0
+django-unfold==0.63.0
 django-ckeditor-5>=0.2.12
 django-js-asset>=3.1.2
 
