@@ -52,8 +52,9 @@
     </div>
 
     <!-- Modal Form (Django POST Action) -->
-    <form method="POST" action="/plan-trip/" class="p-6 text-slate-800">
+    <form method="POST" action="/quote/" class="p-6 text-slate-800">
       {% csrf_token %}
+      {% include 'users/includes/antispam_fields.html' %}
 
       <!-- STEP 1 -->
       <div class="plan-step-content space-y-5">
@@ -197,15 +198,15 @@
           <div class="space-y-1.5">
             <label class="text-xs font-bold uppercase text-slate-700">Number of Travelers</label>
             <select
-              name="travelers"
+              name="number_of_travelers"
               class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium"
             >
-              <option value="Solo Traveler">1 Guest (Solo)</option>
-              <option value="2 Adults (Couple/Pair)" selected>2 Adults (Couple/Pair)</option>
-              <option value="Family with 1-2 Kids">Family with 1–2 Children</option>
-              <option value="Family with 3+ Kids">Family with 3+ Children</option>
-              <option value="Small Group (4-6 Friends)">Small Group (4–6 Friends)</option>
-              <option value="Corporate Group (10+ Pax)">Corporate / Large Group (10+ Pax)</option>
+              <option value="1">1 Guest (Solo)</option>
+              <option value="2" selected>2 Adults (Couple/Pair)</option>
+              <option value="4">Family with 1–2 Children</option>
+              <option value="5">Family with 3+ Children</option>
+              <option value="6">Small Group (4–6 Friends)</option>
+              <option value="10">Corporate / Large Group (10+ Pax)</option>
             </select>
           </div>
 
@@ -250,7 +251,7 @@
               type="text"
               name="full_name"
               required
-              placeholder="e.g. David Mwangi"
+              placeholder="Your full name"
               class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm"
             />
           </div>
@@ -259,7 +260,7 @@
             <label class="text-[11px] font-bold text-slate-700 uppercase">Phone / WhatsApp Number *</label>
             <input
               type="tel"
-              name="phone"
+              name="phone_number"
               required
               placeholder="e.g. +254 712 345 678"
               class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm"
@@ -268,11 +269,12 @@
         </div>
 
         <div class="space-y-1">
-          <label class="text-[11px] font-bold text-slate-700 uppercase">Email Address</label>
+          <label class="text-[11px] font-bold text-slate-700 uppercase">Email Address *</label>
           <input
             type="email"
             name="email"
-            placeholder="e.g. david@example.com"
+            required
+            placeholder="you@example.com"
             class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm"
           />
         </div>
@@ -280,12 +282,15 @@
         <div class="space-y-1">
           <label class="text-[11px] font-bold text-slate-700 uppercase">Special Notes or Specific Requests</label>
           <textarea
-            name="notes"
+            name="special_requests"
             rows="2"
-            placeholder="Tell us about special dietary needs, flight preferences, or celebrations (honeymoon, anniversary, team building)..."
+            placeholder="Share rooming, child ages, dietary needs, flight preferences, celebration notes or team movement details..."
             class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm"
           ></textarea>
         </div>
+
+        <input type="hidden" name="destination" id="plan-trip-destination" value="Custom Myriad Travel itinerary" />
+        <input type="hidden" name="preferred_travel_dates" id="plan-trip-dates" value="Flexible dates" />
 
         <!-- Action Buttons -->
         <div class="pt-2 flex flex-col sm:flex-row gap-3">

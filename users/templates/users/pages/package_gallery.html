@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ pkg.title }} Gallery - Myriad Travel{% endblock %}
+
+{% block content %}
+<div class="bg-[#f7f4ef] text-[#23302f]">
+  <section class="px-4 py-10 sm:px-8">
+    <div class="mx-auto max-w-7xl">
+      <nav class="mb-8 flex flex-wrap items-center gap-2 text-xs font-semibold text-[#66736f]">
+        <a href="/" class="hover:text-[#4c8876]">Home</a>
+        <span>/</span>
+        <a href="/packages/" class="hover:text-[#4c8876]">Packages</a>
+        <span>/</span>
+        <a href="/packages/{{ pkg.slug }}/" class="hover:text-[#4c8876]">{{ pkg.title }}</a>
+        <span>/</span>
+        <span class="text-[#23302f]">Gallery</span>
+      </nav>
+
+      <div class="grid gap-8 lg:grid-cols-[1fr_360px] lg:items-end">
+        <div>
+          <p class="text-[11px] font-black uppercase tracking-[0.24em] text-[#4c8876]">Past Trip Gallery</p>
+          <h1 class="mt-4 max-w-4xl font-serif text-4xl font-black leading-tight tracking-[-0.03em] sm:text-6xl">
+            {{ pkg.title }}
+          </h1>
+          <p class="mt-4 max-w-2xl text-base font-semibold leading-7 text-[#66736f]">
+            Real trip moments from Myriad Travel experiences. Use this page to showcase the route, people, landscapes and memories once the team uploads images from admin.
+          </p>
+        </div>
+
+        <div class="rounded-lg border border-[#dce3df] bg-white p-6 shadow-sm">
+          <div class="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <span class="block text-[11px] font-black uppercase tracking-[0.18em] text-[#7b8883]">Destination</span>
+              <strong class="mt-1 block">{{ pkg.destination }}</strong>
+            </div>
+            <div>
+              <span class="block text-[11px] font-black uppercase tracking-[0.18em] text-[#7b8883]">Duration</span>
+              <strong class="mt-1 block">{{ pkg.duration }}</strong>
+            </div>
+          </div>
+          <a href="/packages/{{ pkg.slug }}/" class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#1f3031] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#4c8876]">
+            <i data-lucide="arrow-left" class="h-4 w-4"></i>
+            <span>Back to trip details</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="px-4 pb-16 sm:px-8">
+    <div class="mx-auto max-w-7xl">
+      {% if gallery_images %}
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {% for item in gallery_images %}
+        <article class="overflow-hidden rounded-lg border border-[#dce3df] bg-white shadow-sm">
+          <img src="{{ item.get_image_url }}" alt="{{ item.title|default:pkg.title }}" class="aspect-[4/3] w-full object-cover" />
+          <div class="p-5">
+            {% if item.title %}
+            <h2 class="font-serif text-xl font-black leading-tight">{{ item.title }}</h2>
+            {% endif %}
+            {% if item.caption %}
+            <p class="mt-2 text-sm leading-6 text-[#66736f]">{{ item.caption }}</p>
+            {% endif %}
+            {% if item.location or item.captured_at %}
+            <div class="mt-4 flex flex-wrap gap-3 text-xs font-bold text-[#4c8876]">
+              {% if item.location %}
+              <span class="inline-flex items-center gap-1">
+                <i data-lucide="map-pin" class="h-3.5 w-3.5"></i>
+                {{ item.location }}
+              </span>
+              {% endif %}
+              {% if item.captured_at %}
+              <span class="inline-flex items-center gap-1">
+                <i data-lucide="calendar-days" class="h-3.5 w-3.5"></i>
+                {{ item.captured_at|date:"M Y" }}
+              </span>
+              {% endif %}
+            </div>
+            {% endif %}
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="rounded-lg border border-dashed border-[#cbd8d2] bg-white p-10 text-center shadow-sm">
+        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#e9f1ec] text-[#4c8876]">
+          <i data-lucide="images" class="h-7 w-7"></i>
+        </div>
+        <h2 class="mt-5 font-serif text-3xl font-black">Past trip images are coming soon.</h2>
+        <p class="mx-auto mt-3 max-w-2xl text-sm leading-7 text-[#66736f]">
+          The gallery is ready. Upload Chalbi trip photos in admin and they will appear here automatically.
+        </p>
+        <a href="/packages/{{ pkg.slug }}/" class="mt-6 inline-flex items-center justify-center gap-2 rounded-md bg-[#1f3031] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#4c8876]">
+          <i data-lucide="arrow-left" class="h-4 w-4"></i>
+          <span>Back to trip details</span>
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+</div>
+{% endblock %}

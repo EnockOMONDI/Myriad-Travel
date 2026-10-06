@@ -184,20 +184,35 @@ def _package_presenter(package):
     destination = package.main_destination.get_full_name() if package.main_destination else 'Kenya'
     price_kes = int(package.adult_price or 0)
     highlights = [line.strip() for line in (package.highlights or '').splitlines() if line.strip()]
-    if not highlights:
-        highlights = [
-            'Customizable private itinerary',
-            'Trusted Myriad Travel concierge support',
-        ]
+    region_label = package.get_region_display() if hasattr(package, 'get_region_display') else category
     lipa_months = package.lipa_pole_pole_months or 4
     special_offer = CHALBI_SPECIAL_OFFER if package.slug == 'twende-chalbi-4-nights-5-days' else None
+    itinerary_days = _itinerary_presenter(package)
+    accommodations = list(package.available_accommodations.all())
+    travel_modes = list(package.available_travel_modes.all())
+    accommodation_names = [item.name for item in accommodations[:3]]
+    transport_names = [item.get_transport_type_display() for item in travel_modes[:3]]
+    plain_description = ' '.join(strip_tags(str(package.description or '')).split())
+    intro = package.subtitle or package.meta_description or plain_description
+    if len(intro) > 260:
+        intro = f'{intro[:257].rstrip()}...'
+    best_for = {
+        'kenya-safari': 'Safari, wildlife and scenic road adventure',
+        'kenya-coast': 'Beach holidays, coastal escapes and relaxed stays',
+        'international': 'International holidays and curated city escapes',
+        'day-trips': 'Short breaks, weekend escapes and group outings',
+    }.get(package.region, 'Curated Myriad Travel experience')
+    route_summary = ' -> '.join(day['title'] for day in itinerary_days[:4]) if itinerary_days else destination
+    if itinerary_days and len(itinerary_days) > 4:
+        route_summary = f'{route_summary} -> ...'
     return {
         'id': package.id,
         'slug': package.slug,
         'title': package.name,
-        'subtitle': package.subtitle or package.meta_description or package.description,
+        'subtitle': intro,
         'description': package.description,
         'category': category,
+        'region_label': region_label,
         'region': package.region or slugify(category) or 'kenya-safari',
         'destination': destination,
         'featured_image': _image_url(package.featured_image, '/static/images/placeholders/myriad-package-placeholder.png'),
@@ -216,7 +231,12 @@ def _package_presenter(package):
         'highlights': highlights,
         'inclusions': _rich_text_items(package.inclusions),
         'exclusions': _rich_text_items(package.exclusions),
-        'itinerary': _itinerary_presenter(package),
+        'itinerary': itinerary_days,
+        'best_for': best_for,
+        'route_summary': route_summary,
+        'accommodations': accommodation_names,
+        'transport_modes': transport_names,
+        'has_image': bool(package.featured_image),
         'special_offer': special_offer,
         'model': package,
     }
@@ -293,9 +313,13 @@ def _public_page_context(package_limit=None):
 
 def register(request):
     if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
+        form = UserRegisterForm(request.POST, request=request)
 
         if form.is_valid():
+            from .antispam import check_form_submission
+            if not check_form_submission(request, form.cleaned_data.get('email', '')):
+                form.add_error(None, 'We have received several requests recently. Please wait a little before trying again.')
+                return render(request, 'users/register.html', {'form': form})
             user = form.save(commit=False)  # Save the user object in memory
             user.is_active = False
 
@@ -317,7 +341,7 @@ def register(request):
             return redirect('users:success')
 
     else:
-        form = UserRegisterForm()
+        form = UserRegisterForm(request=request)
 
     return render(request, 'users/register.html', {'form': form})
 
@@ -360,8 +384,12 @@ def _service_inquiry(request, form_class, template_name, route_name, title):
     """Save once, notify over HTTPS, and redirect even if notification fails."""
     from .inquiry_email import send_service_inquiry_emails
 
-    form = form_class(request.POST if request.method == 'POST' else None)
+    form = form_class(request.POST if request.method == 'POST' else None, request=request)
     if request.method == 'POST' and form.is_valid():
+        from .antispam import check_form_submission
+        if not check_form_submission(request, form.cleaned_data.get('email', '')):
+            form.add_error(None, 'We have received several requests recently. Please wait a little before submitting again.')
+            return render(request, template_name, {'form': form})
         inquiry = form.save()
         sent = send_service_inquiry_emails(inquiry, form, title)
         if sent:
@@ -389,16 +417,188 @@ def holidays(request):
     return render(request, 'users/pages/packages.html', _public_page_context())
 
 def contactus(request):
-
-    return render(request, 'users/pages/contact.html')
+    if request.method == 'POST':
+        data = request.POST.copy()
+        data['phone_number'] = data.get('phone', '')
+        data['destination'] = data.get('subject') or 'General travel enquiry'
+        data['preferred_travel_dates'] = 'To be discussed'
+        data['number_of_travelers'] = '1'
+        data['special_requests'] = data.get('message', '')
+        form = QuoteRequestForm(data, request=request)
+        if form.is_valid():
+            from .antispam import check_form_submission
+            if not check_form_submission(request, form.cleaned_data.get('email', '')):
+                form.add_error(None, 'We have received several requests recently. Please wait a little before submitting again.')
+            else:
+                quote_request = form.save()
+                from users.tasks import send_quote_request_emails
+                result = send_quote_request_emails(quote_request.id)
+                if result.get('success'):
+                    messages.success(request, 'Thank you. Your request has been received. We will respond within 2 hours where possible and within 24 hours at the latest.')
+                else:
+                    messages.warning(request, 'Your request was saved, but the email notification could not be completed. Please do not resubmit.')
+                return redirect('users:contact')
+        messages.error(request, 'Please complete the security check and correct any highlighted fields.')
+    else:
+        form = None
+    return render(request, 'users/pages/contact.html', {'contact_form': form})
 
 
 def packages(request):
     return render(request, 'users/pages/packages.html', _public_page_context())
 
 
+SIGNATURE_CATEGORY_SLUGS = [
+    'cruises',
+    'wellness-retreats',
+    'shopping-tours',
+    'religious-pilgrimages',
+    'honeymoon-packages',
+]
+
+TOURS_SAFARI_CATEGORY_SLUGS = [
+    'adventure-safaris',
+    'bird-watching-safaris',
+    'budget-safaris',
+    'camping-safaris',
+    'cultural-safaris',
+    'family-safaris',
+    'flying-safaris',
+    'honeymoon-safaris',
+    'luxury-safaris',
+    'mountain-climbing-safaris',
+    'photography-safaris',
+    'bush-and-beach-safaris',
+    'northern-kenya-adventure',
+    'big-five-migration-safari',
+    'wildlife-photography',
+    'hiking-day-adventure',
+    'beach-holiday-water-sports',
+]
+
+
+def _packages_for_collection():
+    return Package.objects.select_related('main_destination', 'category').prefetch_related(
+        'available_accommodations',
+        'available_travel_modes',
+        'itinerary__days',
+    ).filter(status=Package.PUBLISHED).order_by('home_rank', '-is_featured', '-published_at', '-created_at')
+
+
+def _collection_context(title, eyebrow, description, packages_qs, destination_qs=None, groups=None, active_filter='all'):
+    context = _public_page_context(package_limit=4)
+    packages = list(packages_qs)
+    filters = []
+    seen_filters = set()
+    for package in packages:
+        if package.category:
+            slug = slugify(package.category.name)
+            if slug not in seen_filters:
+                seen_filters.add(slug)
+                filters.append({
+                    'label': package.category.name,
+                    'slug': slug,
+                })
+    context.update({
+        'collection_title': title,
+        'collection_eyebrow': eyebrow,
+        'collection_description': description,
+        'collection_packages': [_package_presenter(package) for package in packages],
+        'collection_destinations': destination_qs or [],
+        'collection_filters': filters,
+        'collection_active_filter': active_filter or 'all',
+        'collection_groups': groups or [],
+    })
+    return context
+
+
+def explore_kenya(request):
+    packages_qs = _packages_for_collection().filter(region__in=['kenya-safari', 'kenya-coast', 'day-trips'])
+    destinations_qs = Destination.objects.filter(
+        is_active=True,
+        packages__status=Package.PUBLISHED,
+        packages__region__in=['kenya-safari', 'kenya-coast', 'day-trips'],
+    ).distinct().order_by('-is_featured', 'display_order', 'name')[:12]
+    context = _collection_context(
+        'Explore Kenya',
+        'Kenya holidays, safaris and coast escapes',
+        'Find the Kenya experiences Myriad Travel can shape around your dates, from desert campaigns and wildlife safaris to coast stays and weekend escapes.',
+        packages_qs,
+        destinations_qs,
+    )
+    return render(request, 'users/pages/collection.html', context)
+
+
+def explore_the_world(request):
+    packages_qs = _packages_for_collection().filter(region='international').exclude(category__slug__in=SIGNATURE_CATEGORY_SLUGS)
+    destinations_qs = Destination.objects.filter(
+        is_active=True,
+        packages__status=Package.PUBLISHED,
+        packages__region='international',
+    ).distinct().order_by('-is_featured', 'display_order', 'name')[:12]
+    context = _collection_context(
+        'Explore World Destinations',
+        'International holidays from Myriad Travel',
+        'Browse global holidays, city breaks and island escapes with planning support from enquiry to confirmed itinerary.',
+        packages_qs,
+        destinations_qs,
+    )
+    return render(request, 'users/pages/collection.html', context)
+
+
+def tours_safaris(request):
+    packages_qs = _packages_for_collection().filter(
+        Q(region__in=['kenya-safari', 'kenya-coast', 'day-trips']) |
+        Q(category__slug__in=TOURS_SAFARI_CATEGORY_SLUGS)
+    ).exclude(category__slug__in=SIGNATURE_CATEGORY_SLUGS)
+    selected_category = request.GET.get('category', '').strip()
+    selected_filter = slugify(selected_category) if selected_category else 'all'
+    context = _collection_context(
+        'Tours & Safaris',
+        'Safari, coast and adventure planning',
+        'Safari, coast, mountain, culture, photography and adventure trips gathered into one clear planning space. Start with a style, then open the package that fits your dates and group.',
+        packages_qs,
+        active_filter=selected_filter,
+    )
+    return render(request, 'users/pages/collection.html', context)
+
+
+def signature_experiences(request):
+    groups = []
+    packages_qs = _packages_for_collection().filter(category__slug__in=SIGNATURE_CATEGORY_SLUGS)
+    for category in PackageCategory.objects.filter(slug__in=SIGNATURE_CATEGORY_SLUGS, is_active=True).order_by('display_order', 'name'):
+        group_packages = [pkg for pkg in packages_qs if pkg.category_id == category.id]
+        if group_packages:
+            groups.append({
+                'title': category.name,
+                'description': category.description,
+                'packages': [_package_presenter(package) for package in group_packages],
+            })
+    context = _collection_context(
+        'Signature Experiences',
+        'Curated journeys for a specific reason to travel',
+        'Cruises, wellness retreats, shopping tours, pilgrimages and honeymoon escapes prepared as ready-to-enquire Myriad Travel experiences.',
+        packages_qs,
+        groups=groups,
+    )
+    return render(request, 'users/pages/signature_experiences.html', context)
+
+
 def destinations(request):
     return render(request, 'users/pages/destinations.html', _public_page_context())
+
+
+def destination_detail(request, slug):
+    destination = get_object_or_404(Destination, slug=slug, is_active=True)
+    packages_qs = _packages_for_collection().filter(main_destination=destination)
+    context = _collection_context(
+        destination.name,
+        'Destination guide',
+        destination.meta_description or strip_tags(str(destination.description or '')),
+        packages_qs,
+    )
+    context['destination'] = _destination_presenter(destination)
+    return render(request, 'users/pages/destination_detail.html', context)
 
 
 def package_detail(request, slug):
@@ -415,6 +615,18 @@ def package_detail(request, slug):
         else 'users/pages/package_detail.html'
     )
     return render(request, template_name, context)
+
+
+def package_gallery(request, slug):
+    package = get_object_or_404(
+        Package.objects.select_related('main_destination', 'category').prefetch_related('gallery_images'),
+        slug=slug,
+        status=Package.PUBLISHED,
+    )
+    context = _public_page_context(package_limit=4)
+    context['pkg'] = _package_presenter(package)
+    context['gallery_images'] = package.gallery_images.filter(is_visible=True)
+    return render(request, 'users/pages/package_gallery.html', context)
 
 
 def send_job_application_emails(job_application):
@@ -488,8 +700,12 @@ def careers(request):
 
     # Handle job application form submission
     if request.method == 'POST':
-        form = JobApplicationForm(request.POST, request.FILES)
+        form = JobApplicationForm(request.POST, request.FILES, request=request)
         if form.is_valid():
+            from .antispam import check_form_submission
+            if not check_form_submission(request, form.cleaned_data.get('email', '')):
+                form.add_error(None, 'We have received several requests recently. Please wait a little before submitting again.')
+                return render(request, 'users/careers.html', {'form': form, 'job_listings': job_listings})
             job_application = form.save()
 
             # Send email notifications
@@ -595,9 +811,16 @@ def newsletter_subscribe(request):
     from django.http import JsonResponse
 
     if request.method == 'POST':
-        form = NewsletterSubscriptionSimpleForm(request.POST)
+        form = NewsletterSubscriptionSimpleForm(request.POST, request=request)
         if form.is_valid():
             email = form.cleaned_data['email']
+            from .antispam import check_form_submission
+            if not check_form_submission(request, email):
+                error_message = 'Please wait a little before trying to subscribe again.'
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({'success': False, 'message': error_message}, status=429)
+                messages.warning(request, error_message)
+                return redirect(request.META.get('HTTP_REFERER') or 'users:users-home')
 
             # Create subscription with default preferences
             subscription = NewsletterSubscription.objects.create(
@@ -1223,8 +1446,12 @@ def quote_request_view(request):
             messages.warning(request, "The selected package is no longer available. You can still submit a general quote request.")
 
     if request.method == 'POST':
-        form = QuoteRequestForm(request.POST)
+        form = QuoteRequestForm(request.POST, request=request)
         if form.is_valid():
+            from .antispam import check_form_submission
+            if not check_form_submission(request, form.cleaned_data.get('email', '')):
+                form.add_error(None, 'We have received several requests recently. Please wait a little before submitting again.')
+                return render(request, 'users/quote_form.html', {'form': form, 'package': package})
             try:
                 # Create quote request
                 quote_request = form.save()

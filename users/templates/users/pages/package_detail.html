@@ -36,7 +36,10 @@
         </span>
         {% endif %}
         <span class="px-3 py-1 bg-amber-600 text-white font-bold rounded-full">
-          {{ pkg.category|default:"Big Five Safari" }}
+          {{ pkg.category }}
+        </span>
+        <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full">
+          {{ pkg.region_label }}
         </span>
         <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full flex items-center gap-1">
           <i data-lucide="clock" class="w-3.5 h-3.5"></i>
@@ -51,21 +54,21 @@
       </div>
 
       <h1 class="text-2xl sm:text-4xl font-bold font-serif leading-tight">
-        {{ pkg.title|default:"4-Day Maasai Mara Great Migration & Big Five Safari" }}
+        {{ pkg.title }}
       </h1>
 
       <p class="text-xs sm:text-sm text-slate-200 leading-relaxed">
-        {{ pkg.subtitle|default:"Witness the iconic spectacle of wildlife drama in world-renowned Mara." }}
+        {{ pkg.subtitle }}
       </p>
 
       <div class="flex flex-wrap items-center gap-4 text-xs text-amber-300 pt-2">
         <span class="flex items-center gap-1.5 font-medium">
           <i data-lucide="map-pin" class="w-4 h-4"></i>
-          <span>{{ pkg.destination|default:"Maasai Mara National Reserve, Kenya" }}</span>
+          <span>{{ pkg.destination }}</span>
         </span>
         <span class="flex items-center gap-1.5 font-semibold text-white">
           <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
-          <span>{{ pkg.rating|default:"4.98" }} ({{ pkg.reviews_count|default:"142" }} verified reviews)</span>
+          <span>{{ pkg.rating|default:"4.9" }} ({{ pkg.reviews_count|default:"0" }} traveller reviews)</span>
         </span>
       </div>
 
@@ -97,8 +100,8 @@
           <strong>{{ pkg.duration }}</strong>
         </div>
         <div class="rounded-2xl bg-white/10 px-3 py-2">
-          <span class="block text-slate-300">Reviews</span>
-          <strong>{{ pkg.rating|default:"4.9" }}/5</strong>
+          <span class="block text-slate-300">Best For</span>
+          <strong class="line-clamp-2">{{ pkg.best_for }}</strong>
         </div>
       </div>
       <a href="#booking-request" class="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-amber-500 px-4 py-3 text-xs font-bold text-slate-950 hover:bg-amber-400 transition-colors">
@@ -112,7 +115,7 @@
   <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
     <div class="rounded-2xl bg-white border border-slate-200 p-4 shadow-xs">
       <span class="text-[11px] uppercase font-bold text-slate-500">Destination</span>
-      <p class="text-sm font-bold text-slate-900 mt-1">{{ pkg.destination|default:"Kenya" }}</p>
+      <p class="text-sm font-bold text-slate-900 mt-1">{{ pkg.destination }}</p>
     </div>
     <div class="rounded-2xl bg-white border border-slate-200 p-4 shadow-xs">
       <span class="text-[11px] uppercase font-bold text-slate-500">Duration</span>
@@ -123,8 +126,8 @@
       <p class="text-sm font-bold text-slate-900 mt-1">{{ pkg.price_kes|default:68500|kes_format }}</p>
     </div>
     <div class="rounded-2xl bg-white border border-slate-200 p-4 shadow-xs">
-      <span class="text-[11px] uppercase font-bold text-slate-500">Best For</span>
-      <p class="text-sm font-bold text-slate-900 mt-1">Guided group adventure</p>
+      <span class="text-[11px] uppercase font-bold text-slate-500">Route / Focus</span>
+      <p class="text-sm font-bold text-slate-900 mt-1">{{ pkg.route_summary }}</p>
     </div>
   </div>
 
@@ -136,7 +139,7 @@
       <div class="bg-white p-6 rounded-3xl border border-amber-200/70 space-y-4 shadow-xs">
         <h3 class="text-sm font-bold uppercase text-amber-900 tracking-wider flex items-center gap-2">
           <i data-lucide="sparkles" class="w-4 h-4 text-amber-600"></i>
-          <span>Trip Highlights &amp; Inclusions</span>
+          <span>Why This Trip Works</span>
         </h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-700">
           {% for hl in pkg.highlights %}
@@ -144,24 +147,37 @@
             <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
             <span>{{ hl }}</span>
           </div>
-          {% empty %}
-          <div class="flex items-start gap-2">
-            <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
-            <span>Extensive game drives in custom 4x4 Land Cruiser with pop-up roof</span>
-          </div>
-          <div class="flex items-start gap-2">
-            <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
-            <span>Unrivaled sightings of Lions, Leopards, Cheetahs, and Mara River crossings</span>
-          </div>
-          <div class="flex items-start gap-2">
-            <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
-            <span>Full-board luxury tented camp accommodation</span>
-          </div>
-          <div class="flex items-start gap-2">
-            <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
-            <span>Authentic Maasai cultural village visit with tribal dancing</span>
-          </div>
           {% endfor %}
+          {% if not pkg.highlights %}
+          <div class="sm:col-span-2 rounded-2xl border border-dashed border-amber-300 bg-amber-50/70 p-4 text-sm text-amber-950">
+            This package is published and ready for enquiries. The Myriad team can use admin to add public highlights, hotel notes and itinerary selling points for an even stronger detail page.
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-slate-200/80 space-y-4 shadow-xs">
+        <h3 class="text-sm font-bold uppercase text-slate-800 tracking-wider flex items-center gap-2">
+          <i data-lucide="compass" class="w-4 h-4 text-amber-600"></i>
+          <span>Experience Snapshot</span>
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-700">
+          <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4">
+            <span class="block text-[11px] uppercase font-bold text-slate-500">Travel Style</span>
+            <strong class="block mt-1 text-slate-950">{{ pkg.best_for }}</strong>
+          </div>
+          <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4">
+            <span class="block text-[11px] uppercase font-bold text-slate-500">Transport</span>
+            <strong class="block mt-1 text-slate-950">
+              {% if pkg.transport_modes %}{{ pkg.transport_modes|join:", " }}{% else %}Confirmed during booking{% endif %}
+            </strong>
+          </div>
+          <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4">
+            <span class="block text-[11px] uppercase font-bold text-slate-500">Stay Plan</span>
+            <strong class="block mt-1 text-slate-950">
+              {% if pkg.accommodations %}{{ pkg.accommodations|join:", " }}{% else %}Matched to availability{% endif %}
+            </strong>
+          </div>
         </div>
       </div>
 
@@ -170,7 +186,7 @@
         <div class="flex items-end justify-between gap-4">
           <div>
             <span class="text-[11px] uppercase tracking-wider font-bold text-amber-700">The Route</span>
-            <h2 class="text-2xl font-bold font-serif text-slate-900">Day-by-Day Safari Itinerary</h2>
+            <h2 class="text-2xl font-bold font-serif text-slate-900">Day-by-Day Plan</h2>
           </div>
         </div>
         <div class="relative border-l-2 border-amber-200/80 ml-3 pl-6 space-y-6">
@@ -199,12 +215,11 @@
             </div>
           </div>
           {% empty %}
-          <div class="relative group">
-            <span class="absolute -left-[31px] top-1 w-6 h-6 rounded-full bg-amber-600 text-white text-[11px] font-bold flex items-center justify-center shadow-xs">1</span>
-            <div class="space-y-1.5 bg-white p-4 rounded-xl border border-slate-200/80 shadow-xs">
-              <h4 class="text-sm font-bold text-slate-900">Day 1: Nairobi to Game Reserve</h4>
-              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Early morning pickup and drive across the Great Rift Valley. Check in for lunch and late afternoon predator tracking.</p>
-            </div>
+          <div class="rounded-3xl bg-white border border-dashed border-slate-300 p-6 shadow-xs">
+            <h4 class="text-base font-bold text-slate-950">Detailed itinerary pending final supplier confirmation</h4>
+            <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+              Myriad Travel will confirm the day-by-day routing, hotel allocation, transport timings and activity order before booking. Admin can add itinerary days to make this page fully self-serve.
+            </p>
           </div>
           {% endfor %}
         </div>
@@ -226,15 +241,7 @@
             {% empty %}
             <li class="flex items-start gap-2">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 mt-1.5 shrink-0"></span>
-              <span>Transport in custom 4x4 Land Cruiser with pop-up roof</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 mt-1.5 shrink-0"></span>
-              <span>Full-board accommodation at premier camps</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 mt-1.5 shrink-0"></span>
-              <span>Park entrance and conservation levies</span>
+              <span>Final inclusions are confirmed by the Myriad team before payment.</span>
             </li>
             {% endfor %}
           </ul>
@@ -254,11 +261,7 @@
             {% empty %}
             <li class="flex items-start gap-2">
               <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0"></span>
-              <span>Personal travel insurance</span>
-            </li>
-            <li class="flex items-start gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0"></span>
-              <span>Gratuities to safari guide and camp staff</span>
+              <span>Any exclusions, optional extras and supplier conditions are confirmed in the official quote.</span>
             </li>
             {% endfor %}
           </ul>
@@ -332,33 +335,35 @@
         </div>
 
         <!-- Django POST Booking Form -->
-        <form method="POST" action="/enquiry/" class="space-y-3">
+        <form method="POST" action="/quote/?package_id={{ pkg.model.id }}" class="space-y-3">
+          {% include 'users/includes/antispam_fields.html' %}
           {% csrf_token %}
-          <input type="hidden" name="package_title" value="{{ pkg.title|default:'Safari Package' }}" />
+          <input type="hidden" name="destination" value="{{ pkg.title }} - {{ pkg.destination }}" />
+          <input type="hidden" name="number_of_travelers" value="1" />
 
           <div class="space-y-1">
             <label class="text-[11px] font-bold text-slate-600 uppercase">Your Name *</label>
-            <input type="text" name="full_name" required placeholder="John Doe" class="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500" />
+            <input type="text" name="full_name" required placeholder="Your full name" class="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500" />
           </div>
 
           <div class="space-y-1">
             <label class="text-[11px] font-bold text-slate-600 uppercase">Phone / WhatsApp *</label>
-            <input type="tel" name="phone" required placeholder="+254 712 345 678" class="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500" />
+            <input type="tel" name="phone_number" required placeholder="+254 712 345 678" class="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500" />
           </div>
 
           <div class="space-y-1">
-            <label class="text-[11px] font-bold text-slate-600 uppercase">Email Address</label>
-            <input type="email" name="email" placeholder="john@example.com" class="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500" />
+            <label class="text-[11px] font-bold text-slate-600 uppercase">Email Address *</label>
+            <input type="email" name="email" required placeholder="you@example.com" class="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500" />
           </div>
 
           <div class="space-y-1">
             <label class="text-[11px] font-bold text-slate-600 uppercase">Travel Date</label>
-            <input type="date" name="departure_date" class="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500" />
+            <input type="date" name="preferred_travel_dates" required class="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500" />
           </div>
 
           <div class="space-y-1">
             <label class="text-[11px] font-bold text-slate-600 uppercase">Notes / Preferences</label>
-            <textarea name="notes" rows="3" placeholder="Dietary needs, private cruiser, rooming, etc." class="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
+            <textarea name="special_requests" rows="3" placeholder="Rooming, child ages, dietary needs, transport preference or hotel notes." class="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
           </div>
 
           <button

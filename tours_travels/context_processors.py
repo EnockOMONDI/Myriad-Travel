@@ -128,12 +128,13 @@ def site_settings(request):
     """
     return {
         'SITE_URL': getattr(settings, 'SITE_URL', 'http://localhost:8000'),
+        'TURNSTILE_SITE_KEY': getattr(settings, 'TURNSTILE_SITE_KEY', ''),
         'DEBUG': getattr(settings, 'DEBUG', False),
         'company': {
             'name': 'Myriad Travel',
             'tagline': 'Beyond Imagination',
             'address': {
-                'full': 'Applewood Adams, 8th Floor, Ngong Road, Nairobi, Kenya',
+                'full': 'Parklands, Crescent Business Center, 6th Floor, Nairobi, Kenya',
             },
             'contacts': {
                 'primary_phone': '+254712236522',
@@ -144,4 +145,72 @@ def site_settings(request):
                 'email_marketing': 'marketing@myriad-travel.com',
             },
         },
+    }
+
+
+def navigation_collections(request):
+    """
+    Lightweight public navigation data driven by admin records.
+    """
+    try:
+        from adminside.models import Destination, PackageCategory
+
+        kenya_items = Destination.objects.filter(
+            is_active=True,
+            packages__status='published',
+            packages__region__in=['kenya-safari', 'kenya-coast', 'day-trips'],
+        ).distinct().order_by('-is_featured', 'display_order', 'name')[:5]
+
+        world_items = Destination.objects.filter(
+            is_active=True,
+            packages__status='published',
+            packages__region='international',
+        ).distinct().order_by('-is_featured', 'display_order', 'name')[:5]
+
+        safari_items = PackageCategory.objects.filter(
+            is_active=True,
+            packages__status='published',
+            slug__in=[
+                'adventure-safaris',
+                'bird-watching-safaris',
+                'budget-safaris',
+                'camping-safaris',
+                'cultural-safaris',
+                'family-safaris',
+                'flying-safaris',
+                'honeymoon-safaris',
+                'luxury-safaris',
+                'mountain-climbing-safaris',
+                'photography-safaris',
+                'bush-and-beach-safaris',
+                'northern-kenya-adventure',
+                'big-five-migration-safari',
+                'wildlife-photography',
+                'hiking-day-adventure',
+                'beach-holiday-water-sports',
+            ],
+        ).distinct().order_by('display_order', 'name')[:5]
+
+        signature_items = PackageCategory.objects.filter(
+            is_active=True,
+            packages__status='published',
+            slug__in=[
+                'cruises',
+                'wellness-retreats',
+                'shopping-tours',
+                'religious-pilgrimages',
+                'honeymoon-packages',
+            ],
+        ).distinct().order_by('display_order', 'name')[:5]
+    except Exception:
+        kenya_items = []
+        world_items = []
+        safari_items = []
+        signature_items = []
+
+    return {
+        'nav_explore_kenya': kenya_items,
+        'nav_explore_world': world_items,
+        'nav_tours_safaris': safari_items,
+        'nav_signature_experiences': signature_items,
     }

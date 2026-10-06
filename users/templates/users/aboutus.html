@@ -1,13 +1,76 @@
 {% extends 'base.html' %}
 {% block title %}About Myriad Travel — Beyond Imagination{% endblock %}
 {% block content %}
-<section class="bg-slate-900 text-white py-16 px-4 sm:px-8">
-  <div class="max-w-7xl mx-auto space-y-4">
-    <span class="inline-flex px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold uppercase">Nairobi Travel Designers</span>
-    <h1 class="text-3xl sm:text-5xl font-bold font-serif">Travel Crafted With Precision, Warmth &amp; Imagination</h1>
-    <p class="text-slate-300 max-w-3xl">Myriad Travel designs safaris, coastal escapes, global holidays, and corporate travel with concierge-level detail from our Nairobi office.</p>
+<section class="bg-[#0B192C] text-white px-4 sm:px-8 py-16 sm:py-20">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-10 items-end">
+    <div class="space-y-5">
+      <span class="inline-flex px-3 py-1 rounded-sm bg-amber-500/15 border border-amber-400/30 text-amber-200 text-xs font-bold uppercase tracking-wider">
+        Myriad Travel, Nairobi
+      </span>
+      <h1 class="text-3xl sm:text-5xl font-bold font-serif leading-tight">
+        We are a Nairobi travel company for safaris, holidays and business trips.
+      </h1>
+      <p class="text-slate-300 max-w-3xl text-sm sm:text-base leading-relaxed">
+        Myriad Travel helps clients book Kenya adventures, beach holidays, international escapes, flights, visas and corporate travel from our office in Parklands, Nairobi.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+      <div class="rounded-sm border border-white/10 bg-white/10 p-4">
+        <span class="block text-xs uppercase tracking-wider text-amber-200 font-bold">Trips</span>
+        <strong class="block mt-1">Kenya, coast and outbound holidays</strong>
+      </div>
+      <div class="rounded-sm border border-white/10 bg-white/10 p-4">
+        <span class="block text-xs uppercase tracking-wider text-amber-200 font-bold">Operations base</span>
+        <strong class="block mt-1">Parklands, Nairobi</strong>
+      </div>
+      <div class="rounded-sm border border-white/10 bg-white/10 p-4">
+        <span class="block text-xs uppercase tracking-wider text-amber-200 font-bold">Reach us</span>
+        <strong class="block mt-1">Website, email, phone and WhatsApp</strong>
+      </div>
+      <div class="rounded-sm border border-white/10 bg-white/10 p-4">
+        <span class="block text-xs uppercase tracking-wider text-amber-200 font-bold">Trust signals</span>
+        <strong class="block mt-1">SafariBookings, IATA, TRA, KATO, KWS</strong>
+      </div>
+    </div>
   </div>
 </section>
+
+<section class="px-4 sm:px-8 py-16 bg-[#F9F2F2]">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="lg:col-span-5 space-y-4">
+      <span class="text-xs font-bold uppercase tracking-wider text-amber-700">About the company</span>
+      <h2 class="text-2xl sm:text-4xl font-serif font-bold text-slate-950">What Myriad Travel does.</h2>
+      <p class="text-sm text-slate-600 leading-relaxed">
+        We plan trips for individuals, families, groups and organizations. Some clients come for a safari, others for a beach break, an outbound holiday, a flight, a visa question or a company retreat. Our work is to make the options clear and handle the moving parts.
+      </p>
+    </div>
+
+    <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="bg-white border border-slate-200 rounded-sm p-5 shadow-xs">
+        <i data-lucide="map" class="w-5 h-5 text-amber-600"></i>
+        <h3 class="mt-3 font-serif font-bold text-lg text-slate-950">Explore Kenya</h3>
+        <p class="mt-2 text-xs text-slate-600 leading-relaxed">Chalbi, Amboseli, Maasai Mara, Naivasha, coast, Malindi, Watamu and park-led safari circuits.</p>
+      </div>
+      <div class="bg-white border border-slate-200 rounded-sm p-5 shadow-xs">
+        <i data-lucide="globe-2" class="w-5 h-5 text-amber-600"></i>
+        <h3 class="mt-3 font-serif font-bold text-lg text-slate-950">Explore The World</h3>
+        <p class="mt-2 text-xs text-slate-600 leading-relaxed">Dubai, South Africa, Egypt, Rwanda, Seychelles, Thailand, Schengen Europe and island holidays.</p>
+      </div>
+      <div class="bg-white border border-slate-200 rounded-sm p-5 shadow-xs">
+        <i data-lucide="briefcase" class="w-5 h-5 text-amber-600"></i>
+        <h3 class="mt-3 font-serif font-bold text-lg text-slate-950">Corporate Movement</h3>
+        <p class="mt-2 text-xs text-slate-600 leading-relaxed">Transport, retreats, conferences, team building, executive travel and organization logistics.</p>
+      </div>
+      <div class="bg-white border border-slate-200 rounded-sm p-5 shadow-xs">
+        <i data-lucide="clipboard-check" class="w-5 h-5 text-amber-600"></i>
+        <h3 class="mt-3 font-serif font-bold text-lg text-slate-950">Admin Follow-Up</h3>
+        <p class="mt-2 text-xs text-slate-600 leading-relaxed">The team reviews requests, updates packages, publishes blogs and follows up with clients from the admin area.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 {% include 'components/why_myriad.html' %}
 {% include 'components/accreditation_bar.html' %}
 {% endblock %}
