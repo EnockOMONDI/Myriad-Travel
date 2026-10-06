@@ -42,11 +42,11 @@ def validate_turnstile(token, request):
 
 
 def check_form_submission(request, email=''):
-    """Apply a modest per-IP and per-email window before email/database writes."""
-    window = 15 * 60
+    """Apply a per-IP and per-email window before email/database writes."""
+    window = 20 * 60
     ip_digest = hashlib.sha256(client_ip(request).encode()).hexdigest()[:24]
     email_digest = hashlib.sha256(email.strip().lower().encode()).hexdigest()[:24] if email else ''
-    keys = [(f'public-form:ip:{ip_digest}', 5)]
+    keys = [(f'public-form:ip:{ip_digest}', 3)]
     if email_digest:
         keys.append((f'public-form:email:{email_digest}', 3))
 
