@@ -5,9 +5,10 @@ Checkout forms for Mbugani Luxe Adventures
 from django import forms
 from django.core.validators import RegexValidator
 from django_ckeditor_5.widgets import CKEditor5Widget
+from .antispam import AntiSpamFormMixin
 
 
-class CheckoutForm(forms.Form):
+class CheckoutForm(AntiSpamFormMixin, forms.Form):
     """
     Guest checkout form for collecting customer information
     """

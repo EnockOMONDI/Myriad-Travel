@@ -31,7 +31,7 @@ class UserRegisterForm(AntiSpamFormMixin, UserCreationForm):
 
 
 
-class UserBookingsForm(forms.ModelForm):
+class UserBookingsForm(AntiSpamFormMixin, forms.ModelForm):
     class Meta:
         model = UserBookings
         fields = [
@@ -291,7 +291,7 @@ class QuoteRequestForm(AntiSpamFormMixin, forms.ModelForm):
         return num_travelers
 
 
-class TripFeedbackForm(forms.ModelForm):
+class TripFeedbackForm(AntiSpamFormMixin, forms.ModelForm):
     class Meta:
         model = TripFeedback
         fields = [

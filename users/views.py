@@ -1041,11 +1041,15 @@ def search(request):
 @login_required
 def bookings(request, package_id):
     package = get_object_or_404(Package, id=package_id)
-    form = UserBookingsForm(request.POST or None)
+    form = UserBookingsForm(request.POST or None, request=request)
     context = {'form': form, 'package': package}
 
     if request.method == 'POST':
         if form.is_valid():
+            from .antispam import check_form_submission
+            if not check_form_submission(request, getattr(request.user, 'email', '')):
+                form.add_error(None, 'We have received several requests recently. Please wait a little before trying again.')
+                return render(request, 'users/UserBookingsForm.html', context)
             print("Form is valid!")  # Debug print
             try:
                 # Create the booking
@@ -1527,7 +1531,7 @@ def trip_feedback(request, token):
     feedback = get_object_or_404(TripFeedback, token=token)
 
     if request.method == 'POST':
-        form = TripFeedbackForm(request.POST, instance=feedback)
+        form = TripFeedbackForm(request.POST, instance=feedback, request=request)
         if form.is_valid():
             feedback = form.save(commit=False)
             feedback.mark_submitted()
@@ -1536,7 +1540,7 @@ def trip_feedback(request, token):
             return redirect('users:trip_feedback', token=feedback.token)
         messages.error(request, 'Please correct the errors below.')
     else:
-        form = TripFeedbackForm(instance=feedback)
+        form = TripFeedbackForm(instance=feedback, request=request)
 
     return render(request, 'users/trip_feedback.html', {
         'feedback_request': feedback,

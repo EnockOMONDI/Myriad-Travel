@@ -161,7 +161,7 @@ def checkout_details(request):
     saved_form_data = form_manager.get_form_initial_data('details', CheckoutForm)
 
     if request.method == 'POST':
-        form = CheckoutForm(request.POST)
+        form = CheckoutForm(request.POST, request=request)
         if form.is_valid():
             # Save to both old session system (for compatibility) and new form persistence
             form_data = {
@@ -203,7 +203,7 @@ def checkout_details(request):
                 except (ValueError, TypeError):
                     pass
 
-        form = CheckoutForm(initial=initial_data)
+        form = CheckoutForm(initial=initial_data, request=request)
 
     context = {
         'form': form,
@@ -233,6 +233,21 @@ def checkout_summary(request):
             # Redirect back to details page with data preserved
             return redirect('users:checkout_details')
         elif action == 'confirm':
+            from .antispam import check_form_submission, validate_turnstile
+            if not validate_turnstile(request.POST.get('cf-turnstile-response', ''), request):
+                messages.error(request, 'Please complete the security check and try again.')
+                return render(request, 'users/checkout/summary.html', {
+                    'cart_items': cart_items,
+                    'total_price': sum(item['total_price'] for item in cart_items),
+                    'checkout_data': checkout_data,
+                })
+            if not check_form_submission(request, checkout_data.get('email', '')):
+                messages.error(request, 'We have received several requests recently. Please wait a little before trying again.')
+                return render(request, 'users/checkout/summary.html', {
+                    'cart_items': cart_items,
+                    'total_price': sum(item['total_price'] for item in cart_items),
+                    'checkout_data': checkout_data,
+                })
             try:
                 # Create the booking
                 booking = create_booking_from_cart(cart, checkout_data)
