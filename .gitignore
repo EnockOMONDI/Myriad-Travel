@@ -12,6 +12,7 @@
 .env.production
 .env.development
 .env.backup
+accounts documentation.md
 
 # ============================================
 # PYTHON
