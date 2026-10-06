@@ -318,7 +318,8 @@ def register(request):
         if form.is_valid():
             from .antispam import check_form_submission
             if not check_form_submission(request, form.cleaned_data.get('email', '')):
-                form.add_error(None, 'We have received several requests recently. Please wait a little before trying again.')
+                from .antispam import SECURITY_BLOCK_MESSAGE
+                form.add_error(None, SECURITY_BLOCK_MESSAGE)
                 return render(request, 'users/register.html', {'form': form})
             user = form.save(commit=False)  # Save the user object in memory
             user.is_active = False
@@ -388,7 +389,8 @@ def _service_inquiry(request, form_class, template_name, route_name, title):
     if request.method == 'POST' and form.is_valid():
         from .antispam import check_form_submission
         if not check_form_submission(request, form.cleaned_data.get('email', '')):
-            form.add_error(None, 'We have received several requests recently. Please wait a little before submitting again.')
+            from .antispam import SECURITY_BLOCK_MESSAGE
+            form.add_error(None, SECURITY_BLOCK_MESSAGE)
             return render(request, template_name, {'form': form})
         inquiry = form.save()
         sent = send_service_inquiry_emails(inquiry, form, title)
@@ -428,7 +430,8 @@ def contactus(request):
         if form.is_valid():
             from .antispam import check_form_submission
             if not check_form_submission(request, form.cleaned_data.get('email', '')):
-                form.add_error(None, 'We have received several requests recently. Please wait a little before submitting again.')
+                from .antispam import SECURITY_BLOCK_MESSAGE
+                form.add_error(None, SECURITY_BLOCK_MESSAGE)
             else:
                 quote_request = form.save()
                 from users.tasks import send_quote_request_emails
@@ -704,7 +707,8 @@ def careers(request):
         if form.is_valid():
             from .antispam import check_form_submission
             if not check_form_submission(request, form.cleaned_data.get('email', '')):
-                form.add_error(None, 'We have received several requests recently. Please wait a little before submitting again.')
+                from .antispam import SECURITY_BLOCK_MESSAGE
+                form.add_error(None, SECURITY_BLOCK_MESSAGE)
                 return render(request, 'users/careers.html', {'form': form, 'job_listings': job_listings})
             job_application = form.save()
 
@@ -816,7 +820,8 @@ def newsletter_subscribe(request):
             email = form.cleaned_data['email']
             from .antispam import check_form_submission
             if not check_form_submission(request, email):
-                error_message = 'Please wait a little before trying to subscribe again.'
+                from .antispam import SECURITY_BLOCK_MESSAGE
+                error_message = SECURITY_BLOCK_MESSAGE
                 if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                     return JsonResponse({'success': False, 'message': error_message}, status=429)
                 messages.warning(request, error_message)
@@ -1048,7 +1053,8 @@ def bookings(request, package_id):
         if form.is_valid():
             from .antispam import check_form_submission
             if not check_form_submission(request, getattr(request.user, 'email', '')):
-                form.add_error(None, 'We have received several requests recently. Please wait a little before trying again.')
+                from .antispam import SECURITY_BLOCK_MESSAGE
+                form.add_error(None, SECURITY_BLOCK_MESSAGE)
                 return render(request, 'users/UserBookingsForm.html', context)
             print("Form is valid!")  # Debug print
             try:
@@ -1454,7 +1460,8 @@ def quote_request_view(request):
         if form.is_valid():
             from .antispam import check_form_submission
             if not check_form_submission(request, form.cleaned_data.get('email', '')):
-                form.add_error(None, 'We have received several requests recently. Please wait a little before submitting again.')
+                from .antispam import SECURITY_BLOCK_MESSAGE
+                form.add_error(None, SECURITY_BLOCK_MESSAGE)
                 return render(request, 'users/quote_form.html', {'form': form, 'package': package})
             try:
                 # Create quote request

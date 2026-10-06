@@ -11,6 +11,12 @@ from django import forms
 
 logger = logging.getLogger(__name__)
 
+SECURITY_BLOCK_MESSAGE = (
+    'This request was blocked for security reasons. '
+    'Please do not use automated or abusive submissions. '
+    'Contact Myriad Travel directly if you need assistance.'
+)
+
 
 def client_ip(request):
     forwarded = request.META.get('HTTP_X_FORWARDED_FOR', '')
@@ -70,8 +76,8 @@ class AntiSpamFormMixin:
     def clean(self):
         cleaned = super().clean()
         if self.data.get('website'):
-            raise ValidationError('Unable to submit this request.')
+            raise ValidationError(SECURITY_BLOCK_MESSAGE)
         token = self.data.get('cf-turnstile-response', '')
         if self.request and not validate_turnstile(token, self.request):
-            raise ValidationError('Please complete the security check and try again.')
+            raise ValidationError(SECURITY_BLOCK_MESSAGE)
         return cleaned

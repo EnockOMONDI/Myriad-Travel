@@ -235,14 +235,16 @@ def checkout_summary(request):
         elif action == 'confirm':
             from .antispam import check_form_submission, validate_turnstile
             if not validate_turnstile(request.POST.get('cf-turnstile-response', ''), request):
-                messages.error(request, 'Please complete the security check and try again.')
+                from .antispam import SECURITY_BLOCK_MESSAGE
+                messages.error(request, SECURITY_BLOCK_MESSAGE)
                 return render(request, 'users/checkout/summary.html', {
                     'cart_items': cart_items,
                     'total_price': sum(item['total_price'] for item in cart_items),
                     'checkout_data': checkout_data,
                 })
             if not check_form_submission(request, checkout_data.get('email', '')):
-                messages.error(request, 'We have received several requests recently. Please wait a little before trying again.')
+                from .antispam import SECURITY_BLOCK_MESSAGE
+                messages.error(request, SECURITY_BLOCK_MESSAGE)
                 return render(request, 'users/checkout/summary.html', {
                     'cart_items': cart_items,
                     'total_price': sum(item['total_price'] for item in cart_items),
