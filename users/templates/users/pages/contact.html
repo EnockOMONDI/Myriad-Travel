@@ -124,6 +124,8 @@ Contact &amp; Nairobi Office — Myriad Travel
 
       <form method="POST" action="/contact/" class="space-y-4">
         {% csrf_token %}
+        {% include 'users/includes/antispam_fields.html' %}
+        {% if contact_form and contact_form.non_field_errors %}<div class="rounded-sm border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">{{ contact_form.non_field_errors }}</div>{% endif %}
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="space-y-1">

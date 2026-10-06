@@ -241,6 +241,17 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='Myriad Travel <info@m
 
 # Admin email for notifications
 ADMIN_EMAIL = config('ADMIN_EMAIL', default='info@myriad-travel.com')
+TURNSTILE_SITE_KEY = os.getenv('TURNSTILE_SITE_KEY', '')
+TURNSTILE_SECRET = os.getenv('TURNSTILE_SECRET', '')
+TURNSTILE_SECRET_KEY = os.getenv('TURNSTILE_SECRET_KEY', '') or TURNSTILE_SECRET
+TURNSTILE_ALLOWED_HOSTNAMES = {
+    hostname.strip().lower()
+    for hostname in os.getenv(
+        'TURNSTILE_ALLOWED_HOSTNAMES',
+        'myriad-travel.com,www.myriad-travel.com,localhost,127.0.0.1',
+    ).split(',')
+    if hostname.strip()
+}
 
 # Jobs email for career applications
 JOBS_EMAIL = config('JOBS_EMAIL', default='info@myriad-travel.com')

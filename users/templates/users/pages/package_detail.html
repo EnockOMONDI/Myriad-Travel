@@ -336,6 +336,7 @@
 
         <!-- Django POST Booking Form -->
         <form method="POST" action="/quote/?package_id={{ pkg.model.id }}" class="space-y-3">
+          {% include 'users/includes/antispam_fields.html' %}
           {% csrf_token %}
           <input type="hidden" name="destination" value="{{ pkg.title }} - {{ pkg.destination }}" />
           <input type="hidden" name="number_of_travelers" value="1" />

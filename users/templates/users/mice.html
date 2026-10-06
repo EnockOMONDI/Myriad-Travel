@@ -4,6 +4,6 @@
 <section class="py-16 px-4 sm:px-8 max-w-3xl mx-auto">
   <h1 class="text-3xl font-bold font-serif text-slate-900 mb-3">Plan a Corporate Event</h1>
   <p class="text-slate-600 mb-8">Share your brief and our Nairobi corporate desk will respond with venue, transport, and guest logistics options.</p>
-  <form method="post" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">{% csrf_token %}{{ form.as_p }}<button class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl">Submit MICE Inquiry</button></form>
+  <form method="post" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">{% csrf_token %}{{ form.as_p }}{% include 'users/includes/antispam_fields.html' %}<button class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl">Submit MICE Inquiry</button></form>
 </section>
 {% endblock %}

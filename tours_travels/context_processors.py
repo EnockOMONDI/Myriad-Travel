@@ -128,6 +128,7 @@ def site_settings(request):
     """
     return {
         'SITE_URL': getattr(settings, 'SITE_URL', 'http://localhost:8000'),
+        'TURNSTILE_SITE_KEY': getattr(settings, 'TURNSTILE_SITE_KEY', ''),
         'DEBUG': getattr(settings, 'DEBUG', False),
         'company': {
             'name': 'Myriad Travel',

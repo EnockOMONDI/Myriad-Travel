@@ -54,6 +54,7 @@
     <!-- Modal Form (Django POST Action) -->
     <form method="POST" action="/quote/" class="p-6 text-slate-800">
       {% csrf_token %}
+      {% include 'users/includes/antispam_fields.html' %}
 
       <!-- STEP 1 -->
       <div class="plan-step-content space-y-5">

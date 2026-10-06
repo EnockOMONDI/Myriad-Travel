@@ -247,6 +247,7 @@
       <div id="pkg-pane-booking" class="pkg-modal-tab-pane hidden space-y-5">
         <form method="POST" action="/quote/" class="space-y-4">
           {% csrf_token %}
+          {% include 'users/includes/antispam_fields.html' %}
           <input type="hidden" id="form-pkg-title" name="destination" value="Myriad Travel Package" />
           
           <div class="bg-amber-50/50 p-3 rounded-lg border border-amber-200/50 text-xs text-amber-900 flex items-center justify-between">

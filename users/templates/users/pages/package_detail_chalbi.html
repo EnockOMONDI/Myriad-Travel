@@ -319,6 +319,7 @@
             <summary class="cursor-pointer text-sm font-black text-[#243131]">Submit booking request</summary>
             <form method="POST" action="/quote/?package_id={{ pkg.model.id }}" class="mt-4 space-y-3">
               {% csrf_token %}
+              {% include 'users/includes/antispam_fields.html' %}
               <input type="hidden" name="destination" value="Twende Chalbi - Northern Kenya" />
               <input type="hidden" name="preferred_travel_dates" value="10-14 December 2026" />
               <input type="hidden" name="number_of_travelers" id="chalbi-form-travelers" value="1" />

@@ -313,9 +313,13 @@ def _public_page_context(package_limit=None):
 
 def register(request):
     if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
+        form = UserRegisterForm(request.POST, request=request)
 
         if form.is_valid():
+            from .antispam import check_form_submission
+            if not check_form_submission(request, form.cleaned_data.get('email', '')):
+                form.add_error(None, 'We have received several requests recently. Please wait a little before trying again.')
+                return render(request, 'users/register.html', {'form': form})
             user = form.save(commit=False)  # Save the user object in memory
             user.is_active = False
 
@@ -337,7 +341,7 @@ def register(request):
             return redirect('users:success')
 
     else:
-        form = UserRegisterForm()
+        form = UserRegisterForm(request=request)
 
     return render(request, 'users/register.html', {'form': form})
 
@@ -380,8 +384,12 @@ def _service_inquiry(request, form_class, template_name, route_name, title):
     """Save once, notify over HTTPS, and redirect even if notification fails."""
     from .inquiry_email import send_service_inquiry_emails
 
-    form = form_class(request.POST if request.method == 'POST' else None)
+    form = form_class(request.POST if request.method == 'POST' else None, request=request)
     if request.method == 'POST' and form.is_valid():
+        from .antispam import check_form_submission
+        if not check_form_submission(request, form.cleaned_data.get('email', '')):
+            form.add_error(None, 'We have received several requests recently. Please wait a little before submitting again.')
+            return render(request, template_name, {'form': form})
         inquiry = form.save()
         sent = send_service_inquiry_emails(inquiry, form, title)
         if sent:
@@ -409,8 +417,31 @@ def holidays(request):
     return render(request, 'users/pages/packages.html', _public_page_context())
 
 def contactus(request):
-
-    return render(request, 'users/pages/contact.html')
+    if request.method == 'POST':
+        data = request.POST.copy()
+        data['phone_number'] = data.get('phone', '')
+        data['destination'] = data.get('subject') or 'General travel enquiry'
+        data['preferred_travel_dates'] = 'To be discussed'
+        data['number_of_travelers'] = '1'
+        data['special_requests'] = data.get('message', '')
+        form = QuoteRequestForm(data, request=request)
+        if form.is_valid():
+            from .antispam import check_form_submission
+            if not check_form_submission(request, form.cleaned_data.get('email', '')):
+                form.add_error(None, 'We have received several requests recently. Please wait a little before submitting again.')
+            else:
+                quote_request = form.save()
+                from users.tasks import send_quote_request_emails
+                result = send_quote_request_emails(quote_request.id)
+                if result.get('success'):
+                    messages.success(request, 'Thank you. Your request has been received. We will respond within 2 hours where possible and within 24 hours at the latest.')
+                else:
+                    messages.warning(request, 'Your request was saved, but the email notification could not be completed. Please do not resubmit.')
+                return redirect('users:contact')
+        messages.error(request, 'Please complete the security check and correct any highlighted fields.')
+    else:
+        form = None
+    return render(request, 'users/pages/contact.html', {'contact_form': form})
 
 
 def packages(request):
@@ -669,8 +700,12 @@ def careers(request):
 
     # Handle job application form submission
     if request.method == 'POST':
-        form = JobApplicationForm(request.POST, request.FILES)
+        form = JobApplicationForm(request.POST, request.FILES, request=request)
         if form.is_valid():
+            from .antispam import check_form_submission
+            if not check_form_submission(request, form.cleaned_data.get('email', '')):
+                form.add_error(None, 'We have received several requests recently. Please wait a little before submitting again.')
+                return render(request, 'users/careers.html', {'form': form, 'job_listings': job_listings})
             job_application = form.save()
 
             # Send email notifications
@@ -776,9 +811,16 @@ def newsletter_subscribe(request):
     from django.http import JsonResponse
 
     if request.method == 'POST':
-        form = NewsletterSubscriptionSimpleForm(request.POST)
+        form = NewsletterSubscriptionSimpleForm(request.POST, request=request)
         if form.is_valid():
             email = form.cleaned_data['email']
+            from .antispam import check_form_submission
+            if not check_form_submission(request, email):
+                error_message = 'Please wait a little before trying to subscribe again.'
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({'success': False, 'message': error_message}, status=429)
+                messages.warning(request, error_message)
+                return redirect(request.META.get('HTTP_REFERER') or 'users:users-home')
 
             # Create subscription with default preferences
             subscription = NewsletterSubscription.objects.create(
@@ -1404,8 +1446,12 @@ def quote_request_view(request):
             messages.warning(request, "The selected package is no longer available. You can still submit a general quote request.")
 
     if request.method == 'POST':
-        form = QuoteRequestForm(request.POST)
+        form = QuoteRequestForm(request.POST, request=request)
         if form.is_valid():
+            from .antispam import check_form_submission
+            if not check_form_submission(request, form.cleaned_data.get('email', '')):
+                form.add_error(None, 'We have received several requests recently. Please wait a little before submitting again.')
+                return render(request, 'users/quote_form.html', {'form': form, 'package': package})
             try:
                 # Create quote request
                 quote_request = form.save()

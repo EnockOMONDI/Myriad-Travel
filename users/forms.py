@@ -5,9 +5,10 @@ from django import forms
 from django.contrib.auth.models import User
 from .models import MICEInquiry, StudentTravelInquiry, NGOTravelInquiry, JobApplication, NewsletterSubscription, NewsletterSubscription, QuoteRequest, TripFeedback
 import re
+from .antispam import AntiSpamFormMixin
 
 
-class UserRegisterForm(UserCreationForm):
+class UserRegisterForm(AntiSpamFormMixin, UserCreationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Username', 'class': 'input-box'}), label='')
     first_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'First Name', 'class': 'input-box'}), label='')
     last_name = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Last Name', 'class': 'input-box'}), label='')
@@ -46,7 +47,7 @@ class UserBookingsForm(forms.ModelForm):
 
 
 
-class MICEInquiryForm(forms.ModelForm):
+class MICEInquiryForm(AntiSpamFormMixin, forms.ModelForm):
     class Meta:
         model = MICEInquiry
         fields = ['company_name', 'contact_person', 'email', 'phone_number',
@@ -62,7 +63,7 @@ class MICEInquiryForm(forms.ModelForm):
             })
 
 
-class StudentTravelInquiryForm(forms.ModelForm):
+class StudentTravelInquiryForm(AntiSpamFormMixin, forms.ModelForm):
     class Meta:
         model = StudentTravelInquiry
         fields = ['school_name', 'contact_person', 'email', 'phone_number',
@@ -78,7 +79,7 @@ class StudentTravelInquiryForm(forms.ModelForm):
             })
 
 
-class NGOTravelInquiryForm(forms.ModelForm):
+class NGOTravelInquiryForm(AntiSpamFormMixin, forms.ModelForm):
     class Meta:
         model = NGOTravelInquiry
         fields = ['organization_name', 'contact_person', 'email', 'phone_number',
@@ -100,7 +101,7 @@ class NGOTravelInquiryForm(forms.ModelForm):
                 })
 
 
-class JobApplicationForm(forms.ModelForm):
+class JobApplicationForm(AntiSpamFormMixin, forms.ModelForm):
     """Form for job applications on the careers page"""
 
     class Meta:
@@ -208,7 +209,7 @@ class JobApplicationForm(forms.ModelForm):
         return email
 
 
-class QuoteRequestForm(forms.ModelForm):
+class QuoteRequestForm(AntiSpamFormMixin, forms.ModelForm):
     """Form for quote requests submitted through the website"""
 
     class Meta:
@@ -374,7 +375,7 @@ class NewsletterSubscriptionForm(forms.ModelForm):
         return email
 
 
-class NewsletterSubscriptionSimpleForm(forms.Form):
+class NewsletterSubscriptionSimpleForm(AntiSpamFormMixin, forms.Form):
     """Simple form for footer newsletter subscription"""
 
     email = forms.EmailField(
