@@ -688,18 +688,19 @@ def destination_detail(request, slug):
 
 def package_detail(request, slug):
     package = get_object_or_404(
-        Package.objects.select_related('main_destination', 'category').prefetch_related('itinerary__days'),
+        Package.objects.select_related('main_destination', 'category').prefetch_related(
+            'itinerary__days',
+            'available_accommodations',
+            'available_travel_modes',
+            'gallery_images',
+        ),
         slug=slug,
         status=Package.PUBLISHED,
     )
     context = _public_page_context(package_limit=6)
     context['pkg'] = _package_presenter(package)
-    template_name = (
-        'users/pages/package_detail_chalbi.html'
-        if package.slug == 'twende-chalbi-4-nights-5-days'
-        else 'users/pages/package_detail.html'
-    )
-    return render(request, template_name, context)
+    context['package_has_gallery'] = any(image.is_visible for image in package.gallery_images.all())
+    return render(request, 'users/pages/package_detail.html', context)
 
 
 def package_gallery(request, slug):

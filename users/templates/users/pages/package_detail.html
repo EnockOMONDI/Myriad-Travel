@@ -2,390 +2,160 @@
 {% load static %}
 {% load currency_filters %}
 
-{% block title %}
-{{ pkg.title|default:"Safari Itinerary & Package Details" }} — Myriad Travel
-{% endblock %}
+{% block title %}{{ pkg.title }} - Myriad Travel{% endblock %}
+{% block site_navbar %}{% endblock %}
+{% block site_footer %}{% endblock %}
+{% block site_floating_widgets %}{% endblock %}
+{% block site_modals %}{% endblock %}
 
 {% block content %}
-<div class="bg-slate-50">
-<div class="py-8 sm:py-12 px-4 sm:px-8 max-w-7xl mx-auto space-y-8">
-  <!-- Breadcrumb -->
-  <nav class="flex items-center gap-2 text-xs text-slate-500">
-    <a href="/" class="hover:text-amber-700">Home</a>
-    <span>/</span>
-    <a href="/packages/" class="hover:text-amber-700">Packages</a>
-    <span>/</span>
-    <span class="text-slate-800 font-semibold truncate max-w-xs">{{ pkg.title|default:"Package Detail" }}</span>
-  </nav>
+<div class="bg-[#fbfaf7] text-[#23302f]">
+  <div class="bg-[#1f3031] text-white">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 text-xs sm:px-8">
+      <a href="/" class="font-semibold hover:text-[#f9b1aa]">Myriad Travel</a>
+      <a href="tel:+254712236522" class="hidden font-bold hover:underline sm:inline">+254 712 236 522</a>
+    </div>
+  </div>
 
-  <!-- Package Header Card -->
-  <div class="relative rounded-[2rem] overflow-hidden bg-slate-900 text-white min-h-[520px] flex flex-col justify-end p-6 sm:p-10 shadow-2xl border border-white">
-    <img 
-      src="{{ pkg.featured_image|default:'https://images.unsplash.com/photo-1516426122078-c23e76319801?q=80&w=1200&auto=format&fit=crop' }}" 
-      alt="{{ pkg.title }}" 
-      class="absolute inset-0 w-full h-full object-cover opacity-85"
-    />
-    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/65 to-slate-950/10"></div>
-
-    <div class="relative z-10 grid lg:grid-cols-[1fr_320px] gap-8 items-end">
-    <div class="space-y-4 max-w-4xl">
-      <div class="flex flex-wrap items-center gap-2 text-xs">
-        {% if pkg.special_offer %}
-        <span class="px-3 py-1 bg-emerald-600 text-white font-bold rounded-full">
-          {{ pkg.special_offer.label }}
-        </span>
-        {% endif %}
-        <span class="px-3 py-1 bg-amber-600 text-white font-bold rounded-full">
-          {{ pkg.category }}
-        </span>
-        <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full">
-          {{ pkg.region_label }}
-        </span>
-        <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full flex items-center gap-1">
-          <i data-lucide="clock" class="w-3.5 h-3.5"></i>
-          <span>{{ pkg.duration|default:"4 Days / 3 Nights" }}</span>
-        </span>
-        {% if pkg.special_offer.date %}
-        <span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full flex items-center gap-1">
-          <i data-lucide="calendar-days" class="w-3.5 h-3.5"></i>
-          <span>{{ pkg.special_offer.date }}</span>
-        </span>
-        {% endif %}
-      </div>
-
-      <h1 class="text-2xl sm:text-4xl font-bold font-serif leading-tight">
-        {{ pkg.title }}
-      </h1>
-
-      <p class="text-xs sm:text-sm text-slate-200 leading-relaxed">
-        {{ pkg.subtitle }}
-      </p>
-
-      <div class="flex flex-wrap items-center gap-4 text-xs text-amber-300 pt-2">
-        <span class="flex items-center gap-1.5 font-medium">
-          <i data-lucide="map-pin" class="w-4 h-4"></i>
-          <span>{{ pkg.destination }}</span>
-        </span>
-        <span class="flex items-center gap-1.5 font-semibold text-white">
-          <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-400"></i>
-          <span>{{ pkg.rating|default:"4.9" }} ({{ pkg.reviews_count|default:"0" }} traveller reviews)</span>
-        </span>
-      </div>
-
-      {% if pkg.special_offer %}
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-3 text-[11px] text-white">
-        <div class="rounded-xl border border-white/15 bg-white/10 px-3 py-2 backdrop-blur-sm">
-          <span class="block font-bold text-amber-200">Departure</span>
-          <span>{{ pkg.special_offer.departure }}</span>
-        </div>
-        <div class="rounded-xl border border-white/15 bg-white/10 px-3 py-2 backdrop-blur-sm">
-          <span class="block font-bold text-amber-200">Return</span>
-          <span>{{ pkg.special_offer.return }}</span>
-        </div>
-      </div>
-      {% endif %}
+  <section id="overview" class="mx-auto max-w-7xl px-5 py-8 sm:px-8 sm:py-12">
+    <div class="mb-8 flex items-center justify-between gap-6">
+      <a href="/" class="block" aria-label="Myriad Travel home"><img src="{% static 'images/myriad-logo.png' %}" alt="Myriad Travel" class="h-14 w-auto object-contain" /></a>
+      <nav class="hidden items-center gap-8 text-sm font-semibold text-[#243131] md:flex">
+        <a href="#overview" class="hover:text-[#eb3728]">Overview</a>
+        {% if pkg.itinerary %}<a href="#itinerary" class="hover:text-[#eb3728]">Itinerary</a>{% endif %}
+        {% if pkg.inclusions or pkg.exclusions %}<a href="#included" class="hover:text-[#eb3728]">Inclusions</a>{% endif %}
+      </nav>
+      <a href="#booking" class="inline-flex items-center gap-2 rounded-md border border-[#d8dedb] bg-white px-5 py-3 text-sm font-semibold text-[#243131] shadow-sm transition hover:border-[#eb3728]">Request a quote <span aria-hidden="true">↗</span></a>
     </div>
 
-    <aside class="rounded-3xl border border-white/15 bg-white/10 p-5 backdrop-blur-md shadow-2xl space-y-4">
+    <div class="mb-8 flex flex-wrap items-center gap-3 text-sm text-[#66736f]">
+      <a href="/" class="hover:text-[#eb3728]">Home</a><span>/</span>
+      {% if pkg.destination %}<a href="/destinations/{{ pkg.model.main_destination.slug }}/" class="hover:text-[#eb3728]">{{ pkg.destination }}</a><span>/</span>{% endif %}
+      <span class="font-medium text-[#243131]">{{ pkg.title }}</span>
+    </div>
+
+    <div class="grid gap-8 lg:grid-cols-[1fr_300px] lg:items-end">
       <div>
-        <span class="text-[11px] uppercase tracking-wider font-bold text-amber-200">From</span>
-        <div class="text-3xl font-black text-white" data-price-kes="{{ pkg.price_kes|default:68500 }}" data-price-usd="{{ pkg.price_usd|default:680 }}">
-          {{ pkg.price_kes|default:68500|kes_format }}
+        <div class="mb-5 flex flex-wrap items-center gap-3 text-[11px] font-black uppercase tracking-[0.22em] text-[#1ca297]">
+          {% if pkg.special_offer %}<span class="bg-[#e9f5f3] px-3 py-2 text-[#12645d]">{{ pkg.special_offer.label }}</span>{% endif %}
+          <span>{{ pkg.category }}</span>
         </div>
-        <p class="text-xs text-slate-200">per person sharing</p>
+        <h1 class="max-w-3xl font-serif text-5xl font-black leading-[0.95] tracking-[-0.04em] text-[#23302f] sm:text-7xl">{{ pkg.title }}</h1>
+        {% if pkg.subtitle %}<p class="mt-5 max-w-2xl text-base font-semibold text-[#66736f] sm:text-lg">{{ pkg.subtitle }}</p>{% endif %}
       </div>
-      <div class="grid grid-cols-2 gap-2 text-xs">
-        <div class="rounded-2xl bg-white/10 px-3 py-2">
-          <span class="block text-slate-300">Duration</span>
-          <strong>{{ pkg.duration }}</strong>
-        </div>
-        <div class="rounded-2xl bg-white/10 px-3 py-2">
-          <span class="block text-slate-300">Best For</span>
-          <strong class="line-clamp-2">{{ pkg.best_for }}</strong>
-        </div>
-      </div>
-      <a href="#booking-request" class="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-amber-500 px-4 py-3 text-xs font-bold text-slate-950 hover:bg-amber-400 transition-colors">
-        <i data-lucide="send" class="w-4 h-4"></i>
-        <span>Request This Trip</span>
-      </a>
-    </aside>
-    </div>
-  </div>
-
-  <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
-    <div class="rounded-2xl bg-white border border-slate-200 p-4 shadow-xs">
-      <span class="text-[11px] uppercase font-bold text-slate-500">Destination</span>
-      <p class="text-sm font-bold text-slate-900 mt-1">{{ pkg.destination }}</p>
-    </div>
-    <div class="rounded-2xl bg-white border border-slate-200 p-4 shadow-xs">
-      <span class="text-[11px] uppercase font-bold text-slate-500">Duration</span>
-      <p class="text-sm font-bold text-slate-900 mt-1">{{ pkg.duration }}</p>
-    </div>
-    <div class="rounded-2xl bg-white border border-slate-200 p-4 shadow-xs">
-      <span class="text-[11px] uppercase font-bold text-slate-500">Sharing Rate</span>
-      <p class="text-sm font-bold text-slate-900 mt-1">{{ pkg.price_kes|default:68500|kes_format }}</p>
-    </div>
-    <div class="rounded-2xl bg-white border border-slate-200 p-4 shadow-xs">
-      <span class="text-[11px] uppercase font-bold text-slate-500">Route / Focus</span>
-      <p class="text-sm font-bold text-slate-900 mt-1">{{ pkg.route_summary }}</p>
-    </div>
-  </div>
-
-  <!-- Main Grid: Left Details & Right Booking Card -->
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-    <!-- Left Column (8 cols) -->
-    <div class="lg:col-span-8 space-y-8">
-      <!-- Highlights Box -->
-      <div class="bg-white p-6 rounded-3xl border border-amber-200/70 space-y-4 shadow-xs">
-        <h3 class="text-sm font-bold uppercase text-amber-900 tracking-wider flex items-center gap-2">
-          <i data-lucide="sparkles" class="w-4 h-4 text-amber-600"></i>
-          <span>Why This Trip Works</span>
-        </h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-700">
-          {% for hl in pkg.highlights %}
-          <div class="flex items-start gap-2">
-            <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
-            <span>{{ hl }}</span>
-          </div>
-          {% endfor %}
-          {% if not pkg.highlights %}
-          <div class="sm:col-span-2 rounded-2xl border border-dashed border-amber-300 bg-amber-50/70 p-4 text-sm text-amber-950">
-            This package is published and ready for enquiries. The Myriad team can use admin to add public highlights, hotel notes and itinerary selling points for an even stronger detail page.
-          </div>
-          {% endif %}
-        </div>
-      </div>
-
-      <div class="bg-white p-6 rounded-3xl border border-slate-200/80 space-y-4 shadow-xs">
-        <h3 class="text-sm font-bold uppercase text-slate-800 tracking-wider flex items-center gap-2">
-          <i data-lucide="compass" class="w-4 h-4 text-amber-600"></i>
-          <span>Experience Snapshot</span>
-        </h3>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-700">
-          <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4">
-            <span class="block text-[11px] uppercase font-bold text-slate-500">Travel Style</span>
-            <strong class="block mt-1 text-slate-950">{{ pkg.best_for }}</strong>
-          </div>
-          <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4">
-            <span class="block text-[11px] uppercase font-bold text-slate-500">Transport</span>
-            <strong class="block mt-1 text-slate-950">
-              {% if pkg.transport_modes %}{{ pkg.transport_modes|join:", " }}{% else %}Confirmed during booking{% endif %}
-            </strong>
-          </div>
-          <div class="rounded-2xl bg-slate-50 border border-slate-200 p-4">
-            <span class="block text-[11px] uppercase font-bold text-slate-500">Stay Plan</span>
-            <strong class="block mt-1 text-slate-950">
-              {% if pkg.accommodations %}{{ pkg.accommodations|join:", " }}{% else %}Matched to availability{% endif %}
-            </strong>
-          </div>
-        </div>
-      </div>
-
-      <!-- Day-by-Day Program -->
-      <div class="space-y-5">
-        <div class="flex items-end justify-between gap-4">
-          <div>
-            <span class="text-[11px] uppercase tracking-wider font-bold text-amber-700">The Route</span>
-            <h2 class="text-2xl font-bold font-serif text-slate-900">Day-by-Day Plan</h2>
-          </div>
-        </div>
-        <div class="relative border-l-2 border-amber-200/80 ml-3 pl-6 space-y-6">
-          {% for day in pkg.itinerary %}
-          <div class="relative group">
-            <span class="absolute -left-[32px] top-5 w-7 h-7 rounded-full bg-slate-950 text-white text-[11px] font-bold flex items-center justify-center shadow-xs ring-4 ring-slate-50">
-              {{ day.day }}
-            </span>
-            <div class="space-y-3 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
-              <div class="flex flex-wrap items-center justify-between gap-2">
-                <h4 class="text-sm font-bold text-slate-900">Day {{ day.day }}: {{ day.title }}</h4>
-                {% if day.meals %}
-                <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700 bg-amber-100/70 px-2 py-1 rounded-md">
-                  <i data-lucide="utensils" class="w-3 h-3"></i>
-                  <span>Meals: {{ day.meals }}</span>
-                </span>
-                {% endif %}
-              </div>
-              <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">{{ day.description }}</p>
-              {% if day.stay %}
-              <div class="inline-flex items-center gap-1.5 text-[11px] text-slate-500 font-medium pt-1">
-                <i data-lucide="bed" class="w-3.5 h-3.5"></i>
-                <span><strong>Stay:</strong> {{ day.stay }}</span>
-              </div>
-              {% endif %}
-            </div>
-          </div>
-          {% empty %}
-          <div class="rounded-3xl bg-white border border-dashed border-slate-300 p-6 shadow-xs">
-            <h4 class="text-base font-bold text-slate-950">Detailed itinerary pending final supplier confirmation</h4>
-            <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-              Myriad Travel will confirm the day-by-day routing, hotel allocation, transport timings and activity order before booking. Admin can add itinerary days to make this page fully self-serve.
-            </p>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-
-      <!-- Inclusions & Exclusions -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <div class="bg-white p-5 rounded-3xl border border-emerald-200 space-y-3 shadow-xs">
-          <h3 class="text-sm font-bold text-emerald-900 flex items-center gap-2">
-            <i data-lucide="check" class="w-4 h-4 text-emerald-600"></i>
-            <span>Included in Rate</span>
-          </h3>
-          <ul class="space-y-2 text-xs text-slate-700">
-            {% for inc in pkg.inclusions %}
-            <li class="flex items-start gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 mt-1.5 shrink-0"></span>
-              <span>{{ inc }}</span>
-            </li>
-            {% empty %}
-            <li class="flex items-start gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 mt-1.5 shrink-0"></span>
-              <span>Final inclusions are confirmed by the Myriad team before payment.</span>
-            </li>
-            {% endfor %}
-          </ul>
-        </div>
-
-        <div class="bg-white p-5 rounded-3xl border border-rose-200 space-y-3 shadow-xs">
-          <h3 class="text-sm font-bold text-rose-900 flex items-center gap-2">
-            <i data-lucide="x-circle" class="w-4 h-4 text-rose-600"></i>
-            <span>Excluded from Rate</span>
-          </h3>
-          <ul class="space-y-2 text-xs text-slate-700">
-            {% for exc in pkg.exclusions %}
-            <li class="flex items-start gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0"></span>
-              <span>{{ exc }}</span>
-            </li>
-            {% empty %}
-            <li class="flex items-start gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0"></span>
-              <span>Any exclusions, optional extras and supplier conditions are confirmed in the official quote.</span>
-            </li>
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
-
-      {% if pkg.special_offer %}
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs space-y-3">
-          <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-            <i data-lucide="route" class="w-4 h-4 text-amber-600"></i>
-            <span>Travel Notes</span>
-          </h3>
-          <ul class="space-y-2 text-xs text-slate-700">
-            {% for note in pkg.special_offer.notes %}
-            <li class="flex items-start gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-amber-600 mt-1.5 shrink-0"></span>
-              <span>{{ note }}</span>
-            </li>
-            {% endfor %}
-          </ul>
-        </div>
-
-        <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs space-y-3">
-          <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-            <i data-lucide="backpack" class="w-4 h-4 text-amber-600"></i>
-            <span>Packing List</span>
-          </h3>
-          <ul class="space-y-2 text-xs text-slate-700">
-            {% for item in pkg.special_offer.packing_list %}
-            <li class="flex items-start gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 mt-1.5 shrink-0"></span>
-              <span>{{ item }}</span>
-            </li>
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
-      {% endif %}
-    </div>
-
-    <!-- Right Column: Booking / Enquiry Form (4 cols) -->
-    <div class="lg:col-span-4 space-y-6">
-      <div id="booking-request" class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xl space-y-5 sticky top-24">
-        <div class="rounded-2xl bg-slate-950 text-white px-4 py-3">
-          <h3 class="text-sm font-bold">Request This Package</h3>
-          <p class="text-xs text-slate-300 mt-1">Myriad Travel will confirm availability, rooming and final booking steps.</p>
-        </div>
-        <div class="space-y-1">
-          <span class="text-[11px] text-slate-500 uppercase font-bold block">Starting From</span>
-          <div class="text-2xl sm:text-3xl font-bold text-slate-900" data-price-kes="{{ pkg.price_kes|default:68500 }}" data-price-usd="{{ pkg.price_usd|default:680 }}">
-            {{ pkg.price_kes|default:68500|kes_format }}
-          </div>
-          <span class="text-xs text-slate-500 block">per person sharing</span>
-          {% if pkg.special_offer.single_occupancy_price %}
-          <div class="mt-3 rounded-xl bg-slate-50 border border-slate-200 px-3 py-2 text-xs text-slate-700">
-            <div class="flex items-center justify-between gap-3">
-              <span>Single occupancy</span>
-              <strong class="text-slate-900">{{ pkg.special_offer.single_occupancy_price|kes_format }}</strong>
-            </div>
-          </div>
-          {% endif %}
-          {% if pkg.child_price_kes %}
-          <div class="rounded-xl bg-amber-50 border border-amber-200 px-3 py-2 text-xs text-amber-900">
-            <div class="flex items-center justify-between gap-3">
-              <span>Child rate</span>
-              <strong>{{ pkg.child_price_kes|kes_format }}</strong>
-            </div>
-          </div>
-          {% endif %}
-        </div>
-
-        <!-- Django POST Booking Form -->
-        <form method="POST" action="/quote/?package_id={{ pkg.model.id }}" class="space-y-3">
-          {% include 'users/includes/antispam_fields.html' %}
-          {% csrf_token %}
-          <input type="hidden" name="destination" value="{{ pkg.title }} - {{ pkg.destination }}" />
-          <input type="hidden" name="number_of_travelers" value="1" />
-
-          <div class="space-y-1">
-            <label class="text-[11px] font-bold text-slate-600 uppercase">Your Name *</label>
-            <input type="text" name="full_name" required placeholder="Your full name" class="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500" />
-          </div>
-
-          <div class="space-y-1">
-            <label class="text-[11px] font-bold text-slate-600 uppercase">Phone / WhatsApp *</label>
-            <input type="tel" name="phone_number" required placeholder="+254 712 345 678" class="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500" />
-          </div>
-
-          <div class="space-y-1">
-            <label class="text-[11px] font-bold text-slate-600 uppercase">Email Address *</label>
-            <input type="email" name="email" required placeholder="you@example.com" class="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500" />
-          </div>
-
-          <div class="space-y-1">
-            <label class="text-[11px] font-bold text-slate-600 uppercase">Travel Date</label>
-            <input type="date" name="preferred_travel_dates" required class="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500" />
-          </div>
-
-          <div class="space-y-1">
-            <label class="text-[11px] font-bold text-slate-600 uppercase">Notes / Preferences</label>
-            <textarea name="special_requests" rows="3" placeholder="Rooming, child ages, dietary needs, transport preference or hotel notes." class="w-full p-2.5 text-xs border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
-          </div>
-
-          <button
-            type="submit"
-            class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-2xl shadow-xs transition-colors cursor-pointer"
-          >
-            Submit Booking Request
-          </button>
-
-          <a
-            href="https://wa.me/{{ company.contacts.whatsapp|default:'254712236522' }}?text=Hello%20Myriad%20Travel,%20I%20am%20interested%20in%20booking%20{{ pkg.title|default:'Safari'|urlencode }}."
-            target="_blank"
-            rel="noopener noreferrer"
-            class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-2xl transition-colors flex items-center justify-center gap-2 text-center"
-          >
-            <i data-lucide="send" class="w-3.5 h-3.5"></i>
-            <span>WhatsApp Specialist</span>
-          </a>
-        </form>
+      <div class="flex flex-col gap-3 sm:flex-row">
+        <button type="button" class="package-share-btn inline-flex items-center justify-center gap-2 rounded-md border border-[#cbd8d2] bg-white px-5 py-4 text-sm font-bold text-[#12645d] shadow-sm transition hover:border-[#1ca297]"><i data-lucide="share-2" class="h-4 w-4"></i><span>Share on WhatsApp</span></button>
+        {% if package_has_gallery %}<a href="/packages/{{ pkg.slug }}/gallery/" class="inline-flex items-center justify-center gap-2 rounded-md bg-[#1f3031] px-5 py-4 text-sm font-bold text-white shadow-sm transition hover:bg-[#12645d]"><i data-lucide="images" class="h-4 w-4"></i><span>Trip Gallery</span></a>{% endif %}
       </div>
     </div>
-  </div>
+
+    <div class="relative mt-8 overflow-hidden rounded-lg bg-[#1f3031] shadow-sm">
+      <img src="{{ pkg.hero_image|default:pkg.featured_image }}" alt="{{ pkg.title }}" class="h-[330px] w-full object-cover sm:h-[430px] lg:h-[500px]" />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-black/5 to-transparent"></div>
+      {% if pkg.special_offer.date %}<div class="absolute right-6 top-6 rounded-sm bg-white/95 px-6 py-5 text-center shadow-sm"><div class="font-serif text-xl font-black text-[#23302f]">{{ pkg.special_offer.date }}</div></div>{% endif %}
+    </div>
+
+    <dl class="grid border-b border-[#dce3df] border-t border-[#dce3df] py-7 sm:grid-cols-2 lg:grid-cols-4">
+      {% if pkg.special_offer.date %}<div class="border-[#dce3df] py-3 sm:border-r sm:px-6 lg:pl-0"><dt class="text-[11px] font-black uppercase tracking-[0.2em] text-[#8a9692]">When</dt><dd class="mt-2 text-lg font-black text-[#243131]">{{ pkg.special_offer.date }}</dd></div>{% endif %}
+      <div class="border-[#dce3df] py-3 sm:px-6 {% if pkg.special_offer.date %}lg:border-r{% else %}sm:border-r lg:pl-0{% endif %}"><dt class="text-[11px] font-black uppercase tracking-[0.2em] text-[#8a9692]">How long</dt><dd class="mt-2 text-lg font-black text-[#243131]">{{ pkg.duration }}</dd></div>
+      <div class="border-[#dce3df] py-3 sm:border-r sm:px-6"><dt class="text-[11px] font-black uppercase tracking-[0.2em] text-[#8a9692]">Destination</dt><dd class="mt-2 text-lg font-black text-[#243131]">{{ pkg.destination }}</dd></div>
+      {% if pkg.transport_modes %}<div class="py-3 sm:px-6 lg:pr-0"><dt class="text-[11px] font-black uppercase tracking-[0.2em] text-[#8a9692]">Getting there</dt><dd class="mt-2 text-lg font-black text-[#243131]">{{ pkg.transport_modes|join:", " }}</dd></div>{% endif %}
+    </dl>
+
+    <div class="mt-8 grid gap-10 lg:grid-cols-[1fr_350px] lg:items-start">
+      <main class="min-w-0">
+        <nav class="sticky top-0 z-10 mb-10 flex gap-6 overflow-x-auto border-b border-[#dce3df] bg-[#fbfaf7]/95 py-4 text-sm font-bold text-[#243131] backdrop-blur">
+          <a href="#highlights" class="text-[#eb3728]">Overview</a>
+          {% if pkg.itinerary %}<a href="#itinerary" class="hover:text-[#eb3728]">Itinerary</a>{% endif %}
+          {% if pkg.inclusions or pkg.exclusions %}<a href="#included" class="hover:text-[#eb3728]">Inclusions</a>{% endif %}
+          {% if pkg.special_offer.before_faqs %}<a href="#before" class="hover:text-[#eb3728]">Good to know</a>{% endif %}
+        </nav>
+
+        <section id="highlights" class="scroll-mt-24">
+          <p class="text-[12px] font-black uppercase tracking-[0.24em] text-[#1ca297]">{{ pkg.category }}</p>
+          <div class="mt-4 max-w-3xl text-base leading-8 text-[#66736f]">{{ pkg.description|safe }}</div>
+          {% if pkg.highlights %}<div class="mt-10 grid gap-5 md:grid-cols-3">{% for highlight in pkg.highlights %}<article class="border-t border-[#dce3df] pt-6"><div class="text-sm font-black text-[#eb3728]">{{ forloop.counter|stringformat:"02d" }}</div><p class="mt-3 text-sm leading-6 text-[#66736f]">{{ highlight }}</p></article>{% endfor %}</div>{% endif %}
+        </section>
+
+        {% if pkg.itinerary %}<section id="itinerary" class="mt-16 scroll-mt-24">
+          <div class="flex items-end justify-between gap-6"><div><p class="text-[12px] font-black uppercase tracking-[0.24em] text-[#1ca297]">Your itinerary</p><h2 class="mt-4 font-serif text-4xl font-black tracking-[-0.03em] text-[#23302f] sm:text-5xl">Day by day.</h2></div><button type="button" class="expand-all-btn hidden text-sm font-semibold text-[#eb3728] underline sm:block">Expand all</button></div>
+          <div class="mt-8 border-t border-[#dce3df]">{% for day in pkg.itinerary %}<article class="package-accordion border-b border-[#dce3df]" data-open="{% if forloop.first %}true{% else %}false{% endif %}"><button type="button" class="package-accordion-btn flex w-full gap-6 py-7 text-left"><div class="w-14 shrink-0 text-center"><div class="font-serif text-3xl font-black text-[#8a9692]">{{ day.day|stringformat:"02d" }}</div><div class="text-[10px] font-black uppercase tracking-[0.18em] text-[#8a9692]">Day</div></div><div class="min-w-0 flex-1">{% if day.date or day.theme %}<p class="text-[11px] font-black uppercase tracking-[0.22em] text-[#1ca297]">{{ day.date }}{% if day.date and day.theme %} - {% endif %}{{ day.theme }}</p>{% endif %}<h3 class="mt-2 text-xl font-black text-[#243131]">{{ day.title }}</h3>{% if day.summary %}<p class="mt-1 text-sm font-semibold text-[#66736f]">{{ day.summary }}</p>{% endif %}<div class="package-accordion-panel mt-6 text-base leading-8 text-[#66736f] {% if not forloop.first %}hidden{% endif %}"><p>{{ day.description }}</p>{% if day.overnight or day.meals %}<p class="mt-4 inline-block bg-[#e9f5f3] px-3 py-2 text-xs font-semibold text-[#12645d]">{% if day.overnight %}Overnight: {{ day.overnight }}{% endif %}{% if day.overnight and day.meals %} - {% endif %}{{ day.meals }}</p>{% endif %}</div></div><span class="package-accordion-icon mt-4 text-2xl font-bold text-[#eb3728]">{% if forloop.first %}-{% else %}+{% endif %}</span></button></article>{% endfor %}</div>
+        </section>{% endif %}
+
+        {% if pkg.inclusions or pkg.exclusions %}<section id="included" class="mt-16 scroll-mt-24"><p class="text-[12px] font-black uppercase tracking-[0.24em] text-[#1ca297]">Booking details</p><h2 class="mt-4 font-serif text-4xl font-black tracking-[-0.03em] text-[#23302f] sm:text-5xl">What's included.</h2><div class="mt-8 grid gap-5 md:grid-cols-2">{% if pkg.inclusions %}<div class="rounded-sm border border-[#dce3df] bg-white p-6"><h3 class="text-lg font-black text-[#243131]">Included in your trip</h3><ul class="mt-5 space-y-3 text-sm leading-6 text-[#66736f]">{% for inc in pkg.inclusions %}<li class="flex gap-3"><span class="text-[#1ca297]">•</span><span>{{ inc }}</span></li>{% endfor %}</ul></div>{% endif %}{% if pkg.exclusions %}<div class="rounded-sm border border-[#dce3df] bg-white p-6"><h3 class="text-lg font-black text-[#243131]">Plan for separately</h3><ul class="mt-5 space-y-3 text-sm leading-6 text-[#66736f]">{% for exc in pkg.exclusions %}<li class="flex gap-3"><span class="text-[#eb3728]">•</span><span>{{ exc }}</span></li>{% endfor %}</ul></div>{% endif %}</div></section>{% endif %}
+
+        {% if pkg.special_offer.before_faqs %}<section id="before" class="mt-16 scroll-mt-24"><p class="text-[12px] font-black uppercase tracking-[0.24em] text-[#1ca297]">Good to know</p><div class="mt-8 border-t border-[#dce3df]">{% for faq in pkg.special_offer.before_faqs %}<article class="package-accordion border-b border-[#dce3df]" data-open="false"><button type="button" class="package-accordion-btn flex w-full items-center justify-between gap-5 py-5 text-left"><h3 class="text-lg font-black text-[#243131]">{{ faq.question }}</h3><span class="package-accordion-icon text-2xl font-bold text-[#eb3728]">+</span></button><div class="package-accordion-panel hidden pb-6 text-sm leading-7 text-[#66736f]"><p>{{ faq.answer }}</p></div></article>{% endfor %}</div></section>{% endif %}
+      </main>
+
+      <aside id="booking" class="lg:sticky lg:top-8">
+        <div class="rounded-lg border border-[#dce3df] bg-white p-7 shadow-[0_18px_55px_rgba(31,48,49,0.08)]">
+          <p class="text-[11px] font-black uppercase tracking-[0.24em] text-[#1ca297]">Request this package</p>
+          <div class="mt-6"><span class="text-sm text-[#66736f]">From</span><div class="mt-1 text-4xl font-black tracking-[-0.04em] text-[#23302f]">{{ pkg.price_kes|kes_format }}</div><p class="mt-1 text-sm font-semibold text-[#66736f]">per adult sharing</p></div>
+          <div class="mt-7 rounded-sm bg-[#e9f5f3] p-5 text-[#243131]"><div class="flex items-start gap-3"><i data-lucide="calendar-days" class="mt-0.5 h-4 w-4 text-[#1ca297]"></i><div>{% if pkg.special_offer.date %}<p class="font-black">{{ pkg.special_offer.date }}</p>{% else %}<p class="font-black">Travel dates on request</p>{% endif %}<p class="mt-1 text-sm font-semibold text-[#66736f]">{{ pkg.duration }}</p></div></div></div>
+
+          <form id="package-enquiry-form" method="POST" action="/quote/?package_id={{ pkg.model.id }}" class="mt-6 space-y-4">
+            {% csrf_token %}{% include 'users/includes/antispam_fields.html' %}
+            <input type="hidden" name="destination" value="{{ pkg.title }} - {{ pkg.destination }}" />
+            <input type="hidden" name="number_of_travelers" id="package-form-travelers" value="1" />
+            <input type="hidden" name="special_requests" id="package-form-notes" value="" />
+            <label for="package-room" class="block text-sm font-black text-[#243131]">Your room preference</label>
+            <select id="package-room" class="w-full rounded-sm border border-[#dce3df] bg-white px-4 py-4 text-sm font-semibold text-[#243131]"><option value="sharing" data-price="{{ pkg.price_kes }}">Sharing - {{ pkg.price_kes|kes_format }} / adult</option>{% if pkg.single_price_kes %}<option value="single" data-price="{{ pkg.single_price_kes }}">Single - {{ pkg.single_price_kes|kes_format }} / adult</option>{% endif %}</select>
+            <div class="grid grid-cols-2 gap-3"><label class="text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Adults<input id="package-adults" type="number" min="1" max="20" value="1" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" /></label><label class="text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Children<input id="package-children" type="number" min="0" max="20" value="0" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" /></label></div>
+            {% if pkg.special_offer.date %}<input type="hidden" name="preferred_travel_dates" value="{{ pkg.special_offer.date }}" />{% else %}<label class="block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Preferred travel dates *<input id="package-dates" name="preferred_travel_dates" required placeholder="e.g. 12-16 August 2027" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" /></label>{% endif %}
+            <label class="block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Your name *<input id="package-name" type="text" name="full_name" required placeholder="Your full name" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" /></label>
+            <label class="block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Phone / WhatsApp *<input id="package-phone" type="tel" name="phone_number" required placeholder="+254 712 345 678" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" /></label>
+            <label class="block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Email *<input type="email" name="email" required placeholder="you@example.com" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" /></label>
+            <label class="block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Notes <textarea id="package-extra-notes" rows="3" placeholder="Rooming, child ages, dietary needs or pickup notes" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]"></textarea></label>
+            <div class="mt-5 border-t border-[#dce3df] pt-5"><div class="flex items-center justify-between"><span class="text-sm text-[#243131]">Adult trip estimate</span><strong id="package-estimate" class="text-xl font-black text-[#243131]">{{ pkg.price_kes|kes_format }}</strong></div></div>
+            <button type="button" id="package-whatsapp" class="mt-2 flex w-full items-center justify-center rounded-md bg-[#1ca297] px-5 py-4 text-sm font-black text-white transition hover:bg-[#12645d]">Send via WhatsApp</button>
+            <button type="submit" class="flex w-full items-center justify-center rounded-md bg-[#1f3031] px-5 py-4 text-sm font-black text-white transition hover:bg-[#162526]">Send via Email</button>
+          </form>
+          <p class="mt-4 text-center text-xs font-semibold text-[#8a9692]">No payment now. Availability is confirmed by our team.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <footer class="border-t border-[#dce3df] bg-white"><div class="mx-auto grid max-w-7xl gap-6 px-5 py-10 sm:px-8 md:grid-cols-[220px_1fr] md:items-center"><img src="{% static 'images/myriad-logo.png' %}" alt="Myriad Travel" class="h-20 w-auto object-contain" /><div><p class="text-sm text-[#66736f]">Nairobi, Kenya - <a href="mailto:info@myriad-travel.com" class="font-semibold hover:text-[#eb3728]">info@myriad-travel.com</a> - <a href="tel:+254712236522" class="font-semibold hover:text-[#eb3728]">+254 712 236 522</a></p><p class="mt-3 text-xs text-[#8a9692]">© 2026 Myriad Travel</p></div></div></footer>
 </div>
-</div>
+
+<script>
+  (function () {
+    const room = document.getElementById('package-room');
+    const adults = document.getElementById('package-adults');
+    const children = document.getElementById('package-children');
+    const dates = document.getElementById('package-dates');
+    const notes = document.getElementById('package-extra-notes');
+    const formTravelers = document.getElementById('package-form-travelers');
+    const formNotes = document.getElementById('package-form-notes');
+    const estimate = document.getElementById('package-estimate');
+    const whatsapp = document.getElementById('package-whatsapp');
+    const whatsappPhone = '{{ company.contacts.whatsapp|default:"254712236522" }}';
+    const packageTitle = '{{ pkg.title|escapejs }}';
+    const packageDates = '{{ pkg.special_offer.date|default:""|escapejs }}';
+    const formatKes = (value) => new Intl.NumberFormat('en-KE', {style: 'currency', currency: 'KES', maximumFractionDigits: 0}).format(value).replace('KES', 'KSh');
+    const count = (input, minimum) => Math.max(minimum, Math.min(20, Number(input && input.value || minimum) || minimum));
+    const selectedPrice = () => Number(room && room.options[room.selectedIndex].dataset.price || {{ pkg.price_kes|default:0 }});
+    const roomLabel = () => room ? room.options[room.selectedIndex].text.replace(/\s+/g, ' ').trim() : 'Sharing';
+    const travelDates = () => packageDates || (dates && dates.value.trim()) || 'Dates to be confirmed';
+    function summary() {
+      const adultCount = count(adults, 1), childCount = count(children, 0);
+      return ['Hello Myriad Travel, I would like to enquire about ' + packageTitle + '.', '', 'Package: ' + packageTitle, 'Travel dates: ' + travelDates(), 'Adults: ' + adultCount, 'Children: ' + childCount, 'Total pax: ' + (adultCount + childCount), 'Room preference: ' + roomLabel(), 'Adult trip estimate: ' + formatKes(selectedPrice() * adultCount), 'Page: ' + window.location.href].join('\n');
+    }
+    function sync() {
+      const adultCount = count(adults, 1), childCount = count(children, 0);
+      if (adults) adults.value = adultCount;
+      if (children) children.value = childCount;
+      if (estimate) estimate.textContent = formatKes(selectedPrice() * adultCount);
+      if (formTravelers) formTravelers.value = adultCount + childCount;
+      if (formNotes) formNotes.value = summary() + (notes && notes.value.trim() ? '\n\nClient notes: ' + notes.value.trim() : '');
+    }
+    [room, adults, children, dates, notes].filter(Boolean).forEach((input) => input.addEventListener('input', sync));
+    if (whatsapp) whatsapp.addEventListener('click', () => { sync(); window.open('https://wa.me/' + whatsappPhone + '?text=' + encodeURIComponent(summary()), '_blank', 'noopener,noreferrer'); });
+    document.querySelectorAll('.package-accordion-btn').forEach((button) => button.addEventListener('click', () => { const item = button.closest('.package-accordion'), panel = item.querySelector('.package-accordion-panel'), icon = item.querySelector('.package-accordion-icon'), open = item.dataset.open === 'true'; item.dataset.open = open ? 'false' : 'true'; panel.classList.toggle('hidden', open); icon.textContent = open ? '+' : '-'; }));
+    document.querySelectorAll('.expand-all-btn').forEach((button) => button.addEventListener('click', () => document.querySelectorAll('.package-accordion').forEach((item) => { item.dataset.open = 'true'; item.querySelector('.package-accordion-panel').classList.remove('hidden'); item.querySelector('.package-accordion-icon').textContent = '-'; })));
+    document.querySelectorAll('.package-share-btn').forEach((button) => button.addEventListener('click', () => window.open('https://wa.me/?text=' + encodeURIComponent(packageTitle + ' with Myriad Travel. ' + window.location.href), '_blank', 'noopener,noreferrer')));
+    sync();
+  })();
+</script>
 {% endblock %}
