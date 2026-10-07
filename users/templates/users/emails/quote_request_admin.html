@@ -24,6 +24,12 @@
       <td style="padding:4px 0;color:#64748b;">Phone / WhatsApp</td>
       <td style="padding:4px 0;text-align:right;font-weight:700;color:#0f172a;">{{ quote_request.phone_number }}</td>
     </tr>
+    {% if quote_request.citizenship %}
+    <tr>
+      <td style="padding:4px 0;color:#64748b;">Citizenship</td>
+      <td style="padding:4px 0;text-align:right;font-weight:700;color:#0f172a;">{{ quote_request.citizenship }}</td>
+    </tr>
+    {% endif %}
   </table>
 </div>
 

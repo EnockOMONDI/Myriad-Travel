@@ -212,10 +212,20 @@ class JobApplicationForm(AntiSpamFormMixin, forms.ModelForm):
 class QuoteRequestForm(AntiSpamFormMixin, forms.ModelForm):
     """Form for quote requests submitted through the website"""
 
+    citizenship = forms.CharField(
+        max_length=100,
+        label='Citizenship / passport country',
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'e.g. Kenyan',
+            'required': True,
+        }),
+    )
+
     class Meta:
         model = QuoteRequest
         fields = [
-            'full_name', 'email', 'phone_number', 'destination',
+            'full_name', 'email', 'phone_number', 'citizenship', 'destination',
             'preferred_travel_dates', 'number_of_travelers', 'special_requests'
         ]
         widgets = {

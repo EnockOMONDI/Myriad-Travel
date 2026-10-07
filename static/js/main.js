@@ -311,7 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
   updateLipaCalculator();
 
   /* -------------------------------------------------------------------------- */
-  /* 7. Plan My Custom Trip Modal (Multi-Step Form)                             */
+  /* 7. Plan My Custom Trip Modal                                               */
   /* -------------------------------------------------------------------------- */
   const planModal = document.getElementById('plan-trip-modal');
   const openPlanBtns = document.querySelectorAll('.open-plan-modal-btn');
@@ -340,64 +340,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.target === planModal) closePlanTripModal();
     });
   }
-
-  // Multi-step Plan Modal Navigation
-  let planStep = 1;
-  const stepIndicators = document.querySelectorAll('.plan-step-indicator');
-  const stepContents = document.querySelectorAll('.plan-step-content');
-
-  function showPlanStep(stepNum) {
-    planStep = stepNum;
-    stepContents.forEach((el, i) => {
-      if (i + 1 === stepNum) el.classList.remove('hidden');
-      else el.classList.add('hidden');
-    });
-
-    stepIndicators.forEach((el, i) => {
-      const circle = el.querySelector('.step-circle');
-      if (i + 1 <= stepNum) {
-        el.classList.add('text-amber-700');
-        if (circle) circle.className = 'step-circle w-5 h-5 rounded-full flex items-center justify-center text-[10px] bg-amber-600 text-white';
-      } else {
-        el.classList.remove('text-amber-700');
-        if (circle) circle.className = 'step-circle w-5 h-5 rounded-full flex items-center justify-center text-[10px] bg-slate-200 text-slate-600';
-      }
-    });
-  }
-
-  document.querySelectorAll('.plan-next-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const nextStep = Number(btn.getAttribute('data-next-step') || 2);
-      showPlanStep(nextStep);
-    });
-  });
-
-  document.querySelectorAll('.plan-prev-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const prevStep = Number(btn.getAttribute('data-prev-step') || 1);
-      showPlanStep(prevStep);
-    });
-  });
-
-  // Destination Pills Toggle in Modal
-  document.querySelectorAll('.dest-pill-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      btn.classList.toggle('bg-amber-600');
-      btn.classList.toggle('text-white');
-      btn.classList.toggle('font-semibold');
-      btn.classList.toggle('bg-slate-100');
-      btn.classList.toggle('text-slate-700');
-    });
-  });
-
-  // Style selector buttons in Modal
-  document.querySelectorAll('.travel-style-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.travel-style-btn').forEach((b) => {
-        b.className = 'travel-style-btn p-3 rounded-xl text-left border transition-all cursor-pointer bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100';
-      });
-      btn.className = 'travel-style-btn p-3 rounded-xl text-left border transition-all cursor-pointer bg-amber-50/80 border-amber-600 text-amber-900 shadow-xs';
-    });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && planModal && !planModal.classList.contains('hidden')) closePlanTripModal();
   });
 
   /* -------------------------------------------------------------------------- */

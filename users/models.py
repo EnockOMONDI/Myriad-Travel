@@ -799,6 +799,11 @@ class QuoteRequest(models.Model):
     full_name = models.CharField(max_length=100, help_text="Full name of the person requesting quote")
     email = models.EmailField(help_text="Email address for communication")
     phone_number = models.CharField(max_length=20, help_text="Contact phone number")
+    citizenship = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text="Citizenship or passport country for travel planning"
+    )
 
     # Travel Details
     destination = models.CharField(max_length=100, help_text="Preferred destination or region")

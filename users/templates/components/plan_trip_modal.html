@@ -1,325 +1,56 @@
-{% load static %}
-<div 
-  id="plan-trip-modal" 
-  class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6"
+<div
+  id="plan-trip-modal"
+  class="hidden fixed inset-0 z-50 overflow-y-auto bg-[#0b192c]/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="plan-trip-modal-title"
 >
-  <div 
-    class="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200 my-auto"
-    onclick="event.stopPropagation()"
-  >
-    <!-- Modal Top Header -->
-    <div class="bg-[#0B192C] text-white p-5 sm:p-6 flex items-center justify-between border-b border-slate-800">
-      <div class="space-y-1">
-        <div class="flex items-center gap-2">
-          <span class="text-xs font-bold uppercase tracking-widest text-amber-400 flex items-center gap-1">
-            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-            <span>Myriad Travel Concierge</span>
-          </span>
-        </div>
-        <h2 class="text-lg sm:text-xl font-bold font-serif text-white">
-          Design Your Custom Dream Itinerary
-        </h2>
-        <p class="text-xs text-slate-300">
-          Get a customized quote in under 2 hours from our Nairobi safari designers.
-        </p>
+  <div class="relative my-auto w-full max-w-2xl overflow-hidden rounded-lg border border-[#d8dedb] bg-[#f9f2f2] shadow-2xl" onclick="event.stopPropagation()">
+    <div class="flex items-start justify-between gap-5 bg-[#0b192c] px-6 py-6 text-white sm:px-8">
+      <div>
+        <p class="text-[11px] font-black uppercase tracking-[0.24em] text-[#f4c542]">Myriad Travel</p>
+        <h2 id="plan-trip-modal-title" class="mt-2 font-serif text-2xl font-black sm:text-3xl">Request a tailored trip.</h2>
+        <p class="mt-2 max-w-xl text-sm leading-6 text-slate-300">Share the essentials and the Myriad team will confirm the next step within 2 hours where possible, and within 24 hours at the latest.</p>
       </div>
-
-      <button
-        type="button"
-        id="close-plan-modal-btn"
-        class="p-2 text-slate-400 hover:text-white rounded-full bg-slate-800/80 hover:bg-slate-700 transition-colors cursor-pointer"
-      >
-        <i data-lucide="x" class="w-5 h-5"></i>
+      <button type="button" id="close-plan-modal-btn" class="shrink-0 rounded-full border border-white/15 p-2 text-slate-300 transition hover:border-white/40 hover:text-white" aria-label="Close request form">
+        <i data-lucide="x" class="h-5 w-5"></i>
       </button>
     </div>
 
-    <!-- Step Indicator Bar -->
-    <div class="bg-slate-50 px-6 py-3 border-b border-slate-200 flex items-center justify-between text-xs font-bold text-slate-600">
-      <div class="plan-step-indicator flex items-center gap-1.5 text-amber-700">
-        <span class="step-circle w-5 h-5 rounded-full flex items-center justify-center text-[10px] bg-amber-600 text-white">1</span>
-        <span>Style &amp; Places</span>
-      </div>
-      <span class="text-slate-300">——</span>
-      <div class="plan-step-indicator flex items-center gap-1.5">
-        <span class="step-circle w-5 h-5 rounded-full flex items-center justify-center text-[10px] bg-slate-200 text-slate-600">2</span>
-        <span>Dates &amp; Party</span>
-      </div>
-      <span class="text-slate-300">——</span>
-      <div class="plan-step-indicator flex items-center gap-1.5">
-        <span class="step-circle w-5 h-5 rounded-full flex items-center justify-center text-[10px] bg-slate-200 text-slate-600">3</span>
-        <span>Details &amp; Quote</span>
-      </div>
-    </div>
-
-    <!-- Modal Form (Django POST Action) -->
-    <form method="POST" action="/quote/" class="p-6 text-slate-800">
+    <form id="plan-trip-form" method="post" action="{% url 'users:quote_request' %}" class="p-6 sm:p-8">
       {% csrf_token %}
       {% include 'users/includes/antispam_fields.html' %}
-
-      <!-- STEP 1 -->
-      <div class="plan-step-content space-y-5">
-        <div class="space-y-2">
-          <label class="text-xs font-bold uppercase text-slate-700 block">
-            What kind of travel experience are you looking for?
-          </label>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-            <button
-              type="button"
-              class="travel-style-btn p-3 rounded-xl text-left border transition-all cursor-pointer bg-amber-50/80 border-amber-600 text-amber-900 shadow-xs"
-              data-style="Kenya Bush Safari"
-            >
-              <div class="text-xs font-bold">Bush Safari</div>
-              <div class="text-[10px] text-slate-500 mt-0.5">Big Five &amp; Migration</div>
-            </button>
-            <button
-              type="button"
-              class="travel-style-btn p-3 rounded-xl text-left border transition-all cursor-pointer bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
-              data-style="Kenya Coast & Beach"
-            >
-              <div class="text-xs font-bold">Coastal Beach</div>
-              <div class="text-[10px] text-slate-500 mt-0.5">Diani, Watamu, Lamu</div>
-            </button>
-            <button
-              type="button"
-              class="travel-style-btn p-3 rounded-xl text-left border transition-all cursor-pointer bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
-              data-style="Bush & Beach Combo"
-            >
-              <div class="text-xs font-bold">Bush + Beach</div>
-              <div class="text-[10px] text-slate-500 mt-0.5">Safari &amp; Ocean Chill</div>
-            </button>
-            <button
-              type="button"
-              class="travel-style-btn p-3 rounded-xl text-left border transition-all cursor-pointer bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
-              data-style="International Escape"
-            >
-              <div class="text-xs font-bold">International</div>
-              <div class="text-[10px] text-slate-500 mt-0.5">Zanzibar, Dubai, Cape Town</div>
-            </button>
-            <button
-              type="button"
-              class="travel-style-btn p-3 rounded-xl text-left border transition-all cursor-pointer bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
-              data-style="Day Hike & Adventure"
-            >
-              <div class="text-xs font-bold">Weekend Hike</div>
-              <div class="text-[10px] text-slate-500 mt-0.5">Mt. Longonot &amp; Naivasha</div>
-            </button>
-            <button
-              type="button"
-              class="travel-style-btn p-3 rounded-xl text-left border transition-all cursor-pointer bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
-              data-style="Corporate Retreat / MICE"
-            >
-              <div class="text-xs font-bold">Corporate MICE</div>
-              <div class="text-[10px] text-slate-500 mt-0.5">Team Building &amp; Retreats</div>
-            </button>
-            <button
-              type="button"
-              class="travel-style-btn p-3 rounded-xl text-left border transition-all cursor-pointer bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
-              data-style="Romantic Honeymoon"
-            >
-              <div class="text-xs font-bold">💍 Honeymoon</div>
-              <div class="text-[10px] text-slate-500 mt-0.5">Luxury Private Escapes</div>
-            </button>
-            <button
-              type="button"
-              class="travel-style-btn p-3 rounded-xl text-left border transition-all cursor-pointer bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100"
-              data-style="Family Safari"
-            >
-              <div class="text-xs font-bold">👨‍👩‍👧 Family Safari</div>
-              <div class="text-[10px] text-slate-500 mt-0.5">Child-Friendly Pacing</div>
-            </button>
-          </div>
-          <input type="hidden" name="travel_style" id="selected-travel-style" value="Kenya Bush Safari" />
-        </div>
-
-        <div class="space-y-2">
-          <label class="text-xs font-bold uppercase text-slate-700 block">
-            Which destinations interest you? (Select all that apply)
-          </label>
-          <div class="flex flex-wrap gap-2">
-            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-amber-600 text-white font-semibold">Maasai Mara</button>
-            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">Amboseli</button>
-            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">Samburu</button>
-            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">Diani Beach</button>
-            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">Watamu &amp; Malindi</button>
-            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">Lamu Island</button>
-            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">Lake Naivasha</button>
-            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">Mt. Longonot</button>
-            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">Zanzibar</button>
-            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">Dubai</button>
-            <button type="button" class="dest-pill-btn px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer bg-slate-100 text-slate-700 hover:bg-slate-200">Cape Town</button>
-          </div>
-          <input type="hidden" name="destinations_selected" id="destinations-selected-input" value="Maasai Mara" />
-        </div>
-
-        <div class="pt-3 flex justify-end">
-          <button
-            type="button"
-            class="plan-next-btn px-6 py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer"
-            data-next-step="2"
-          >
-            Next: Dates &amp; Travelers &rarr;
-          </button>
-        </div>
+      <div class="grid gap-5 sm:grid-cols-2">
+        <label class="block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Your name *
+          <input type="text" name="full_name" required autocomplete="name" placeholder="Your full name" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" />
+        </label>
+        <label class="block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Phone / WhatsApp *
+          <input type="tel" name="phone_number" required autocomplete="tel" placeholder="+254 712 345 678" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" />
+        </label>
+        <label class="block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Email *
+          <input type="email" name="email" required autocomplete="email" placeholder="you@example.com" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" />
+        </label>
+        <label class="block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Citizenship / passport country *
+          <input type="text" name="citizenship" required autocomplete="country-name" placeholder="e.g. Kenyan" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" />
+        </label>
+        <label class="block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Destination or trip idea *
+          <input type="text" name="destination" required placeholder="e.g. Diani, Dubai, safari and beach" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" />
+        </label>
+        <label class="block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Preferred dates *
+          <input type="text" name="preferred_travel_dates" required placeholder="e.g. 12-16 August, flexible" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" />
+        </label>
+        <label class="block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Travellers *
+          <input type="number" name="number_of_travelers" required min="1" max="50" value="2" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" />
+        </label>
       </div>
-
-      <!-- STEP 2 -->
-      <div class="plan-step-content hidden space-y-5">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="space-y-1.5">
-            <label class="text-xs font-bold uppercase text-slate-700">When do you plan to travel?</label>
-            <select
-              name="departure_month"
-              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium"
-            >
-              <option value="Immediately (This Month)">Immediately (This Month)</option>
-              <option value="Next 1-3 Months" selected>Next 1–3 Months</option>
-              <option value="July - October (Great Migration)">July – October (Great Migration)</option>
-              <option value="December - January (Festive Holidays)">December – January (Festive Holidays)</option>
-              <option value="Dates Flexible">Dates are Flexible</option>
-            </select>
-          </div>
-
-          <div class="space-y-1.5">
-            <label class="text-xs font-bold uppercase text-slate-700">Trip Duration</label>
-            <select
-              name="trip_duration"
-              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium"
-            >
-              <option value="1-2 Days (Weekend Trip)">1–2 Days (Weekend Excursion)</option>
-              <option value="3-4 Days">3–4 Days</option>
-              <option value="5-7 Days" selected>5–7 Days</option>
-              <option value="8-12 Days (Grand Safari)">8–12 Days (Grand Safari)</option>
-              <option value="12+ Days">12+ Days</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="space-y-1.5">
-            <label class="text-xs font-bold uppercase text-slate-700">Number of Travelers</label>
-            <select
-              name="number_of_travelers"
-              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium"
-            >
-              <option value="1">1 Guest (Solo)</option>
-              <option value="2" selected>2 Adults (Couple/Pair)</option>
-              <option value="4">Family with 1–2 Children</option>
-              <option value="5">Family with 3+ Children</option>
-              <option value="6">Small Group (4–6 Friends)</option>
-              <option value="10">Corporate / Large Group (10+ Pax)</option>
-            </select>
-          </div>
-
-          <div class="space-y-1.5">
-            <label class="text-xs font-bold uppercase text-slate-700">Accommodation Preference</label>
-            <select
-              name="accommodation_style"
-              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm font-medium"
-            >
-              <option value="Comfort Mid-Range Lodges">Comfort Mid-Range Lodges &amp; Tents</option>
-              <option value="Mid-range to Luxury Safari Tented Camps" selected>Premium 4-Star &amp; Luxury Tented Camps</option>
-              <option value="Ultra-Luxury 5-Star Exclusive Lodges">Ultra-Luxury 5-Star Exclusive Lodges</option>
-              <option value="Budget-Friendly / Camping">Budget-Friendly / Camping</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="pt-3 flex items-center justify-between">
-          <button
-            type="button"
-            class="plan-prev-btn px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer"
-            data-prev-step="1"
-          >
-            &larr; Back
-          </button>
-          <button
-            type="button"
-            class="plan-next-btn px-6 py-2.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer"
-            data-next-step="3"
-          >
-            Next: Contact &amp; Quote &rarr;
-          </button>
-        </div>
+      <label class="mt-5 block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Notes
+        <textarea name="special_requests" rows="3" placeholder="Rooming, child ages, budget, flights, dietary needs or anything else useful." class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]"></textarea>
+      </label>
+      <div class="mt-6 flex flex-col gap-3 border-t border-[#dce3df] pt-6 sm:flex-row sm:justify-end">
+        <a href="https://wa.me/{{ company.contacts.whatsapp|default:'254712236522' }}?text=Hello%20Myriad%20Travel%2C%20I%20would%20like%20to%20request%20a%20tailored%20trip." target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center rounded-md border border-[#1ca297] px-5 py-3 text-sm font-black text-[#12645d] transition hover:bg-[#e9f5f3]">Send via WhatsApp</a>
+        <button type="submit" class="inline-flex items-center justify-center rounded-md bg-[#eb3728] px-5 py-3 text-sm font-black text-white transition hover:bg-[#c92b20]">Send request</button>
       </div>
-
-      <!-- STEP 3 -->
-      <div class="plan-step-content hidden space-y-4">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div class="space-y-1">
-            <label class="text-[11px] font-bold text-slate-700 uppercase">Full Name *</label>
-            <input
-              type="text"
-              name="full_name"
-              required
-              placeholder="Your full name"
-              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm"
-            />
-          </div>
-
-          <div class="space-y-1">
-            <label class="text-[11px] font-bold text-slate-700 uppercase">Phone / WhatsApp Number *</label>
-            <input
-              type="tel"
-              name="phone_number"
-              required
-              placeholder="e.g. +254 712 345 678"
-              class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm"
-            />
-          </div>
-        </div>
-
-        <div class="space-y-1">
-          <label class="text-[11px] font-bold text-slate-700 uppercase">Email Address *</label>
-          <input
-            type="email"
-            name="email"
-            required
-            placeholder="you@example.com"
-            class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm"
-          />
-        </div>
-
-        <div class="space-y-1">
-          <label class="text-[11px] font-bold text-slate-700 uppercase">Special Notes or Specific Requests</label>
-          <textarea
-            name="special_requests"
-            rows="2"
-            placeholder="Share rooming, child ages, dietary needs, flight preferences, celebration notes or team movement details..."
-            class="w-full p-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm"
-          ></textarea>
-        </div>
-
-        <input type="hidden" name="destination" id="plan-trip-destination" value="Custom Myriad Travel itinerary" />
-        <input type="hidden" name="preferred_travel_dates" id="plan-trip-dates" value="Flexible dates" />
-
-        <!-- Action Buttons -->
-        <div class="pt-2 flex flex-col sm:flex-row gap-3">
-          <button
-            type="button"
-            class="plan-prev-btn py-2.5 px-4 text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer"
-            data-prev-step="2"
-          >
-            &larr; Back
-          </button>
-
-          <button
-            type="submit"
-            class="flex-1 py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-xs transition-colors cursor-pointer"
-          >
-            Submit Website Request
-          </button>
-
-          <a
-            href="https://wa.me/254712236522?text=Hello%20Myriad%20Travel,%20I%20would%20like%20to%20plan%20a%20custom%20itinerary."
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer text-center"
-          >
-            <i data-lucide="send" class="w-4 h-4"></i>
-            <span>Send to WhatsApp</span>
-          </a>
-        </div>
-      </div>
+      <p class="mt-4 text-center text-xs font-semibold text-[#8a9692]">No payment is taken at this stage. We confirm availability and next steps with you.</p>
     </form>
   </div>
 </div>
