@@ -1,0 +1,68 @@
+{% load static %}
+<header class="myriad-header">
+  <div class="myriad-contact">
+    <div class="myriad-contact-inner">
+      <a href="tel:{{ company.contacts.primary_phone|default:'+254712236522' }}" class="myriad-phone"><i data-lucide="phone" aria-hidden="true"></i><span>Call {{ company.contacts.phone_formatted|default:'+254 (0) 712 236 522' }}</span></a>
+      <div class="myriad-socials" aria-label="Myriad Travel social media">
+        <a href="{{ company.socials.facebook }}" target="_blank" rel="noopener noreferrer" aria-label="Myriad Travel on Facebook" title="Facebook"><i data-lucide="facebook" aria-hidden="true"></i><span>f</span></a>
+        <a href="{{ company.socials.instagram }}" target="_blank" rel="noopener noreferrer" aria-label="Myriad Travel on Instagram" title="Instagram"><i data-lucide="instagram" aria-hidden="true"></i></a>
+        <a href="{{ company.socials.tiktok }}" target="_blank" rel="noopener noreferrer" aria-label="Myriad Travel on TikTok" title="TikTok"><i data-lucide="music-2" aria-hidden="true"></i></a>
+        <a href="https://wa.me/{{ company.contacts.whatsapp }}" target="_blank" rel="noopener noreferrer" aria-label="Chat with Myriad Travel on WhatsApp" title="WhatsApp"><i data-lucide="message-circle" aria-hidden="true"></i></a>
+      </div>
+    </div>
+  </div>
+  <nav class="myriad-navigation" aria-label="Main navigation">
+    <a href="/" aria-label="Myriad Travel home"><img src="{% static 'images/myriad-logo.png' %}" width="112" height="80" alt="Myriad Travel"></a>
+    <button type="button" class="myriad-menu-toggle" aria-expanded="false" aria-controls="myriad-menu"><i data-lucide="menu"></i><span>Menu</span></button>
+    <div id="myriad-menu" class="myriad-menu">
+      {% for menu in public_menus %}
+      <div class="myriad-menu-item">
+        {% if menu.parent_clickable %}<a href="{{ menu.url }}">{{ menu.label }}</a>{% else %}<span>{{ menu.label }}</span>{% endif %}
+        <details><summary aria-label="{{ menu.label }} submenu"><i data-lucide="chevron-down"></i></summary>
+          <div class="myriad-dropdown myriad-mega-dropdown">
+            <div class="myriad-mega-grid">
+              {% for section in menu.sections %}
+              <section class="myriad-menu-section">
+                {% if section.url %}<a class="myriad-menu-section-title" href="{{ section.url }}">{{ section.label }}</a>{% else %}<span class="myriad-menu-section-title">{{ section.label }}</span>{% endif %}
+                {% if section.items %}
+                  {% for item in section.items %}<a href="{{ item.url }}">{{ item.label }}</a>{% endfor %}
+                {% else %}
+                  <a href="{{ section.url|default:menu.url }}">Browse experiences</a>
+                {% endif %}
+              </section>
+              {% endfor %}
+            </div>
+            <a class="myriad-view-all" href="{{ menu.url }}">View all {{ menu.label|lower }}</a>
+          </div>
+        </details>
+      </div>
+      {% endfor %}
+    </div>
+    <a class="myriad-quote" href="{% url 'users:quote_request' %}">Request Quote</a>
+  </nav>
+</header>
+<script>
+document.querySelector('.myriad-menu-toggle').addEventListener('click', function () {
+  const expanded = this.getAttribute('aria-expanded') !== 'true';
+  this.setAttribute('aria-expanded', String(expanded));
+  document.getElementById('myriad-menu').classList.toggle('is-open', expanded);
+});
+document.querySelectorAll('.myriad-menu details').forEach(function (current) {
+  current.querySelector('summary').addEventListener('click', function (event) {
+    event.preventDefault();
+    var wasOpen = current.open;
+    document.querySelectorAll('.myriad-menu details[open]').forEach(function (other) {
+      other.open = false;
+    });
+    current.open = !wasOpen;
+  });
+});
+document.addEventListener('click', function (event) {
+  if (!event.target.closest('.myriad-navigation')) {
+    document.querySelectorAll('.myriad-menu details[open]').forEach(function (item) { item.open = false; });
+  }
+});
+document.addEventListener('keydown', function (event) {
+  if (event.key === 'Escape') document.querySelectorAll('.myriad-menu details[open]').forEach(function (item) { item.open = false; });
+});
+</script>

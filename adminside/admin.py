@@ -1,7 +1,10 @@
 from django.contrib import admin
 from django import forms
 from django.utils.html import format_html
+from django.urls import reverse
 from .models import (
+    TravelCollection,
+    Campaign,
     PackageCategory,
     Destination,
     Accommodation,
@@ -15,6 +18,24 @@ from .models import (
 )
 # CKEditor5Field automatically handles CKEditor 5 widgets based on config_name
 # No need for explicit widget overrides
+
+@admin.register(TravelCollection)
+class TravelCollectionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'section', 'display_order', 'is_active', 'show_in_navigation')
+    list_filter = ('section', 'is_active', 'show_in_navigation')
+    list_editable = ('display_order', 'is_active', 'show_in_navigation')
+    search_fields = ('name', 'description')
+    prepopulated_fields = {'slug': ('name',)}
+    filter_horizontal = ('packages',)
+
+
+@admin.register(Campaign)
+class CampaignAdmin(admin.ModelAdmin):
+    list_display = ('title', 'package', 'starts_on', 'ends_on', 'display_order', 'is_active')
+    list_filter = ('is_active', 'starts_on', 'ends_on')
+    list_editable = ('display_order', 'is_active')
+    search_fields = ('title', 'package__name')
+    autocomplete_fields = ('package',)
 
 class DestinationAdminForm(forms.ModelForm):
     class Meta:
@@ -43,8 +64,8 @@ class ItineraryDayAdminForm(forms.ModelForm):
 
 @admin.register(PackageCategory)
 class PackageCategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug', 'get_package_count', 'display_order', 'is_active', 'created_at')
-    list_editable = ('display_order', 'is_active')
+    list_display = ('name', 'slug', 'get_package_count', 'display_order', 'is_active', 'show_in_navigation', 'created_at')
+    list_editable = ('display_order', 'is_active', 'show_in_navigation')
     search_fields = ('name', 'description')
     prepopulated_fields = {'slug': ('name',)}
     readonly_fields = ('created_at', 'updated_at')
@@ -55,7 +76,7 @@ class PackageCategoryAdmin(admin.ModelAdmin):
             'fields': ('name', 'slug', 'description')
         }),
         ('Display Options', {
-            'fields': ('display_order', 'is_active')
+            'fields': ('display_order', 'is_active', 'show_in_navigation')
         }),
         ('System Information', {
             'fields': ('created_at', 'updated_at'),
@@ -72,9 +93,9 @@ class PackageCategoryAdmin(admin.ModelAdmin):
 @admin.register(Destination)
 class DestinationAdmin(admin.ModelAdmin):
     form = DestinationAdminForm
-    list_display = ('name', 'destination_type', 'parent', 'display_image', 'starting_price', 'display_order', 'is_featured', 'is_active')
-    list_filter = ('destination_type', 'is_featured', 'is_active', 'parent')
-    search_fields = ('name', 'description', 'meta_title')
+    list_display = ('name', 'destination_type', 'region', 'parent', 'package_count', 'display_image', 'starting_price', 'display_order', 'is_featured', 'is_active', 'show_in_navigation')
+    list_filter = ('region', 'destination_type', 'is_featured', 'is_active', 'parent')
+    search_fields = ('name', 'description', 'meta_title', 'region')
 
     class Media:
         css = {
@@ -82,11 +103,11 @@ class DestinationAdmin(admin.ModelAdmin):
         }
     list_per_page = 20
     prepopulated_fields = {'slug': ('name',)}
-    list_editable = ('display_order', 'is_featured', 'is_active')
+    list_editable = ('display_order', 'is_featured', 'is_active', 'show_in_navigation')
 
     fieldsets = (
         ('Basic Information', {
-            'fields': ('name', 'slug', 'destination_type', 'parent')
+            'fields': ('name', 'slug', 'destination_type', 'region', 'parent')
         }),
         ('Media', {
             'fields': ('image',)
@@ -104,7 +125,7 @@ class DestinationAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
         ('Display Options', {
-            'fields': ('display_order', 'is_featured', 'is_active')
+            'fields': ('display_order', 'is_featured', 'is_active', 'show_in_navigation')
         }),
     )
 
@@ -118,6 +139,10 @@ class DestinationAdmin(admin.ModelAdmin):
             return format_html('<img src="{}" width="50" height="50" style="border-radius: 50%;" />', obj.image.cdn_url)
         return "No Image"
     display_image.short_description = 'Image'
+
+    def package_count(self, obj):
+        return obj.packages.filter(status=Package.PUBLISHED).count()
+    package_count.short_description = 'Published packages'
 
 @admin.register(Accommodation)
 class AccommodationAdmin(admin.ModelAdmin):
@@ -242,11 +267,12 @@ class PackageGalleryImageInline(admin.TabularInline):
 @admin.register(Package)
 class PackageAdmin(admin.ModelAdmin):
     form = PackageAdminForm
-    list_display = ('name', 'display_image', 'category', 'region', 'main_destination', 'adult_price',
+    list_display = ('name', 'display_image', 'category', 'region', 'destination_link', 'adult_price',
                    'child_price', 'duration_days', 'lipa_pole_pole', 'status', 'is_featured', 'home_rank', 'total_bookings')
-    list_filter = ('category', 'region', 'main_destination', 'status', 'lipa_pole_pole', 'is_featured', 'duration_days')
-    search_fields = ('name', 'subtitle', 'description', 'highlights', 'inclusions', 'exclusions')
-    filter_horizontal = ('available_accommodations', 'available_travel_modes')
+    list_filter = ('category', 'categories', 'region', 'main_destination', 'status', 'lipa_pole_pole', 'is_featured', 'duration_days')
+    search_fields = ('name', 'subtitle', 'description', 'highlights', 'inclusions', 'exclusions', 'main_destination__name')
+    autocomplete_fields = ('category', 'main_destination')
+    filter_horizontal = ('categories', 'available_accommodations', 'available_travel_modes')
     readonly_fields = ('total_bookings', 'total_reviews')
     prepopulated_fields = {'slug': ('name',)}
     list_editable = ('status', 'is_featured', 'home_rank')
@@ -254,7 +280,7 @@ class PackageAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Basic Information', {
-            'fields': ('name', 'slug', 'subtitle', 'category', 'region', 'main_destination', 'duration_days', 'duration_nights')
+            'fields': ('name', 'slug', 'subtitle', 'category', 'categories', 'region', 'main_destination', 'duration_days', 'duration_nights')
         }),
         ('Media', {
             'fields': ('featured_image',)
@@ -293,6 +319,13 @@ class PackageAdmin(admin.ModelAdmin):
             return format_html('<img src="{}" width="50" height="50" style="border-radius: 50%;" />', obj.featured_image.cdn_url)
         return "No Image"
     display_image.short_description = 'Image'
+
+    def destination_link(self, obj):
+        if not obj.main_destination_id:
+            return '-'
+        url = reverse('admin:adminside_destination_change', args=[obj.main_destination_id])
+        return format_html('<a href="{}">{}</a>', url, obj.main_destination.name)
+    destination_link.short_description = 'Destination'
 
     def get_queryset(self, request):
         """Optimize queries by prefetching related fields"""

@@ -5,6 +5,7 @@ Provides global template variables and default image management.
 
 from django.conf import settings
 from django.templatetags.static import static
+from django.db.models import Q
 
 
 def default_images(request):
@@ -144,73 +145,134 @@ def site_settings(request):
                 'email_general': 'info@myriad-travel.com',
                 'email_marketing': 'marketing@myriad-travel.com',
             },
+            'socials': {
+                'facebook': 'https://web.facebook.com/myriadtravelke/?_rdc=1&_rdr#',
+                'instagram': 'https://www.instagram.com/myriadtravelke/',
+                'tiktok': 'https://www.tiktok.com/@myriadtravel',
+            },
         },
     }
 
 
 def navigation_collections(request):
-    """
-    Lightweight public navigation data driven by admin records.
-    """
-    try:
-        from adminside.models import Destination, PackageCategory
+    """Build the public navigation from active, published travel records."""
+    from django.urls import reverse
+    from django.utils import timezone
+    from adminside.models import Campaign, Destination, Package, PackageCategory, TravelCollection
 
-        kenya_items = Destination.objects.filter(
-            is_active=True,
-            packages__status='published',
-            packages__region__in=['kenya-safari', 'kenya-coast', 'day-trips'],
-        ).distinct().order_by('-is_featured', 'display_order', 'name')[:5]
+    def destination_items(queryset, limit=6):
+        return [
+            {'label': destination.name, 'url': reverse('users:destination_detail', kwargs={'slug': destination.slug})}
+            for destination in queryset[:limit]
+        ]
 
-        world_items = Destination.objects.filter(
-            is_active=True,
-            packages__status='published',
-            packages__region='international',
-        ).distinct().order_by('-is_featured', 'display_order', 'name')[:5]
+    def category_items(queryset, route, limit=6):
+        base_url = reverse('users:' + route)
+        return [
+            {'label': category.name, 'url': f'{base_url}?category={category.slug}'}
+            for category in queryset[:limit]
+        ]
 
-        safari_items = PackageCategory.objects.filter(
-            is_active=True,
-            packages__status='published',
-            slug__in=[
-                'adventure-safaris',
-                'bird-watching-safaris',
-                'budget-safaris',
-                'camping-safaris',
-                'cultural-safaris',
-                'family-safaris',
-                'flying-safaris',
-                'honeymoon-safaris',
-                'luxury-safaris',
-                'mountain-climbing-safaris',
-                'photography-safaris',
-                'bush-and-beach-safaris',
-                'northern-kenya-adventure',
-                'big-five-migration-safari',
-                'wildlife-photography',
-                'hiking-day-adventure',
-                'beach-holiday-water-sports',
-            ],
-        ).distinct().order_by('display_order', 'name')[:5]
+    destinations = Destination.objects.filter(
+        is_active=True,
+        show_in_navigation=True,
+        packages__status=Package.PUBLISHED,
+    ).distinct().order_by('-is_featured', 'display_order', 'name')
+    categories = PackageCategory.objects.filter(
+        is_active=True,
+        show_in_navigation=True,
+    ).filter(
+        Q(packages__status=Package.PUBLISHED) | Q(tagged_packages__status=Package.PUBLISHED)
+    ).distinct().order_by('display_order', 'name')
 
-        signature_items = PackageCategory.objects.filter(
-            is_active=True,
-            packages__status='published',
-            slug__in=[
-                'cruises',
-                'wellness-retreats',
-                'shopping-tours',
-                'religious-pilgrimages',
-                'honeymoon-packages',
-            ],
-        ).distinct().order_by('display_order', 'name')[:5]
-    except Exception:
-        kenya_items = []
-        world_items = []
-        safari_items = []
-        signature_items = []
+    kenya_destinations = destinations.filter(region='kenya')
+    world_regions = [
+        ('Africa', 'africa'), ('Americas', 'americas'), ('Asia', 'asia'),
+        ('Australasia', 'australasia'), ('Europe', 'europe'),
+        ('Indian Ocean Islands', 'indian-ocean-islands'), ('Middle East', 'middle-east'),
+    ]
+    themed_slugs = ['cruises', 'wellness-retreats', 'shopping-tours', 'religious-pilgrimages', 'honeymoon-packages']
+    themed_categories = categories.filter(slug__in=themed_slugs)
 
+    kenya_sections = [
+        {'label': 'Beach & Coast', 'url': reverse('users:explore_kenya'),
+         'items': destination_items(kenya_destinations.filter(packages__region='kenya-coast'))},
+        {'label': 'Safaris', 'url': reverse('users:tours_safaris'),
+         'items': destination_items(kenya_destinations.filter(packages__region='kenya-safari'))},
+        {'label': 'Getaways', 'url': reverse('users:explore_kenya'),
+         'items': category_items(categories.filter(Q(packages__region='day-trips') | Q(tagged_packages__region='day-trips')), 'explore_kenya')},
+        {'label': 'Themed Experiences', 'url': reverse('users:themed_packages'),
+         'items': category_items(themed_categories, 'themed_packages')},
+        {'label': 'Day Trips', 'url': reverse('users:explore_kenya'),
+         'items': category_items(categories.filter(Q(packages__region='day-trips') | Q(tagged_packages__region='day-trips')), 'explore_kenya')},
+    ]
+    world_sections = [
+        {'label': label, 'url': reverse('users:explore_the_world'),
+         'items': destination_items(destinations.filter(region=region))}
+        for label, region in world_regions
+    ]
+    safari_categories = categories.exclude(slug__in=themed_slugs).filter(
+        Q(packages__region__in=['kenya-safari', 'kenya-coast', 'day-trips']) |
+        Q(tagged_packages__region__in=['kenya-safari', 'kenya-coast', 'day-trips'])
+    )
+    safari_sections = [
+        {'label': 'Safari & Adventure', 'url': reverse('users:tours_safaris'),
+         'items': category_items(safari_categories, 'tours_safaris')},
+        {'label': 'Destinations', 'url': reverse('users:tours_safaris'),
+         'items': destination_items(kenya_destinations)},
+    ]
+    theme_sections = [
+        {'label': 'Travel Themes', 'url': reverse('users:themed_packages'),
+         'items': category_items(themed_categories, 'themed_packages')},
+    ]
+
+    collections = TravelCollection.objects.filter(
+        is_active=True, show_in_navigation=True, packages__status=Package.PUBLISHED,
+    ).distinct().order_by('display_order', 'name')
+    for section, target in [('kenya', kenya_sections), ('world', world_sections), ('safaris', safari_sections), ('themes', theme_sections)]:
+        collection_items = [{'label': item.name, 'url': item.get_absolute_url()} for item in collections.filter(section=section)[:5]]
+        if collection_items:
+            target.append({'label': 'Featured collections', 'url': '', 'items': collection_items})
+
+    now = timezone.now()
+    today = timezone.localtime(now).date() if timezone.is_aware(now) else now.date()
+    deals = Campaign.objects.filter(
+        is_active=True,
+        starts_on__lte=today,
+        ends_on__gte=today,
+        package__status=Package.PUBLISHED,
+    ).select_related('package').order_by('display_order', 'pk')
+    deal_items = [
+        {'label': campaign.title, 'url': reverse('users:package_detail', kwargs={'slug': campaign.package.slug})}
+        for campaign in deals[:5]
+    ]
+
+    menus = [
+        {'label': 'Explore Kenya', 'url': reverse('users:explore_kenya'), 'parent_clickable': False, 'sections': kenya_sections},
+        {'label': 'Explore The World', 'url': reverse('users:explore_the_world'), 'parent_clickable': False, 'sections': world_sections},
+        {'label': 'Tours & Safaris', 'url': reverse('users:tours_safaris'), 'parent_clickable': False, 'sections': safari_sections},
+        {'label': 'Themed Experiences', 'url': reverse('users:themed_packages'), 'parent_clickable': False, 'sections': theme_sections},
+        {'label': 'Deals', 'url': reverse('users:deals'), 'parent_clickable': True, 'sections': [
+            {'label': 'Current offers', 'url': reverse('users:deals'), 'items': deal_items},
+        ]},
+        {'label': 'About Us', 'url': reverse('users:aboutus'), 'parent_clickable': True, 'sections': [
+            {'label': 'About Myriad', 'url': reverse('users:aboutus'), 'items': [
+                {'label': 'Our Story', 'url': reverse('users:aboutus')},
+                {'label': 'Myriad Services', 'url': reverse('users:services')},
+                {'label': 'Travel Blog', 'url': reverse('blog:blog-list')},
+            ]},
+        ]},
+        {'label': 'Contact Us', 'url': reverse('users:contact'), 'parent_clickable': True, 'sections': [
+            {'label': 'Talk to Myriad', 'url': reverse('users:contact'), 'items': [
+                {'label': 'Contact Details', 'url': reverse('users:contact')},
+                {'label': 'Request Quote', 'url': reverse('users:quote_request')},
+            ]},
+        ]},
+    ]
     return {
-        'nav_explore_kenya': kenya_items,
-        'nav_explore_world': world_items,
-        'nav_tours_safaris': safari_items,
-        'nav_signature_experiences': signature_items,
+        'public_menus': menus,
+        'nav_explore_kenya': kenya_destinations[:5],
+        'nav_explore_world': destinations.exclude(region='kenya')[:5],
+        'nav_tours_safaris': safari_categories[:5],
+        'nav_signature_experiences': themed_categories[:5],
     }

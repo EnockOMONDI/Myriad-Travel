@@ -212,6 +212,7 @@ def _package_presenter(package):
         'subtitle': intro,
         'description': package.description,
         'category': category,
+        'categories': [item.name for item in package.categories.all()],
         'region_label': region_label,
         'region': package.region or slugify(category) or 'kenya-safari',
         'destination': destination,
@@ -482,13 +483,15 @@ TOURS_SAFARI_CATEGORY_SLUGS = [
 
 def _packages_for_collection():
     return Package.objects.select_related('main_destination', 'category').prefetch_related(
+        'categories',
         'available_accommodations',
         'available_travel_modes',
         'itinerary__days',
     ).filter(status=Package.PUBLISHED).order_by('home_rank', '-is_featured', '-published_at', '-created_at')
 
 
-def _collection_context(title, eyebrow, description, packages_qs, destination_qs=None, groups=None, active_filter='all'):
+def _collection_context(title, eyebrow, description, packages_qs, destination_qs=None, groups=None,
+                        active_filter='all', category_filters=None):
     context = _public_page_context(package_limit=4)
     packages = list(packages_qs)
     filters = []
@@ -508,15 +511,32 @@ def _collection_context(title, eyebrow, description, packages_qs, destination_qs
         'collection_description': description,
         'collection_packages': [_package_presenter(package) for package in packages],
         'collection_destinations': destination_qs or [],
-        'collection_filters': filters,
+        'collection_filters': category_filters if category_filters is not None else filters,
         'collection_active_filter': active_filter or 'all',
         'collection_groups': groups or [],
     })
     return context
 
 
+def _filter_collection_by_category(request, packages_qs):
+    """Apply one shareable category filter and keep all eligible pills visible."""
+    selected_category = request.GET.get('category', '').strip()
+    categories = PackageCategory.objects.filter(
+        is_active=True,
+    ).filter(
+        Q(packages__in=packages_qs) | Q(tagged_packages__in=packages_qs)
+    ).distinct().order_by('display_order', 'name')
+    filters = [{'label': category.name, 'slug': category.slug} for category in categories]
+    if selected_category and selected_category != 'all':
+        packages_qs = packages_qs.filter(
+            Q(category__slug=selected_category) | Q(categories__slug=selected_category)
+        ).distinct()
+    return packages_qs, filters, selected_category or 'all'
+
+
 def explore_kenya(request):
     packages_qs = _packages_for_collection().filter(region__in=['kenya-safari', 'kenya-coast', 'day-trips'])
+    packages_qs, filters, selected_category = _filter_collection_by_category(request, packages_qs)
     destinations_qs = Destination.objects.filter(
         is_active=True,
         packages__status=Package.PUBLISHED,
@@ -528,12 +548,17 @@ def explore_kenya(request):
         'Find the Kenya experiences Myriad Travel can shape around your dates, from desert campaigns and wildlife safaris to coast stays and weekend escapes.',
         packages_qs,
         destinations_qs,
+        active_filter=selected_category,
+        category_filters=filters,
     )
     return render(request, 'users/pages/collection.html', context)
 
 
 def explore_the_world(request):
-    packages_qs = _packages_for_collection().filter(region='international').exclude(category__slug__in=SIGNATURE_CATEGORY_SLUGS)
+    packages_qs = _packages_for_collection().filter(region='international').exclude(
+        Q(category__slug__in=SIGNATURE_CATEGORY_SLUGS) | Q(categories__slug__in=SIGNATURE_CATEGORY_SLUGS)
+    ).distinct()
+    packages_qs, filters, selected_category = _filter_collection_by_category(request, packages_qs)
     destinations_qs = Destination.objects.filter(
         is_active=True,
         packages__status=Package.PUBLISHED,
@@ -545,6 +570,8 @@ def explore_the_world(request):
         'Browse global holidays, city breaks and island escapes with planning support from enquiry to confirmed itinerary.',
         packages_qs,
         destinations_qs,
+        active_filter=selected_category,
+        category_filters=filters,
     )
     return render(request, 'users/pages/collection.html', context)
 
@@ -553,24 +580,32 @@ def tours_safaris(request):
     packages_qs = _packages_for_collection().filter(
         Q(region__in=['kenya-safari', 'kenya-coast', 'day-trips']) |
         Q(category__slug__in=TOURS_SAFARI_CATEGORY_SLUGS)
-    ).exclude(category__slug__in=SIGNATURE_CATEGORY_SLUGS)
-    selected_category = request.GET.get('category', '').strip()
-    selected_filter = slugify(selected_category) if selected_category else 'all'
+    ).exclude(
+        Q(category__slug__in=SIGNATURE_CATEGORY_SLUGS) | Q(categories__slug__in=SIGNATURE_CATEGORY_SLUGS)
+    ).distinct()
+    packages_qs, filters, selected_filter = _filter_collection_by_category(request, packages_qs)
     context = _collection_context(
         'Tours & Safaris',
         'Safari, coast and adventure planning',
         'Safari, coast, mountain, culture, photography and adventure trips gathered into one clear planning space. Start with a style, then open the package that fits your dates and group.',
         packages_qs,
         active_filter=selected_filter,
+        category_filters=filters,
     )
     return render(request, 'users/pages/collection.html', context)
 
 
 def signature_experiences(request):
     groups = []
-    packages_qs = _packages_for_collection().filter(category__slug__in=SIGNATURE_CATEGORY_SLUGS)
+    packages_qs = _packages_for_collection().filter(
+        Q(category__slug__in=SIGNATURE_CATEGORY_SLUGS) | Q(categories__slug__in=SIGNATURE_CATEGORY_SLUGS)
+    ).distinct()
+    packages_qs, filters, selected_filter = _filter_collection_by_category(request, packages_qs)
     for category in PackageCategory.objects.filter(slug__in=SIGNATURE_CATEGORY_SLUGS, is_active=True).order_by('display_order', 'name'):
-        group_packages = [pkg for pkg in packages_qs if pkg.category_id == category.id]
+        group_packages = [
+            pkg for pkg in packages_qs
+            if pkg.category_id == category.id or category.id in [item.id for item in pkg.categories.all()]
+        ]
         if group_packages:
             groups.append({
                 'title': category.name,
@@ -578,13 +613,50 @@ def signature_experiences(request):
                 'packages': [_package_presenter(package) for package in group_packages],
             })
     context = _collection_context(
-        'Signature Experiences',
+        'Themed Packages',
         'Curated journeys for a specific reason to travel',
         'Cruises, wellness retreats, shopping tours, pilgrimages and honeymoon escapes prepared as ready-to-enquire Myriad Travel experiences.',
         packages_qs,
         groups=groups,
+        active_filter=selected_filter,
+        category_filters=filters,
     )
     return render(request, 'users/pages/signature_experiences.html', context)
+
+
+def travel_collection(request, slug):
+    from adminside.models import TravelCollection
+    collection = get_object_or_404(TravelCollection, slug=slug, is_active=True)
+    packages_qs, filters, selected_filter = _filter_collection_by_category(
+        request, _packages_for_collection().filter(collections=collection)
+    )
+    context = _collection_context(
+        collection.name, collection.get_section_display(), collection.description,
+        packages_qs, active_filter=selected_filter, category_filters=filters,
+    )
+    return render(request, 'users/pages/collection.html', context)
+
+
+def deals(request):
+    from django.utils import timezone
+
+    now = timezone.now()
+    today = timezone.localtime(now).date() if timezone.is_aware(now) else now.date()
+    packages_qs = _packages_for_collection().filter(
+        campaigns__is_active=True,
+        campaigns__starts_on__lte=today,
+        campaigns__ends_on__gte=today,
+    ).distinct()
+    packages_qs, filters, selected_filter = _filter_collection_by_category(request, packages_qs)
+    context = _collection_context(
+        'Current Deals',
+        'Limited-date offers and campaigns',
+        'Current Myriad offers are published here while their campaign dates are active. Open any package to request a quote and confirm availability.',
+        packages_qs,
+        active_filter=selected_filter,
+        category_filters=filters,
+    )
+    return render(request, 'users/pages/collection.html', context)
 
 
 def destinations(request):
@@ -594,12 +666,15 @@ def destinations(request):
 def destination_detail(request, slug):
     destination = get_object_or_404(Destination, slug=slug, is_active=True)
     packages_qs = _packages_for_collection().filter(main_destination=destination)
+    packages_qs, filters, selected_category = _filter_collection_by_category(request, packages_qs)
     context = _collection_context(
         destination.name,
         'Destination guide',
         destination.meta_description or strip_tags(str(destination.description or '')),
         packages_qs,
     )
+    context['collection_filters'] = filters
+    context['collection_active_filter'] = selected_category or 'all'
     context['destination'] = _destination_presenter(destination)
     return render(request, 'users/pages/destination_detail.html', context)
 
@@ -955,6 +1030,18 @@ def home(request):
         }
 
         context.update(_public_page_context(package_limit=4))
+        from adminside.models import Campaign
+        from django.utils import timezone
+        now = timezone.now()
+        today = timezone.localtime(now).date() if timezone.is_aware(now) else now.date()
+        campaigns = Campaign.objects.filter(
+            is_active=True, starts_on__lte=today, ends_on__gte=today,
+            package__status=Package.PUBLISHED,
+        ).select_related('package__category', 'package__main_destination')[:4]
+        context['current_campaigns'] = [
+            {'title': campaign.title, 'travel_dates': campaign.travel_dates,
+             'pkg': _package_presenter(campaign.package)} for campaign in campaigns
+        ]
         return render(request, 'users/pages/home.html', context)
 
 
@@ -1451,7 +1538,7 @@ def quote_request_view(request):
         try:
             package = Package.objects.get(id=package_id, status=Package.PUBLISHED)
             logger.info(f"Quote request for package: {package.name} (ID: {package.id})")
-        except Package.DoesNotExist:
+        except (Package.DoesNotExist, ValueError, OverflowError):
             logger.warning(f"Invalid package ID provided: {package_id}")
             messages.warning(request, "The selected package is no longer available. You can still submit a general quote request.")
 

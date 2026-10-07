@@ -24,6 +24,7 @@
     
     <!-- Tailwind CSS (Compiled Standalone Static File) -->
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/navigation-refresh.css' %}?v=homepage-2">
     
     <!-- Tailwind CSS CDN Fallback for dynamic classes -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -133,7 +134,7 @@
 
     {% block site_navbar %}
     <!-- Top Navigation Header -->
-    {% include 'components/navbar.html' %}
+    {% include 'components/navigation.html' %}
     {% endblock %}
 
     <!-- Main Content Block -->

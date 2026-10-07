@@ -1,0 +1,14 @@
+{% if current_campaigns %}
+<section class="myriad-intro" id="current-campaigns">
+  <h2 class="text-3xl font-bold mb-6">Current Campaigns</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    {% for campaign in current_campaigns %}
+    <article>
+      <h3 class="text-lg font-bold mb-2">{{ campaign.title }}</h3>
+      {% if campaign.travel_dates %}<p class="mb-3">{{ campaign.travel_dates }}</p>{% endif %}
+      {% include 'components/package_card.html' with pkg=campaign.pkg %}
+    </article>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}

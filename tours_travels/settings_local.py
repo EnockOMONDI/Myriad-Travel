@@ -26,6 +26,8 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_PROVIDER = 'django'
+SITE_URL = 'http://127.0.0.1:8021'
 DEFAULT_FROM_EMAIL = 'Myriad Travel <info@myriad-travel.com>'
 ADMIN_EMAIL = 'info@myriad-travel.com'
 JOBS_EMAIL = 'careers@myriad-travel.com'

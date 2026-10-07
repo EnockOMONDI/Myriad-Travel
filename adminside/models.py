@@ -3,8 +3,59 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
+from django.utils.html import strip_tags
 from pyuploadcare.dj.models import ImageField
 from django_ckeditor_5.fields import CKEditor5Field
+
+
+class TravelCollection(models.Model):
+    SECTION_CHOICES = [
+        ('kenya', 'Explore Kenya'), ('world', 'Explore The World'),
+        ('safaris', 'Tours & Safaris'), ('themes', 'Themed Packages'),
+    ]
+    name = models.CharField(max_length=120)
+    slug = models.SlugField(unique=True)
+    section = models.CharField(max_length=12, choices=SECTION_CHOICES)
+    description = models.TextField(blank=True)
+    packages = models.ManyToManyField('Package', blank=True, related_name='collections')
+    display_order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    show_in_navigation = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['display_order', 'name']
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('users:travel_collection', args=[self.slug])
+
+
+class Campaign(models.Model):
+    title = models.CharField(max_length=160)
+    package = models.ForeignKey('Package', on_delete=models.PROTECT, related_name='campaigns')
+    starts_on = models.DateField(help_text='First day to display this campaign.')
+    ends_on = models.DateField(help_text='Last day to display this campaign.')
+    travel_dates = models.CharField(max_length=120, blank=True)
+    display_order = models.PositiveIntegerField(default=100)
+    is_active = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['display_order', 'pk']
+        constraints = [models.CheckConstraint(
+            check=models.Q(ends_on__gte=models.F('starts_on')),
+            name='campaign_dates_in_order',
+        )]
+
+    def clean(self):
+        if self.starts_on and self.ends_on and self.ends_on < self.starts_on:
+            raise ValidationError({'ends_on': 'End date must be on or after start date.'})
+        if self.is_active and self.package_id and self.package.status != 'published':
+            raise ValidationError({'package': 'Choose a published package for an active campaign.'})
+
+    def __str__(self):
+        return self.title
 
 
 class PackageCategory(models.Model):
@@ -15,6 +66,10 @@ class PackageCategory(models.Model):
     slug = models.SlugField(max_length=200, unique=True)
     description = models.TextField(blank=True, help_text="Category description")
     is_active = models.BooleanField(default=True)
+    show_in_navigation = models.BooleanField(
+        default=True,
+        help_text='Show this category in relevant public navigation menus.',
+    )
     display_order = models.PositiveIntegerField(default=0, help_text="Order of appearance (lower numbers appear first)")
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -58,10 +113,23 @@ class Destination(models.Model):
         (CITY, 'City'),
         (PLACE, 'Place'),
     ]
+
+    REGION_CHOICES = [
+        ('kenya', 'Kenya'),
+        ('africa', 'Africa'),
+        ('americas', 'Americas'),
+        ('asia', 'Asia'),
+        ('australasia', 'Australasia'),
+        ('europe', 'Europe'),
+        ('indian-ocean-islands', 'Indian Ocean Islands'),
+        ('middle-east', 'Middle East'),
+    ]
     
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
     destination_type = models.CharField(max_length=10, choices=DESTINATION_TYPES)
+    region = models.CharField(max_length=32, choices=REGION_CHOICES, blank=True,
+                              help_text='Used to place this destination in public navigation.')
     description = CKEditor5Field(config_name='default', help_text="Detailed destination description with rich text formatting")
     image = ImageField(blank=True, null=True, manual_crop="4:4")
     
@@ -91,6 +159,10 @@ class Destination(models.Model):
     display_order = models.PositiveIntegerField(default=0)
     is_featured = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    show_in_navigation = models.BooleanField(
+        default=True,
+        help_text='Allow this destination to appear in public navigation after it has a published package.',
+    )
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -354,6 +426,12 @@ class Package(models.Model):
         related_name='packages',
         help_text="Package category (e.g., Nairobi Excursions, Kenya Safaris, Outbound)"
     )
+    categories = models.ManyToManyField(
+        PackageCategory,
+        blank=True,
+        related_name='tagged_packages',
+        help_text='Additional public categories. The primary category remains the main card label.',
+    )
 
     # Destinations - simplified to main destination only
     # Sub-destinations will be handled through itinerary
@@ -480,6 +558,30 @@ class PackageGalleryImage(models.Model):
             models.Index(fields=['package', 'is_visible', 'display_order']),
             models.Index(fields=['package', 'captured_at']),
         ]
+
+    def clean(self):
+        """Keep published packages complete enough for public discovery."""
+        if self.status != self.PUBLISHED:
+            return
+
+        errors = {}
+        if not self.main_destination_id:
+            errors['main_destination'] = 'A published package needs a destination.'
+        elif not self.main_destination.is_active:
+            errors['main_destination'] = 'Choose an active destination before publishing.'
+
+        if not self.category_id:
+            errors['category'] = 'A published package needs a category for public filters.'
+        elif not self.category.is_active:
+            errors['category'] = 'Choose an active category before publishing.'
+
+        for field in ('description', 'inclusions', 'exclusions'):
+            value = str(getattr(self, field, '') or '')
+            if not strip_tags(value).replace('\xa0', ' ').strip():
+                errors[field] = 'This public package content is required before publishing.'
+
+        if errors:
+            raise ValidationError(errors)
         verbose_name = "Package Gallery Image"
         verbose_name_plural = "Package Gallery Images"
 

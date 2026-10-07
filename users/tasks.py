@@ -94,7 +94,16 @@ def send_email_via_mailtrap(subject, html_message, from_email, recipient_list):
         provider = _provider_name()
         logger.info(f"Sending email via {provider} API: subject='{subject}', recipients={recipient_list}")
 
-        if provider == 'resend':
+        if provider == 'django':
+            from django.core.mail import EmailMultiAlternatives
+            from django.utils.html import strip_tags
+
+            message = EmailMultiAlternatives(
+                subject, strip_tags(html_message), from_email, recipient_list,
+            )
+            message.attach_alternative(html_message, 'text/html')
+            sent = message.send() == 1
+        elif provider == 'resend':
             sent = _send_email_via_resend(subject, html_message, from_email, recipient_list)
         else:
             sent = _send_email_via_mailtrap(subject, html_message, from_email, recipient_list)

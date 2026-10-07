@@ -1,0 +1,12 @@
+{% load static %}
+<section class="myriad-intro">
+  <img class="myriad-banner" src="{% static 'images/hero/discover-kenya.jpeg' %}" alt="Elephants beneath Mount Kilimanjaro" fetchpriority="high">
+  <h1>Myriad Travel</h1>
+  <p>Kenya safaris, coastal holidays and journeys further afield.</p>
+  <div class="flex flex-wrap gap-4 mt-6">
+    <a href="{% url 'users:explore_kenya' %}">Explore Kenya</a>
+    <a href="{% url 'users:explore_the_world' %}">Explore The World</a>
+    <a href="{% url 'users:tours_safaris' %}">Tours &amp; Safaris</a>
+    <a href="{% url 'users:themed_packages' %}">Themed Packages</a>
+  </div>
+</section>
