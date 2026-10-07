@@ -1,0 +1,40 @@
+<div id="destination-package-results" aria-live="polite">
+  <div class="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <div>
+      <span class="myriad-red-text text-[11px] font-black uppercase tracking-[0.22em]">Available packages</span>
+      <h2 class="mt-2 font-serif text-3xl font-black text-slate-950">Trips featuring {{ destination.name }}</h2>
+    </div>
+  </div>
+
+  {% if collection_filters %}
+  <div class="mb-8 border-y border-slate-200 bg-white py-3">
+    <div class="flex gap-2 overflow-x-auto pb-1">
+      <a href="?" data-destination-async class="whitespace-nowrap rounded-md px-4 py-2 text-xs font-bold transition {% if collection_active_filter == 'all' %}myriad-red-bg text-white{% else %}bg-slate-100 text-slate-700 hover-myriad-blue-soft-bg hover-myriad-blue-text{% endif %}">All</a>
+      {% for filter in collection_filters %}
+      <a href="?category={{ filter.slug }}" data-destination-async class="whitespace-nowrap rounded-md px-4 py-2 text-xs font-bold transition {% if collection_active_filter == filter.slug %}myriad-red-bg text-white{% else %}bg-slate-100 text-slate-700 hover-myriad-blue-soft-bg hover-myriad-blue-text{% endif %}">{{ filter.label }}</a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% if collection_packages %}
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+    {% for pkg in collection_packages %}{% include 'components/package_card.html' with pkg=pkg %}{% endfor %}
+  </div>
+  {% if collection_page_obj.paginator.num_pages > 1 %}
+  <nav class="mt-10 flex items-center justify-center gap-2" aria-label="Package pages">
+      {% if collection_page_obj.has_previous %}<a href="?{% if collection_active_filter != 'all' %}category={{ collection_active_filter }}&amp;{% endif %}page={{ collection_page_obj.previous_page_number }}" data-destination-async class="hover-myriad-blue-border hover-myriad-blue-text rounded-md border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 transition">Previous</a>{% endif %}
+    {% for page_number in collection_page_obj.paginator.page_range %}
+      {% if page_number == collection_page_obj.number %}<span class="myriad-red-bg rounded-md px-4 py-2 text-xs font-bold text-white" aria-current="page">{{ page_number }}</span>
+      {% elif page_number >= collection_page_obj.number|add:'-2' and page_number <= collection_page_obj.number|add:'2' %}<a href="?{% if collection_active_filter != 'all' %}category={{ collection_active_filter }}&amp;{% endif %}page={{ page_number }}" data-destination-async class="hover-myriad-blue-border hover-myriad-blue-text rounded-md border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 transition">{{ page_number }}</a>{% endif %}
+    {% endfor %}
+    {% if collection_page_obj.has_next %}<a href="?{% if collection_active_filter != 'all' %}category={{ collection_active_filter }}&amp;{% endif %}page={{ collection_page_obj.next_page_number }}" data-destination-async class="hover-myriad-blue-border hover-myriad-blue-text rounded-md border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 transition">Next</a>{% endif %}
+  </nav>
+  {% endif %}
+  {% else %}
+  <div class="border border-dashed border-slate-300 bg-white p-10 text-center">
+    {% if collection_active_filter != 'all' %}<h3 class="font-serif text-2xl font-black text-slate-950">No packages match this category yet.</h3><a href="?" data-destination-async class="myriad-red-bg mt-4 inline-flex rounded-md px-4 py-2 text-xs font-bold text-white">Show all packages</a>
+    {% else %}<h3 class="font-serif text-2xl font-black text-slate-950">No published packages yet.</h3>{% endif %}
+  </div>
+  {% endif %}
+</div>

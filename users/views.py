@@ -9,6 +9,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.db.models import Q
 from django.http import JsonResponse
+from django.core.paginator import Paginator
 
 
 from adminside.models import *
@@ -497,12 +498,13 @@ def _collection_context(title, eyebrow, description, packages_qs, destination_qs
     filters = []
     seen_filters = set()
     for package in packages:
-        if package.category:
-            slug = slugify(package.category.name)
+        package_categories = ([package.category] if package.category else []) + list(package.categories.all())
+        for category in package_categories:
+            slug = slugify(category.name)
             if slug not in seen_filters:
                 seen_filters.add(slug)
                 filters.append({
-                    'label': package.category.name,
+                    'label': category.name,
                     'slug': slug,
                 })
     context.update({
@@ -667,15 +669,20 @@ def destination_detail(request, slug):
     destination = get_object_or_404(Destination, slug=slug, is_active=True)
     packages_qs = _packages_for_collection().filter(main_destination=destination)
     packages_qs, filters, selected_category = _filter_collection_by_category(request, packages_qs)
-    context = _collection_context(
-        destination.name,
-        'Destination guide',
-        destination.meta_description or strip_tags(str(destination.description or '')),
-        packages_qs,
-    )
-    context['collection_filters'] = filters
-    context['collection_active_filter'] = selected_category or 'all'
-    context['destination'] = _destination_presenter(destination)
+    paginator = Paginator(packages_qs, 20)
+    page_obj = paginator.get_page(request.GET.get('page'))
+    context = _public_page_context(package_limit=4)
+    context.update({
+        'collection_eyebrow': 'Destination guide',
+        'collection_filters': filters,
+        'collection_active_filter': selected_category or 'all',
+        'collection_packages': [_package_presenter(package) for package in page_obj.object_list],
+        'collection_page_obj': page_obj,
+        'collection_total_packages': paginator.count,
+        'destination': _destination_presenter(destination),
+    })
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, 'users/pages/includes/destination_package_results.html', context)
     return render(request, 'users/pages/destination_detail.html', context)
 
 

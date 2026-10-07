@@ -1,4 +1,30 @@
 :root { --myriad-red: #eb3728; --myriad-blue: #1ca297; }
+.myriad-red-bg { background-color: var(--myriad-red); }
+.myriad-red-text { color: var(--myriad-red); }
+.myriad-red-light-text { color: #f9b1aa; }
+.myriad-red-fill { fill: var(--myriad-red); }
+.myriad-red-border { border-color: var(--myriad-red); }
+.myriad-blue-bg { background-color: var(--myriad-blue); }
+.myriad-blue-text { color: #12645d; }
+.myriad-blue-border { border-color: var(--myriad-blue); }
+.myriad-blue-soft-bg { background-color: #e9f5f3; }
+.myriad-blue-soft-border { border-color: #b7ddd8; }
+.myriad-red-soft-bg { background-color: #fff0ee; }
+.hover-myriad-red-bg:hover { background-color: #c72b20; }
+.hover-myriad-red-text:hover { color: #c72b20; }
+.hover-myriad-red-border:hover { border-color: var(--myriad-red); }
+.hover-myriad-blue-text:hover { color: #12645d; }
+.hover-myriad-blue-border:hover { border-color: var(--myriad-blue); }
+.hover-myriad-blue-soft-bg:hover { background-color: #e9f5f3; }
+
+/* Retire the old amber accent without requiring a Tailwind rebuild. */
+[class~="bg-amber-500"], [class~="bg-amber-600"] { background-color: var(--myriad-red); }
+[class~="text-amber-200"], [class~="text-amber-300"], [class~="text-amber-400"], [class~="text-amber-500"], [class~="text-amber-600"], [class~="text-amber-700"], [class~="text-amber-800"], [class~="text-amber-900"] { color: var(--myriad-red); }
+[class~="fill-amber-400"] { fill: var(--myriad-red); }
+[class~="border-amber-200"], [class~="border-amber-300"] { border-color: var(--myriad-red); }
+[class~="hover:bg-amber-400"]:hover, [class~="hover:bg-amber-700"]:hover { background-color: #c72b20; }
+[class~="hover:text-amber-700"]:hover, [class~="hover:text-amber-800"]:hover { color: #c72b20; }
+[class~="hover:border-amber-300"]:hover { border-color: var(--myriad-red); }
 .myriad-header { background: white; border-bottom: 1px solid #e5e7eb; position: relative; z-index: 40; }
 .myriad-contact { background: var(--myriad-blue); color: white; padding: 7px 4%; font-size: 13px; }
 .myriad-contact-inner { max-width: 1440px; margin: auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
