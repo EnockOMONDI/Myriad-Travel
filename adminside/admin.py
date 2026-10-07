@@ -2,6 +2,7 @@ from django.contrib import admin
 from django import forms
 from django.utils.html import format_html
 from django.urls import reverse
+from .itinerary_audit import analyse_itinerary
 from .models import (
     TravelCollection,
     Campaign,
@@ -231,7 +232,7 @@ class ItineraryDayInline(admin.TabularInline):
 
 @admin.register(Itinerary)
 class ItineraryAdmin(admin.ModelAdmin):
-    list_display = ('title', 'package', 'days_count')
+    list_display = ('title', 'package', 'days_count', 'itinerary_quality')
     search_fields = ('title', 'package__name', 'overview')
     inlines = [ItineraryDayInline]
 
@@ -249,6 +250,11 @@ class ItineraryAdmin(admin.ModelAdmin):
         return obj.days.count()
     days_count.short_description = 'Number of Days'
 
+    def itinerary_quality(self, obj):
+        audit = analyse_itinerary(obj.package)
+        return audit['label']
+    itinerary_quality.short_description = 'Itinerary quality'
+
 class PackageBookingInline(admin.TabularInline):
     model = PackageBooking
     extra = 0
@@ -264,16 +270,38 @@ class PackageGalleryImageInline(admin.TabularInline):
     fields = ('image', 'title', 'caption', 'location', 'captured_at', 'display_order', 'is_visible')
 
 
+class ItineraryQualityFilter(admin.SimpleListFilter):
+    title = 'itinerary quality'
+    parameter_name = 'itinerary_quality'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('complete', 'Day-by-day complete'),
+            ('grouped', 'Grouped itinerary'),
+            ('needs-review', 'Needs itinerary review'),
+        )
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if not value:
+            return queryset
+        matching_ids = [
+            package.id for package in queryset.prefetch_related('itinerary__days')
+            if analyse_itinerary(package)['status'] == value
+        ]
+        return queryset.filter(id__in=matching_ids)
+
+
 @admin.register(Package)
 class PackageAdmin(admin.ModelAdmin):
     form = PackageAdminForm
-    list_display = ('name', 'display_image', 'category', 'region', 'destination_link', 'adult_price',
+    list_display = ('name', 'display_image', 'category', 'region', 'destination_link', 'itinerary_quality', 'adult_price',
                    'child_price', 'duration_days', 'lipa_pole_pole', 'status', 'is_featured', 'home_rank', 'total_bookings')
-    list_filter = ('category', 'categories', 'region', 'main_destination', 'status', 'lipa_pole_pole', 'is_featured', 'duration_days')
+    list_filter = ('category', 'categories', 'region', 'main_destination', ItineraryQualityFilter, 'status', 'lipa_pole_pole', 'is_featured', 'duration_days')
     search_fields = ('name', 'subtitle', 'description', 'highlights', 'inclusions', 'exclusions', 'main_destination__name')
     autocomplete_fields = ('category', 'main_destination')
     filter_horizontal = ('categories', 'available_accommodations', 'available_travel_modes')
-    readonly_fields = ('total_bookings', 'total_reviews')
+    readonly_fields = ('total_bookings', 'total_reviews', 'itinerary_quality')
     prepopulated_fields = {'slug': ('name',)}
     list_editable = ('status', 'is_featured', 'home_rank')
     inlines = [PackageGalleryImageInline, PackageBookingInline]
@@ -298,6 +326,10 @@ class PackageAdmin(admin.ModelAdmin):
         ('Package Details', {
             'fields': ('highlights', 'inclusions', 'exclusions'),
             'classes': ('wide',)
+        }),
+        ('Itinerary Quality', {
+            'fields': ('itinerary_quality',),
+            'description': 'This is a read-only audit. It flags grouped ranges, missing day coverage, and stored day-number mismatches without altering itinerary content.'
         }),
         ('SEO', {
             'fields': ('meta_title', 'meta_description'),
@@ -327,13 +359,27 @@ class PackageAdmin(admin.ModelAdmin):
         return format_html('<a href="{}">{}</a>', url, obj.main_destination.name)
     destination_link.short_description = 'Destination'
 
+    def itinerary_quality(self, obj):
+        audit = analyse_itinerary(obj)
+        colors = {
+            'complete': '#12645d',
+            'grouped': '#1ca297',
+            'needs-review': '#eb3728',
+        }
+        return format_html(
+            '<strong style="color: {}">{}</strong><br><span style="color: #64748b">{}</span>',
+            colors[audit['status']], audit['label'], audit['details'],
+        )
+    itinerary_quality.short_description = 'Itinerary quality'
+
     def get_queryset(self, request):
         """Optimize queries by prefetching related fields"""
         return super().get_queryset(request).prefetch_related(
             'available_accommodations',
             'available_travel_modes',
             'package_bookings',
-            'gallery_images'
+            'gallery_images',
+            'itinerary__days'
         ).select_related(
             'main_destination'
         )

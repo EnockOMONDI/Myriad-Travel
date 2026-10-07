@@ -40,6 +40,7 @@ from .models import QuoteRequest, TripFeedback
 from django.contrib.auth.models import User
 from blog.models import Post, Category
 from adminside.models import Destination, Package, Accommodation
+from adminside.itinerary_audit import analyse_itinerary
 from django.utils.text import slugify
 from django.utils.html import strip_tags
 from types import SimpleNamespace
@@ -188,7 +189,7 @@ def _package_presenter(package):
     region_label = package.get_region_display() if hasattr(package, 'get_region_display') else category
     lipa_months = package.lipa_pole_pole_months or 4
     special_offer = CHALBI_SPECIAL_OFFER if package.slug == 'twende-chalbi-4-nights-5-days' else None
-    itinerary_days = _itinerary_presenter(package)
+    itinerary_days, itinerary_audit = _itinerary_presenter(package)
     accommodations = list(package.available_accommodations.all())
     travel_modes = list(package.available_travel_modes.all())
     accommodation_names = [item.name for item in accommodations[:3]]
@@ -234,6 +235,7 @@ def _package_presenter(package):
         'inclusions': _rich_text_items(package.inclusions),
         'exclusions': _rich_text_items(package.exclusions),
         'itinerary': itinerary_days,
+        'itinerary_audit': itinerary_audit,
         'best_for': best_for,
         'route_summary': route_summary,
         'accommodations': accommodation_names,
@@ -245,30 +247,19 @@ def _package_presenter(package):
 
 
 def _itinerary_presenter(package):
+    audit = analyse_itinerary(package)
     days = []
-    try:
-        itinerary = package.itinerary
-    except Exception:
-        itinerary = None
-    if itinerary:
-        for day in itinerary.days.all().order_by('day_number'):
-            meals = ', '.join(label for ok, label in [
-                (day.breakfast, 'Breakfast'),
-                (day.lunch, 'Lunch'),
-                (day.dinner, 'Dinner'),
-            ] if ok)
-            days.append({
-                'day': day.day_number,
-                'title': CHALBI_DAY_META.get(day.day_number, {}).get('title', day.title) if package.slug == 'twende-chalbi-4-nights-5-days' else day.title,
-                'description': day.description,
-                'meals': meals,
-                'stay': day.accommodation.name if day.accommodation else '',
-                'date': CHALBI_DAY_META.get(day.day_number, {}).get('date', ''),
-                'theme': CHALBI_DAY_META.get(day.day_number, {}).get('theme', ''),
-                'summary': CHALBI_DAY_META.get(day.day_number, {}).get('summary', ''),
-                'overnight': CHALBI_DAY_META.get(day.day_number, {}).get('overnight', ''),
-            })
-    return days
+    for index, day in enumerate(audit['rows'], start=1):
+        chalbi_meta = CHALBI_DAY_META.get(index, {}) if package.slug == 'twende-chalbi-4-nights-5-days' else {}
+        days.append({
+            **day,
+            'title': chalbi_meta.get('title', day['title']),
+            'date': chalbi_meta.get('date', ''),
+            'theme': chalbi_meta.get('theme', ''),
+            'summary': chalbi_meta.get('summary', ''),
+            'overnight': chalbi_meta.get('overnight', ''),
+        })
+    return days, audit
 
 
 def _destination_presenter(destination):
