@@ -151,6 +151,76 @@ CHALBI_DAY_META = {
 }
 
 
+# Reviewed local fallback photographs. An admin-uploaded destination or package
+# image always wins; this list only prevents published pages from falling back
+# to the generic Myriad placeholder while the image library is being completed.
+CURATED_DESTINATION_IMAGES = {
+    'akagera-national-park',
+    '07-tsavo-east-watamu-malindi',
+    'alaska',
+    'amboseli-national-park',
+    'arabian-gulf',
+    'arusha',
+    'cairo',
+    'cape-town',
+    'caribbean',
+    'dar-es-salaam',
+    'diani-beach',
+    'dubai',
+    'dubai-abu-dhabi',
+    'egypt',
+    'great-rift-valley',
+    'great-rift-valley-naivasha',
+    'israel-and-jordan',
+    'johannesburg',
+    'kajiado-county',
+    'kibale-forest-national-park',
+    'kigali',
+    'kenya',
+    'kwale-county',
+    'lake-manyara-national-park',
+    'maasai-mara-national-reserve',
+    'masai-mara-national-reserve',
+    'maldives',
+    'marsabit-county',
+    'masai-mara-and-diani',
+    'mauritius',
+    'mount-kilimanjaro-national-park',
+    'mount-kenya',
+    'mount-kenya-national-park',
+    'murchison-falls-national-park',
+    'mediterranean-europe',
+    'matobo-national-park',
+    'mombasa-north-coast',
+    'nairobi',
+    'naivasha',
+    'naivasha-and-elementaita',
+    'narok-county',
+    'norwegian-fjords',
+    'phuket',
+    'rwanda',
+    'samburu-national-reserve',
+    'serengeti-national-park',
+    'tarangire-national-park',
+    'tanzania',
+    'tsavo-east-national-park',
+    'uae',
+    'ubud-bali',
+    'uganda',
+    'zambia',
+    'zanzibar',
+    'zanzibar-island',
+    'zimbabwe',
+}
+
+
+def _curated_destination_image(destination):
+    slug = getattr(destination, 'slug', '')
+    if slug in CURATED_DESTINATION_IMAGES:
+        return f'/static/images/destinations/{slug}.jpg'
+    return None
+
+
 def _image_url(image_field, fallback):
     if image_field and hasattr(image_field, 'cdn_url'):
         return image_field.cdn_url
@@ -184,6 +254,10 @@ def _rich_text_items(value):
 def _package_presenter(package):
     category = package.category.name if package.category else 'Safari & Holiday'
     destination = package.main_destination.get_full_name() if package.main_destination else 'Kenya'
+    destination_image = getattr(package.main_destination, 'image', None)
+    public_image = package.featured_image or destination_image
+    curated_destination_image = _curated_destination_image(package.main_destination)
+    image_fallback = curated_destination_image or '/static/images/placeholders/myriad-package-placeholder.png'
     price_kes = int(package.adult_price or 0)
     highlights = [line.strip() for line in (package.highlights or '').splitlines() if line.strip()]
     region_label = package.get_region_display() if hasattr(package, 'get_region_display') else category
@@ -218,8 +292,10 @@ def _package_presenter(package):
         'region_label': region_label,
         'region': package.region or slugify(category) or 'kenya-safari',
         'destination': destination,
-        'featured_image': _image_url(package.featured_image, '/static/images/placeholders/myriad-package-placeholder.png'),
-        'hero_image': _uploadcare_preview_url(package.featured_image, '/static/images/placeholders/myriad-package-placeholder.png'),
+        # A package-specific upload wins. Otherwise its curated destination banner
+        # supplies a coherent public image until the package gets its own asset.
+        'featured_image': _image_url(public_image, image_fallback),
+        'hero_image': _uploadcare_preview_url(public_image, image_fallback),
         'duration': f'{package.duration_days} Days / {package.duration_nights} Nights',
         'rating': package.rating,
         'reviews_count': package.total_reviews,
@@ -240,7 +316,7 @@ def _package_presenter(package):
         'route_summary': route_summary,
         'accommodations': accommodation_names,
         'transport_modes': transport_names,
-        'has_image': bool(package.featured_image),
+        'has_image': bool(public_image or curated_destination_image),
         'special_offer': special_offer,
         'model': package,
     }
@@ -270,7 +346,10 @@ def _destination_presenter(destination):
         'slug': destination.slug,
         'country': country,
         'description': destination.meta_description or destination.description,
-        'image': _image_url(destination.image, 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?q=80&w=1200&auto=format&fit=crop'),
+        'image': _image_url(
+            destination.image,
+            _curated_destination_image(destination) or '/static/images/placeholders/myriad-package-placeholder.png',
+        ),
         'badge': 'Featured' if destination.is_featured else destination.get_destination_type_display(),
         'popular_for': ['Safari', 'Nature', 'Tailored Trips'],
         'model': destination,

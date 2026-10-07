@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 from django.contrib.auth.models import User
-from django.db.models import Sum
+from django.db.models import Q, Sum
 from django.urls import reverse
 from django.utils import timezone
 
@@ -69,10 +69,12 @@ def build_dashboard_context(user):
             urgent=True,
         ),
         attention(
-            "Packages missing images",
-            Package.objects.filter(featured_image__isnull=True).count() + Package.objects.filter(featured_image="").count(),
-            "Packages should have a strong selling image.",
-            admin_url("adminside_package_changelist"),
+            "Published packages missing images",
+            Package.objects.filter(status=Package.PUBLISHED).filter(
+                Q(featured_image__isnull=True) | Q(featured_image="")
+            ).count(),
+            "Upload a package image to replace the destination default on its selling page.",
+            admin_url("adminside_package_changelist") + "?status__exact=published&image_status=missing",
         ),
         attention(
             "Packages missing itinerary",

@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django import forms
+from django.db.models import Q
 from django.utils.html import format_html
 from django.urls import reverse
 from .itinerary_audit import analyse_itinerary
@@ -61,6 +62,24 @@ class ItineraryDayAdminForm(forms.ModelForm):
         model = ItineraryDay
         fields = '__all__'
         # RichTextField widgets are automatically configured
+
+
+class PackageImageStatusFilter(admin.SimpleListFilter):
+    title = 'image status'
+    parameter_name = 'image_status'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('missing', 'Missing package image'),
+            ('uploaded', 'Has package image'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == 'missing':
+            return queryset.filter(Q(featured_image__isnull=True) | Q(featured_image=''))
+        if self.value() == 'uploaded':
+            return queryset.exclude(Q(featured_image__isnull=True) | Q(featured_image=''))
+        return queryset
 
 
 @admin.register(PackageCategory)
@@ -297,7 +316,7 @@ class PackageAdmin(admin.ModelAdmin):
     form = PackageAdminForm
     list_display = ('name', 'display_image', 'category', 'region', 'destination_link', 'itinerary_quality', 'adult_price',
                    'child_price', 'duration_days', 'lipa_pole_pole', 'status', 'is_featured', 'home_rank', 'total_bookings')
-    list_filter = ('category', 'categories', 'region', 'main_destination', ItineraryQualityFilter, 'status', 'lipa_pole_pole', 'is_featured', 'duration_days')
+    list_filter = ('category', 'categories', 'region', 'main_destination', PackageImageStatusFilter, ItineraryQualityFilter, 'status', 'lipa_pole_pole', 'is_featured', 'duration_days')
     search_fields = ('name', 'subtitle', 'description', 'highlights', 'inclusions', 'exclusions', 'main_destination__name')
     autocomplete_fields = ('category', 'main_destination')
     filter_horizontal = ('categories', 'available_accommodations', 'available_travel_modes')

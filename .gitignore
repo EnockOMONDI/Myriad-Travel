@@ -123,6 +123,7 @@ htmlcov/
 PLAN.md
 data/
 package_upload_images/
+image_staging/
 
 # ============================================
 # SECRETS & CREDENTIALS
