@@ -72,7 +72,7 @@ class _ListItemParser(HTMLParser):
 
 
 CHALBI_SPECIAL_OFFER = {
-    'label': 'Current Featured Activation',
+    'label': 'Featured Group Trip',
     'date': '10-14 December 2026',
     'departure': 'Nairobi departure at 3:30 AM on 10 December 2026',
     'return': 'Nairobi return around 4:00-5:00 PM on 14 December 2026',
@@ -106,7 +106,7 @@ CHALBI_SPECIAL_OFFER = {
         },
         {
             'question': 'What happens after I send my request?',
-            'answer': 'Myriad Travel will confirm availability, rooming preference, inclusions, final payment steps and any operational updates before your booking is locked in.',
+            'answer': 'Myriad Travel will confirm availability, rooming preference, inclusions, payment steps and any important trip updates before your booking is locked in.',
         },
     ],
 }
