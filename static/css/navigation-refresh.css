@@ -1,19 +1,19 @@
-:root { --myriad-red: #eb3728; --myriad-blue: #1ca297; }
+:root { --myriad-red: #eb3728; --myriad-blue: #245f86; }
 .myriad-red-bg { background-color: var(--myriad-red); }
 .myriad-red-text { color: var(--myriad-red); }
 .myriad-red-light-text { color: #f9b1aa; }
 .myriad-red-fill { fill: var(--myriad-red); }
 .myriad-red-border { border-color: var(--myriad-red); }
 .myriad-blue-bg { background-color: var(--myriad-blue); }
-.myriad-blue-text { color: #12645d; }
+.myriad-blue-text { color: #245f86; }
 .myriad-blue-border { border-color: var(--myriad-blue); }
-.myriad-blue-soft-bg { background-color: #e9f5f3; }
-.myriad-blue-soft-border { border-color: #b7ddd8; }
+.myriad-blue-soft-bg { background-color: #eaf3f8; }
+.myriad-blue-soft-border { border-color: #b9d4e4; }
 .myriad-red-soft-bg { background-color: #fff0ee; }
 .hover-myriad-red-bg:hover { background-color: #c72b20; }
 .hover-myriad-red-text:hover { color: #c72b20; }
 .hover-myriad-red-border:hover { border-color: var(--myriad-red); }
-.hover-myriad-blue-text:hover { color: #12645d; }
+.hover-myriad-blue-text:hover { color: #245f86; }
 .hover-myriad-blue-border:hover { border-color: var(--myriad-blue); }
 .hover-myriad-blue-soft-bg:hover { background-color: #e9f5f3; }
 
@@ -40,7 +40,7 @@
 .myriad-menu { display: flex; align-items: center; justify-content: center; flex: 1; gap: 10px; }
 .myriad-menu-item { display: flex; align-items: center; position: relative; font-size: 12px; white-space: nowrap; }
 .myriad-menu-item > span { cursor: default; }
-.myriad-menu summary { list-style: none; cursor: pointer; padding: 12px 2px; color: #1ca297; }
+.myriad-menu summary { list-style: none; cursor: pointer; padding: 12px 2px; color: var(--myriad-blue); }
 .myriad-menu summary::-webkit-details-marker { display: none; }
 .myriad-menu summary svg { width: 14px; height: 14px; }
 .myriad-dropdown { display: none; position: absolute; top: 100%; left: 0; min-width: 250px; background: white; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 8px 20px #0001; padding: 12px; }
@@ -53,7 +53,7 @@
 .myriad-menu-section > a:not(.myriad-menu-section-title) { font-size: 13px; padding: 7px 10px; }
 .myriad-view-all { margin-top: 8px; border-top: 1px solid #e5e7eb; color: var(--myriad-blue); font-weight: 700; }
 .myriad-dropdown a { display: block; padding: 10px; white-space: normal; }
-.myriad-dropdown a:hover, .myriad-dropdown a:focus { background: #eaf7f6; }
+.myriad-dropdown a:hover, .myriad-dropdown a:focus { background: #eaf3f8; }
 .myriad-menu-item > a:hover, .myriad-menu-item > a:focus { color: #eb3728; }
 .myriad-quote { background: var(--myriad-red); color: white; border-radius: 6px; padding: 12px 16px; font-size: 13px; font-weight: 700; white-space: nowrap; }
 .myriad-menu-toggle { display: none; }
@@ -61,23 +61,23 @@
 .myriad-intro { max-width: 1280px; margin: auto; padding: 32px 24px; }
 .myriad-intro h1 { font-size: 40px; line-height: 1.15; margin: 20px 0 12px; }
 .myriad-intro p { max-width: 760px; line-height: 1.8; color: #52565a; }
-#footer-section { background: #eaf7f5; color: #173b38; border-top: 4px solid var(--myriad-blue); }
-#footer-section > div:first-child { background: #137970; border-color: #ffffff30; }
+#footer-section { background: #eaf3f8; color: #17324a; border-top: 4px solid var(--myriad-blue); }
+#footer-section > div:first-child { background: #245f86; border-color: #ffffff30; }
 #footer-section > div:first-child p { color: #fff; }
 #footer-section > div:first-child button { background: #bd281d; border-radius: 6px; }
-#footer-section > div:first-child a { background: #fff; color: #12645d; border-radius: 6px; }
+#footer-section > div:first-child a { background: #fff; color: #245f86; border-radius: 6px; }
 #footer-section > div:nth-child(2) [class*="text-slate"],
-#footer-section > div:nth-child(2) [class*="text-white"] { color: #345651; }
+#footer-section > div:nth-child(2) [class*="text-white"] { color: #334d63; }
 #footer-section h4 { color: #b82b20; }
-#footer-section > div:nth-child(2) [class*="bg-slate"] { background: #d5ece7; }
+#footer-section > div:nth-child(2) [class*="bg-slate"] { background: #d9eaf3; }
 #footer-section > div:nth-child(2) a:hover { color: #b82b20; text-decoration: underline; }
-#footer-section > div:nth-child(2) [class*="border-slate"] { border-color: #bedbd6; }
+#footer-section > div:nth-child(2) [class*="border-slate"] { border-color: #c2d9e7; }
 #footer-section img[alt="Myriad Travel"] { width: 156px; height: 110px; object-fit: contain; background: white; }
 #footer-section [class*="text-amber"], #footer-section [class*="text-emerald"],
-#footer-section [class*="text-sky"] { color: #12645d; }
+#footer-section [class*="text-sky"] { color: #245f86; }
 #packages-section { padding-top: 56px; padding-bottom: 56px; }
 #packages-section h2 { font-size: 34px; line-height: 1.2; }
-#packages-section .cat-filter-btn.bg-amber-600 { background: #137970; }
+#packages-section .cat-filter-btn.bg-amber-600 { background: var(--myriad-red); }
 @media (max-width: 600px) {
   .myriad-contact { padding: 7px 16px; }
   .myriad-phone span { font-size: 12px; }

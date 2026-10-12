@@ -562,7 +562,7 @@ def _packages_for_collection():
 
 
 def _collection_context(title, eyebrow, description, packages_qs, destination_qs=None, groups=None,
-                        active_filter='all', category_filters=None):
+                        active_filter='all', category_filters=None, hero_image=None, show_destinations=True):
     context = _public_page_context(package_limit=4)
     packages = list(packages_qs)
     filters = []
@@ -586,6 +586,8 @@ def _collection_context(title, eyebrow, description, packages_qs, destination_qs
         'collection_filters': category_filters if category_filters is not None else filters,
         'collection_active_filter': active_filter or 'all',
         'collection_groups': groups or [],
+        'collection_hero_image': hero_image or 'images/hero/tours-safaris.jpeg',
+        'collection_show_destinations': show_destinations,
     })
     return context
 
@@ -622,6 +624,8 @@ def explore_kenya(request):
         destinations_qs,
         active_filter=selected_category,
         category_filters=filters,
+        hero_image='images/hero/discover-kenya.jpeg',
+        show_destinations=False,
     )
     return render(request, 'users/pages/collection.html', context)
 
@@ -644,6 +648,7 @@ def explore_the_world(request):
         destinations_qs,
         active_filter=selected_category,
         category_filters=filters,
+        hero_image='images/hero/beyond-imagination.jpeg',
     )
     return render(request, 'users/pages/collection.html', context)
 
@@ -663,6 +668,7 @@ def tours_safaris(request):
         packages_qs,
         active_filter=selected_filter,
         category_filters=filters,
+        hero_image='images/hero/tours-safaris.jpeg',
     )
     return render(request, 'users/pages/collection.html', context)
 
@@ -692,6 +698,7 @@ def signature_experiences(request):
         groups=groups,
         active_filter=selected_filter,
         category_filters=filters,
+        hero_image='images/hero/signature-tours.jpeg',
     )
     return render(request, 'users/pages/signature_experiences.html', context)
 
@@ -705,6 +712,7 @@ def travel_collection(request, slug):
     context = _collection_context(
         collection.name, collection.get_section_display(), collection.description,
         packages_qs, active_filter=selected_filter, category_filters=filters,
+        hero_image='images/hero/tours-safaris.jpeg',
     )
     return render(request, 'users/pages/collection.html', context)
 
