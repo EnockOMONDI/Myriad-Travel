@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
 from django.utils.html import strip_tags
+from django.utils import timezone
 from pyuploadcare.dj.models import ImageField
 from django_ckeditor_5.fields import CKEditor5Field
 
@@ -56,6 +57,20 @@ class Campaign(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def public_status(self):
+        """Human-readable deal state used by admin and the public deals page."""
+        today = timezone.localdate()
+        if self.ends_on < today:
+            return 'Expired'
+        if self.starts_on > today:
+            return 'Scheduled'
+        if (self.ends_on - today).days <= 7:
+            return 'Closing soon'
+        if (today - self.starts_on).days <= 7:
+            return 'New'
+        return 'Active'
 
 
 class PackageCategory(models.Model):
@@ -209,7 +224,7 @@ class Destination(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('destination_detail', kwargs={'slug': self.slug})
+        return reverse('users:destination_detail', kwargs={'slug': self.slug})
 
     def get_all_children(self):
         """Get all descendant destinations recursively"""
@@ -530,7 +545,7 @@ class Package(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('package_detail', kwargs={'slug': self.slug})
+        return reverse('users:package_detail', kwargs={'slug': self.slug})
 
     @property
     def is_published(self):

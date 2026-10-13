@@ -10,6 +10,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.db.models import Q
 from django.http import JsonResponse
 from django.core.paginator import Paginator
+from django.urls import reverse
 
 
 from adminside.models import *
@@ -45,6 +46,63 @@ from django.utils.text import slugify
 from django.utils.html import strip_tags
 from types import SimpleNamespace
 from html.parser import HTMLParser
+
+
+PUBLIC_REGION_ORDER = [
+    ('africa', 'Africa', 'Safaris, cities, culture and beach escapes across the continent.', 'globe-2'),
+    ('americas', 'Americas', 'Big landscapes, city breaks and long-haul experiences.', 'mountain'),
+    ('middle-east', 'Middle East', 'Desert cities, heritage journeys and regional escapes.', 'landmark'),
+    ('asia', 'Asia', 'Island stays, wellness retreats and city discoveries.', 'palmtree'),
+    ('europe', 'Europe', 'Classic cities, cruises and seasonal European journeys.', 'building-2'),
+    ('indian-ocean-islands', 'Indian Ocean Islands', 'Warm-water escapes, beaches and island holidays.', 'waves'),
+]
+
+
+def _region_keys(region_slug):
+    """Treat existing Kenya records as part of Africa without changing their data yet."""
+    return ['africa', 'kenya'] if region_slug == 'africa' else [region_slug]
+
+
+def _destination_tree_ids(destination):
+    """Return an active destination and all active descendants without duplicating packages."""
+    ids = [destination.pk]
+    pending = list(destination.children.filter(is_active=True).only('pk'))
+    while pending:
+        child = pending.pop()
+        ids.append(child.pk)
+        pending.extend(child.children.filter(is_active=True).only('pk'))
+    return ids
+
+
+def _packages_for_destinations(destination_ids):
+    return _packages_for_collection().filter(
+        main_destination_id__in=destination_ids,
+    ).distinct()
+
+
+def _region_cards():
+    """Build homepage cards from current destination/package data, not hardcoded inventory."""
+    cards = []
+    for slug, name, description, icon in PUBLIC_REGION_ORDER:
+        keys = _region_keys(slug)
+        destinations = Destination.objects.filter(is_active=True, region__in=keys)
+        destination_ids = list(destinations.values_list('id', flat=True))
+        packages = _packages_for_collection().filter(main_destination_id__in=destination_ids)
+        image_destination = destinations.exclude(image='').exclude(image__isnull=True).order_by('display_order', 'name').first()
+        cards.append({
+            'slug': slug,
+            'name': name,
+            'description': description,
+            'icon': icon,
+            'image': _image_url(
+                image_destination.image if image_destination else None,
+                _curated_destination_image(image_destination) if image_destination else '/static/images/placeholders/myriad-package-placeholder.png',
+            ),
+            'destination_count': destinations.filter(packages__status=Package.PUBLISHED).distinct().count(),
+            'package_count': packages.count(),
+            'url': reverse('users:explore_region', kwargs={'region': slug}),
+        })
+    return cards
 
 
 class _ListItemParser(HTMLParser):
@@ -289,6 +347,7 @@ def _package_presenter(package):
         'description': package.description,
         'category': category,
         'categories': [item.name for item in package.categories.all()],
+        'collections': [item.name for item in package.collections.filter(is_active=True)],
         'region_label': region_label,
         'region': package.region or slugify(category) or 'kenya-safari',
         'destination': destination,
@@ -358,6 +417,7 @@ def _destination_presenter(destination):
 
 def _public_page_context(package_limit=None):
     packages_qs = Package.objects.select_related('main_destination', 'category').prefetch_related(
+        'collections',
         'available_accommodations',
         'available_travel_modes',
         'itinerary__days',
@@ -378,6 +438,7 @@ def _public_page_context(package_limit=None):
         'packages': [_package_presenter(package) for package in packages_qs],
         'featured_destinations': [_destination_presenter(dest) for dest in destinations_qs],
         'all_destinations': destinations_qs,
+        'region_cards': _region_cards(),
         'trip_feedbacks': trip_feedbacks,
     }
 
@@ -558,6 +619,7 @@ TOURS_SAFARI_CATEGORY_SLUGS = [
 def _packages_for_collection():
     return Package.objects.select_related('main_destination', 'category').prefetch_related(
         'categories',
+        'collections',
         'available_accommodations',
         'available_travel_modes',
         'itinerary__days',
@@ -656,6 +718,54 @@ def explore_the_world(request):
     return render(request, 'users/pages/collection.html', context)
 
 
+def explore_region(request, region):
+    region = region.lower()
+    region_meta = next((item for item in PUBLIC_REGION_ORDER if item[0] == region), None)
+    if not region_meta:
+        raise Http404('Region not found')
+
+    region_keys = _region_keys(region)
+    region_destinations = Destination.objects.filter(
+        is_active=True,
+        region__in=region_keys,
+    ).select_related('parent').distinct()
+    country_filters = region_destinations.filter(
+        destination_type=Destination.COUNTRY,
+        parent__isnull=True,
+    ).order_by('display_order', 'name')
+    selected_country = request.GET.get('country', '').strip()
+    if selected_country:
+        selected = country_filters.filter(slug=selected_country).first()
+        if selected:
+            destination_ids = _destination_tree_ids(selected)
+            region_destinations = Destination.objects.filter(
+                is_active=True,
+                id__in=destination_ids,
+            ).select_related('parent')
+
+    packages_qs = _packages_for_destinations(region_destinations.values_list('id', flat=True))
+    packages_qs, filters, selected_category = _filter_collection_by_category(request, packages_qs)
+    context = _collection_context(
+        region_meta[1],
+        'Explore region',
+        region_meta[2],
+        packages_qs,
+        region_destinations.order_by('display_order', 'name')[:24],
+        active_filter=selected_category,
+        category_filters=filters,
+        hero_image='images/hero/beyond-imagination.jpeg',
+    )
+    context.update({
+        'region': region_meta,
+        'region_slug': region,
+        'region_image': next((card['image'] for card in _region_cards() if card['slug'] == region), '/static/images/placeholders/myriad-package-placeholder.png'),
+        'country_filters': country_filters,
+        'selected_country': selected_country,
+        'region_total_destinations': region_destinations.count(),
+    })
+    return render(request, 'users/pages/region_detail.html', context)
+
+
 def tours_safaris(request):
     packages_qs = _packages_for_collection().filter(
         Q(region__in=['kenya-safari', 'kenya-coast', 'day-trips']) |
@@ -725,10 +835,12 @@ def deals(request):
 
     now = timezone.now()
     today = timezone.localtime(now).date() if timezone.is_aware(now) else now.date()
+    deal_campaigns = Campaign.objects.filter(
+        package__status=Package.PUBLISHED,
+        ends_on__gte=today,
+    ).select_related('package').order_by('starts_on', 'display_order', 'pk')
     packages_qs = _packages_for_collection().filter(
-        campaigns__is_active=True,
-        campaigns__starts_on__lte=today,
-        campaigns__ends_on__gte=today,
+        campaigns__in=deal_campaigns,
     ).distinct()
     packages_qs, filters, selected_filter = _filter_collection_by_category(request, packages_qs)
     context = _collection_context(
@@ -739,6 +851,8 @@ def deals(request):
         active_filter=selected_filter,
         category_filters=filters,
     )
+    context['deal_campaigns'] = deal_campaigns
+    context['deal_statuses'] = {campaign.package_id: campaign.public_status for campaign in deal_campaigns}
     return render(request, 'users/pages/collection.html', context)
 
 
@@ -757,11 +871,12 @@ def destinations(request):
 
 def destination_detail(request, slug):
     destination = get_object_or_404(Destination, slug=slug, is_active=True)
-    packages_qs = _packages_for_collection().filter(main_destination=destination)
+    packages_qs = _packages_for_destinations(_destination_tree_ids(destination))
     packages_qs, filters, selected_category = _filter_collection_by_category(request, packages_qs)
     paginator = Paginator(packages_qs, 20)
     page_obj = paginator.get_page(request.GET.get('page'))
     context = _public_page_context(package_limit=4)
+    destination_region = 'africa' if destination.region == 'kenya' else destination.region
     context.update({
         'collection_eyebrow': 'Destination guide',
         'collection_filters': filters,
@@ -770,6 +885,10 @@ def destination_detail(request, slug):
         'collection_page_obj': page_obj,
         'collection_total_packages': paginator.count,
         'destination': _destination_presenter(destination),
+        'destination_model': destination,
+        'destination_children': destination.children.filter(is_active=True).order_by('display_order', 'name'),
+        'destination_country': destination.country,
+        'destination_region': destination_region,
     })
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return render(request, 'users/pages/includes/destination_package_results.html', context)

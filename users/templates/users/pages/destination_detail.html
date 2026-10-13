@@ -7,9 +7,10 @@
 <div class="bg-[#F9F2F2]">
   <section class="px-4 py-8 sm:px-8">
     <div class="mx-auto max-w-7xl">
-      <nav class="mb-6 flex items-center gap-2 text-xs text-slate-500">
-        <a href="/" class="hover-myriad-red-text">Home</a><span>/</span>
-        <a href="/destinations/" class="hover-myriad-red-text">Destinations</a><span>/</span>
+      <nav class="mb-6 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+        <a href="{% url 'users:users-home' %}" class="hover-myriad-red-text">Home</a><span>/</span>
+        {% if destination_region %}<a href="{% url 'users:explore_region' destination_region %}" class="hover-myriad-red-text">{{ destination_region|title }}</a><span>/</span>{% endif %}
+        {% if destination_country and destination_country.slug != destination_model.slug %}<a href="{% url 'users:destination_detail' destination_country.slug %}" class="hover-myriad-red-text">{{ destination_country.name }}</a><span>/</span>{% endif %}
         <span class="font-semibold text-slate-800">{{ destination.name }}</span>
       </nav>
 
@@ -49,6 +50,10 @@
       </aside>
     </div>
   </section>
+
+  {% if destination_children %}
+  <section class="px-4 pb-8 sm:px-8"><div class="mx-auto max-w-7xl"><div class="mb-4"><span class="myriad-red-text text-[11px] font-black uppercase tracking-[0.22em]">Explore nearby</span><h2 class="mt-2 font-serif text-2xl font-black text-slate-950">More in {{ destination.name }}</h2></div><div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{% for child in destination_children %}<a href="{% url 'users:destination_detail' child.slug %}" class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"><span class="myriad-red-text text-[11px] font-bold uppercase tracking-wider">{{ child.get_destination_type_display }}</span><h3 class="mt-2 font-serif text-xl font-black text-slate-950">{{ child.name }}</h3><p class="mt-2 text-xs leading-5 text-slate-500">{{ child.meta_description|default:child.description|striptags|truncatechars:120 }}</p></a>{% endfor %}</div></div></section>
+  {% endif %}
 
   <section id="packages" class="px-4 pb-16 pt-6 sm:px-8">
     <div class="mx-auto max-w-7xl">{% include 'users/pages/includes/destination_package_results.html' %}</div>

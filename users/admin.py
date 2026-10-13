@@ -282,9 +282,13 @@ class TripFeedbackAdmin(admin.ModelAdmin):
     def feedback_link(self, obj):
         if not obj.pk:
             return 'Save first to generate a private feedback link.'
+        url = obj.get_feedback_url()
         return format_html(
-            '<a href="{}" target="_blank" style="color:#EB3728;font-weight:700;">Open private feedback form</a>',
-            obj.get_feedback_url()
+            '<div style="display:flex;gap:8px;align-items:center;max-width:760px;">'
+            '<input id="feedback-link-{}" value="{}" readonly style="flex:1;min-width:280px;padding:8px;border:1px solid #cbd5e1;border-radius:6px;">'
+            '<button type="button" onclick="navigator.clipboard.writeText(document.getElementById(\'feedback-link-{}\').value);this.textContent=\'Copied\';" style="padding:8px 12px;border:0;border-radius:6px;background:#1abdaf;color:#fff;font-weight:700;cursor:pointer;">Copy link</button>'
+            '<a href="{}" target="_blank" style="color:#EB3728;font-weight:700;white-space:nowrap;">Open form</a></div>',
+            obj.pk, url, obj.pk, url
         )
     feedback_link.short_description = 'Private feedback URL'
 

@@ -32,6 +32,13 @@
         </div>
       </div>
 
+      {% if deal_campaigns %}
+      <div class="mt-6 rounded-2xl border border-[#1abdaf]/20 bg-white p-4 shadow-sm">
+        <div class="mb-3 flex items-center justify-between gap-3"><h2 class="font-serif text-xl font-black text-slate-950">Current offers</h2><span class="text-xs font-bold uppercase tracking-wider text-slate-500">{{ deal_campaigns|length }} offer{{ deal_campaigns|length|pluralize }}</span></div>
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{% for campaign in deal_campaigns|slice:":10" %}<a href="{% url 'users:package_detail' campaign.package.slug %}" class="rounded-xl border border-slate-200 p-3 transition hover:border-[#1abdaf]"><div class="flex items-center justify-between gap-2"><span class="myriad-red-text text-[10px] font-black uppercase tracking-wider">{{ campaign.public_status }}</span><i data-lucide="arrow-up-right" class="h-4 w-4 text-[#1abdaf]"></i></div><h3 class="mt-2 line-clamp-2 text-sm font-bold text-slate-900">{{ campaign.title }}</h3></a>{% endfor %}</div>
+      </div>
+      {% endif %}
+
       {% if collection_show_destinations and collection_destinations %}
       <div class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {% for destination in collection_destinations %}

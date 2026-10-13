@@ -237,8 +237,6 @@ def navigation_collections(request):
     now = timezone.now()
     today = timezone.localtime(now).date() if timezone.is_aware(now) else now.date()
     deals = Campaign.objects.filter(
-        is_active=True,
-        starts_on__lte=today,
         ends_on__gte=today,
         package__status=Package.PUBLISHED,
     ).select_related('package').order_by('display_order', 'pk')

@@ -10,6 +10,7 @@ urlpatterns = [
     path('packages/', views.packages, name='all_packages'),
     path('explore-kenya/', views.explore_kenya, name='explore_kenya'),
     path('explore-the-world/', views.explore_the_world, name='explore_the_world'),
+    path('explore-the-world/<slug:region>/', views.explore_region, name='explore_region'),
     path('tours-safaris/', views.tours_safaris, name='tours_safaris'),
     path('signature-experiences/', views.signature_experiences, name='signature_experiences'),
     path('themed-packages/', views.signature_experiences, name='themed_packages'),

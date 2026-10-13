@@ -33,17 +33,37 @@ class TravelCollectionAdmin(admin.ModelAdmin):
 
 @admin.register(Campaign)
 class CampaignAdmin(admin.ModelAdmin):
-    list_display = ('title', 'package', 'starts_on', 'ends_on', 'display_order', 'is_active')
+    list_display = ('title', 'package', 'public_status_display', 'starts_on', 'ends_on', 'display_order', 'is_active')
     list_filter = ('is_active', 'starts_on', 'ends_on')
     list_editable = ('display_order', 'is_active')
     search_fields = ('title', 'package__name')
     autocomplete_fields = ('package',)
+
+    def public_status_display(self, obj):
+        return obj.public_status
+    public_status_display.short_description = 'Deal status'
 
 class DestinationAdminForm(forms.ModelForm):
     class Meta:
         model = Destination
         fields = '__all__'
         # RichTextField widgets are automatically configured
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['region'].help_text = 'Region: Africa, Europe, Asia, Middle East, Indian Ocean Islands, or Americas. Existing Kenya records are grouped under Africa on the public site.'
+        self.fields['destination_type'].help_text = 'Choose Country for a country record, City for a city/area, or Place for a specific destination.'
+        self.fields['parent'].help_text = 'Optional parent. Use the existing country or destination record that contains this place.'
+        self.fields['parent'].queryset = Destination.objects.filter(is_active=True).order_by('destination_type', 'name')
+
+    def clean_parent(self):
+        parent = self.cleaned_data.get('parent')
+        if parent and self.instance.pk:
+            if parent.pk == self.instance.pk:
+                raise forms.ValidationError('A destination cannot be its own parent.')
+            if self.instance in parent.get_all_children():
+                raise forms.ValidationError('Choose a parent outside this destination branch.')
+        return parent
 
 class AccommodationAdminForm(forms.ModelForm):
     class Meta:
@@ -52,10 +72,37 @@ class AccommodationAdminForm(forms.ModelForm):
         # RichTextField widgets are automatically configured
 
 class PackageAdminForm(forms.ModelForm):
+    travel_collections = forms.ModelMultipleChoiceField(
+        label='Collections',
+        queryset=TravelCollection.objects.none(),
+        required=False,
+        widget=forms.SelectMultiple(attrs={'size': 7}),
+        help_text='A package can belong to more than one existing collection. Hold Ctrl/Cmd to select several.',
+    )
+
     class Meta:
         model = Package
         fields = '__all__'
         # RichTextField widgets are automatically configured
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['travel_collections'].queryset = TravelCollection.objects.filter(is_active=True).order_by('section', 'display_order', 'name')
+        if self.instance and self.instance.pk:
+            self.fields['travel_collections'].initial = self.instance.collections.filter(is_active=True)
+        self.fields['region'].help_text = 'Legacy collection grouping retained for compatibility. Use Collections for multiple collection placement.'
+        self.fields['main_destination'].help_text = 'Select the exact existing destination. Country and region pages will inherit this package automatically.'
+
+    def save_collections(self):
+        if self.instance.pk:
+            selected = self.cleaned_data.get('travel_collections')
+            if selected is not None:
+                selected_ids = set(selected.values_list('pk', flat=True))
+                for collection in TravelCollection.objects.filter(packages=self.instance):
+                    if collection.pk not in selected_ids:
+                        collection.packages.remove(self.instance)
+                for collection in selected:
+                    collection.packages.add(self.instance)
 
 class ItineraryDayAdminForm(forms.ModelForm):
     class Meta:
@@ -315,9 +362,9 @@ class ItineraryQualityFilter(admin.SimpleListFilter):
 @admin.register(Package)
 class PackageAdmin(admin.ModelAdmin):
     form = PackageAdminForm
-    list_display = ('name', 'display_image', 'category', 'region', 'destination_link', 'itinerary_quality', 'adult_price',
+    list_display = ('name', 'display_image', 'category', 'collection_names', 'region', 'destination_link', 'itinerary_quality', 'adult_price',
                    'child_price', 'duration_days', 'lipa_pole_pole', 'status', 'is_featured', 'home_rank', 'total_bookings')
-    list_filter = ('category', 'categories', 'region', 'main_destination', PackageImageStatusFilter, ItineraryQualityFilter, 'status', 'lipa_pole_pole', 'is_featured', 'duration_days')
+    list_filter = ('category', 'categories', 'collections', 'region', 'main_destination', PackageImageStatusFilter, ItineraryQualityFilter, 'status', 'lipa_pole_pole', 'is_featured', 'duration_days')
     search_fields = ('name', 'subtitle', 'description', 'highlights', 'inclusions', 'exclusions', 'main_destination__name')
     autocomplete_fields = ('category', 'main_destination')
     filter_horizontal = ('categories', 'available_accommodations', 'available_travel_modes')
@@ -328,7 +375,11 @@ class PackageAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Basic Information', {
-            'fields': ('name', 'slug', 'subtitle', 'category', 'categories', 'region', 'main_destination', 'duration_days', 'duration_nights')
+            'fields': ('name', 'slug', 'subtitle', 'main_destination', 'duration_days', 'duration_nights')
+        }),
+        ('Collections & Categories', {
+            'fields': ('region', 'travel_collections', 'category', 'categories'),
+            'description': 'Use existing collections to place this package in more than one public collection. Categories describe the travel style or product type.'
         }),
         ('Media', {
             'fields': ('featured_image',)
@@ -372,6 +423,11 @@ class PackageAdmin(admin.ModelAdmin):
         return "No Image"
     display_image.short_description = 'Image'
 
+    def collection_names(self, obj):
+        names = list(obj.collections.filter(is_active=True).values_list('name', flat=True))
+        return ', '.join(names) if names else 'Legacy grouping only'
+    collection_names.short_description = 'Collections'
+
     def destination_link(self, obj):
         if not obj.main_destination_id:
             return '-'
@@ -403,6 +459,10 @@ class PackageAdmin(admin.ModelAdmin):
         ).select_related(
             'main_destination'
         )
+
+    def save_related(self, request, form, formsets, change):
+        super().save_related(request, form, formsets, change)
+        form.save_collections()
 
 
 @admin.register(PackageGalleryImage)

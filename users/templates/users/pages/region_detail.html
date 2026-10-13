@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ region.1 }} Destinations - Myriad Travel{% endblock %}
+
+{% block content %}
+<div class="bg-[#F9F2F2]">
+  <section class="px-4 py-8 sm:px-8"><div class="mx-auto max-w-7xl">
+    <nav class="mb-6 flex flex-wrap items-center gap-2 text-xs text-slate-500"><a href="{% url 'users:users-home' %}" class="hover-myriad-red-text">Home</a><span>/</span><a href="{% url 'users:explore_the_world' %}" class="hover-myriad-red-text">Explore the world</a><span>/</span><span class="font-semibold text-slate-800">{{ region.1 }}</span></nav>
+    <div class="relative min-h-[320px] overflow-hidden rounded-3xl bg-slate-950 p-6 text-white shadow-xl sm:p-10"><img src="{{ region_image }}" alt="{{ region.1 }}" class="absolute inset-0 h-full w-full object-cover opacity-40"><div class="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-950/75 to-transparent"></div><div class="relative z-10 flex min-h-[245px] items-end"><div class="max-w-3xl"><span class="myriad-red-bg rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider">Explore region</span><h1 class="mt-5 font-serif text-4xl font-black sm:text-6xl">{{ region.1 }}</h1><p class="mt-4 text-sm leading-7 text-slate-200 sm:text-base">{{ region.2 }}</p></div></div></div>
+  </div></section>
+  <section class="px-4 pb-6 sm:px-8"><div class="mx-auto max-w-7xl"><div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"><div class="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">Filter by country</div><div class="flex flex-wrap gap-2"><a href="?" class="rounded-full px-4 py-2 text-xs font-bold {% if not selected_country %}myriad-red-bg text-white{% else %}bg-slate-100 text-slate-700{% endif %}">All countries</a>{% for country in country_filters %}<a href="?country={{ country.slug }}" class="rounded-full px-4 py-2 text-xs font-bold {% if selected_country == country.slug %}myriad-red-bg text-white{% else %}bg-slate-100 text-slate-700{% endif %}">{{ country.name }}</a>{% endfor %}</div></div></div></section>
+  <section class="px-4 pb-16 sm:px-8"><div class="mx-auto max-w-7xl">
+    {% if collection_filters %}<div class="mb-6 flex gap-2 overflow-x-auto pb-1"><a href="?{% if selected_country %}country={{ selected_country }}{% endif %}" class="whitespace-nowrap rounded-full px-4 py-2 text-xs font-bold {% if collection_active_filter == 'all' %}myriad-blue-bg text-white{% else %}bg-white text-slate-700{% endif %}">All categories</a>{% for filter in collection_filters %}<a href="?{% if selected_country %}country={{ selected_country }}&{% endif %}category={{ filter.slug }}" class="whitespace-nowrap rounded-full px-4 py-2 text-xs font-bold {% if collection_active_filter == filter.slug %}myriad-blue-bg text-white{% else %}bg-white text-slate-700{% endif %}">{{ filter.label }}</a>{% endfor %}</div>{% endif %}
+    {% if collection_packages %}<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">{% for pkg in collection_packages %}{% include 'components/package_card.html' with pkg=pkg %}{% endfor %}</div>{% else %}<div class="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center"><h2 class="font-serif text-2xl font-black text-slate-950">No published packages here yet.</h2><p class="mt-3 text-sm leading-7 text-slate-600">Try another country or request a tailored itinerary from Myriad.</p></div>{% endif %}
+  </div></section>
+</div>
+{% endblock %}
