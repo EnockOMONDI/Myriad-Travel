@@ -10,14 +10,14 @@ os.environ['DJANGO_ENV'] = 'production'
 from .settings import *
 import dj_database_url
 import logging
+from decouple import config
 
 # Production-specific settings
 print("🚀 Production settings loaded")
 EMAIL_PROVIDER = os.getenv('EMAIL_PROVIDER', 'mailtrap').strip().lower()
 print(f"📧 Production mode: Using {EMAIL_PROVIDER.title()} HTTP API (synchronous)")
-print(f"🗄️ Database: {os.getenv('DATABASE_URL', 'Not set')[:50]}...")
+print(f"🗄️ Database: {'Configured' if os.getenv('DATABASE_URL') else 'Not set'}")
 print(f"🌐 Site URL: {os.getenv('SITE_URL', 'Not set')}")
-print(f"🔒 SSL redirect: True")
 print(f"📊 Debug mode: False")
 
 # No longer using Railway for background workers - all email sending is synchronous
@@ -147,7 +147,7 @@ SESSION_COOKIE_AGE = 86400  # 24 hours
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 # Production security settings
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)
 SECURE_HSTS_SECONDS = 31536000  # 1 year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True

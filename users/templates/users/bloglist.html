@@ -1,77 +1,198 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}{{ page_title|default:"Travel Blog - Myriad Travel" }}{% endblock %}
 {% block meta_description %}{{ meta_description|default:"Travel stories, safari tips, destination guides, and planning advice from Myriad Travel." }}{% endblock %}
 
 {% block content %}
-<section class="bg-slate-900 text-white py-14 px-4 sm:px-8">
-  <div class="max-w-7xl mx-auto">
-    <p class="text-xs font-bold uppercase tracking-widest text-amber-300 mb-3">Travel Guides</p>
-    <h1 class="text-3xl sm:text-5xl font-bold font-serif">Myriad Travel Blog</h1>
-    <p class="text-slate-300 mt-3 max-w-2xl">Safari tips, destination notes, travel advisories, and holiday inspiration for Kenya and beyond.</p>
+<style>
+  .blog-hero {
+    background:
+      linear-gradient(90deg, rgba(18, 47, 70, 0.94), rgba(36, 95, 134, 0.72), rgba(235, 55, 40, 0.62)),
+      url("{% static 'images/hero/discover-kenya.jpeg' %}") center/cover;
+  }
+
+  .blog-card-image {
+    background: linear-gradient(135deg, #eaf3f8, #fff3f1);
+  }
+</style>
+
+<section class="blog-hero px-4 py-16 text-white sm:px-8 sm:py-24">
+  <div class="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+    <div>
+      <div class="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/12 px-3 py-1 text-[11px] font-black uppercase tracking-[0.22em] text-white">
+        <i data-lucide="map" class="h-3.5 w-3.5"></i>
+        Myriad Travel Journal
+      </div>
+      <h1 class="mt-5 max-w-4xl font-serif text-4xl font-black leading-[0.98] sm:text-6xl">
+        Travel ideas, guides and updates for easier planning.
+      </h1>
+      <p class="mt-5 max-w-2xl text-sm leading-7 text-white/85 sm:text-base">
+        Read destination notes, safari tips, beach holiday ideas, group travel updates and practical reminders before you book.
+      </p>
+    </div>
+
+    <div class="rounded-2xl border border-white/20 bg-white/12 p-4 shadow-2xl backdrop-blur-md sm:p-5">
+      <form method="get" action="{% url 'blog:blog-search' %}" class="space-y-3">
+        <label for="blog-search" class="block text-xs font-bold uppercase tracking-[0.18em] text-white/75">Find a guide</label>
+        <div class="flex flex-col gap-2 sm:flex-row">
+          <input
+            id="blog-search"
+            name="q"
+            value="{{ query }}"
+            placeholder="Search Maasai Mara, Diani, Dubai, visa tips..."
+            class="min-h-12 w-full rounded-lg border border-white/25 bg-white px-4 text-sm font-semibold text-[#122f46] outline-none ring-0 placeholder:text-slate-400 focus:border-white"
+          />
+          <button class="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-[#eb3728] px-5 text-sm font-black text-white transition hover:bg-[#c82017]">
+            <i data-lucide="search" class="h-4 w-4"></i>
+            Search
+          </button>
+        </div>
+      </form>
+      <div class="mt-5 grid grid-cols-3 gap-3 text-center text-xs font-bold text-white/85">
+        <div class="rounded-xl bg-white/12 px-3 py-3">
+          <span class="block text-lg text-white">{{ blog_count|default:"0" }}</span>
+          Articles
+        </div>
+        <div class="rounded-xl bg-white/12 px-3 py-3">
+          <span class="block text-lg text-white">{{ categories|length|default:"0" }}</span>
+          Topics
+        </div>
+        <div class="rounded-xl bg-white/12 px-3 py-3">
+          <span class="block text-lg text-white">KES</span>
+          Local tips
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
-<section class="py-12 px-4 sm:px-8 max-w-7xl mx-auto w-full">
-  <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
-    <form method="get" action="{% url 'blog:blog-search' %}" class="flex flex-col sm:flex-row gap-2 w-full lg:max-w-xl">
-      <input name="q" value="{{ query }}" placeholder="Search articles" class="w-full">
-      <button class="px-5 py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl whitespace-nowrap">Search</button>
-    </form>
-    <div class="flex flex-wrap gap-2 text-sm">
-      <a href="{% url 'blog:blog-rss' %}" class="px-3 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 hover:border-amber-300">RSS</a>
-      <a href="{% url 'blog:blog-sitemap' %}" class="px-3 py-2 rounded-lg bg-white border border-slate-200 text-slate-700 hover:border-amber-300">Sitemap</a>
+<section class="bg-[#f7fbff] px-4 py-8 sm:px-8">
+  <div class="mx-auto flex max-w-7xl flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+    {% if categories %}
+      <div class="flex flex-wrap gap-2">
+        <a href="{% url 'blog:blog-list' %}" class="rounded-full px-4 py-2 text-sm font-bold transition {% if not category_slug %}bg-[#eb3728] text-white{% else %}border border-[#d9e6ef] bg-white text-[#245f86] hover:border-[#245f86]{% endif %}">All Guides</a>
+        {% for cat in categories %}
+          <a href="{{ cat.get_absolute_url }}" class="rounded-full border border-[#d9e6ef] bg-white px-4 py-2 text-sm font-bold text-slate-700 transition hover:border-[#245f86] hover:text-[#245f86]">
+            {{ cat.title }}{% if cat.post_count is not None %} ({{ cat.post_count }}){% endif %}
+          </a>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="flex flex-wrap gap-2 text-sm font-bold">
+      <a href="{% url 'blog:blog-rss' %}" class="rounded-lg border border-[#d9e6ef] bg-white px-3 py-2 text-[#245f86] transition hover:border-[#245f86]">RSS</a>
+      <a href="{% url 'blog:blog-sitemap' %}" class="rounded-lg border border-[#d9e6ef] bg-white px-3 py-2 text-[#245f86] transition hover:border-[#245f86]">Sitemap</a>
     </div>
   </div>
+</section>
 
-  {% if categories %}
-    <div class="flex flex-wrap gap-2 mb-8">
-      <a href="{% url 'blog:blog-list' %}" class="px-3 py-2 rounded-full text-sm font-semibold {% if not category_slug %}bg-amber-600 text-white{% else %}bg-white border border-slate-200 text-slate-700{% endif %}">All Articles</a>
-      {% for cat in categories %}
-        <a href="{{ cat.get_absolute_url }}" class="px-3 py-2 rounded-full text-sm font-semibold bg-white border border-slate-200 text-slate-700 hover:border-amber-300">
-          {{ cat.title }}{% if cat.post_count is not None %} ({{ cat.post_count }}){% endif %}
+<section class="px-4 py-12 sm:px-8">
+  <div class="mx-auto max-w-7xl">
+    {% if featured_blog %}
+      <div class="mb-12">
+        <div class="mb-5 flex items-end justify-between gap-4">
+          <div>
+            <p class="text-xs font-black uppercase tracking-[0.22em] text-[#eb3728]">Featured reads</p>
+            <h2 class="mt-2 font-serif text-3xl font-black text-[#122f46] sm:text-4xl">Start here</h2>
+          </div>
+        </div>
+
+        <div class="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+          {% for post in featured_blog %}
+            {% if forloop.first %}
+              <a href="{{ post.get_absolute_url }}" class="group overflow-hidden rounded-2xl border border-[#d9e6ef] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+                <div class="relative h-72 overflow-hidden sm:h-96">
+                  {% if post.image %}
+                    <img src="{{ post.image.cdn_url }}" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" alt="{{ post.title }}">
+                  {% else %}
+                    <img src="{% static 'images/hero/tours-safaris.jpeg' %}" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" alt="{{ post.title }}">
+                  {% endif %}
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                  <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+                    <span class="rounded-full bg-white/90 px-3 py-1 text-[11px] font-black uppercase tracking-[0.16em] text-[#245f86]">{{ post.category.title|default:"Guide" }}</span>
+                    <h3 class="mt-4 font-serif text-3xl font-black leading-tight sm:text-4xl">{{ post.title }}</h3>
+                    <p class="mt-3 max-w-2xl text-sm leading-6 text-white/85">{{ post.get_meta_description }}</p>
+                    <p class="mt-4 text-xs font-bold text-white/75">{{ post.date|date:"M d, Y" }} · {{ post.get_reading_time_display }}</p>
+                  </div>
+                </div>
+              </a>
+            {% endif %}
+          {% endfor %}
+
+          <div class="grid gap-4">
+            {% for post in featured_blog %}
+              {% if not forloop.first %}
+                <a href="{{ post.get_absolute_url }}" class="group grid grid-cols-[104px_1fr] gap-4 rounded-2xl border border-[#d9e6ef] bg-white p-3 shadow-sm transition hover:border-[#245f86] hover:shadow-md">
+                  <div class="blog-card-image h-24 overflow-hidden rounded-xl">
+                    {% if post.image %}
+                      <img src="{{ post.image.cdn_url }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" alt="{{ post.title }}">
+                    {% else %}
+                      <img src="{% static 'images/hero/beyond-imagination.jpeg' %}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" alt="{{ post.title }}">
+                    {% endif %}
+                  </div>
+                  <div class="min-w-0">
+                    <span class="text-[11px] font-black uppercase tracking-[0.14em] text-[#eb3728]">{{ post.category.title|default:"Guide" }}</span>
+                    <h3 class="mt-1 line-clamp-2 font-serif text-lg font-black leading-snug text-[#122f46]">{{ post.title }}</h3>
+                    <p class="mt-2 text-xs font-semibold text-slate-500">{{ post.date|date:"M d, Y" }} · {{ post.get_reading_time_display }}</p>
+                  </div>
+                </a>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p class="text-xs font-black uppercase tracking-[0.22em] text-[#eb3728]">Latest articles</p>
+        <h2 class="mt-2 font-serif text-3xl font-black text-[#122f46]">Plan with confidence</h2>
+      </div>
+      {% if blog_count is not None %}
+        <p class="text-sm font-semibold text-slate-500">{{ blog_count }} published article{{ blog_count|pluralize }}</p>
+      {% endif %}
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      {% for post in blog %}
+        <a href="{{ post.get_absolute_url }}" class="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#d9e6ef] bg-white shadow-sm transition hover:-translate-y-1 hover:border-[#245f86] hover:shadow-xl">
+          <div class="blog-card-image h-56 overflow-hidden">
+            {% if post.image %}
+              <img src="{{ post.image.cdn_url }}" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" alt="{{ post.title }}">
+            {% else %}
+              <img src="{% static 'images/hero/discover-kenya.jpeg' %}" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" alt="{{ post.title }}">
+            {% endif %}
+          </div>
+          <div class="flex flex-1 flex-col p-5">
+            <span class="text-[11px] font-black uppercase tracking-[0.16em] text-[#eb3728]">{{ post.category.title|default:"Guide" }}</span>
+            <h2 class="mt-3 font-serif text-xl font-black leading-tight text-[#122f46] transition group-hover:text-[#245f86]">{{ post.title }}</h2>
+            <p class="mt-3 line-clamp-3 text-sm leading-6 text-slate-600">{{ post.get_meta_description }}</p>
+            <div class="mt-auto flex items-center justify-between pt-5 text-xs font-bold text-slate-500">
+              <span>{{ post.date|date:"M d, Y" }} · {{ post.get_reading_time_display }}</span>
+              <span class="inline-flex items-center gap-1 text-[#245f86]">Read <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i></span>
+            </div>
+          </div>
         </a>
+      {% empty %}
+        <div class="md:col-span-2 xl:col-span-3 rounded-2xl border border-[#d9e6ef] bg-white p-8 text-center shadow-sm">
+          <h2 class="font-serif text-2xl font-black text-[#122f46]">No articles found</h2>
+          <p class="mt-2 text-slate-600">Published travel guides will appear here once they are added in admin.</p>
+        </div>
       {% endfor %}
     </div>
-  {% endif %}
 
-  {% if blog_count is not None %}
-    <p class="text-sm text-slate-500 mb-5">{{ blog_count }} published article{{ blog_count|pluralize }}</p>
-  {% endif %}
-
-  <div class="grid md:grid-cols-3 gap-6">
-    {% for post in blog %}
-      <a href="{{ post.get_absolute_url }}" class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:border-amber-300 hover:shadow-md transition">
-        {% if post.image %}
-          <img src="{{ post.image.cdn_url }}" class="w-full h-48 object-cover" alt="{{ post.title }}">
-        {% else %}
-          <div class="h-48 bg-slate-100 flex items-center justify-center text-slate-400 text-sm font-semibold">Myriad Travel</div>
+    {% if blog.has_other_pages %}
+      <nav class="mt-10 flex items-center justify-center gap-2 text-sm font-bold">
+        {% if blog.has_previous %}
+          <a href="?page={{ blog.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" class="rounded-lg border border-[#d9e6ef] bg-white px-4 py-2 text-[#245f86]">Previous</a>
         {% endif %}
-        <div class="p-5">
-          <span class="text-xs font-bold text-amber-700 uppercase">{{ post.category.title|default:"Guide" }}</span>
-          <h2 class="text-lg font-bold font-serif mt-2 text-slate-900">{{ post.title }}</h2>
-          <p class="text-sm text-slate-600 mt-2">{{ post.get_meta_description }}</p>
-          <p class="text-xs text-slate-400 mt-4">{{ post.date|date:"M d, Y" }} · {{ post.get_reading_time_display }}</p>
-        </div>
-      </a>
-    {% empty %}
-      <div class="md:col-span-3 bg-white border border-slate-200 rounded-2xl p-8 text-center">
-        <h2 class="text-xl font-bold font-serif text-slate-900">No articles found</h2>
-        <p class="text-slate-600 mt-2">Published travel guides will appear here once they are added in admin.</p>
-      </div>
-    {% endfor %}
+        <span class="rounded-lg bg-[#eb3728] px-4 py-2 text-white">Page {{ blog.number }} of {{ blog.paginator.num_pages }}</span>
+        {% if blog.has_next %}
+          <a href="?page={{ blog.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" class="rounded-lg border border-[#d9e6ef] bg-white px-4 py-2 text-[#245f86]">Next</a>
+        {% endif %}
+      </nav>
+    {% endif %}
   </div>
-
-  {% if blog.has_other_pages %}
-    <nav class="mt-10 flex items-center justify-center gap-2 text-sm font-semibold">
-      {% if blog.has_previous %}
-        <a href="?page={{ blog.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" class="px-4 py-2 rounded-lg bg-white border border-slate-200">Previous</a>
-      {% endif %}
-      <span class="px-4 py-2 rounded-lg bg-amber-600 text-white">Page {{ blog.number }} of {{ blog.paginator.num_pages }}</span>
-      {% if blog.has_next %}
-        <a href="?page={{ blog.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" class="px-4 py-2 rounded-lg bg-white border border-slate-200">Next</a>
-      {% endif %}
-    </nav>
-  {% endif %}
 </section>
 {% endblock %}
