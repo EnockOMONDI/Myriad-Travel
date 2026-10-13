@@ -6,7 +6,7 @@
   <p class="text-slate-600 mb-8">{{ package.name }}</p>
   <form method="post" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-4">{% csrf_token %}
     <div class="grid sm:grid-cols-3 gap-4"><p><label>Adults</label><input type="number" name="adults" min="1" value="{{ initial_data.adults|default:1 }}"></p><p><label>Children</label><input type="number" name="children" min="0" value="{{ initial_data.children|default:0 }}"></p><p><label>Rooms</label><input type="number" name="rooms" min="1" value="{{ initial_data.rooms|default:1 }}"></p></div>
-    <button class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl">Continue to Customization</button>
+    <button class="w-full py-3 bg-[#EB3728] hover:bg-[#EB3728] text-white font-bold rounded-xl">Continue to Customization</button>
   </form>
 </section>
 {% endblock %}

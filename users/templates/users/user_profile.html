@@ -2,7 +2,7 @@
 {% block title %}My Profile — Myriad Travel{% endblock %}
 {% block content %}
 <section class="py-16 px-4 sm:px-8 max-w-7xl mx-auto">
-  <div class="flex flex-wrap items-end justify-between gap-4 mb-8"><div><h1 class="text-3xl font-bold font-serif text-slate-900">My Travel Profile</h1><p class="text-slate-600">Manage your bookings, details, and saved ideas.</p></div><a href="{% url 'users:edit_profile' %}" class="px-4 py-2 bg-amber-600 text-white font-bold rounded-xl">Edit Profile</a></div>
+  <div class="flex flex-wrap items-end justify-between gap-4 mb-8"><div><h1 class="text-3xl font-bold font-serif text-slate-900">My Travel Profile</h1><p class="text-slate-600">Manage your bookings, details, and saved ideas.</p></div><a href="{% url 'users:edit_profile' %}" class="px-4 py-2 bg-[#EB3728] text-white font-bold rounded-xl">Edit Profile</a></div>
   <div class="grid md:grid-cols-3 gap-4 mb-8">
     <div class="bg-white border border-slate-200 rounded-2xl p-5"><span class="text-xs text-slate-500 uppercase">Bookings</span><strong class="block text-2xl">{{ total_bookings }}</strong></div>
     <div class="bg-white border border-slate-200 rounded-2xl p-5"><span class="text-xs text-slate-500 uppercase">Upcoming</span><strong class="block text-2xl">{{ upcoming_bookings }}</strong></div>

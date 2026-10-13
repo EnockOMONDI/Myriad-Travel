@@ -341,7 +341,7 @@ class TripFeedbackForm(AntiSpamFormMixin, forms.ModelForm):
                 'rows': 3,
             }),
             'permission_to_publish': forms.CheckboxInput(attrs={
-                'class': 'h-4 w-4 rounded border-slate-300 text-amber-600 focus:ring-amber-500',
+                'class': 'h-4 w-4 rounded border-slate-300 text-[#EB3728] focus:ring-[#EB3728]',
             }),
         }
 

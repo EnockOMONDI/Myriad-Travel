@@ -30,7 +30,7 @@ def _render_error_response(request, template_name, context, response_class, fall
             <main style="width:min(92vw,720px);padding:48px 28px;text-align:center;">
               <h1 style="font-size:clamp(2rem,7vw,4rem);margin:0 0 16px;">{fallback_title}</h1>
               <p style="color:#475569;line-height:1.7;">{fallback_message}</p>
-              <a href="/" style="display:inline-block;margin-top:18px;padding:12px 18px;border-radius:999px;background:#d97706;color:white;text-decoration:none;font-weight:700;">Back to Home</a>
+              <a href="/" style="display:inline-block;margin-top:18px;padding:12px 18px;border-radius:999px;background:#EB3728;color:white;text-decoration:none;font-weight:700;">Back to Home</a>
             </main>
           </body>
         </html>

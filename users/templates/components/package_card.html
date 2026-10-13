@@ -66,7 +66,7 @@
       <div class="pt-2 border-t border-slate-100 space-y-1.5">
         {% for highlight in pkg.highlights|slice:":2" %}
         <div class="flex items-start gap-2 text-xs text-slate-600">
-          <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5"></i>
+          <i data-lucide="check" class="w-3.5 h-3.5 text-[#1abdaf] shrink-0 mt-0.5"></i>
           <span class="line-clamp-1">{{ highlight }}</span>
         </div>
         {% endfor %}
@@ -105,7 +105,7 @@
           href="https://wa.me/{{ company.contacts.whatsapp|default:'254712236522' }}?text=Hello%20Myriad%20Travel,%20I%20would%20like%20to%20enquire%20/%20book%20the%20%22{{ pkg.title|urlencode }}%22%20({{ pkg.duration|urlencode }}).%20Could%20you%20share%20available%20dates%20and%20quotes?"
           target="_blank"
           rel="noopener noreferrer"
-          class="w-full py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-xl transition-all shadow-2xs flex items-center justify-center gap-1.5 text-center"
+          class="w-full py-2.5 px-3 bg-[#1abdaf] hover:bg-[#1abdaf] text-white font-semibold text-xs rounded-xl transition-all shadow-2xs flex items-center justify-center gap-1.5 text-center"
         >
           <i data-lucide="send" class="w-3.5 h-3.5"></i>
           <span>Enquire Now</span>

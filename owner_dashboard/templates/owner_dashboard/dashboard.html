@@ -18,8 +18,8 @@
             colors: {
               myriad: {
                 navy: '#071321',
-                teal: '#079b8e',
-                orange: '#e07900',
+                teal: '#1abdaf',
+                red: '#EB3728',
                 mist: '#f9f2f2',
               }
             }
@@ -39,7 +39,7 @@
             <img src="{% static 'images/myriad-logo.png' %}" alt="Myriad Travel" class="h-14 w-14 object-contain">
           </div>
           <div>
-            <p class="text-xs uppercase tracking-[0.2em] text-amber-300 font-bold">Owner Cockpit</p>
+            <p class="text-xs uppercase tracking-[0.2em] text-[#EB3728] font-bold">Owner Cockpit</p>
             <h1 class="text-2xl sm:text-3xl font-serif font-bold">Myriad Travel Dashboard</h1>
             <p class="text-sm text-slate-300">Last updated {{ last_updated|date:"M d, Y H:i" }}</p>
           </div>
@@ -48,7 +48,7 @@
           <a href="{% url 'owner_dashboard:dashboard' %}" class="rounded-md bg-white text-myriad-navy px-4 py-2">Dashboard</a>
           <a href="{% url 'admin:index' %}" class="rounded-md bg-white/10 hover:bg-white/20 px-4 py-2">Manage Records</a>
           <a href="#guide" class="rounded-md bg-white/10 hover:bg-white/20 px-4 py-2">Guide / How It Works</a>
-          <a href="/" class="rounded-md bg-myriad-orange hover:bg-amber-600 px-4 py-2">View Site</a>
+          <a href="/" class="rounded-md bg-myriad-red hover:bg-[#EB3728] px-4 py-2">View Site</a>
         </nav>
       </div>
     </header>
@@ -57,7 +57,7 @@
       <section>
         <div class="flex items-end justify-between gap-4 mb-4">
           <div>
-            <p class="text-sm font-bold uppercase tracking-[0.18em] text-myriad-orange">Business Overview</p>
+            <p class="text-sm font-bold uppercase tracking-[0.18em] text-myriad-red">Business Overview</p>
             <h2 class="text-2xl font-serif font-bold text-myriad-navy">Today at a glance</h2>
           </div>
         </div>
@@ -75,7 +75,7 @@
       <section class="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div class="xl:col-span-2 bg-white border border-slate-200 rounded-lg shadow-sm">
           <div class="p-5 border-b border-slate-100">
-            <p class="text-sm font-bold uppercase tracking-[0.18em] text-myriad-orange">Needs Attention</p>
+            <p class="text-sm font-bold uppercase tracking-[0.18em] text-myriad-red">Needs Attention</p>
             <h2 class="text-xl font-serif font-bold text-myriad-navy">Work that should not sit idle</h2>
           </div>
           <div class="divide-y divide-slate-100">
@@ -85,7 +85,7 @@
                 <p class="font-bold text-slate-900">{{ item.title }}</p>
                 <p class="mt-1 text-sm text-slate-500">{{ item.description }}</p>
               </div>
-              <span class="shrink-0 rounded-md px-3 py-1 text-sm font-extrabold {% if item.urgent %}bg-red-100 text-red-700{% else %}bg-amber-100 text-amber-700{% endif %}">{{ item.count }}</span>
+              <span class="shrink-0 rounded-md px-3 py-1 text-sm font-extrabold {% if item.urgent %}bg-[#EB3728] text-white{% else %}bg-[#1abdaf] text-white{% endif %}">{{ item.count }}</span>
             </a>
             {% empty %}
             <div class="p-5 text-sm text-slate-500">No urgent operational items right now.</div>
@@ -94,7 +94,7 @@
         </div>
 
         <aside class="bg-myriad-navy text-white rounded-lg shadow-sm p-5">
-          <p class="text-sm font-bold uppercase tracking-[0.18em] text-amber-300">Finance Snapshot</p>
+          <p class="text-sm font-bold uppercase tracking-[0.18em] text-[#EB3728]">Finance Snapshot</p>
           <h2 class="mt-1 text-xl font-serif font-bold">Manual booking value</h2>
           <dl class="mt-5 space-y-4">
             <div class="flex justify-between gap-4">
@@ -117,7 +117,7 @@
       </section>
 
       <section>
-        <p class="text-sm font-bold uppercase tracking-[0.18em] text-myriad-orange">Quick Actions</p>
+        <p class="text-sm font-bold uppercase tracking-[0.18em] text-myriad-red">Quick Actions</p>
         <h2 class="text-2xl font-serif font-bold text-myriad-navy mb-4">Jump by workflow</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
           {% for group in quick_actions %}
@@ -136,7 +136,7 @@
       <section class="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <article class="bg-white border border-slate-200 rounded-lg shadow-sm">
           <div class="p-5 border-b border-slate-100">
-            <p class="text-sm font-bold uppercase tracking-[0.18em] text-myriad-orange">Operations</p>
+            <p class="text-sm font-bold uppercase tracking-[0.18em] text-myriad-red">Operations</p>
             <h2 class="text-xl font-serif font-bold text-myriad-navy">Upcoming trips and follow-ups</h2>
           </div>
           <div class="p-5 space-y-5">
@@ -171,7 +171,7 @@
 
         <article class="bg-white border border-slate-200 rounded-lg shadow-sm">
           <div class="p-5 border-b border-slate-100">
-            <p class="text-sm font-bold uppercase tracking-[0.18em] text-myriad-orange">Recent Activity</p>
+            <p class="text-sm font-bold uppercase tracking-[0.18em] text-myriad-red">Recent Activity</p>
             <h2 class="text-xl font-serif font-bold text-myriad-navy">Newest movement</h2>
           </div>
           <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -213,7 +213,7 @@
       </section>
 
       <section id="guide" class="bg-white border border-slate-200 rounded-lg shadow-sm p-5">
-        <p class="text-sm font-bold uppercase tracking-[0.18em] text-myriad-orange">Guide / How It Works</p>
+        <p class="text-sm font-bold uppercase tracking-[0.18em] text-myriad-red">Guide / How It Works</p>
         <h2 class="mt-1 text-xl font-serif font-bold text-myriad-navy">Dashboard vs Django admin</h2>
         <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-5 text-sm text-slate-600">
           <p><strong class="text-slate-900">Use this dashboard</strong> to see business health, urgent work, follow-ups, bookings, and shortcuts grouped by workflow.</p>

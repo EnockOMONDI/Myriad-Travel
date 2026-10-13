@@ -24,10 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (btnKes && btnUsd) {
       if (curr === 'KES') {
-        btnKes.className = 'px-2.5 py-0.5 text-[11px] font-semibold rounded-full transition-all bg-amber-600 text-white shadow-xs';
+        btnKes.className = 'px-2.5 py-0.5 text-[11px] font-semibold rounded-full transition-all bg-[#EB3728] text-white shadow-xs';
         btnUsd.className = 'px-2.5 py-0.5 text-[11px] font-semibold rounded-full transition-all text-slate-400 hover:text-white';
       } else {
-        btnUsd.className = 'px-2.5 py-0.5 text-[11px] font-semibold rounded-full transition-all bg-amber-600 text-white shadow-xs';
+        btnUsd.className = 'px-2.5 py-0.5 text-[11px] font-semibold rounded-full transition-all bg-[#EB3728] text-white shadow-xs';
         btnKes.className = 'px-2.5 py-0.5 text-[11px] font-semibold rounded-full transition-all text-slate-400 hover:text-white';
       }
     }
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     heroSlideBtns.forEach((btn, i) => {
       if (i === idx) {
-        btn.className = 'hero-slide-btn transition-all duration-300 rounded-full w-8 h-2 bg-amber-500';
+        btn.className = 'hero-slide-btn transition-all duration-300 rounded-full w-8 h-2 bg-[#EB3728]';
       } else {
         btn.className = 'hero-slide-btn transition-all duration-300 rounded-full w-2 h-2 bg-white/40 hover:bg-white/70';
       }
@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.cat-filter-btn').forEach((b) => {
         b.className = 'cat-filter-btn whitespace-nowrap px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer bg-white hover:bg-slate-100 text-slate-700 border border-slate-200/80';
       });
-      btn.className = 'cat-filter-btn whitespace-nowrap px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer bg-amber-600 text-white shadow-sm';
+      btn.className = 'cat-filter-btn whitespace-nowrap px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer bg-[#EB3728] text-white shadow-sm';
 
       activeCategory = btn.getAttribute('data-category') || 'all';
       filterPackages();
@@ -301,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.lipa-month-btn').forEach((b) => {
         b.className = 'lipa-month-btn py-2 text-xs font-bold rounded-xl transition-all border cursor-pointer bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100';
       });
-      btn.className = 'lipa-month-btn py-2 text-xs font-bold rounded-xl transition-all border cursor-pointer bg-emerald-600 text-white border-emerald-600 shadow-xs scale-102';
+      btn.className = 'lipa-month-btn py-2 text-xs font-bold rounded-xl transition-all border cursor-pointer bg-[#1abdaf] text-white border-[#1abdaf] shadow-xs scale-102';
 
       selectedMonths = Number(btn.getAttribute('data-months') || 4);
       updateLipaCalculator();
@@ -420,7 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.cat-filter-btn').forEach((btn) => {
         const isActive = btn.getAttribute('data-category') === targetCategory;
         btn.className = isActive
-          ? 'cat-filter-btn whitespace-nowrap px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer bg-amber-600 text-white shadow-sm'
+          ? 'cat-filter-btn whitespace-nowrap px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer bg-[#EB3728] text-white shadow-sm'
           : 'cat-filter-btn whitespace-nowrap px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer bg-white hover:bg-slate-100 text-slate-700 border border-slate-200/80';
       });
       filterPackages();
@@ -442,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.pkg-modal-tab-btn').forEach((t) => {
         t.className = 'pkg-modal-tab-btn py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 transition-all cursor-pointer whitespace-nowrap border-transparent text-slate-600 hover:text-slate-900';
       });
-      tab.className = 'pkg-modal-tab-btn py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 transition-all cursor-pointer whitespace-nowrap border-amber-600 text-amber-700 bg-white';
+      tab.className = 'pkg-modal-tab-btn py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 transition-all cursor-pointer whitespace-nowrap border-[#EB3728] text-[#EB3728] bg-white';
 
       document.querySelectorAll('.pkg-modal-tab-pane').forEach((pane) => {
         if (pane.id === `pkg-pane-${targetTab}`) pane.classList.remove('hidden');
@@ -474,7 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const points = JSON.parse(pointsJson);
       pointsEl.innerHTML = points.map(pt => `
         <div class="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700">
-          <svg class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          <svg class="w-4 h-4 text-[#1abdaf] shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
           <span>${pt}</span>
         </div>
       `).join('');

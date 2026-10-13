@@ -283,7 +283,7 @@ class TripFeedbackAdmin(admin.ModelAdmin):
         if not obj.pk:
             return 'Save first to generate a private feedback link.'
         return format_html(
-            '<a href="{}" target="_blank" style="color:#b45309;font-weight:700;">Open private feedback form</a>',
+            '<a href="{}" target="_blank" style="color:#EB3728;font-weight:700;">Open private feedback form</a>',
             obj.get_feedback_url()
         )
     feedback_link.short_description = 'Private feedback URL'
@@ -563,7 +563,7 @@ class QuoteRequestAdmin(admin.ModelAdmin):
         """Display status with colored badge"""
         status_colors = {
             'new': '#dc3545',
-            'contacted': '#ffc107',
+            'contacted': '#EB3728',
             'quoted': '#17a2b8',
             'confirmed': '#28a745',
             'cancelled': '#6c757d',

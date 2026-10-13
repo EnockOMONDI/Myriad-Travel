@@ -2,8 +2,8 @@
   {% if bookings %}
   <div class="divide-y divide-slate-100">
     {% for booking in bookings %}
-    <a href="{% url 'users:booking_detail' booking.booking_reference %}" class="block p-5 hover:bg-amber-50/50">
-      <div class="flex flex-wrap items-center justify-between gap-3"><div><strong class="text-slate-900">{{ booking.package.name }}</strong><p class="text-sm text-slate-500">{{ booking.booking_reference }} · {{ booking.created_at|date:"M d, Y" }}</p></div><span class="text-sm font-bold text-amber-700">KSh {{ booking.total_amount }}</span></div>
+    <a href="{% url 'users:booking_detail' booking.booking_reference %}" class="block p-5 hover:bg-[#EB3728]/50">
+      <div class="flex flex-wrap items-center justify-between gap-3"><div><strong class="text-slate-900">{{ booking.package.name }}</strong><p class="text-sm text-slate-500">{{ booking.booking_reference }} · {{ booking.created_at|date:"M d, Y" }}</p></div><span class="text-sm font-bold text-[#EB3728]">KSh {{ booking.total_amount }}</span></div>
     </a>
     {% endfor %}
   </div>

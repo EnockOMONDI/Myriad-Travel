@@ -2,10 +2,10 @@
 {% block title %}{{ job.title }} — Myriad Travel Careers{% endblock %}
 {% block content %}
 <section class="py-16 px-4 sm:px-8 max-w-4xl mx-auto">
-  <a href="{% url 'users:careers' %}" class="text-sm text-amber-700 font-semibold">Back to careers</a>
+  <a href="{% url 'users:careers' %}" class="text-sm text-[#EB3728] font-semibold">Back to careers</a>
   <h1 class="text-3xl sm:text-5xl font-bold font-serif text-slate-900 mt-4">{{ job.title }}</h1>
   <p class="text-slate-600 mt-3">{{ job.get_job_type_display }} · {{ job.get_application_status_display }}</p>
   <div class="prose max-w-none bg-white border border-slate-200 rounded-2xl p-6 mt-8">{{ job.description|safe }}</div>
-  <a href="{% url 'users:careers' %}?job_id={{ job.id }}" class="inline-flex mt-8 px-5 py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl">Apply for this role</a>
+  <a href="{% url 'users:careers' %}?job_id={{ job.id }}" class="inline-flex mt-8 px-5 py-3 bg-[#EB3728] hover:bg-[#EB3728] text-white font-bold rounded-xl">Apply for this role</a>
 </section>
 {% endblock %}

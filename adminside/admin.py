@@ -381,9 +381,9 @@ class PackageAdmin(admin.ModelAdmin):
     def itinerary_quality(self, obj):
         audit = analyse_itinerary(obj)
         colors = {
-            'complete': '#12645d',
-            'grouped': '#1ca297',
-            'needs-review': '#eb3728',
+            'complete': '#1abdaf',
+            'grouped': '#1abdaf',
+            'needs-review': '#EB3728',
         }
         return format_html(
             '<strong style="color: {}">{}</strong><br><span style="color: #64748b">{}</span>',

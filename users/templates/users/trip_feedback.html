@@ -11,7 +11,7 @@
         <div class="flex items-center gap-3">
           <img src="{% static 'images/myriad-logo.png' %}" alt="Myriad Travel" class="h-14 w-14 object-contain bg-white rounded-lg p-1.5">
           <div>
-            <p class="text-xs uppercase tracking-[0.2em] text-amber-300 font-bold">Private Client Feedback</p>
+            <p class="text-xs uppercase tracking-[0.2em] text-[#EB3728] font-bold">Private Client Feedback</p>
             <h1 class="text-2xl sm:text-3xl font-serif font-bold">How was your trip?</h1>
           </div>
         </div>
@@ -22,12 +22,12 @@
 
       <div class="p-6 sm:p-8">
         {% if feedback_request.status == feedback_request.SUBMITTED or feedback_request.status == feedback_request.REVIEWED %}
-          <div class="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+          <div class="mb-6 rounded-xl border border-[#1abdaf] bg-[#1abdaf] p-4 text-sm text-[#1abdaf]">
             We have received feedback for this trip. You may update it below if you need to add anything.
           </div>
         {% endif %}
 
-        <div class="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
+        <div class="mb-6 rounded-xl border border-[#EB3728] bg-[#EB3728] p-4 text-sm text-[#EB3728]">
           <strong>Trip:</strong>
           {% if feedback_request.destination_or_trip %}
             {{ feedback_request.destination_or_trip }}
@@ -83,7 +83,7 @@
             <span>I allow Myriad Travel to publish my feedback on the website after admin review.</span>
           </label>
 
-          <button type="submit" class="w-full rounded-xl bg-amber-600 px-5 py-3 text-sm font-bold text-white hover:bg-amber-700 transition-colors">
+          <button type="submit" class="w-full rounded-xl bg-[#EB3728] px-5 py-3 text-sm font-bold text-white hover:bg-[#EB3728] transition-colors">
             Submit Feedback
           </button>
         </form>

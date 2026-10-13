@@ -38,7 +38,7 @@
             },
             colors: {
               safari: {
-                gold: '#D97706',
+                gold: '#EB3728',
                 dark: '#0B192C',
                 sand: '#FBF8F2',
               }
@@ -89,8 +89,8 @@
       form input:focus,
       form select:focus,
       form textarea:focus {
-        border-color: #d97706;
-        box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.16);
+        border-color: #EB3728;
+        box-shadow: 0 0 0 3px rgba(235, 55, 40, 0.16);
       }
       form label {
         display: block;
@@ -118,13 +118,13 @@
 
     {% block extra_head %}{% endblock %}
   </head>
-  <body class="bg-[#F9F2F2] text-slate-900 antialiased selection:bg-amber-600 selection:text-white min-h-screen flex flex-col font-sans">
+  <body class="bg-[#F9F2F2] text-slate-900 antialiased selection:bg-[#EB3728] selection:text-white min-h-screen flex flex-col font-sans">
     
     <!-- Django Flash Messages Container -->
     {% if messages %}
     <div class="fixed top-20 right-4 z-50 max-w-md space-y-2">
       {% for message in messages %}
-      <div class="p-4 rounded-xl shadow-lg border text-sm font-medium flex items-center justify-between gap-3 {% if message.tags == 'success' %}bg-emerald-50 text-emerald-900 border-emerald-200{% elif message.tags == 'error' %}bg-rose-50 text-rose-900 border-rose-200{% else %}bg-amber-50 text-amber-900 border-amber-200{% endif %}">
+      <div class="p-4 rounded-xl shadow-lg border text-sm font-medium flex items-center justify-between gap-3 {% if message.tags == 'success' %}bg-[#1abdaf] text-white border-[#1abdaf]{% elif message.tags == 'error' %}bg-rose-50 text-rose-900 border-rose-200{% else %}bg-[#EB3728] text-white border-[#EB3728]{% endif %}">
         <span>{{ message }}</span>
         <button type="button" onclick="this.parentElement.remove()" class="text-slate-400 hover:text-slate-700">&times;</button>
       </div>

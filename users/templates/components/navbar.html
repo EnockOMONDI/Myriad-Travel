@@ -4,20 +4,20 @@
   <div class="bg-[#0B192C] text-slate-200 text-xs py-2 px-4 sm:px-8 border-b border-slate-800">
     <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
       <div class="flex flex-wrap items-center gap-4 sm:gap-6 text-slate-300">
-        <div class="flex items-center gap-1.5 hover:text-amber-400 transition-colors">
-          <i data-lucide="map-pin" class="w-3.5 h-3.5 text-amber-500"></i>
+        <div class="flex items-center gap-1.5 hover:text-[#EB3728] transition-colors">
+          <i data-lucide="map-pin" class="w-3.5 h-3.5 text-[#EB3728]"></i>
           <span class="hidden md:inline">{{ company.address.full|default:"Parklands, Crescent Business Center, 6th Floor, Nairobi, Kenya" }}</span>
           <span class="md:hidden">Nairobi, Kenya</span>
         </div>
-        <div class="hidden sm:flex items-center gap-1.5 hover:text-amber-400 transition-colors">
-          <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-500"></i>
+        <div class="hidden sm:flex items-center gap-1.5 hover:text-[#EB3728] transition-colors">
+          <i data-lucide="clock" class="w-3.5 h-3.5 text-[#EB3728]"></i>
           <span>Mon-Fri 8:30am - 5:30pm | Sat 9am - 1pm</span>
         </div>
         <a 
           href="tel:{{ company.contacts.primary_phone|default:'+254712236522' }}"
-          class="flex items-center gap-1.5 hover:text-amber-400 transition-colors font-medium"
+          class="flex items-center gap-1.5 hover:text-[#EB3728] transition-colors font-medium"
         >
-          <i data-lucide="phone" class="w-3.5 h-3.5 text-amber-500"></i>
+          <i data-lucide="phone" class="w-3.5 h-3.5 text-[#EB3728]"></i>
           <span>{{ company.contacts.phone_formatted|default:"+254 (0) 712 236 522" }}</span>
         </a>
       </div>
@@ -25,9 +25,9 @@
       <div class="flex items-center gap-4">
         <a 
           href="mailto:{{ company.contacts.email_general|default:'info@myriad-travel.com' }}"
-          class="hidden lg:flex items-center gap-1.5 hover:text-amber-400 transition-colors"
+          class="hidden lg:flex items-center gap-1.5 hover:text-[#EB3728] transition-colors"
         >
-          <i data-lucide="mail" class="w-3.5 h-3.5 text-amber-500"></i>
+          <i data-lucide="mail" class="w-3.5 h-3.5 text-[#EB3728]"></i>
           <span>{{ company.contacts.email_general|default:"info@myriad-travel.com" }}</span>
         </a>
 
@@ -36,7 +36,7 @@
           <button
             type="button"
             id="btn-currency-kes"
-            class="px-2.5 py-0.5 text-[11px] font-semibold rounded-full transition-all bg-amber-600 text-white shadow-xs"
+            class="px-2.5 py-0.5 text-[11px] font-semibold rounded-full transition-all bg-[#EB3728] text-white shadow-xs"
           >
             KES (KSh)
           </button>
@@ -54,7 +54,7 @@
           href="https://wa.me/{{ company.contacts.whatsapp|default:'254712236522' }}?text=Hello%20Myriad%20Travel,%20I%20would%20like%20to%20enquire%20about%20planning%20a%20trip%20/%20holiday."
           target="_blank"
           rel="noopener noreferrer"
-          class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-600/90 hover:bg-emerald-600 text-white text-[11px] font-medium rounded-full transition-all"
+          class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 bg-[#1abdaf]/90 hover:bg-[#1abdaf] text-white text-[11px] font-medium rounded-full transition-all"
         >
           <i data-lucide="send" class="w-3 h-3"></i>
           <span>WhatsApp Us</span>
@@ -89,98 +89,98 @@
         <div class="relative group">
           <button
             type="button"
-            class="flex items-center gap-1 px-2 xl:px-3 py-2 rounded-lg hover:text-amber-600 hover:bg-amber-50/50 transition-colors whitespace-nowrap"
+            class="flex items-center gap-1 px-2 xl:px-3 py-2 rounded-lg hover:text-[#EB3728] hover:bg-[#EB3728]/50 transition-colors whitespace-nowrap"
           >
             <span>Explore Kenya</span>
             <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 group-hover:rotate-180 transition-transform"></i>
           </button>
           <div class="absolute top-full left-0 w-64 bg-white rounded-xl shadow-xl border border-slate-100 py-2 hidden group-hover:block z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-            <div class="px-4 py-1.5 text-[11px] font-semibold text-amber-700 uppercase tracking-wider bg-amber-50/60 border-b border-amber-100/40 mb-1">
+            <div class="px-4 py-1.5 text-[11px] font-semibold text-[#EB3728] uppercase tracking-wider bg-[#EB3728]/60 border-b border-[#EB3728]/40 mb-1">
               Kenya Highlights
             </div>
             {% for item in nav_explore_kenya %}
-            <a href="/destinations/{{ item.slug }}/" class="block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors">{{ item.name }}</a>
+            <a href="/destinations/{{ item.slug }}/" class="block px-4 py-2 text-sm text-slate-700 hover:bg-[#EB3728] hover:text-[#EB3728] transition-colors">{{ item.name }}</a>
             {% empty %}
-            <a href="/explore-kenya/" class="block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors">Kenya Packages</a>
+            <a href="/explore-kenya/" class="block px-4 py-2 text-sm text-slate-700 hover:bg-[#EB3728] hover:text-[#EB3728] transition-colors">Kenya Packages</a>
             {% endfor %}
-            <a href="/explore-kenya/" class="mt-1 block border-t border-slate-100 px-4 py-2 text-xs font-bold uppercase tracking-wider text-amber-700 hover:bg-amber-50">View all Kenya</a>
+            <a href="/explore-kenya/" class="mt-1 block border-t border-slate-100 px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#EB3728] hover:bg-[#EB3728]">View all Kenya</a>
           </div>
         </div>
 
         <div class="relative group">
           <button
             type="button"
-            class="flex items-center gap-1 px-2 xl:px-3 py-2 rounded-lg hover:text-amber-600 hover:bg-amber-50/50 transition-colors whitespace-nowrap"
+            class="flex items-center gap-1 px-2 xl:px-3 py-2 rounded-lg hover:text-[#EB3728] hover:bg-[#EB3728]/50 transition-colors whitespace-nowrap"
           >
             <span>Explore The World</span>
             <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 group-hover:rotate-180 transition-transform"></i>
           </button>
           <div class="absolute top-full left-0 w-64 bg-white rounded-xl shadow-xl border border-slate-100 py-2 hidden group-hover:block z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-            <div class="px-4 py-1.5 text-[11px] font-semibold text-amber-700 uppercase tracking-wider bg-amber-50/60 border-b border-amber-100/40 mb-1">
+            <div class="px-4 py-1.5 text-[11px] font-semibold text-[#EB3728] uppercase tracking-wider bg-[#EB3728]/60 border-b border-[#EB3728]/40 mb-1">
               Global Holidays
             </div>
             {% for item in nav_explore_world %}
-            <a href="/destinations/{{ item.slug }}/" class="block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors">{{ item.name }}</a>
+            <a href="/destinations/{{ item.slug }}/" class="block px-4 py-2 text-sm text-slate-700 hover:bg-[#EB3728] hover:text-[#EB3728] transition-colors">{{ item.name }}</a>
             {% empty %}
-            <a href="/explore-the-world/" class="block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors">International Holidays</a>
+            <a href="/explore-the-world/" class="block px-4 py-2 text-sm text-slate-700 hover:bg-[#EB3728] hover:text-[#EB3728] transition-colors">International Holidays</a>
             {% endfor %}
-            <a href="/explore-the-world/" class="mt-1 block border-t border-slate-100 px-4 py-2 text-xs font-bold uppercase tracking-wider text-amber-700 hover:bg-amber-50">View all world destinations</a>
+            <a href="/explore-the-world/" class="mt-1 block border-t border-slate-100 px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#EB3728] hover:bg-[#EB3728]">View all world destinations</a>
           </div>
         </div>
 
         <div class="relative group">
           <a
             href="/tours-safaris/"
-            class="flex items-center gap-1 px-2 xl:px-3 py-2 rounded-lg hover:text-amber-600 hover:bg-amber-50/50 transition-colors whitespace-nowrap"
+            class="flex items-center gap-1 px-2 xl:px-3 py-2 rounded-lg hover:text-[#EB3728] hover:bg-[#EB3728]/50 transition-colors whitespace-nowrap"
           >
             <span>Tours &amp; Safaris</span>
             <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 group-hover:rotate-180 transition-transform"></i>
           </a>
           <div class="absolute top-full left-0 w-64 bg-white rounded-xl shadow-xl border border-slate-100 py-2 hidden group-hover:block z-50 animate-in fade-in slide-in-from-top-2 duration-150">
             {% for item in nav_tours_safaris %}
-            <a href="/tours-safaris/?category={{ item.slug }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors">{{ item.name }}</a>
+            <a href="/tours-safaris/?category={{ item.slug }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-[#EB3728] hover:text-[#EB3728] transition-colors">{{ item.name }}</a>
             {% empty %}
-            <a href="/tours-safaris/" class="block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors">Safari Packages</a>
+            <a href="/tours-safaris/" class="block px-4 py-2 text-sm text-slate-700 hover:bg-[#EB3728] hover:text-[#EB3728] transition-colors">Safari Packages</a>
             {% endfor %}
-            <a href="/tours-safaris/" class="mt-1 block border-t border-slate-100 px-4 py-2 text-xs font-bold uppercase tracking-wider text-amber-700 hover:bg-amber-50">View all tours</a>
+            <a href="/tours-safaris/" class="mt-1 block border-t border-slate-100 px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#EB3728] hover:bg-[#EB3728]">View all tours</a>
           </div>
         </div>
 
         <div class="relative group">
           <a
             href="/signature-experiences/"
-            class="flex items-center gap-1 px-2 xl:px-3 py-2 rounded-lg hover:text-amber-600 hover:bg-amber-50/50 transition-colors whitespace-nowrap"
+            class="flex items-center gap-1 px-2 xl:px-3 py-2 rounded-lg hover:text-[#EB3728] hover:bg-[#EB3728]/50 transition-colors whitespace-nowrap"
           >
             <span>Signature Experiences</span>
             <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 group-hover:rotate-180 transition-transform"></i>
           </a>
           <div class="absolute top-full left-0 w-64 bg-white rounded-xl shadow-xl border border-slate-100 py-2 hidden group-hover:block z-50 animate-in fade-in slide-in-from-top-2 duration-150">
             {% for item in nav_signature_experiences %}
-            <a href="/signature-experiences/#{{ item.slug }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors">{{ item.name }}</a>
+            <a href="/signature-experiences/#{{ item.slug }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-[#EB3728] hover:text-[#EB3728] transition-colors">{{ item.name }}</a>
             {% empty %}
-            <a href="/signature-experiences/" class="block px-4 py-2 text-sm text-slate-700 hover:bg-amber-50 hover:text-amber-800 transition-colors">Signature Experiences</a>
+            <a href="/signature-experiences/" class="block px-4 py-2 text-sm text-slate-700 hover:bg-[#EB3728] hover:text-[#EB3728] transition-colors">Signature Experiences</a>
             {% endfor %}
-            <a href="/signature-experiences/" class="mt-1 block border-t border-slate-100 px-4 py-2 text-xs font-bold uppercase tracking-wider text-amber-700 hover:bg-amber-50">View all signature experiences</a>
+            <a href="/signature-experiences/" class="mt-1 block border-t border-slate-100 px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#EB3728] hover:bg-[#EB3728]">View all signature experiences</a>
           </div>
         </div>
 
         <a
           href="{% url 'blog:blog-list' %}"
-          class="px-2 xl:px-3 py-2 rounded-lg hover:text-amber-600 hover:bg-amber-50/50 transition-colors whitespace-nowrap"
+          class="px-2 xl:px-3 py-2 rounded-lg hover:text-[#EB3728] hover:bg-[#EB3728]/50 transition-colors whitespace-nowrap"
         >
           Blogs
         </a>
 
         <a
           href="{% url 'users:aboutus' %}"
-          class="px-2 xl:px-3 py-2 rounded-lg hover:text-amber-600 hover:bg-amber-50/50 transition-colors whitespace-nowrap"
+          class="px-2 xl:px-3 py-2 rounded-lg hover:text-[#EB3728] hover:bg-[#EB3728]/50 transition-colors whitespace-nowrap"
         >
           About Us
         </a>
 
         <a
           href="{% url 'users:contact' %}"
-          class="px-2 xl:px-3 py-2 rounded-lg hover:text-amber-600 hover:bg-amber-50/50 transition-colors whitespace-nowrap"
+          class="px-2 xl:px-3 py-2 rounded-lg hover:text-[#EB3728] hover:bg-[#EB3728]/50 transition-colors whitespace-nowrap"
         >
           Contact Us
         </a>
@@ -190,7 +190,7 @@
       <div class="hidden lg:flex items-center gap-2 shrink-0">
         <a
           href="/#search-interface"
-          class="p-2.5 text-slate-600 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition-colors"
+          class="p-2.5 text-slate-600 hover:text-[#EB3728] hover:bg-[#EB3728] rounded-lg transition-colors"
           title="Search packages"
         >
           <i data-lucide="search" class="w-5 h-5"></i>
@@ -198,8 +198,8 @@
 
         <button
           type="button"
-          class="open-plan-modal-btn inline-flex items-center gap-2 px-4 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-semibold text-sm rounded-lg shadow-sm hover:shadow-md transition-all cursor-pointer whitespace-nowrap"
-          style="background:#d97706;color:#fff;"
+          class="open-plan-modal-btn inline-flex items-center gap-2 px-4 py-2.5 bg-[#EB3728] hover:bg-[#EB3728] text-white font-semibold text-sm rounded-lg shadow-sm hover:shadow-md transition-all cursor-pointer whitespace-nowrap"
+          style="background:#EB3728;color:#fff;"
         >
           <i data-lucide="calendar" class="w-4 h-4"></i>
           <span>Request Quote</span>
@@ -210,7 +210,7 @@
       <div class="flex items-center gap-2 lg:hidden">
         <button
           type="button"
-          class="open-plan-modal-btn px-3 py-1.5 bg-amber-600 text-white text-xs font-semibold rounded-md shadow-xs"
+          class="open-plan-modal-btn px-3 py-1.5 bg-[#EB3728] text-white text-xs font-semibold rounded-md shadow-xs"
         >
           Request Quote
         </button>
@@ -266,7 +266,7 @@
       <div class="pt-2 border-t border-slate-100 flex flex-col gap-2">
         <button
           type="button"
-          class="open-plan-modal-btn w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg text-center shadow-xs"
+          class="open-plan-modal-btn w-full py-3 bg-[#EB3728] hover:bg-[#EB3728] text-white font-semibold rounded-lg text-center shadow-xs"
         >
           Request Quote
         </button>
@@ -275,7 +275,7 @@
           href="https://wa.me/{{ company.contacts.whatsapp|default:'254712236522' }}?text=Hello%20Myriad%20Travel,%20I%20would%20like%20to%20consult%20with%20a%20travel%20specialist."
           target="_blank"
           rel="noopener noreferrer"
-          class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg text-center text-sm flex items-center justify-center gap-2"
+          class="w-full py-2.5 bg-[#1abdaf] hover:bg-[#1abdaf] text-white font-semibold rounded-lg text-center text-sm flex items-center justify-center gap-2"
         >
           <i data-lucide="send" class="w-4 h-4"></i>
           <span>Chat on WhatsApp</span>

@@ -13,7 +13,7 @@
   }
 
   .blog-card-image {
-    background: linear-gradient(135deg, #eaf3f8, #fff3f1);
+    background: linear-gradient(135deg, #e9fbfa, #fff3f1);
   }
 </style>
 
@@ -43,7 +43,7 @@
             placeholder="Search Maasai Mara, Diani, Dubai, visa tips..."
             class="min-h-12 w-full rounded-lg border border-white/25 bg-white px-4 text-sm font-semibold text-[#122f46] outline-none ring-0 placeholder:text-slate-400 focus:border-white"
           />
-          <button class="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-[#eb3728] px-5 text-sm font-black text-white transition hover:bg-[#c82017]">
+          <button class="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-[#EB3728] px-5 text-sm font-black text-white transition hover:bg-[#EB3728]">
             <i data-lucide="search" class="h-4 w-4"></i>
             Search
           </button>
@@ -71,9 +71,9 @@
   <div class="mx-auto flex max-w-7xl flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
     {% if categories %}
       <div class="flex flex-wrap gap-2">
-        <a href="{% url 'blog:blog-list' %}" class="rounded-full px-4 py-2 text-sm font-bold transition {% if not category_slug %}bg-[#eb3728] text-white{% else %}border border-[#d9e6ef] bg-white text-[#245f86] hover:border-[#245f86]{% endif %}">All Guides</a>
+        <a href="{% url 'blog:blog-list' %}" class="rounded-full px-4 py-2 text-sm font-bold transition {% if not category_slug %}bg-[#EB3728] text-white{% else %}border border-[#c7f0ec] bg-white text-[#1abdaf] hover:border-[#1abdaf]{% endif %}">All Guides</a>
         {% for cat in categories %}
-          <a href="{{ cat.get_absolute_url }}" class="rounded-full border border-[#d9e6ef] bg-white px-4 py-2 text-sm font-bold text-slate-700 transition hover:border-[#245f86] hover:text-[#245f86]">
+          <a href="{{ cat.get_absolute_url }}" class="rounded-full border border-[#c7f0ec] bg-white px-4 py-2 text-sm font-bold text-slate-700 transition hover:border-[#1abdaf] hover:text-[#1abdaf]">
             {{ cat.title }}{% if cat.post_count is not None %} ({{ cat.post_count }}){% endif %}
           </a>
         {% endfor %}
@@ -81,8 +81,8 @@
     {% endif %}
 
     <div class="flex flex-wrap gap-2 text-sm font-bold">
-      <a href="{% url 'blog:blog-rss' %}" class="rounded-lg border border-[#d9e6ef] bg-white px-3 py-2 text-[#245f86] transition hover:border-[#245f86]">RSS</a>
-      <a href="{% url 'blog:blog-sitemap' %}" class="rounded-lg border border-[#d9e6ef] bg-white px-3 py-2 text-[#245f86] transition hover:border-[#245f86]">Sitemap</a>
+      <a href="{% url 'blog:blog-rss' %}" class="rounded-lg border border-[#c7f0ec] bg-white px-3 py-2 text-[#1abdaf] transition hover:border-[#1abdaf]">RSS</a>
+      <a href="{% url 'blog:blog-sitemap' %}" class="rounded-lg border border-[#c7f0ec] bg-white px-3 py-2 text-[#1abdaf] transition hover:border-[#1abdaf]">Sitemap</a>
     </div>
   </div>
 </section>
@@ -93,7 +93,7 @@
       <div class="mb-12">
         <div class="mb-5 flex items-end justify-between gap-4">
           <div>
-            <p class="text-xs font-black uppercase tracking-[0.22em] text-[#eb3728]">Featured reads</p>
+            <p class="text-xs font-black uppercase tracking-[0.22em] text-[#EB3728]">Featured reads</p>
             <h2 class="mt-2 font-serif text-3xl font-black text-[#122f46] sm:text-4xl">Start here</h2>
           </div>
         </div>
@@ -101,7 +101,7 @@
         <div class="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
           {% for post in featured_blog %}
             {% if forloop.first %}
-              <a href="{{ post.get_absolute_url }}" class="group overflow-hidden rounded-2xl border border-[#d9e6ef] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+              <a href="{{ post.get_absolute_url }}" class="group overflow-hidden rounded-2xl border border-[#c7f0ec] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
                 <div class="relative h-72 overflow-hidden sm:h-96">
                   {% if post.image %}
                     <img src="{{ post.image.cdn_url }}" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" alt="{{ post.title }}">
@@ -110,7 +110,7 @@
                   {% endif %}
                   <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
                   <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
-                    <span class="rounded-full bg-white/90 px-3 py-1 text-[11px] font-black uppercase tracking-[0.16em] text-[#245f86]">{{ post.category.title|default:"Guide" }}</span>
+                    <span class="rounded-full bg-white/90 px-3 py-1 text-[11px] font-black uppercase tracking-[0.16em] text-[#1abdaf]">{{ post.category.title|default:"Guide" }}</span>
                     <h3 class="mt-4 font-serif text-3xl font-black leading-tight sm:text-4xl">{{ post.title }}</h3>
                     <p class="mt-3 max-w-2xl text-sm leading-6 text-white/85">{{ post.get_meta_description }}</p>
                     <p class="mt-4 text-xs font-bold text-white/75">{{ post.date|date:"M d, Y" }} · {{ post.get_reading_time_display }}</p>
@@ -123,7 +123,7 @@
           <div class="grid gap-4">
             {% for post in featured_blog %}
               {% if not forloop.first %}
-                <a href="{{ post.get_absolute_url }}" class="group grid grid-cols-[104px_1fr] gap-4 rounded-2xl border border-[#d9e6ef] bg-white p-3 shadow-sm transition hover:border-[#245f86] hover:shadow-md">
+                <a href="{{ post.get_absolute_url }}" class="group grid grid-cols-[104px_1fr] gap-4 rounded-2xl border border-[#c7f0ec] bg-white p-3 shadow-sm transition hover:border-[#1abdaf] hover:shadow-md">
                   <div class="blog-card-image h-24 overflow-hidden rounded-xl">
                     {% if post.image %}
                       <img src="{{ post.image.cdn_url }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" alt="{{ post.title }}">
@@ -132,7 +132,7 @@
                     {% endif %}
                   </div>
                   <div class="min-w-0">
-                    <span class="text-[11px] font-black uppercase tracking-[0.14em] text-[#eb3728]">{{ post.category.title|default:"Guide" }}</span>
+                    <span class="text-[11px] font-black uppercase tracking-[0.14em] text-[#EB3728]">{{ post.category.title|default:"Guide" }}</span>
                     <h3 class="mt-1 line-clamp-2 font-serif text-lg font-black leading-snug text-[#122f46]">{{ post.title }}</h3>
                     <p class="mt-2 text-xs font-semibold text-slate-500">{{ post.date|date:"M d, Y" }} · {{ post.get_reading_time_display }}</p>
                   </div>
@@ -146,7 +146,7 @@
 
     <div class="mb-6 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <p class="text-xs font-black uppercase tracking-[0.22em] text-[#eb3728]">Latest articles</p>
+        <p class="text-xs font-black uppercase tracking-[0.22em] text-[#EB3728]">Latest articles</p>
         <h2 class="mt-2 font-serif text-3xl font-black text-[#122f46]">Plan with confidence</h2>
       </div>
       {% if blog_count is not None %}
@@ -156,7 +156,7 @@
 
     <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
       {% for post in blog %}
-        <a href="{{ post.get_absolute_url }}" class="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#d9e6ef] bg-white shadow-sm transition hover:-translate-y-1 hover:border-[#245f86] hover:shadow-xl">
+        <a href="{{ post.get_absolute_url }}" class="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#c7f0ec] bg-white shadow-sm transition hover:-translate-y-1 hover:border-[#1abdaf] hover:shadow-xl">
           <div class="blog-card-image h-56 overflow-hidden">
             {% if post.image %}
               <img src="{{ post.image.cdn_url }}" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" alt="{{ post.title }}">
@@ -165,17 +165,17 @@
             {% endif %}
           </div>
           <div class="flex flex-1 flex-col p-5">
-            <span class="text-[11px] font-black uppercase tracking-[0.16em] text-[#eb3728]">{{ post.category.title|default:"Guide" }}</span>
-            <h2 class="mt-3 font-serif text-xl font-black leading-tight text-[#122f46] transition group-hover:text-[#245f86]">{{ post.title }}</h2>
+            <span class="text-[11px] font-black uppercase tracking-[0.16em] text-[#EB3728]">{{ post.category.title|default:"Guide" }}</span>
+            <h2 class="mt-3 font-serif text-xl font-black leading-tight text-[#122f46] transition group-hover:text-[#1abdaf]">{{ post.title }}</h2>
             <p class="mt-3 line-clamp-3 text-sm leading-6 text-slate-600">{{ post.get_meta_description }}</p>
             <div class="mt-auto flex items-center justify-between pt-5 text-xs font-bold text-slate-500">
               <span>{{ post.date|date:"M d, Y" }} · {{ post.get_reading_time_display }}</span>
-              <span class="inline-flex items-center gap-1 text-[#245f86]">Read <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i></span>
+              <span class="inline-flex items-center gap-1 text-[#1abdaf]">Read <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i></span>
             </div>
           </div>
         </a>
       {% empty %}
-        <div class="md:col-span-2 xl:col-span-3 rounded-2xl border border-[#d9e6ef] bg-white p-8 text-center shadow-sm">
+        <div class="md:col-span-2 xl:col-span-3 rounded-2xl border border-[#c7f0ec] bg-white p-8 text-center shadow-sm">
           <h2 class="font-serif text-2xl font-black text-[#122f46]">No articles found</h2>
           <p class="mt-2 text-slate-600">Published travel guides will appear here once they are added in admin.</p>
         </div>
@@ -185,11 +185,11 @@
     {% if blog.has_other_pages %}
       <nav class="mt-10 flex items-center justify-center gap-2 text-sm font-bold">
         {% if blog.has_previous %}
-          <a href="?page={{ blog.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" class="rounded-lg border border-[#d9e6ef] bg-white px-4 py-2 text-[#245f86]">Previous</a>
+          <a href="?page={{ blog.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" class="rounded-lg border border-[#c7f0ec] bg-white px-4 py-2 text-[#1abdaf]">Previous</a>
         {% endif %}
-        <span class="rounded-lg bg-[#eb3728] px-4 py-2 text-white">Page {{ blog.number }} of {{ blog.paginator.num_pages }}</span>
+        <span class="rounded-lg bg-[#EB3728] px-4 py-2 text-white">Page {{ blog.number }} of {{ blog.paginator.num_pages }}</span>
         {% if blog.has_next %}
-          <a href="?page={{ blog.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" class="rounded-lg border border-[#d9e6ef] bg-white px-4 py-2 text-[#245f86]">Next</a>
+          <a href="?page={{ blog.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if sort_by %}&sort={{ sort_by }}{% endif %}" class="rounded-lg border border-[#c7f0ec] bg-white px-4 py-2 text-[#1abdaf]">Next</a>
         {% endif %}
       </nav>
     {% endif %}

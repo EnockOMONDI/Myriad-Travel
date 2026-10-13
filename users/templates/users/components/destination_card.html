@@ -1,6 +1,6 @@
 {% load static %}
 <div
-  class="destination-card group relative overflow-hidden rounded-2xl bg-white aspect-4/3 cursor-pointer border border-[#d9e6ef] shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+  class="destination-card group relative overflow-hidden rounded-2xl bg-white aspect-4/3 cursor-pointer border border-[#c7f0ec] shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
   data-destination-name="{{ dest.name }}"
 >
   <!-- Background Image -->
@@ -14,7 +14,7 @@
 
   <!-- Badge Top Right -->
   <div class="absolute top-4 right-4">
-    <span class="px-3 py-1 bg-white/90 text-[#245f86] text-[11px] font-bold rounded-full shadow-xs">
+    <span class="px-3 py-1 bg-white/90 text-[#1abdaf] text-[11px] font-bold rounded-full shadow-xs">
       {{ dest.badge|default:"Featured" }}
     </span>
   </div>

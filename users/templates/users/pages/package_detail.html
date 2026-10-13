@@ -21,31 +21,31 @@
     <div class="mb-8 flex items-center justify-between gap-6">
       <a href="/" class="block" aria-label="Myriad Travel home"><img src="{% static 'images/myriad-logo.png' %}" alt="Myriad Travel" class="h-14 w-auto object-contain" /></a>
       <nav class="hidden items-center gap-8 text-sm font-semibold text-[#243131] md:flex">
-        <a href="#overview" class="hover:text-[#eb3728]">Overview</a>
-        {% if pkg.itinerary %}<a href="#itinerary" class="hover:text-[#eb3728]">Itinerary</a>{% endif %}
-        {% if pkg.inclusions or pkg.exclusions %}<a href="#included" class="hover:text-[#eb3728]">Inclusions</a>{% endif %}
+        <a href="#overview" class="hover:text-[#EB3728]">Overview</a>
+        {% if pkg.itinerary %}<a href="#itinerary" class="hover:text-[#EB3728]">Itinerary</a>{% endif %}
+        {% if pkg.inclusions or pkg.exclusions %}<a href="#included" class="hover:text-[#EB3728]">Inclusions</a>{% endif %}
       </nav>
-      <a href="#booking" class="inline-flex items-center gap-2 rounded-md border border-[#d8dedb] bg-white px-5 py-3 text-sm font-semibold text-[#243131] shadow-sm transition hover:border-[#eb3728]">Request a quote <span aria-hidden="true">↗</span></a>
+      <a href="#booking" class="inline-flex items-center gap-2 rounded-md border border-[#d8dedb] bg-white px-5 py-3 text-sm font-semibold text-[#243131] shadow-sm transition hover:border-[#EB3728]">Request a quote <span aria-hidden="true">↗</span></a>
     </div>
 
     <div class="mb-8 flex flex-wrap items-center gap-3 text-sm text-[#66736f]">
-      <a href="/" class="hover:text-[#eb3728]">Home</a><span>/</span>
-      {% if pkg.destination %}<a href="/destinations/{{ pkg.model.main_destination.slug }}/" class="hover:text-[#eb3728]">{{ pkg.destination }}</a><span>/</span>{% endif %}
+      <a href="/" class="hover:text-[#EB3728]">Home</a><span>/</span>
+      {% if pkg.destination %}<a href="/destinations/{{ pkg.model.main_destination.slug }}/" class="hover:text-[#EB3728]">{{ pkg.destination }}</a><span>/</span>{% endif %}
       <span class="font-medium text-[#243131]">{{ pkg.title }}</span>
     </div>
 
     <div class="grid gap-8 lg:grid-cols-[1fr_300px] lg:items-end">
       <div>
-        <div class="mb-5 flex flex-wrap items-center gap-3 text-[11px] font-black uppercase tracking-[0.22em] text-[#1ca297]">
-          {% if pkg.special_offer %}<span class="bg-[#e9f5f3] px-3 py-2 text-[#12645d]">{{ pkg.special_offer.label }}</span>{% endif %}
+        <div class="mb-5 flex flex-wrap items-center gap-3 text-[11px] font-black uppercase tracking-[0.22em] text-[#1abdaf]">
+          {% if pkg.special_offer %}<span class="bg-[#e9fbfa] px-3 py-2 text-[#1abdaf]">{{ pkg.special_offer.label }}</span>{% endif %}
           <span>{{ pkg.category }}</span>
         </div>
         <h1 class="max-w-3xl font-serif text-5xl font-black leading-[0.95] tracking-[-0.04em] text-[#23302f] sm:text-7xl">{{ pkg.title }}</h1>
         {% if pkg.subtitle %}<p class="mt-5 max-w-2xl text-base font-semibold text-[#66736f] sm:text-lg">{{ pkg.subtitle }}</p>{% endif %}
       </div>
       <div class="flex flex-col gap-3 sm:flex-row">
-        <button type="button" class="package-share-btn inline-flex items-center justify-center gap-2 rounded-md border border-[#cbd8d2] bg-white px-5 py-4 text-sm font-bold text-[#12645d] shadow-sm transition hover:border-[#1ca297]"><i data-lucide="share-2" class="h-4 w-4"></i><span>Share on WhatsApp</span></button>
-        {% if package_has_gallery %}<a href="/packages/{{ pkg.slug }}/gallery/" class="inline-flex items-center justify-center gap-2 rounded-md bg-[#1f3031] px-5 py-4 text-sm font-bold text-white shadow-sm transition hover:bg-[#12645d]"><i data-lucide="images" class="h-4 w-4"></i><span>Trip Gallery</span></a>{% endif %}
+        <button type="button" class="package-share-btn inline-flex items-center justify-center gap-2 rounded-md border border-[#cbd8d2] bg-white px-5 py-4 text-sm font-bold text-[#1abdaf] shadow-sm transition hover:border-[#1abdaf]"><i data-lucide="share-2" class="h-4 w-4"></i><span>Share on WhatsApp</span></button>
+        {% if package_has_gallery %}<a href="/packages/{{ pkg.slug }}/gallery/" class="inline-flex items-center justify-center gap-2 rounded-md bg-[#1f3031] px-5 py-4 text-sm font-bold text-white shadow-sm transition hover:bg-[#1abdaf]"><i data-lucide="images" class="h-4 w-4"></i><span>Trip Gallery</span></a>{% endif %}
       </div>
     </div>
 
@@ -65,33 +65,33 @@
     <div class="mt-8 grid gap-10 lg:grid-cols-[1fr_350px] lg:items-start">
       <main class="min-w-0">
         <nav class="sticky top-0 z-10 mb-10 flex gap-6 overflow-x-auto border-b border-[#dce3df] bg-[#fbfaf7]/95 py-4 text-sm font-bold text-[#243131] backdrop-blur">
-          <a href="#highlights" class="text-[#eb3728]">Overview</a>
-          {% if pkg.itinerary %}<a href="#itinerary" class="hover:text-[#eb3728]">Itinerary</a>{% endif %}
-          {% if pkg.inclusions or pkg.exclusions %}<a href="#included" class="hover:text-[#eb3728]">Inclusions</a>{% endif %}
-          {% if pkg.special_offer.before_faqs %}<a href="#before" class="hover:text-[#eb3728]">Good to know</a>{% endif %}
+          <a href="#highlights" class="text-[#EB3728]">Overview</a>
+          {% if pkg.itinerary %}<a href="#itinerary" class="hover:text-[#EB3728]">Itinerary</a>{% endif %}
+          {% if pkg.inclusions or pkg.exclusions %}<a href="#included" class="hover:text-[#EB3728]">Inclusions</a>{% endif %}
+          {% if pkg.special_offer.before_faqs %}<a href="#before" class="hover:text-[#EB3728]">Good to know</a>{% endif %}
         </nav>
 
         <section id="highlights" class="scroll-mt-24">
-          <p class="text-[12px] font-black uppercase tracking-[0.24em] text-[#1ca297]">{{ pkg.category }}</p>
+          <p class="text-[12px] font-black uppercase tracking-[0.24em] text-[#1abdaf]">{{ pkg.category }}</p>
           <div class="mt-4 max-w-3xl text-base leading-8 text-[#66736f]">{{ pkg.description|safe }}</div>
-          {% if pkg.highlights %}<div class="mt-10 grid gap-5 md:grid-cols-3">{% for highlight in pkg.highlights %}<article class="border-t border-[#dce3df] pt-6"><div class="text-sm font-black text-[#eb3728]">{{ forloop.counter|stringformat:"02d" }}</div><p class="mt-3 text-sm leading-6 text-[#66736f]">{{ highlight }}</p></article>{% endfor %}</div>{% endif %}
+          {% if pkg.highlights %}<div class="mt-10 grid gap-5 md:grid-cols-3">{% for highlight in pkg.highlights %}<article class="border-t border-[#dce3df] pt-6"><div class="text-sm font-black text-[#EB3728]">{{ forloop.counter|stringformat:"02d" }}</div><p class="mt-3 text-sm leading-6 text-[#66736f]">{{ highlight }}</p></article>{% endfor %}</div>{% endif %}
         </section>
 
         {% if pkg.itinerary %}<section id="itinerary" class="mt-16 scroll-mt-24">
-          <div class="flex items-end justify-between gap-6"><div><p class="text-[12px] font-black uppercase tracking-[0.24em] text-[#1ca297]">Your itinerary</p><h2 class="mt-4 font-serif text-4xl font-black tracking-[-0.03em] text-[#23302f] sm:text-5xl">Day by day.</h2></div><button type="button" class="expand-all-btn hidden text-sm font-semibold text-[#eb3728] underline sm:block">Expand all</button></div>
-          <div class="mt-8 border-t border-[#dce3df]">{% for day in pkg.itinerary %}<article class="package-accordion border-b border-[#dce3df]" data-open="{% if forloop.first %}true{% else %}false{% endif %}"><button type="button" class="package-accordion-btn flex w-full gap-6 py-7 text-left"><div class="w-16 shrink-0 text-center"><div class="font-serif text-lg font-black text-[#8a9692]">{{ day.label }}</div></div><div class="min-w-0 flex-1">{% if day.date or day.theme %}<p class="text-[11px] font-black uppercase tracking-[0.22em] text-[#1ca297]">{{ day.date }}{% if day.date and day.theme %} - {% endif %}{{ day.theme }}</p>{% endif %}{% if day.title %}<h3 class="mt-2 text-xl font-black text-[#243131]">{{ day.title }}</h3>{% endif %}{% if day.summary %}<p class="mt-1 text-sm font-semibold text-[#66736f]">{{ day.summary }}</p>{% endif %}<div class="package-accordion-panel mt-6 text-base leading-8 text-[#66736f] {% if not forloop.first %}hidden{% endif %}"><p>{{ day.description }}</p>{% if day.overnight or day.meals %}<p class="mt-4 inline-block bg-[#e9f5f3] px-3 py-2 text-xs font-semibold text-[#12645d]">{% if day.overnight %}Overnight: {{ day.overnight }}{% endif %}{% if day.overnight and day.meals %} - {% endif %}{{ day.meals }}</p>{% endif %}</div></div><span class="package-accordion-icon mt-4 text-2xl font-bold text-[#eb3728]">{% if forloop.first %}-{% else %}+{% endif %}</span></button></article>{% endfor %}</div>
+          <div class="flex items-end justify-between gap-6"><div><p class="text-[12px] font-black uppercase tracking-[0.24em] text-[#1abdaf]">Your itinerary</p><h2 class="mt-4 font-serif text-4xl font-black tracking-[-0.03em] text-[#23302f] sm:text-5xl">Day by day.</h2></div><button type="button" class="expand-all-btn hidden text-sm font-semibold text-[#EB3728] underline sm:block">Expand all</button></div>
+          <div class="mt-8 border-t border-[#dce3df]">{% for day in pkg.itinerary %}<article class="package-accordion border-b border-[#dce3df]" data-open="{% if forloop.first %}true{% else %}false{% endif %}"><button type="button" class="package-accordion-btn flex w-full gap-6 py-7 text-left"><div class="w-16 shrink-0 text-center"><div class="font-serif text-lg font-black text-[#8a9692]">{{ day.label }}</div></div><div class="min-w-0 flex-1">{% if day.date or day.theme %}<p class="text-[11px] font-black uppercase tracking-[0.22em] text-[#1abdaf]">{{ day.date }}{% if day.date and day.theme %} - {% endif %}{{ day.theme }}</p>{% endif %}{% if day.title %}<h3 class="mt-2 text-xl font-black text-[#243131]">{{ day.title }}</h3>{% endif %}{% if day.summary %}<p class="mt-1 text-sm font-semibold text-[#66736f]">{{ day.summary }}</p>{% endif %}<div class="package-accordion-panel mt-6 text-base leading-8 text-[#66736f] {% if not forloop.first %}hidden{% endif %}"><p>{{ day.description }}</p>{% if day.overnight or day.meals %}<p class="mt-4 inline-block bg-[#e9fbfa] px-3 py-2 text-xs font-semibold text-[#1abdaf]">{% if day.overnight %}Overnight: {{ day.overnight }}{% endif %}{% if day.overnight and day.meals %} - {% endif %}{{ day.meals }}</p>{% endif %}</div></div><span class="package-accordion-icon mt-4 text-2xl font-bold text-[#EB3728]">{% if forloop.first %}-{% else %}+{% endif %}</span></button></article>{% endfor %}</div>
         </section>{% endif %}
 
-        {% if pkg.inclusions or pkg.exclusions %}<section id="included" class="mt-16 scroll-mt-24"><p class="text-[12px] font-black uppercase tracking-[0.24em] text-[#1ca297]">Booking details</p><h2 class="mt-4 font-serif text-4xl font-black tracking-[-0.03em] text-[#23302f] sm:text-5xl">What's included.</h2><div class="mt-8 grid gap-5 md:grid-cols-2">{% if pkg.inclusions %}<div class="rounded-sm border border-[#dce3df] bg-white p-6"><h3 class="text-lg font-black text-[#243131]">Included in your trip</h3><ul class="mt-5 space-y-3 text-sm leading-6 text-[#66736f]">{% for inc in pkg.inclusions %}<li class="flex gap-3"><span class="text-[#1ca297]">•</span><span>{{ inc }}</span></li>{% endfor %}</ul></div>{% endif %}{% if pkg.exclusions %}<div class="rounded-sm border border-[#dce3df] bg-white p-6"><h3 class="text-lg font-black text-[#243131]">Plan for separately</h3><ul class="mt-5 space-y-3 text-sm leading-6 text-[#66736f]">{% for exc in pkg.exclusions %}<li class="flex gap-3"><span class="text-[#eb3728]">•</span><span>{{ exc }}</span></li>{% endfor %}</ul></div>{% endif %}</div></section>{% endif %}
+        {% if pkg.inclusions or pkg.exclusions %}<section id="included" class="mt-16 scroll-mt-24"><p class="text-[12px] font-black uppercase tracking-[0.24em] text-[#1abdaf]">Booking details</p><h2 class="mt-4 font-serif text-4xl font-black tracking-[-0.03em] text-[#23302f] sm:text-5xl">What's included.</h2><div class="mt-8 grid gap-5 md:grid-cols-2">{% if pkg.inclusions %}<div class="rounded-sm border border-[#dce3df] bg-white p-6"><h3 class="text-lg font-black text-[#243131]">Included in your trip</h3><ul class="mt-5 space-y-3 text-sm leading-6 text-[#66736f]">{% for inc in pkg.inclusions %}<li class="flex gap-3"><span class="text-[#1abdaf]">•</span><span>{{ inc }}</span></li>{% endfor %}</ul></div>{% endif %}{% if pkg.exclusions %}<div class="rounded-sm border border-[#dce3df] bg-white p-6"><h3 class="text-lg font-black text-[#243131]">Plan for separately</h3><ul class="mt-5 space-y-3 text-sm leading-6 text-[#66736f]">{% for exc in pkg.exclusions %}<li class="flex gap-3"><span class="text-[#EB3728]">•</span><span>{{ exc }}</span></li>{% endfor %}</ul></div>{% endif %}</div></section>{% endif %}
 
-        {% if pkg.special_offer.before_faqs %}<section id="before" class="mt-16 scroll-mt-24"><p class="text-[12px] font-black uppercase tracking-[0.24em] text-[#1ca297]">Good to know</p><div class="mt-8 border-t border-[#dce3df]">{% for faq in pkg.special_offer.before_faqs %}<article class="package-accordion border-b border-[#dce3df]" data-open="false"><button type="button" class="package-accordion-btn flex w-full items-center justify-between gap-5 py-5 text-left"><h3 class="text-lg font-black text-[#243131]">{{ faq.question }}</h3><span class="package-accordion-icon text-2xl font-bold text-[#eb3728]">+</span></button><div class="package-accordion-panel hidden pb-6 text-sm leading-7 text-[#66736f]"><p>{{ faq.answer }}</p></div></article>{% endfor %}</div></section>{% endif %}
+        {% if pkg.special_offer.before_faqs %}<section id="before" class="mt-16 scroll-mt-24"><p class="text-[12px] font-black uppercase tracking-[0.24em] text-[#1abdaf]">Good to know</p><div class="mt-8 border-t border-[#dce3df]">{% for faq in pkg.special_offer.before_faqs %}<article class="package-accordion border-b border-[#dce3df]" data-open="false"><button type="button" class="package-accordion-btn flex w-full items-center justify-between gap-5 py-5 text-left"><h3 class="text-lg font-black text-[#243131]">{{ faq.question }}</h3><span class="package-accordion-icon text-2xl font-bold text-[#EB3728]">+</span></button><div class="package-accordion-panel hidden pb-6 text-sm leading-7 text-[#66736f]"><p>{{ faq.answer }}</p></div></article>{% endfor %}</div></section>{% endif %}
       </main>
 
       <aside id="booking" class="lg:sticky lg:top-8">
         <div class="rounded-lg border border-[#dce3df] bg-white p-7 shadow-[0_18px_55px_rgba(31,48,49,0.08)]">
-          <p class="text-[11px] font-black uppercase tracking-[0.24em] text-[#1ca297]">Request this package</p>
+          <p class="text-[11px] font-black uppercase tracking-[0.24em] text-[#1abdaf]">Request this package</p>
           <div class="mt-6"><span class="text-sm text-[#66736f]">From</span><div class="mt-1 text-4xl font-black tracking-[-0.04em] text-[#23302f]">{{ pkg.price_kes|kes_format }}</div><p class="mt-1 text-sm font-semibold text-[#66736f]">per adult sharing</p></div>
-          <div class="mt-7 rounded-sm bg-[#e9f5f3] p-5 text-[#243131]"><div class="flex items-start gap-3"><i data-lucide="calendar-days" class="mt-0.5 h-4 w-4 text-[#1ca297]"></i><div>{% if pkg.special_offer.date %}<p class="font-black">{{ pkg.special_offer.date }}</p>{% else %}<p class="font-black">Travel dates on request</p>{% endif %}<p class="mt-1 text-sm font-semibold text-[#66736f]">{{ pkg.duration }}</p></div></div></div>
+          <div class="mt-7 rounded-sm bg-[#e9fbfa] p-5 text-[#243131]"><div class="flex items-start gap-3"><i data-lucide="calendar-days" class="mt-0.5 h-4 w-4 text-[#1abdaf]"></i><div>{% if pkg.special_offer.date %}<p class="font-black">{{ pkg.special_offer.date }}</p>{% else %}<p class="font-black">Travel dates on request</p>{% endif %}<p class="mt-1 text-sm font-semibold text-[#66736f]">{{ pkg.duration }}</p></div></div></div>
 
           <form id="package-enquiry-form" method="POST" action="/quote/?package_id={{ pkg.model.id }}" class="mt-6 space-y-4">
             {% csrf_token %}{% include 'users/includes/antispam_fields.html' %}
@@ -108,7 +108,7 @@
             <label class="block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Citizenship / passport country *<input type="text" name="citizenship" required placeholder="e.g. Kenyan" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" /></label>
             <label class="block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Notes <textarea id="package-extra-notes" rows="3" placeholder="Rooming, child ages, dietary needs or pickup notes" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]"></textarea></label>
             <div class="mt-5 border-t border-[#dce3df] pt-5"><div class="flex items-center justify-between"><span class="text-sm text-[#243131]">Adult trip estimate</span><strong id="package-estimate" class="text-xl font-black text-[#243131]">{{ pkg.price_kes|kes_format }}</strong></div></div>
-            <button type="button" id="package-whatsapp" class="mt-2 flex w-full items-center justify-center rounded-md bg-[#1ca297] px-5 py-4 text-sm font-black text-white transition hover:bg-[#12645d]">Send via WhatsApp</button>
+            <button type="button" id="package-whatsapp" class="mt-2 flex w-full items-center justify-center rounded-md bg-[#1abdaf] px-5 py-4 text-sm font-black text-white transition hover:bg-[#1abdaf]">Send via WhatsApp</button>
             <button type="submit" class="flex w-full items-center justify-center rounded-md bg-[#1f3031] px-5 py-4 text-sm font-black text-white transition hover:bg-[#162526]">Send via Email</button>
           </form>
           <p class="mt-4 text-center text-xs font-semibold text-[#8a9692]">No payment now. Availability is confirmed by our team.</p>
@@ -117,7 +117,7 @@
     </div>
   </section>
 
-  <footer class="border-t border-[#dce3df] bg-white"><div class="mx-auto grid max-w-7xl gap-6 px-5 py-10 sm:px-8 md:grid-cols-[220px_1fr] md:items-center"><img src="{% static 'images/myriad-logo.png' %}" alt="Myriad Travel" class="h-20 w-auto object-contain" /><div><p class="text-sm text-[#66736f]">Nairobi, Kenya - <a href="mailto:info@myriad-travel.com" class="font-semibold hover:text-[#eb3728]">info@myriad-travel.com</a> - <a href="tel:+254712236522" class="font-semibold hover:text-[#eb3728]">+254 712 236 522</a></p><p class="mt-3 text-xs text-[#8a9692]">© 2026 Myriad Travel</p></div></div></footer>
+  <footer class="border-t border-[#dce3df] bg-white"><div class="mx-auto grid max-w-7xl gap-6 px-5 py-10 sm:px-8 md:grid-cols-[220px_1fr] md:items-center"><img src="{% static 'images/myriad-logo.png' %}" alt="Myriad Travel" class="h-20 w-auto object-contain" /><div><p class="text-sm text-[#66736f]">Nairobi, Kenya - <a href="mailto:info@myriad-travel.com" class="font-semibold hover:text-[#EB3728]">info@myriad-travel.com</a> - <a href="tel:+254712236522" class="font-semibold hover:text-[#EB3728]">+254 712 236 522</a></p><p class="mt-3 text-xs text-[#8a9692]">© 2026 Myriad Travel</p></div></div></footer>
 </div>
 
 <script>
