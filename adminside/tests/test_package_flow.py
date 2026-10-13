@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from django.test import TestCase
+from django.urls import reverse
 from django.utils import timezone
 
 from adminside.admin import PackageAdminForm
@@ -56,3 +57,7 @@ class PackageFlowTests(TestCase):
         self.assertEqual(scheduled.public_status, 'Scheduled')
         self.assertEqual(new.public_status, 'New')
         self.assertEqual(closing.public_status, 'Closing soon')
+
+    def test_admin_guide_requires_login_and_explains_nakuru_flow(self):
+        self.assertEqual(self.client.get('/adminside/how-it-works/').status_code, 302)
+        self.assertEqual(reverse('adminside:how_it_works'), '/adminside/how-it-works/')

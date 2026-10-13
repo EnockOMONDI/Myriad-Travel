@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.db.models import Q, Prefetch
 from django.core.paginator import Paginator
 from django.views.generic import ListView, DetailView
+from django.contrib.auth.decorators import login_required
 from .models import (
     Destination,
     Accommodation,
@@ -12,6 +13,14 @@ from .models import (
     ItineraryDay,
     PackageBooking
 )
+
+
+@login_required
+def how_it_works(request):
+    """Interactive admin guide for placing real Myriad records correctly."""
+    return render(request, 'adminside/how_it_works.html', {
+        'page_title': 'How Myriad is organised',
+    })
 
 # Destination Views
 def destination_list(request):

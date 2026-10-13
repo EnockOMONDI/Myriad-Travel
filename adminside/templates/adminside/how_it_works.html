@@ -1,0 +1,92 @@
+{% extends 'adminside/base.html' %}
+
+{% block title %}How it works{% endblock %}
+
+{% block extra_css %}
+<style>
+  .guide-wrap { max-width: 1180px; margin: 0 auto; padding: 28px 0 64px; }
+  .guide-hero { background: linear-gradient(135deg, #073b4c, #1abdaf); color: #fff; border-radius: 18px; padding: 34px; margin-bottom: 24px; box-shadow: 0 12px 30px rgba(7, 59, 76, .18); }
+  .guide-hero h1 { font-weight: 800; margin-bottom: 8px; }
+  .guide-search { width: 100%; border: 0; border-radius: 10px; padding: 14px 18px; font-size: 16px; margin-top: 20px; box-shadow: 0 4px 14px rgba(0,0,0,.14); }
+  .guide-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .guide-card, .guide-panel { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 22px; box-shadow: 0 5px 16px rgba(15, 23, 42, .05); }
+  .guide-card { min-height: 230px; transition: transform .2s, box-shadow .2s; }
+  .guide-card:hover { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(15, 23, 42, .1); }
+  .guide-icon { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; color: #fff; background: #1abdaf; margin-bottom: 16px; }
+  .guide-card h2, .guide-panel h2 { font-size: 20px; font-weight: 800; color: #0f172a; }
+  .guide-card p, .guide-panel p, .guide-panel li { color: #526174; line-height: 1.65; }
+  .guide-label { display: inline-block; color: #eb3728; font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 7px; }
+  .guide-flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+  .guide-step { background: #f1fbfa; border-left: 4px solid #1abdaf; padding: 15px; border-radius: 8px; }
+  .guide-step strong { display: block; color: #0f172a; margin-bottom: 4px; }
+  .guide-example { background: #fff7f5; border-left: 4px solid #eb3728; padding: 18px; border-radius: 9px; }
+  .guide-example code { color: #0f172a; }
+  .guide-empty { display: none; padding: 22px; text-align: center; color: #64748b; }
+  @media (max-width: 900px) { .guide-grid, .guide-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .guide-hero { padding: 24px 18px; } .guide-grid, .guide-flow { grid-template-columns: 1fr; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="guide-wrap" id="guide-page">
+  <section class="guide-hero">
+    <span class="guide-label" style="color:#fff">Myriad admin guide</span>
+    <h1>Where should this package go?</h1>
+    <p style="color:rgba(255,255,255,.9);max-width:720px;margin:0">Use this page while adding or editing records. Search a word below, or follow the four steps. The goal is simple: tell Myriad where the trip is, what kind of trip it is, and which pages should show it.</p>
+    <input id="guide-search" class="guide-search" type="search" placeholder="Search: Nakuru, safari, collection, Christmas, Maasai Mara..." autocomplete="off">
+  </section>
+
+  <section class="guide-grid" id="guide-cards">
+    <article class="guide-card" data-search="region africa europe asia middle east indian ocean americas large geography">
+      <div class="guide-icon"><i class="fas fa-globe-africa"></i></div><span class="guide-label">Step 1</span><h2>Region</h2><p>The large part of the world. Examples: <strong>Africa, Europe, Asia, Middle East, Indian Ocean Islands, Americas.</strong></p><p>Use this to place a destination on the correct regional page.</p>
+    </article>
+    <article class="guide-card" data-search="country kenya tanzania rwanda south africa country within region">
+      <div class="guide-icon"><i class="fas fa-flag"></i></div><span class="guide-label">Step 2</span><h2>Country</h2><p>The country where the trip takes place. Examples: <strong>Kenya, Tanzania, Rwanda.</strong></p><p>A country is the parent of its cities, parks, beaches, and other destinations.</p>
+    </article>
+    <article class="guide-card" data-search="destination maasai mara diani mombasa zanzibar specific place">
+      <div class="guide-icon"><i class="fas fa-map-marker-alt"></i></div><span class="guide-label">Step 3</span><h2>Destination</h2><p>The specific place a traveller is visiting. Examples: <strong>Maasai Mara, Diani, Mombasa, Zanzibar.</strong></p><p>Packages should normally use the most specific destination they are about.</p>
+    </article>
+    <article class="guide-card" data-search="child destination park area optional child place">
+      <div class="guide-icon"><i class="fas fa-sitemap"></i></div><span class="guide-label">Optional</span><h2>Child destination</h2><p>Use this when a place sits inside another destination. Example: <strong>Lake Nakuru National Park</strong> sits inside the wider <strong>Nakuru</strong> area.</p><p>Leave it blank when there is no more specific place.</p>
+    </article>
+  </section>
+  <div class="guide-empty" id="guide-empty">No matching guide cards. Try “Nakuru”, “collection”, or “deal”.</div>
+
+  <section class="guide-panel" style="margin-top:24px">
+    <span class="guide-label">The package flow</span><h2>One package can appear in several useful places</h2>
+    <div class="guide-flow">
+      <div class="guide-step"><strong>Where?</strong>Region → Country → Destination</div>
+      <div class="guide-step"><strong>What type?</strong>Category, such as safari, honeymoon, or hiking</div>
+      <div class="guide-step"><strong>Which group?</strong>Existing collections, such as Kenya Safaris</div>
+      <div class="guide-step"><strong>Is it promoted?</strong>Add a campaign if it should appear as a deal</div>
+    </div>
+  </section>
+
+  <section class="guide-panel" style="margin-top:16px">
+    <span class="guide-label">Real example</span><h2>Nakuru and Lake Nakuru</h2>
+    <div class="guide-example"><p><strong>Nakuru</strong> is the city or wider area.</p><p><strong>Lake Nakuru National Park</strong> is the specific travel destination inside Nakuru.</p><p><strong>Region:</strong> Africa &nbsp; <strong>Collection:</strong> Kenya Safaris &amp; Bush</p><p><strong>Possible categories:</strong> Wildlife Safari, Family Safari, Photography Safari, or Weekend Trip.</p><p style="margin-bottom:0">A game-drive package should use <strong>Lake Nakuru National Park</strong> as its main destination. A package about hotels, meetings, or nearby town activities can use <strong>Nakuru</strong>.</p></div>
+  </section>
+
+  <section class="guide-panel" style="margin-top:16px">
+    <span class="guide-label">Quick decision</span><h2>Before you click Save</h2>
+    <ul><li>Choose the most specific existing destination that matches the package.</li><li>Do not create a new country or destination just because the package title mentions a place.</li><li>Choose every existing collection that should show the package.</li><li>Use categories to describe the travel style, not the geography.</li><li>To promote a package, create a campaign and set its dates. The Deals page will show its current status.</li></ul>
+  </section>
+</div>
+<script>
+  (function () {
+    const input = document.getElementById('guide-search');
+    const cards = Array.from(document.querySelectorAll('[data-search]'));
+    const empty = document.getElementById('guide-empty');
+    input.addEventListener('input', function () {
+      const query = input.value.trim().toLowerCase();
+      let visible = 0;
+      cards.forEach(function (card) {
+        const match = !query || card.dataset.search.includes(query) || card.textContent.toLowerCase().includes(query);
+        card.style.display = match ? '' : 'none';
+        if (match) visible += 1;
+      });
+      empty.style.display = visible ? 'none' : 'block';
+    });
+  }());
+</script>
+{% endblock %}
