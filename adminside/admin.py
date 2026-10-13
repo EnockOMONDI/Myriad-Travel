@@ -145,7 +145,8 @@ class DestinationAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
         ('Display Options', {
-            'fields': ('display_order', 'is_featured', 'is_active', 'show_in_navigation')
+            'fields': ('display_order', 'is_featured', 'is_active', 'show_in_navigation'),
+            'description': 'Select up to six active destinations to highlight on the public homepage and destinations showcase.'
         }),
     )
 

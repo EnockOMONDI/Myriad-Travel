@@ -365,7 +365,10 @@ def _public_page_context(package_limit=None):
     if package_limit:
         packages_qs = packages_qs[:package_limit]
 
-    destinations_qs = Destination.objects.filter(is_active=True).order_by('-is_featured', 'display_order', 'name')[:12]
+    destinations_qs = Destination.objects.filter(
+        is_active=True,
+        is_featured=True,
+    ).order_by('display_order', 'name')[:6]
     trip_feedbacks = TripFeedback.objects.filter(
         is_visible_on_site=True,
         permission_to_publish=True,
@@ -740,6 +743,15 @@ def deals(request):
 
 
 def destinations(request):
+    destination_query = request.GET.get('destination', '').strip()
+    if destination_query:
+        destination = Destination.objects.filter(
+            is_active=True,
+        ).filter(
+            Q(slug=destination_query) | Q(name__iexact=destination_query.replace('-', ' '))
+        ).first()
+        if destination:
+            return redirect('users:destination_detail', slug=destination.slug)
     return render(request, 'users/pages/destinations.html', _public_page_context())
 
 

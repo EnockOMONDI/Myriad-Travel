@@ -182,6 +182,13 @@ class Destination(models.Model):
             raise ValidationError("Cities must have a country as parent")
         if self.destination_type == self.PLACE and (not self.parent or self.parent.destination_type != self.CITY):
             raise ValidationError("Places must have a city as parent")
+        if self.is_featured and self.is_active:
+            featured_count = type(self).objects.filter(
+                is_featured=True,
+                is_active=True,
+            ).exclude(pk=self.pk).count()
+            if featured_count >= 6:
+                raise ValidationError('You can highlight a maximum of six active destinations on the public site.')
 
     def save(self, *args, **kwargs):
         """Clean slug before saving"""
