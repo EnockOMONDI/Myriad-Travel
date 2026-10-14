@@ -117,7 +117,8 @@ class PackageCategory(models.Model):
 
 class Destination(models.Model):
     """
-    Hierarchical destination model: Country -> City -> Place
+    Hierarchical destination model: Country -> City -> Place, with optional
+    multi-country travel areas that can link to several country records.
     """
     COUNTRY = 'country'
     CITY = 'city'
@@ -156,6 +157,18 @@ class Destination(models.Model):
         blank=True,
         related_name='children'
     )
+    is_multi_country = models.BooleanField(
+        default=False,
+        help_text='Use this for a travel area that covers more than one country, such as the Caribbean or Arabian Gulf.',
+    )
+    member_countries = models.ManyToManyField(
+        'self',
+        blank=True,
+        symmetrical=False,
+        related_name='multi_country_groups',
+        limit_choices_to={'destination_type': COUNTRY},
+        help_text='Choose the existing country records covered by this travel area. Leave empty when the area still needs review.',
+    )
     
     # SEO and metadata
     meta_title = models.CharField(max_length=200, blank=True)
@@ -191,6 +204,8 @@ class Destination(models.Model):
 
     def clean(self):
         """Validate destination hierarchy"""
+        if self.is_multi_country and self.destination_type != self.COUNTRY:
+            raise ValidationError("Multi-country groups must use Country as their destination type")
         if self.destination_type == self.COUNTRY and self.parent:
             raise ValidationError("Countries cannot have parent destinations")
         if self.destination_type == self.CITY and (not self.parent or self.parent.destination_type != self.COUNTRY):
@@ -239,6 +254,8 @@ class Destination(models.Model):
     @property
     def country(self):
         """Get the country for this destination"""
+        if self.is_multi_country:
+            return None
         if self.destination_type == self.COUNTRY:
             return self
         elif self.parent:

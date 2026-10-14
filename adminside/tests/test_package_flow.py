@@ -8,7 +8,7 @@ from django.utils import timezone
 from adminside.admin import PackageAdminForm
 from adminside.package_wizard import DestinationQuickCreateForm
 from adminside.models import Accommodation, Campaign, Destination, Package, TravelCollection, TravelMode
-from users.views import _destination_tree_ids, _packages_for_destinations, _region_cards
+from users.views import _destination_ids_for_page, _destination_tree_ids, _packages_for_destinations, _region_cards
 
 
 class PackageFlowTests(TestCase):
@@ -35,6 +35,26 @@ class PackageFlowTests(TestCase):
         ids = _destination_tree_ids(self.country)
         self.assertEqual(set(ids), {self.country.id, self.destination.id, self.child.id})
         self.assertEqual(list(_packages_for_destinations(ids)), [self.package])
+
+    def test_country_page_includes_linked_multi_country_group_packages(self):
+        group = Destination.objects.create(
+            name='Indian Ocean Circuit', slug='indian-ocean-circuit',
+            destination_type=Destination.COUNTRY, region='africa',
+            description='A multi-country travel area.', is_active=True,
+            is_multi_country=True,
+        )
+        group.member_countries.add(self.country)
+        group_package = Package.objects.create(
+            name='Kenya and Indian Ocean Circuit', slug='kenya-indian-ocean-circuit',
+            description='A multi-country journey.', main_destination=group,
+            duration_days=8, duration_nights=7, adult_price=120000,
+            child_price=80000, status=Package.PUBLISHED,
+        )
+
+        ids = _destination_ids_for_page(self.country)
+
+        self.assertIn(group.id, ids)
+        self.assertIn(group_package, _packages_for_destinations(ids))
 
     def test_homepage_region_cards_include_existing_kenya_records_in_africa(self):
         africa = next(card for card in _region_cards() if card['slug'] == 'africa')

@@ -69,6 +69,12 @@ class DestinationAdminForm(forms.ModelForm):
         self.fields['destination_type'].help_text = 'Choose Country for a country record, City for a city/area, or Place for a specific destination.'
         self.fields['parent'].help_text = 'Optional for a country. Choose the country for a city, or the country/city that contains this place.'
         self.fields['parent'].queryset = Destination.objects.filter(is_active=True).order_by('destination_type', 'name')
+        self.fields['member_countries'].queryset = Destination.objects.filter(
+            destination_type=Destination.COUNTRY,
+            is_active=True,
+        ).exclude(pk=self.instance.pk).order_by('name')
+        self.fields['is_multi_country'].help_text = 'Turn this on for a travel area that covers several countries. It will stay out of the normal country filter.'
+        self.fields['member_countries'].label = 'Countries covered by this area'
 
     def clean_parent(self):
         parent = self.cleaned_data.get('parent')
@@ -78,6 +84,17 @@ class DestinationAdminForm(forms.ModelForm):
             if self.instance in parent.get_all_children():
                 raise forms.ValidationError('Choose a parent outside this destination branch.')
         return parent
+
+    def clean(self):
+        cleaned_data = super().clean()
+        is_multi_country = cleaned_data.get('is_multi_country')
+        destination_type = cleaned_data.get('destination_type')
+        member_countries = cleaned_data.get('member_countries')
+        if is_multi_country and destination_type != Destination.COUNTRY:
+            self.add_error('destination_type', 'A multi-country area must use Country as its destination type.')
+        if not is_multi_country and member_countries:
+            self.add_error('member_countries', 'Turn on multi-country grouping before selecting member countries.')
+        return cleaned_data
 
 class AccommodationAdminForm(forms.ModelForm):
     class Meta:
@@ -176,9 +193,9 @@ class PackageCategoryAdmin(admin.ModelAdmin):
 @admin.register(Destination)
 class DestinationAdmin(admin.ModelAdmin):
     form = DestinationAdminForm
-    list_display = ('name', 'destination_type', 'region', 'parent', 'package_count', 'display_image', 'starting_price', 'display_order', 'is_featured', 'is_active', 'show_in_navigation')
-    list_filter = ('region', 'destination_type', 'is_featured', 'is_active', 'parent')
-    search_fields = ('name', 'description', 'meta_title', 'region')
+    list_display = ('name', 'destination_type', 'region', 'grouping_label', 'parent', 'package_count', 'display_image', 'starting_price', 'display_order', 'is_featured', 'is_active', 'show_in_navigation')
+    list_filter = ('region', 'destination_type', 'is_multi_country', 'is_featured', 'is_active', 'parent')
+    search_fields = ('name', 'description', 'meta_title', 'region', 'member_countries__name')
 
     class Media:
         css = {
@@ -191,6 +208,10 @@ class DestinationAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Basic Information', {
             'fields': ('name', 'slug', 'destination_type', 'region', 'parent')
+        }),
+        ('Multi-country grouping', {
+            'fields': ('is_multi_country', 'member_countries'),
+            'description': 'Use this for a named travel area that covers several countries. Select only existing country records; leave the list empty when the membership still needs review.',
         }),
         ('Media', {
             'fields': ('image',)
@@ -227,6 +248,16 @@ class DestinationAdmin(admin.ModelAdmin):
     def package_count(self, obj):
         return obj.packages.filter(status=Package.PUBLISHED).count()
     package_count.short_description = 'Published packages'
+
+    def grouping_label(self, obj):
+        if not obj.is_multi_country:
+            return 'Single destination'
+        count = obj.member_countries.count()
+        return f'Multi-country ({count} linked)' if count else 'Multi-country (review)'
+    grouping_label.short_description = 'Grouping'
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related('member_countries')
 
 @admin.register(Accommodation)
 class AccommodationAdmin(admin.ModelAdmin):

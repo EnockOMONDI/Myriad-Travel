@@ -85,6 +85,20 @@ def _destination_tree_ids(destination):
     return ids
 
 
+def _destination_ids_for_page(destination):
+    """Include a country's linked multi-country areas without moving packages."""
+    ids = set(_destination_tree_ids(destination))
+    if destination.destination_type == Destination.COUNTRY and not destination.is_multi_country:
+        ids.update(
+            Destination.objects.filter(
+                is_active=True,
+                is_multi_country=True,
+                member_countries=destination,
+            ).values_list('id', flat=True)
+        )
+    return ids
+
+
 def _packages_for_destinations(destination_ids):
     return _packages_for_collection().filter(
         main_destination_id__in=destination_ids,
@@ -406,7 +420,7 @@ def _itinerary_presenter(package):
 
 
 def _destination_presenter(destination):
-    country = destination.country.name if destination.country else 'Kenya'
+    country = destination.country.name if destination.country else ('Multi-country area' if destination.is_multi_country else 'Kenya')
     return {
         'id': destination.id,
         'name': destination.name,
@@ -419,6 +433,7 @@ def _destination_presenter(destination):
         ),
         'badge': 'Featured' if destination.is_featured else destination.get_destination_type_display(),
         'popular_for': ['Safari', 'Nature', 'Tailored Trips'],
+        'is_multi_country': destination.is_multi_country,
         'model': destination,
     }
 
@@ -739,13 +754,14 @@ def explore_region(request, region):
     ).select_related('parent').distinct()
     country_filters = region_destinations.filter(
         destination_type=Destination.COUNTRY,
+        is_multi_country=False,
         parent__isnull=True,
     ).order_by('display_order', 'name')
     selected_country = request.GET.get('country', '').strip()
     if selected_country:
         selected = country_filters.filter(slug=selected_country).first()
         if selected:
-            destination_ids = _destination_tree_ids(selected)
+            destination_ids = _destination_ids_for_page(selected)
             region_destinations = Destination.objects.filter(
                 is_active=True,
                 id__in=destination_ids,
@@ -768,6 +784,7 @@ def explore_region(request, region):
         'region_slug': region,
         'region_image': next((card['image'] for card in _region_cards() if card['slug'] == region), '/static/images/placeholders/myriad-package-placeholder.png'),
         'country_filters': country_filters,
+        'multi_country_groups': region_destinations.filter(is_multi_country=True).prefetch_related('member_countries').order_by('display_order', 'name'),
         'selected_country': selected_country,
         'region_total_destinations': region_destinations.count(),
     })
@@ -879,7 +896,7 @@ def destinations(request):
 
 def destination_detail(request, slug):
     destination = get_object_or_404(Destination, slug=slug, is_active=True)
-    packages_qs = _packages_for_destinations(_destination_tree_ids(destination))
+    packages_qs = _packages_for_destinations(_destination_ids_for_page(destination))
     packages_qs, filters, selected_category = _filter_collection_by_category(request, packages_qs)
     paginator = Paginator(packages_qs, 20)
     page_obj = paginator.get_page(request.GET.get('page'))
@@ -895,6 +912,7 @@ def destination_detail(request, slug):
         'destination': _destination_presenter(destination),
         'destination_model': destination,
         'destination_children': destination.children.filter(is_active=True).order_by('display_order', 'name'),
+        'destination_member_countries': destination.member_countries.filter(is_active=True).order_by('name'),
         'destination_country': destination.country,
         'destination_region': destination_region,
     })
