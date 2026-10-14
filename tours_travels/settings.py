@@ -286,12 +286,13 @@ from django.templatetags.static import static
 from django.urls import reverse_lazy
 
 UNFOLD = {
-    "SITE_TITLE": "Myriad Travel Admin",
-    "SITE_HEADER": "Myriad Travel Administration",
+    "SITE_TITLE": "Myriad Travel Workspace",
+    "SITE_HEADER": "Myriad Travel Workspace",
+    "SITE_SUBHEADER": "Manage trips, enquiries, and content",
     "SITE_URL": "/",
     "SITE_ICON": lambda request: static("images/myriad-logo.png"),
     "SITE_LOGO": lambda request: static("images/myriad-logo.png"),
-    "SITE_SYMBOL": "🌍",  # Travel symbol
+    "SITE_SYMBOL": "travel_explore",
     "SHOW_HISTORY": True,
     "SHOW_VIEW_ON_SITE": True,
     "ENVIRONMENT": "tours_travels.settings.environment_callback",
@@ -300,21 +301,21 @@ UNFOLD = {
         "image": lambda request: static("images/hero/discover-kenya.jpeg"),
         "redirect_after": lambda request: reverse_lazy("admin:index"),
     },
-    "STYLES": [],
+    "STYLES": [lambda request: static("admin/css/myriad-admin.css")],
     "SCRIPTS": [],
     "COLORS": {
         "primary": {
-            "50": "250 245 255",
-            "100": "243 232 255",
-            "200": "233 213 255",
-            "300": "196 181 253",
-            "400": "147 51 234",
-            "500": "15 35 141",  # Mbugani primary blue
-            "600": "12 28 113",
-            "700": "10 23 94",
-            "800": "8 18 75",
-            "900": "6 14 56",
-            "950": "4 9 37"
+            "50": "#effdfa",
+            "100": "#d6f8f3",
+            "200": "#aff0e8",
+            "300": "#72ded2",
+            "400": "#34cbbd",
+            "500": "#1abdaf",
+            "600": "#109f95",
+            "700": "#0d7f79",
+            "800": "#0d6561",
+            "900": "#0d5350",
+            "950": "#073b3a",
         },
     },
     "EXTENSIONS": {
@@ -328,10 +329,10 @@ UNFOLD = {
     },
     "SIDEBAR": {
         "show_search": True,
-        "show_all_applications": True,
+        "show_all_applications": False,
         "navigation": [
             {
-                "title": "Navigation",
+                "title": "Workspace",
                 "separator": True,
                 "items": [
                     {
@@ -339,16 +340,26 @@ UNFOLD = {
                         "icon": "dashboard",
                         "link": reverse_lazy("admin:index"),
                     },
+                    {
+                        "title": "Owner dashboard",
+                        "icon": "insights",
+                        "link": reverse_lazy("owner_dashboard:dashboard"),
+                    },
+                    {
+                        "title": "How the catalogue works",
+                        "icon": "help",
+                        "link": reverse_lazy("adminside:how_it_works"),
+                    },
                 ],
             },
             {
-                "title": "Travel Management",
+                "title": "Sellable catalogue",
                 "separator": True,
                 "items": [
                     {
-                        "title": "Destinations",
-                        "icon": "place",
-                        "link": reverse_lazy("admin:adminside_destination_changelist"),
+                        "title": "Add a package",
+                        "icon": "add_box",
+                        "link": reverse_lazy("adminside:package_wizard"),
                     },
                     {
                         "title": "Packages",
@@ -356,30 +367,87 @@ UNFOLD = {
                         "link": reverse_lazy("admin:adminside_package_changelist"),
                     },
                     {
+                        "title": "Destinations",
+                        "icon": "place",
+                        "link": reverse_lazy("admin:adminside_destination_changelist"),
+                    },
+                    {
+                        "title": "Collections & categories",
+                        "icon": "category",
+                        "link": reverse_lazy("admin:adminside_travelcollection_changelist"),
+                    },
+                    {
+                        "title": "Campaigns / deals",
+                        "icon": "campaign",
+                        "link": reverse_lazy("admin:adminside_campaign_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "Trip operations",
+                "separator": True,
+                "items": [
+                    {
                         "title": "Accommodations",
                         "icon": "hotel",
                         "link": reverse_lazy("admin:adminside_accommodation_changelist"),
                     },
                     {
-                        "title": "Travel Modes",
+                        "title": "Travel options",
                         "icon": "directions",
                         "link": reverse_lazy("admin:adminside_travelmode_changelist"),
+                    },
+                    {
+                        "title": "Itineraries",
+                        "icon": "route",
+                        "link": reverse_lazy("admin:adminside_itinerary_changelist"),
+                    },
+                    {
+                        "title": "Bookings",
+                        "icon": "event_available",
+                        "link": reverse_lazy("admin:users_booking_changelist"),
                     },
                 ],
             },
             {
-                "title": "Content Management",
+                "title": "Enquiries & follow-up",
                 "separator": True,
                 "items": [
                     {
-                        "title": "Blog Posts",
+                        "title": "Quote requests",
+                        "icon": "request_quote",
+                        "link": reverse_lazy("admin:users_quoterequest_changelist"),
+                    },
+                    {
+                        "title": "Follow-ups",
+                        "icon": "task_alt",
+                        "link": reverse_lazy("admin:users_followup_changelist"),
+                    },
+                    {
+                        "title": "Trip feedback",
+                        "icon": "rate_review",
+                        "link": reverse_lazy("admin:users_tripfeedback_changelist"),
+                    },
+                    {
+                        "title": "Newsletter subscribers",
+                        "icon": "mail",
+                        "link": reverse_lazy("admin:users_newslettersubscription_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": "Content",
+                "separator": True,
+                "items": [
+                    {
+                        "title": "Blog posts",
                         "icon": "article",
                         "link": reverse_lazy("admin:blog_post_changelist"),
                     },
                     {
-                        "title": "Blog Categories",
-                        "icon": "category",
-                        "link": reverse_lazy("admin:blog_category_changelist"),
+                        "title": "Hero slides",
+                        "icon": "photo_library",
+                        "link": reverse_lazy("admin:adminside_heroslider_changelist"),
                     },
                 ],
             },
@@ -491,7 +559,30 @@ def environment_callback(request):
     return ["Development", "warning"] if DEBUG else ["Production", "success"]
 
 def dashboard_callback(request, context):
-    """Return dashboard data for Unfold admin"""
+    """Add the operational snapshot to the main admin home."""
+    try:
+        from owner_dashboard.services import build_dashboard_context
+
+        dashboard = build_dashboard_context(request.user)
+        context.update({
+            "workspace_metrics": dashboard["metrics"][:8],
+            "workspace_attention": dashboard["needs_attention"][:6],
+            "workspace_actions": dashboard["quick_actions"][:3],
+            "workspace_recent_quotes": dashboard["recent_activity"]["quotes"][:5],
+            "workspace_recent_bookings": dashboard["recent_activity"]["bookings"][:5],
+            "workspace_finance": dashboard["finance"],
+        })
+    except Exception:
+        # The admin home should remain usable if a non-essential dashboard
+        # metric is unavailable during a deploy or partial migration.
+        context.update({
+            "workspace_metrics": [],
+            "workspace_attention": [],
+            "workspace_actions": [],
+            "workspace_recent_quotes": [],
+            "workspace_recent_bookings": [],
+            "workspace_finance": {},
+        })
     return context
 
 

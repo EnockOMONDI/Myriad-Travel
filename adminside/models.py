@@ -195,8 +195,10 @@ class Destination(models.Model):
             raise ValidationError("Countries cannot have parent destinations")
         if self.destination_type == self.CITY and (not self.parent or self.parent.destination_type != self.COUNTRY):
             raise ValidationError("Cities must have a country as parent")
-        if self.destination_type == self.PLACE and (not self.parent or self.parent.destination_type != self.CITY):
-            raise ValidationError("Places must have a city as parent")
+        if self.destination_type == self.PLACE and (
+            not self.parent or self.parent.destination_type not in {self.CITY, self.COUNTRY}
+        ):
+            raise ValidationError("Places must have a country or city as parent")
         if self.is_featured and self.is_active:
             featured_count = type(self).objects.filter(
                 is_featured=True,
@@ -346,19 +348,25 @@ class TravelMode(models.Model):
     Renamed from Travel - represents transportation options
     """
     FLIGHT = 'flight'
+    CHARTER_FLIGHT = 'charter-flight'
     TRAIN = 'train'
     BUS = 'bus'
     CAR = 'car'
     BOAT = 'boat'
+    TOUR_VAN = 'tour-van'
+    CRUISE_SHIP = 'cruise-ship'
     CRUISER = 'cruiser'
 
     TRANSPORT_TYPES = [
         (FLIGHT, 'Flight'),
+        (CHARTER_FLIGHT, 'Charter Flight'),
         (TRAIN, 'Train'),
         (BUS, 'Bus'),
-        (CAR, 'Car/Private Vehicle'),
-        (BOAT, 'Boat/Ferry'),
-        (CRUISER, 'Cruiser'),
+        (CAR, 'Vehicle / Car'),
+        (BOAT, 'Boat / Ferry'),
+        (TOUR_VAN, 'Tour Van'),
+        (CRUISE_SHIP, 'Cruise Ship'),
+        (CRUISER, '4x4 Cruiser'),
     ]
     
     name = models.CharField(max_length=200)  # e.g., "Kenya Airways Morning Flight"

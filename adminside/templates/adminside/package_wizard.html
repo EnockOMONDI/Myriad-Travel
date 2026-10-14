@@ -1,0 +1,178 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page_title }} | Myriad Travel Admin</title>
+  <link rel="icon" href="{% static 'images/myriad-logo.png' %}">
+  <style>
+    :root {
+      --ink: #0b1728;
+      --muted: #64748b;
+      --line: #dbe5ea;
+      --mist: #f5fafb;
+      --teal: #1abdaf;
+      --red: #eb3728;
+      --white: #fff;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--mist); font: 15px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    a { color: inherit; }
+    .topbar { background: var(--ink); color: var(--white); }
+    .topbar-inner { width: min(1240px, calc(100% - 40px)); margin: auto; min-height: 74px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; font-weight: 800; letter-spacing: .01em; }
+    .brand img { width: 40px; height: 40px; object-fit: contain; background: var(--white); border-radius: 7px; padding: 4px; }
+    .top-actions { display: flex; align-items: center; gap: 10px; color: #c7d4df; font-size: 13px; }
+    .top-actions a { text-decoration: none; border: 1px solid rgba(255,255,255,.16); border-radius: 7px; padding: 8px 12px; }
+    .top-actions a:hover { border-color: var(--teal); color: var(--white); }
+    .shell { width: min(1240px, calc(100% - 40px)); margin: 0 auto; padding: 34px 0 64px; }
+    .crumbs { color: var(--muted); font-size: 13px; margin-bottom: 22px; }
+    .crumbs a { color: var(--muted); text-decoration: none; }
+    .hero { display: flex; align-items: end; justify-content: space-between; gap: 28px; margin-bottom: 28px; }
+    .eyebrow { color: var(--red); font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+    h1 { margin: 5px 0 6px; font-size: clamp(28px, 4vw, 44px); line-height: 1.05; letter-spacing: -.035em; }
+    .hero p { max-width: 660px; margin: 0; color: var(--muted); }
+    .draft-chip { white-space: nowrap; border: 1px solid #bfe8e3; background: #e7fbf8; color: #087d76; border-radius: 999px; padding: 8px 12px; font-size: 12px; font-weight: 800; }
+    .layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: start; }
+    .panel { background: var(--white); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 28px rgba(11, 23, 40, .06); }
+    .form-panel { overflow: hidden; }
+    .progress { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--line); background: #fbfdfd; }
+    .progress-step { position: relative; padding: 17px 15px 15px; color: #82909b; border-right: 1px solid var(--line); }
+    .progress-step:last-child { border-right: 0; }
+    .progress-step.active { color: var(--ink); background: #f1fbfa; }
+    .progress-step.active::after { content: ""; position: absolute; left: 15px; right: 15px; bottom: 0; height: 3px; background: var(--teal); border-radius: 3px 3px 0 0; }
+    .progress-number { display: inline-flex; width: 25px; height: 25px; align-items: center; justify-content: center; margin-right: 7px; border: 1px solid #cbd8de; border-radius: 50%; font-size: 12px; font-weight: 800; }
+    .active .progress-number { border-color: var(--teal); background: var(--teal); color: var(--white); }
+    .progress-name { font-size: 13px; font-weight: 800; }
+    .form-body { padding: 30px; }
+    .step-heading { margin-bottom: 24px; }
+    .step-heading h2 { margin: 0 0 5px; font-size: 23px; letter-spacing: -.02em; }
+    .step-heading p { margin: 0; color: var(--muted); }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 18px; }
+    .field { min-width: 0; }
+    .field.full { grid-column: 1 / -1; }
+    label { display: block; margin-bottom: 7px; font-size: 13px; font-weight: 800; }
+    input:not([type="checkbox"]):not([type="file"]), select, textarea { width: 100%; border: 1px solid #cddbe1; border-radius: 7px; background: var(--white); color: var(--ink); padding: 11px 12px; font: inherit; outline: none; transition: border-color .18s, box-shadow .18s; }
+    textarea { resize: vertical; min-height: 100px; }
+    input:focus, select:focus, textarea:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(26, 189, 175, .15); }
+    input[type="file"] { width: 100%; border: 1px dashed #aac8ce; border-radius: 7px; background: #f8fcfc; padding: 12px; }
+    .help { color: var(--muted); font-size: 12px; margin: 7px 0 0; }
+    .error { color: var(--red); font-size: 12px; margin: 5px 0 0; }
+    .choice-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; border: 1px solid var(--line); border-radius: 8px; padding: 12px; background: #fbfdfd; max-height: 230px; overflow-y: auto; }
+    .choice-list label { display: flex; align-items: flex-start; gap: 8px; margin: 0; padding: 9px; border: 1px solid transparent; border-radius: 6px; font-weight: 600; color: #334155; }
+    .choice-list label:hover { border-color: #bfe8e3; background: #f1fbfa; }
+    .choice-list input { margin-top: 3px; accent-color: var(--teal); }
+    .notice { border-left: 3px solid var(--teal); border-radius: 6px; background: #effbf9; color: #30525a; padding: 12px 14px; font-size: 13px; margin-bottom: 22px; }
+    .notice strong { color: var(--ink); }
+    .destination-tool { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 18px; padding: 15px 17px; border: 1px solid #bfe8e3; border-radius: 8px; background: #f1fbfa; }
+    .destination-tool p { margin: 3px 0 0; color: var(--muted); font-size: 13px; }
+    .destination-tool a { flex: 0 0 auto; color: #087d76; font-size: 13px; font-weight: 800; text-decoration: none; }
+    .quick-create { margin-bottom: 20px; padding: 20px; border: 1px solid #bfe8e3; border-radius: 9px; background: #fbfefe; }
+    .quick-create h3 { margin: 0 0 5px; font-size: 17px; }
+    .quick-create > p { margin: 0 0 18px; color: var(--muted); font-size: 13px; }
+    .empty-option { padding: 14px; border: 1px dashed #b7cbd1; border-radius: 7px; background: #fbfdfd; color: var(--muted); font-size: 13px; }
+    .empty-option a { color: #087d76; font-weight: 800; }
+    .actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid var(--line); margin: 30px -30px -30px; padding: 18px 30px; background: #fbfdfd; }
+    .action-group { display: flex; gap: 10px; }
+    .button { border: 0; border-radius: 7px; padding: 11px 16px; cursor: pointer; font: inherit; font-weight: 800; text-decoration: none; }
+    .button.secondary { color: #334155; background: var(--white); border: 1px solid #cddbe1; }
+    .button.primary { color: var(--white); background: var(--red); }
+    .button.primary:hover { background: #d92c20; }
+    .button.secondary:hover { border-color: var(--teal); }
+    .side { padding: 22px; position: sticky; top: 20px; }
+    .side h3 { margin: 0 0 15px; font-size: 16px; }
+    .side-section { border-top: 1px solid var(--line); padding-top: 16px; margin-top: 16px; }
+    .side-label { color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .path { margin-top: 6px; color: var(--ink); font-size: 14px; font-weight: 750; }
+    .side ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
+    .side li + li { margin-top: 7px; }
+    @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .side { position: static; } }
+    @media (max-width: 640px) { .topbar-inner, .shell { width: min(100% - 24px, 1240px); } .topbar-inner { min-height: 64px; } .top-actions a:first-child { display: none; } .hero { display: block; } .draft-chip { display: inline-block; margin-top: 18px; } .progress-name { display: none; } .progress-step { text-align: center; padding: 12px 6px; } .progress-step.active::after { left: 6px; right: 6px; } .form-body { padding: 22px 17px; } .form-grid { grid-template-columns: 1fr; gap: 17px; } .field.full { grid-column: auto; } .choice-list { grid-template-columns: 1fr; } .actions { margin: 24px -17px -22px; padding: 15px 17px; } .button { padding: 10px 12px; font-size: 13px; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="{% url 'owner_dashboard:dashboard' %}"><img src="{% static 'images/myriad-logo.png' %}" alt="Myriad Travel"><span>Myriad Travel Admin</span></a>
+      <nav class="top-actions"><a href="{% url 'owner_dashboard:dashboard' %}">Dashboard</a><a href="{% url 'admin:adminside_package_changelist' %}">Packages</a></nav>
+    </div>
+  </header>
+  <main class="shell">
+    <div class="crumbs"><a href="{% url 'owner_dashboard:dashboard' %}">Dashboard</a> / <a href="{% url 'admin:adminside_package_changelist' %}">Packages</a> / Add package</div>
+    <div class="hero">
+      <div><div class="eyebrow">Package workspace</div><h1>Add a package</h1><p>Build the package in the same order a traveller understands it: what it is, where it goes, what is included, and how it can be sold.</p></div>
+      <span class="draft-chip">Saved as draft until you publish</span>
+    </div>
+    <div class="layout">
+      <section class="panel form-panel">
+        <div class="progress">
+          {% for number, name in steps %}<div class="progress-step {% if number == step %}active{% endif %}"><span class="progress-number">{{ number }}</span><span class="progress-name">{{ name }}</span></div>{% endfor %}
+        </div>
+        {% if step == 1 %}
+          {% if create_destination %}
+            <div class="quick-create">
+              <h3>Add a destination</h3>
+              <p>Create the missing country, city, or specific place here, then continue building the package without losing your progress.</p>
+              <form method="post">
+                {% csrf_token %}<input type="hidden" name="step" value="1"><input type="hidden" name="action" value="create_destination">
+                <div class="form-grid">
+                  {% for field in destination_form %}
+                    <div class="field {% if field.name == 'description' %}full{% endif %}">
+                      {{ field.label_tag }}{{ field }}
+                      {% if field.help_text %}<p class="help">{{ field.help_text }}</p>{% endif %}
+                      {% for error in field.errors %}<p class="error">{{ error }}</p>{% endfor %}
+                    </div>
+                  {% endfor %}
+                </div>
+                <div class="action-group" style="margin-top: 18px;"><button class="button primary" type="submit">Create destination</button><a class="button secondary" href="{% url 'adminside:package_wizard' %}?step=1">Cancel</a></div>
+              </form>
+            </div>
+          {% else %}
+            <div class="destination-tool"><div><strong>Can’t find the destination?</strong><p>Add a country, city, or specific place without leaving this package flow.</p></div><a href="{% url 'adminside:package_wizard' %}?step=1&create_destination=1">+ Add destination</a></div>
+          {% endif %}
+        {% endif %}
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}<input type="hidden" name="step" value="{{ step }}">
+          <div class="form-body">
+            <div class="step-heading"><h2>{{ step_title }}</h2><p>{{ step_description }}</p></div>
+            {% if step == 1 %}<div class="notice"><strong>Start with the place.</strong> Choose the exact destination where the experience happens. We will show its saved hierarchy here.</div>{% endif %}
+            {% if step == 2 %}<div class="notice"><strong>Keep geography and marketing separate.</strong> The main package collection is the existing public grouping. Collections and categories help the package appear in more than one part of the website.</div>{% endif %}
+            {% if step == 4 %}<div class="notice"><strong>These are package options.</strong> Select the accommodation and travel options the team can actually offer for this package. They will appear on the public package and booking flow.</div>{% endif %}
+            <div class="form-grid">
+              {% for field in form %}
+                <div class="field {% if field.name == 'description' or field.name == 'highlights' or field.name == 'inclusions' or field.name == 'exclusions' or field.name == 'meta_description' or field.name == 'travel_collections' or field.name == 'categories' or field.name == 'available_accommodations' or field.name == 'available_travel_modes' %}full{% endif %}">
+                  {% if field.name == 'travel_collections' or field.name == 'categories' or field.name == 'available_accommodations' or field.name == 'available_travel_modes' %}
+                    <label>{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                    {% if field.name == 'available_accommodations' and not accommodation_count %}
+                      <div class="empty-option">No accommodation is set up for this destination yet. You can <a href="{% url 'admin:adminside_accommodation_add' %}">add one in the catalogue</a> and return here, or leave this optional field blank for now.</div>
+                    {% elif field.name == 'available_travel_modes' and not travel_mode_count %}
+                      <div class="empty-option">No travel option is set up yet. You can <a href="{% url 'admin:adminside_travelmode_add' %}">add a flight, vehicle, boat, train, tour van, cruise ship, or 4x4 cruiser</a> and return here, or leave this optional field blank.</div>
+                    {% else %}
+                      <div class="choice-list">{{ field }}</div>
+                    {% endif %}
+                  {% else %}
+                    {{ field.label_tag }}{{ field }}
+                  {% endif %}
+                  {% if field.help_text %}<p class="help">{{ field.help_text }}</p>{% endif %}
+                  {% for error in field.errors %}<p class="error">{{ error }}</p>{% endfor %}
+                </div>
+              {% endfor %}
+            </div>
+            <div class="actions">
+              {% if step > 1 %}<button class="button secondary" type="submit" name="direction" value="back">Back</button>{% else %}<a class="button secondary" href="{% url 'admin:adminside_package_changelist' %}">Cancel</a>{% endif %}
+              <div class="action-group"><button class="button primary" type="submit">{% if step == 4 %}Create package{% else %}Save and continue{% endif %}</button></div>
+            </div>
+          </div>
+        </form>
+      </section>
+      <aside class="panel side">
+        <h3>Package checklist</h3>
+        <div class="side-section"><div class="side-label">Current step</div><div class="path">{{ step }} of 4</div></div>
+        <div class="side-section"><div class="side-label">Destination path</div><div class="path">{{ destination_path }}</div></div>
+        <div class="side-section"><div class="side-label">Before publishing</div><ul><li>Use the most specific destination.</li><li>Choose a main category.</li><li>Add a clear image and itinerary.</li><li>Review the public page.</li></ul></div>
+      </aside>
+    </div>
+  </main>
+</body>
+</html>

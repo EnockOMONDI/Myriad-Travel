@@ -27,12 +27,14 @@ def build_dashboard_context(user):
     total_booking_value = sum_booking_amounts(Booking.objects.all())
     pending_booking_value = sum_booking_amounts(Booking.objects.filter(status=Booking.PENDING))
     confirmed_booking_value = sum_booking_amounts(Booking.objects.filter(status=Booking.CONFIRMED))
+    quote_value = sum_quote_values(QuoteRequest.objects.all())
 
     metrics = [
         metric("Total bookings", Booking.objects.count() + UserBookings.objects.count(), "All booking records"),
         metric("Pending bookings", Booking.objects.filter(status=Booking.PENDING).count(), "Awaiting confirmation"),
         metric("Confirmed bookings", Booking.objects.filter(status=Booking.CONFIRMED).count(), "Ready for operations"),
         metric("Booking value", money(total_booking_value), "Current recorded value"),
+        metric("Quote value", money(quote_value), "Known value from package-linked quote requests"),
         metric("Published packages", Package.objects.filter(status=Package.PUBLISHED).count(), "Visible package catalog"),
         metric("Published blogs", Post.objects.filter(status="published").count(), "Live travel content"),
         metric("New quotes", QuoteRequest.objects.filter(status="new").count(), "Needs sales follow-up"),
@@ -44,6 +46,7 @@ def build_dashboard_context(user):
         "total_booking_value": money(total_booking_value),
         "pending_booking_value": money(pending_booking_value),
         "confirmed_booking_value": money(confirmed_booking_value),
+        "quote_value": money(quote_value),
         "paid_legacy_bookings": UserBookings.objects.filter(paid=True).count(),
         "unpaid_legacy_bookings": UserBookings.objects.filter(paid=False).count(),
     }
@@ -110,7 +113,7 @@ def build_dashboard_context(user):
             action("MICE inquiries", admin_url("users_miceinquiry_changelist")),
         ]),
         action_group("Catalog / Packages", [
-            action("Add package", admin_url("adminside_package_add")),
+            action("Add package", reverse("adminside:package_wizard")),
             action("Manage packages", admin_url("adminside_package_changelist")),
             action("Destinations", admin_url("adminside_destination_changelist")),
             action("Itineraries", admin_url("adminside_itinerary_changelist")),
@@ -170,6 +173,22 @@ def build_dashboard_context(user):
 
 def metric(label, value, helper):
     return {"label": label, "value": value, "helper": helper}
+
+
+def sum_quote_values(queryset):
+    """Estimate known quote value from the selected package and traveller count.
+
+    Final quoted amounts take priority. Before a quote is prepared, a
+    package-linked request uses the package adult price as a working estimate.
+    Custom requests without either value remain unpriced.
+    """
+    total = Decimal("0")
+    for quote in queryset.select_related("package"):
+        if quote.quoted_value is not None:
+            total += quote.quoted_value
+        elif quote.package_id and quote.package:
+            total += Decimal(quote.package.adult_price or 0) * quote.number_of_travelers
+    return total
 
 
 def attention(title, count, description, url, urgent=False):

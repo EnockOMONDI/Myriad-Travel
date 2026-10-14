@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .package_wizard import package_wizard
 
 app_name = 'adminside'
 
@@ -10,6 +11,7 @@ urlpatterns = [
     path('destinations/<slug:slug>/', views.destination_detail, name='destination_detail'),
 
     # Package URLs
+    path('packages/new/', package_wizard, name='package_wizard'),
     path('packages/', views.package_list, name='package_list'),
     path('packages/<slug:slug>/', views.package_detail, name='package_detail'),
     path('user-packages/', views.user_package_list, name='user_package_list'),

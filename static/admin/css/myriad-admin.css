@@ -1,0 +1,84 @@
+:root {
+    --myriad-teal: #1abdaf;
+    --myriad-red: #eb3728;
+    --myriad-ink: #0b1728;
+    --myriad-mist: #f5fafb;
+}
+
+/* Keep the standard catalogue screens calm and consistent with the workspace home. */
+body {
+    background: var(--myriad-mist);
+}
+
+#content {
+    background: var(--myriad-mist);
+}
+
+#content h1 {
+    color: var(--myriad-ink);
+    letter-spacing: -0.02em;
+}
+
+#changelist,
+#content-main > form,
+.module,
+.inline-group {
+    border-color: #dbe5ea;
+    border-radius: 10px;
+}
+
+#changelist-filter {
+    border-left-color: #dbe5ea;
+}
+
+#changelist table thead th {
+    background: #f8fbfc;
+}
+
+#changelist table tbody tr:hover {
+    background: #f1fbfa;
+}
+
+.submit-row {
+    border-top-color: #dbe5ea;
+    background: #f8fbfc;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--myriad-teal) !important;
+    box-shadow: 0 0 0 3px rgba(26, 189, 175, 0.15) !important;
+}
+
+.object-tools a,
+.submit-row input[type="submit"] {
+    border-radius: 7px;
+}
+
+.object-tools a.default,
+.submit-row input[type="submit"] {
+    background: var(--myriad-red);
+}
+
+.object-tools a.default:hover,
+.submit-row input[type="submit"]:hover {
+    background: #d92c20;
+}
+
+.help,
+.helptext {
+    color: #64748b;
+}
+
+@media (max-width: 760px) {
+    #content {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    #changelist-filter {
+        border-left: 0;
+        border-top-color: #dbe5ea;
+    }
+}

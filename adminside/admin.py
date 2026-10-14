@@ -43,6 +43,20 @@ class CampaignAdmin(admin.ModelAdmin):
         return obj.public_status
     public_status_display.short_description = 'Deal status'
 
+
+class PackageCollectionFilter(admin.SimpleListFilter):
+    title = 'main package collection'
+    parameter_name = 'region'
+
+    def lookups(self, request, model_admin):
+        return Package.REGION_CHOICES
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(region=self.value())
+        return queryset
+
+
 class DestinationAdminForm(forms.ModelForm):
     class Meta:
         model = Destination
@@ -53,7 +67,7 @@ class DestinationAdminForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['region'].help_text = 'Region: Africa, Europe, Asia, Middle East, Indian Ocean Islands, or Americas. Existing Kenya records are grouped under Africa on the public site.'
         self.fields['destination_type'].help_text = 'Choose Country for a country record, City for a city/area, or Place for a specific destination.'
-        self.fields['parent'].help_text = 'Optional parent. Use the existing country or destination record that contains this place.'
+        self.fields['parent'].help_text = 'Optional for a country. Choose the country for a city, or the country/city that contains this place.'
         self.fields['parent'].queryset = Destination.objects.filter(is_active=True).order_by('destination_type', 'name')
 
     def clean_parent(self):
@@ -90,7 +104,9 @@ class PackageAdminForm(forms.ModelForm):
         self.fields['travel_collections'].queryset = TravelCollection.objects.filter(is_active=True).order_by('section', 'display_order', 'name')
         if self.instance and self.instance.pk:
             self.fields['travel_collections'].initial = self.instance.collections.filter(is_active=True)
-        self.fields['region'].help_text = 'Legacy collection grouping retained for compatibility. Use Collections for multiple collection placement.'
+        self.fields['region'].label = 'Main package collection'
+        self.fields['region'].help_text = 'This is a marketing collection, not a geographic region. Use Collections when a package belongs in more than one public group.'
+        self.fields['category'].help_text = 'Primary travel style shown on the package card. Add more styles under Additional categories.'
         self.fields['main_destination'].help_text = 'Select the exact existing destination. Country and region pages will inherit this package automatically.'
 
     def save_collections(self):
@@ -362,9 +378,9 @@ class ItineraryQualityFilter(admin.SimpleListFilter):
 @admin.register(Package)
 class PackageAdmin(admin.ModelAdmin):
     form = PackageAdminForm
-    list_display = ('name', 'display_image', 'category', 'collection_names', 'region', 'destination_link', 'itinerary_quality', 'adult_price',
+    list_display = ('name', 'display_image', 'category', 'collection_names', 'main_collection', 'destination_link', 'itinerary_quality', 'adult_price',
                    'child_price', 'duration_days', 'lipa_pole_pole', 'status', 'is_featured', 'home_rank', 'total_bookings')
-    list_filter = ('category', 'categories', 'collections', 'region', 'main_destination', PackageImageStatusFilter, ItineraryQualityFilter, 'status', 'lipa_pole_pole', 'is_featured', 'duration_days')
+    list_filter = ('category', 'categories', 'collections', PackageCollectionFilter, 'main_destination', PackageImageStatusFilter, ItineraryQualityFilter, 'status', 'lipa_pole_pole', 'is_featured', 'duration_days')
     search_fields = ('name', 'subtitle', 'description', 'highlights', 'inclusions', 'exclusions', 'main_destination__name')
     autocomplete_fields = ('category', 'main_destination')
     filter_horizontal = ('categories', 'available_accommodations', 'available_travel_modes')
@@ -428,6 +444,10 @@ class PackageAdmin(admin.ModelAdmin):
         return ', '.join(names) if names else 'Legacy grouping only'
     collection_names.short_description = 'Collections'
 
+    def main_collection(self, obj):
+        return obj.get_region_display()
+    main_collection.short_description = 'Main collection'
+
     def destination_link(self, obj):
         if not obj.main_destination_id:
             return '-'
@@ -463,6 +483,13 @@ class PackageAdmin(admin.ModelAdmin):
     def save_related(self, request, form, formsets, change):
         super().save_related(request, form, formsets, change)
         form.save_collections()
+
+    def add_view(self, request, form_url='', extra_context=None):
+        """Send interactive package creation to the guided workflow."""
+        if request.method == 'GET':
+            from django.shortcuts import redirect
+            return redirect('adminside:package_wizard')
+        return super().add_view(request, form_url=form_url, extra_context=extra_context)
 
 
 @admin.register(PackageGalleryImage)
@@ -616,6 +643,6 @@ class HeroSliderAdmin(admin.ModelAdmin):
     display_image_thumbnail.allow_tags = True
 
 # Customize admin site header and title
-admin.site.site_header = 'Myriad Travel Administration'
-admin.site.site_title = 'Myriad Travel Admin Portal'
-admin.site.index_title = 'Welcome to Myriad Travel Admin Portal'
+admin.site.site_header = 'Myriad Travel Workspace'
+admin.site.site_title = 'Myriad Travel Workspace'
+admin.site.index_title = 'Workspace'

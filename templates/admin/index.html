@@ -1,0 +1,188 @@
+{% extends 'admin/base.html' %}
+{% load i18n %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block title %}Workspace | {{ site_title }}{% endblock %}
+
+{% block content %}
+<style>
+    .workspace-grid { display: grid; gap: 12px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .workspace-grid-two { display: grid; gap: 24px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .workspace-grid-three { display: grid; gap: 24px; grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr); }
+    .workspace-grid-cards { display: grid; gap: 12px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .workspace-shortcuts { background: #f3f6f8; color: #0f172a; }
+    .dark .workspace-shortcuts { background: #1f2937; color: #f8fafc; }
+    .workspace-shortcuts h2, .workspace-shortcuts .workspace-heading { color: #0f172a; }
+    .dark .workspace-shortcuts h2, .dark .workspace-shortcuts .workspace-heading { color: #f8fafc; }
+    @media (max-width: 1100px) { .workspace-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 900px) { .workspace-grid-cards { grid-template-columns: 1fr; } }
+    @media (max-width: 760px) { .workspace-grid, .workspace-grid-two, .workspace-grid-three { grid-template-columns: 1fr; } }
+</style>
+<div class="space-y-8">
+    <section class="relative overflow-hidden rounded-default bg-base-900 px-6 py-8 text-white shadow-xs dark:bg-base-950 sm:px-8">
+        <div class="relative z-10 max-w-3xl">
+            <p class="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary-400">Myriad Travel workspace</p>
+            <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Good to see you, {{ user.get_short_name|default:user.username }}.</h1>
+            <p class="mt-3 max-w-2xl text-sm leading-6 text-base-300">Keep the public catalogue fresh, respond to new enquiries, and move confirmed trips forward from one place.</p>
+            <div class="mt-6 flex flex-wrap gap-3">
+                <a href="{% url 'adminside:package_wizard' %}" class="inline-flex items-center gap-2 rounded-default bg-primary-500 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition hover:bg-primary-600">
+                    <span class="material-symbols-outlined md-18">add_box</span> Add a package
+                </a>
+                <a href="{% url 'owner_dashboard:dashboard' %}" class="inline-flex items-center gap-2 rounded-default border border-white/20 px-4 py-2.5 text-sm font-semibold text-white transition hover:border-primary-400 hover:text-primary-300">
+                    <span class="material-symbols-outlined md-18">insights</span> Open owner dashboard
+                </a>
+            </div>
+        </div>
+        <div class="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full border-[32px] border-primary-500/20"></div>
+        <div class="pointer-events-none absolute -bottom-28 right-24 h-64 w-64 rounded-full border-[18px] border-primary-400/10"></div>
+    </section>
+
+    <section>
+        <div class="mb-3 flex items-end justify-between gap-4">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.16em] text-primary-600 dark:text-primary-400">At a glance</p>
+                <h2 class="mt-1 text-xl font-semibold text-font-important-light dark:text-font-important-dark">What needs your attention</h2>
+            </div>
+            <span class="text-xs text-font-subtle-light dark:text-font-subtle-dark">Live from your records</span>
+        </div>
+        <div class="workspace-grid">
+            {% for item in workspace_metrics %}
+            <article class="rounded-default border border-base-200 bg-white p-4 shadow-xs dark:border-base-800 dark:bg-base-900">
+                <p class="text-xs font-medium uppercase tracking-wide text-font-subtle-light dark:text-font-subtle-dark">{{ item.label }}</p>
+                <p class="mt-2 text-2xl font-semibold tracking-tight text-font-important-light dark:text-font-important-dark">{{ item.value }}</p>
+                <p class="mt-1 text-xs leading-5 text-font-subtle-light dark:text-font-subtle-dark">{{ item.helper }}</p>
+            </article>
+            {% empty %}
+            <div class="rounded-default border border-base-200 bg-white p-5 text-sm text-font-subtle-light dark:border-base-800 dark:bg-base-900 dark:text-font-subtle-dark">Workspace metrics will appear after the database is ready.</div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="workspace-grid-three">
+        <div class="rounded-default border border-base-200 bg-white shadow-xs dark:border-base-800 dark:bg-base-900">
+            <div class="flex items-center justify-between border-b border-base-200 px-5 py-4 dark:border-base-800">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-[0.16em] text-primary-600 dark:text-primary-400">Action list</p>
+                    <h2 class="mt-1 text-lg font-semibold text-font-important-light dark:text-font-important-dark">Work that should not sit idle</h2>
+                </div>
+                <span class="material-symbols-outlined text-primary-500">priority_high</span>
+            </div>
+            <div class="divide-y divide-base-200 dark:divide-base-800">
+                {% for item in workspace_attention %}
+                <a href="{{ item.url }}" class="flex items-start justify-between gap-4 px-5 py-4 transition hover:bg-base-50 dark:hover:bg-base-800/50">
+                    <div>
+                        <p class="text-sm font-semibold text-font-important-light dark:text-font-important-dark">{{ item.title }}</p>
+                        <p class="mt-1 text-xs leading-5 text-font-subtle-light dark:text-font-subtle-dark">{{ item.description }}</p>
+                    </div>
+                    <span class="min-w-8 rounded-default px-2 py-1 text-center text-xs font-bold {% if item.urgent %}bg-red-100 text-red-700 dark:bg-red-950/40 dark:text-red-300{% else %}bg-primary-100 text-primary-700 dark:bg-primary-950/40 dark:text-primary-300{% endif %}">{{ item.count }}</span>
+                </a>
+                {% empty %}
+                <div class="px-5 py-6 text-sm text-font-subtle-light dark:text-font-subtle-dark">Nothing urgent is waiting right now.</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <aside class="workspace-shortcuts rounded-default border border-base-200 p-5 dark:border-base-700">
+            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-primary-600 dark:text-primary-400">Shortcuts</p>
+            <h2 class="workspace-heading mt-1 text-lg font-semibold">Start with a workflow</h2>
+            <div class="mt-4 space-y-4">
+                {% for group in workspace_actions %}
+                <div>
+                    <p class="mb-2 text-xs font-semibold text-font-subtle-light dark:text-font-subtle-dark">{{ group.title }}</p>
+                    <div class="flex flex-wrap gap-2">
+                        {% for action in group.actions|slice:":3" %}
+                        <a href="{{ action.url }}" class="inline-flex items-center rounded-default border border-base-200 bg-white px-3 py-2 text-xs font-semibold text-font-default-light transition hover:border-primary-400 hover:text-primary-600 dark:border-base-700 dark:bg-base-900 dark:text-font-default-dark dark:hover:text-primary-400">{{ action.label }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </aside>
+    </section>
+
+    <section class="workspace-grid-two">
+        <article class="rounded-default border border-base-200 bg-white shadow-xs dark:border-base-800 dark:bg-base-900">
+            <div class="border-b border-base-200 px-5 py-4 dark:border-base-800">
+                <p class="text-xs font-semibold uppercase tracking-[0.16em] text-primary-600 dark:text-primary-400">Sales desk</p>
+                <h2 class="mt-1 text-lg font-semibold text-font-important-light dark:text-font-important-dark">Recent quote requests</h2>
+            </div>
+            <div class="divide-y divide-base-200 dark:divide-base-800">
+                {% for quote in workspace_recent_quotes %}
+                <a href="{% url 'admin:users_quoterequest_change' quote.id %}" class="block px-5 py-3 transition hover:bg-base-50 dark:hover:bg-base-800/50">
+                    <div class="flex items-center justify-between gap-4"><span class="text-sm font-semibold text-font-important-light dark:text-font-important-dark">{{ quote.full_name }}</span><span class="text-xs text-font-subtle-light dark:text-font-subtle-dark">{{ quote.created_at|date:"M d" }}</span></div>
+                    <p class="mt-1 text-xs text-font-subtle-light dark:text-font-subtle-dark">{{ quote.destination }} · {{ quote.get_status_display }}</p>
+                </a>
+                {% empty %}
+                <div class="px-5 py-6 text-sm text-font-subtle-light dark:text-font-subtle-dark">No quote requests yet.</div>
+                {% endfor %}
+            </div>
+        </article>
+
+        <article class="rounded-default border border-base-200 bg-white shadow-xs dark:border-base-800 dark:bg-base-900">
+            <div class="border-b border-base-200 px-5 py-4 dark:border-base-800">
+                <p class="text-xs font-semibold uppercase tracking-[0.16em] text-primary-600 dark:text-primary-400">Trip desk</p>
+                <h2 class="mt-1 text-lg font-semibold text-font-important-light dark:text-font-important-dark">Recent bookings</h2>
+            </div>
+            <div class="divide-y divide-base-200 dark:divide-base-800">
+                {% for booking in workspace_recent_bookings %}
+                <a href="{% url 'admin:users_booking_change' booking.id %}" class="block px-5 py-3 transition hover:bg-base-50 dark:hover:bg-base-800/50">
+                    <div class="flex items-center justify-between gap-4"><span class="text-sm font-semibold text-font-important-light dark:text-font-important-dark">{{ booking.full_name }}</span><span class="text-xs text-font-subtle-light dark:text-font-subtle-dark">{{ booking.created_at|date:"M d" }}</span></div>
+                    <p class="mt-1 text-xs text-font-subtle-light dark:text-font-subtle-dark">{{ booking.booking_reference }} · {{ booking.get_status_display }}</p>
+                </a>
+                {% empty %}
+                <div class="px-5 py-6 text-sm text-font-subtle-light dark:text-font-subtle-dark">No bookings yet.</div>
+                {% endfor %}
+            </div>
+        </article>
+    </section>
+
+    <section class="rounded-default border border-base-200 bg-white shadow-xs dark:border-base-800 dark:bg-base-900">
+        <div class="flex items-center justify-between border-b border-base-200 px-5 py-4 dark:border-base-800">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.16em] text-primary-600 dark:text-primary-400">Finance snapshot</p>
+                <h2 class="mt-1 text-lg font-semibold text-font-important-light dark:text-font-important-dark">Booking value at a glance</h2>
+            </div>
+            <a href="{% url 'owner_dashboard:dashboard' %}" class="text-xs font-semibold text-primary-600 hover:text-primary-700 dark:text-primary-400">Open full report</a>
+        </div>
+        <div class="grid grid-cols-1 gap-4 p-5 sm:grid-cols-3">
+            {% for item in workspace_finance %}
+            <div class="rounded-default bg-base-50 p-4 dark:bg-base-800">
+                <p class="text-xs font-medium uppercase tracking-wide text-font-subtle-light dark:text-font-subtle-dark">{{ item.label }}</p>
+                <p class="mt-2 text-xl font-semibold text-font-important-light dark:text-font-important-dark">{{ item.value }}</p>
+                <p class="mt-1 text-xs text-font-subtle-light dark:text-font-subtle-dark">{{ item.helper }}</p>
+            </div>
+            {% empty %}
+            <p class="text-sm text-font-subtle-light dark:text-font-subtle-dark">Booking value will appear here once bookings are recorded.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section>
+        <div class="mb-3 flex items-end justify-between gap-4">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.16em] text-primary-600 dark:text-primary-400">All records</p>
+                <h2 class="mt-1 text-xl font-semibold text-font-important-light dark:text-font-important-dark">Open a workspace area</h2>
+            </div>
+            <span class="text-xs text-font-subtle-light dark:text-font-subtle-dark">Use the sidebar for everything else</span>
+        </div>
+        <div class="workspace-grid-cards">
+            <a href="{% url 'admin:adminside_package_changelist' %}" class="rounded-default border border-base-200 bg-white p-5 shadow-xs transition hover:-translate-y-0.5 hover:border-primary-400 dark:border-base-800 dark:bg-base-900">
+                <span class="material-symbols-outlined text-primary-500">card_travel</span>
+                <h3 class="mt-3 text-base font-semibold text-font-important-light dark:text-font-important-dark">Packages</h3>
+                <p class="mt-1 text-sm leading-5 text-font-subtle-light dark:text-font-subtle-dark">Review prices, destinations, collections, images, and publishing status.</p>
+            </a>
+            <a href="{% url 'admin:adminside_destination_changelist' %}" class="rounded-default border border-base-200 bg-white p-5 shadow-xs transition hover:-translate-y-0.5 hover:border-primary-400 dark:border-base-800 dark:bg-base-900">
+                <span class="material-symbols-outlined text-primary-500">place</span>
+                <h3 class="mt-3 text-base font-semibold text-font-important-light dark:text-font-important-dark">Destinations</h3>
+                <p class="mt-1 text-sm leading-5 text-font-subtle-light dark:text-font-subtle-dark">Manage the country, city, and place hierarchy used by the public catalogue.</p>
+            </a>
+            <a href="{% url 'admin:adminside_travelcollection_changelist' %}" class="rounded-default border border-base-200 bg-white p-5 shadow-xs transition hover:-translate-y-0.5 hover:border-primary-400 dark:border-base-800 dark:bg-base-900">
+                <span class="material-symbols-outlined text-primary-500">category</span>
+                <h3 class="mt-3 text-base font-semibold text-font-important-light dark:text-font-important-dark">Collections and categories</h3>
+                <p class="mt-1 text-sm leading-5 text-font-subtle-light dark:text-font-subtle-dark">Place one package in several public collections and keep its travel style easy to find.</p>
+            </a>
+        </div>
+    </section>
+</div>
+{% endblock %}

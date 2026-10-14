@@ -818,6 +818,13 @@ class QuoteRequest(models.Model):
         blank=True,
         help_text="Specific package if requesting quote for existing package"
     )
+    quoted_value = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text="Final quote amount prepared for the client. Leave blank until pricing is confirmed.",
+    )
 
     # Additional Information
     special_requests = CKEditor5Field(

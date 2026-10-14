@@ -109,8 +109,12 @@
               <dt class="text-slate-300">Pending value</dt>
               <dd class="font-extrabold">{{ finance.pending_booking_value }}</dd>
             </div>
+            <div class="flex justify-between gap-4">
+              <dt class="text-slate-300">Quote value</dt>
+              <dd class="font-extrabold">{{ finance.quote_value }}</dd>
+            </div>
             <div class="pt-4 border-t border-white/10 text-sm text-slate-300">
-              Online payments are not enabled. This section reads current booking records only.
+              Quote value uses package-linked requests only. Custom requests without a package remain unpriced until the team prepares a quote.
             </div>
           </dl>
         </aside>

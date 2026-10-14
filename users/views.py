@@ -51,11 +51,22 @@ from html.parser import HTMLParser
 PUBLIC_REGION_ORDER = [
     ('africa', 'Africa', 'Safaris, cities, culture and beach escapes across the continent.', 'globe-2'),
     ('americas', 'Americas', 'Big landscapes, city breaks and long-haul experiences.', 'mountain'),
-    ('middle-east', 'Middle East', 'Desert cities, heritage journeys and regional escapes.', 'landmark'),
     ('asia', 'Asia', 'Island stays, wellness retreats and city discoveries.', 'palmtree'),
+    ('australasia', 'Australasia', 'Coastal landscapes, island escapes and wide-open journeys.', 'sun'),
     ('europe', 'Europe', 'Classic cities, cruises and seasonal European journeys.', 'building-2'),
     ('indian-ocean-islands', 'Indian Ocean Islands', 'Warm-water escapes, beaches and island holidays.', 'waves'),
+    ('middle-east', 'Middle East', 'Desert cities, heritage journeys and regional escapes.', 'landmark'),
 ]
+
+REGION_CARD_IMAGES = {
+    'africa': '/static/images/destinations/maasai-mara-national-reserve.jpg',
+    'americas': '/static/images/destinations/caribbean.jpg',
+    'asia': '/static/images/destinations/ubud-bali.jpg',
+    'australasia': '/static/images/destinations/australasia.jpg',
+    'europe': '/static/images/destinations/mediterranean-europe.jpg',
+    'indian-ocean-islands': '/static/images/destinations/maldives.jpg',
+    'middle-east': '/static/images/destinations/dubai-abu-dhabi.jpg',
+}
 
 
 def _region_keys(region_slug):
@@ -94,10 +105,7 @@ def _region_cards():
             'name': name,
             'description': description,
             'icon': icon,
-            'image': _image_url(
-                image_destination.image if image_destination else None,
-                _curated_destination_image(image_destination) if image_destination else '/static/images/placeholders/myriad-package-placeholder.png',
-            ),
+            'image': _image_url(image_destination.image, REGION_CARD_IMAGES[slug]) if image_destination else REGION_CARD_IMAGES[slug],
             'destination_count': destinations.filter(packages__status=Package.PUBLISHED).distinct().count(),
             'package_count': packages.count(),
             'url': reverse('users:explore_region', kwargs={'region': slug}),

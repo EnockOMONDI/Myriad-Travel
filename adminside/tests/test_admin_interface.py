@@ -88,7 +88,9 @@ class AdminInterfaceTest(TestCase):
         self.client.login(username='admin', password='adminpass123')
         response = self.client.get('/admin/')
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Django administration')
+        self.assertContains(response, 'Workspace')
+        self.assertContains(response, 'What needs your attention')
+        self.assertContains(response, 'Add a package')
     
     def test_regular_user_admin_access_denied(self):
         """Test that regular users cannot access admin"""

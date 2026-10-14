@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from decimal import Decimal
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -6,6 +7,7 @@ from django.utils import timezone
 from adminside.models import Destination, Package
 from blog.models import Post
 from users.models import Booking, FollowUp, QuoteRequest, TripFeedback
+from owner_dashboard.services import sum_quote_values
 
 
 class OwnerDashboardTests(TestCase):
@@ -48,6 +50,23 @@ class OwnerDashboardTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn("/admin/login/", response["Location"])
 
+    def test_quote_value_uses_package_price_and_traveller_count(self):
+        QuoteRequest.objects.create(
+            full_name="Package Lead",
+            email="package@example.com",
+            phone_number="0711000000",
+            destination="Maasai Mara",
+            preferred_travel_dates="Flexible",
+            number_of_travelers=2,
+            package=self.package,
+        )
+        self.assertEqual(sum_quote_values(QuoteRequest.objects.all()), Decimal("116000"))
+
+        quote = QuoteRequest.objects.first()
+        quote.quoted_value = Decimal("125000")
+        quote.save(update_fields=["quoted_value", "updated_at"])
+        self.assertEqual(sum_quote_values(QuoteRequest.objects.all()), Decimal("125000"))
+
     def test_dashboard_renders_for_staff(self):
         self.client.force_login(self.staff)
 
@@ -77,6 +96,7 @@ class OwnerDashboardTests(TestCase):
             destination="Diani",
             preferred_travel_dates="Flexible",
             number_of_travelers=2,
+            package=self.package,
             status="new",
         )
         Post.objects.create(
@@ -108,6 +128,8 @@ class OwnerDashboardTests(TestCase):
         self.assertContains(response, "Pending bookings")
         self.assertContains(response, "Published blogs")
         self.assertContains(response, "New quotes")
+        self.assertContains(response, "Quote value")
+        self.assertContains(response, "KSh 116,000")
         self.assertContains(response, "Call Brian Lead")
         self.assertContains(response, "Trip feedback")
         self.assertContains(response, "Jane Client")

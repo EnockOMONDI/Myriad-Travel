@@ -527,7 +527,7 @@ class JobListingAdminForm(forms.ModelForm):
 @admin.register(QuoteRequest)
 class QuoteRequestAdmin(admin.ModelAdmin):
     form = QuoteRequestAdminForm
-    list_display = ('full_name', 'email', 'citizenship', 'destination', 'number_of_travelers', 'status', 'created_at', 'get_status_badge')
+    list_display = ('full_name', 'email', 'citizenship', 'destination', 'number_of_travelers', 'quoted_value', 'status', 'created_at', 'get_status_badge')
     list_filter = ('status', 'created_at', 'number_of_travelers', 'confirmation_email_sent', 'admin_notification_sent')
     search_fields = ('full_name', 'email', 'phone_number', 'destination')
     readonly_fields = ('created_at', 'updated_at')
@@ -542,7 +542,7 @@ class QuoteRequestAdmin(admin.ModelAdmin):
             'description': 'Customer contact information'
         }),
         ('Travel Details', {
-            'fields': ('destination', 'preferred_travel_dates', 'number_of_travelers', 'package'),
+            'fields': ('destination', 'preferred_travel_dates', 'number_of_travelers', 'package', 'quoted_value'),
             'description': 'Requested travel information'
         }),
         ('Special Requests', {
