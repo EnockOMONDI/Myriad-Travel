@@ -15,7 +15,7 @@
     {% endfor %}
   </div>
   <div class="lg:col-span-5">
-    <form method="post" enctype="multipart/form-data" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm sticky top-24">{% csrf_token %}<h2 class="text-xl font-bold font-serif mb-4">Apply or Express Interest</h2>{{ form.as_p }}<button class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl">Submit Application</button></form>
+    <form method="post" enctype="multipart/form-data" class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm sticky top-24">{% csrf_token %}{% include 'users/includes/antispam_fields.html' %}<h2 class="text-xl font-bold font-serif mb-4">Apply or Express Interest</h2>{{ form.as_p }}<button class="w-full py-3 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl">Submit Application</button></form>
   </div>
 </section>
 {% endblock %}

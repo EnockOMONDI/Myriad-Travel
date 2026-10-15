@@ -1,0 +1,6 @@
+{% if TURNSTILE_SITE_KEY %}
+  <div class="cf-turnstile" data-sitekey="{{ TURNSTILE_SITE_KEY }}" data-action="enquiry" data-theme="light"></div>
+{% endif %}
+<div aria-hidden="true" style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;">
+  <label>Leave this field empty<input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+</div>

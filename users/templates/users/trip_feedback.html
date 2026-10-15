@@ -39,6 +39,7 @@
         </div>
 
         <form method="post" class="space-y-5">
+          {% include 'users/includes/antispam_fields.html' %}
           {% csrf_token %}
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>

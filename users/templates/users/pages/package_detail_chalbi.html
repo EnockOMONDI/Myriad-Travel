@@ -61,13 +61,22 @@
         </p>
       </div>
 
-      <button
-        type="button"
-        class="chalbi-share-btn inline-flex items-center justify-center gap-2 rounded-md border border-[#cbd8d2] bg-white px-5 py-4 text-sm font-bold text-[#4c665d] shadow-sm transition hover:border-[#4c8876]"
-      >
-        <i data-lucide="share-2" class="h-4 w-4"></i>
-        <span>Share with friends on WhatsApp</span>
-      </button>
+      <div class="flex flex-col gap-3 sm:flex-row">
+        <button
+          type="button"
+          class="chalbi-share-btn inline-flex items-center justify-center gap-2 rounded-md border border-[#cbd8d2] bg-white px-5 py-4 text-sm font-bold text-[#4c665d] shadow-sm transition hover:border-[#4c8876]"
+        >
+          <i data-lucide="share-2" class="h-4 w-4"></i>
+          <span>Share with friends on WhatsApp</span>
+        </button>
+        <a
+          href="/packages/{{ pkg.slug }}/gallery/"
+          class="inline-flex items-center justify-center gap-2 rounded-md bg-[#1f3031] px-5 py-4 text-sm font-bold text-white shadow-sm transition hover:bg-[#4c8876]"
+        >
+          <i data-lucide="images" class="h-4 w-4"></i>
+          <span>Past Chalbi Trip Gallery</span>
+        </a>
+      </div>
     </div>
 
     <div class="relative mt-8 overflow-hidden rounded-lg bg-[#1f3031] shadow-sm">
@@ -310,6 +319,7 @@
             <summary class="cursor-pointer text-sm font-black text-[#243131]">Submit booking request</summary>
             <form method="POST" action="/quote/?package_id={{ pkg.model.id }}" class="mt-4 space-y-3">
               {% csrf_token %}
+              {% include 'users/includes/antispam_fields.html' %}
               <input type="hidden" name="destination" value="Twende Chalbi - Northern Kenya" />
               <input type="hidden" name="preferred_travel_dates" value="10-14 December 2026" />
               <input type="hidden" name="number_of_travelers" id="chalbi-form-travelers" value="1" />

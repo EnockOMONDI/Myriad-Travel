@@ -50,6 +50,10 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
+    {% if TURNSTILE_SITE_KEY %}
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    {% endif %}
+
     <style>
       body {
         font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;

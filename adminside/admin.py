@@ -7,6 +7,7 @@ from .models import (
     Accommodation,
     TravelMode,
     Package,
+    PackageGalleryImage,
     Itinerary,
     ItineraryDay,
     PackageBooking,
@@ -231,6 +232,13 @@ class PackageBookingInline(admin.TabularInline):
              'children_count', 'travel_date', 'status', 'total_amount', 'created_at')
     can_delete = False
 
+
+class PackageGalleryImageInline(admin.TabularInline):
+    model = PackageGalleryImage
+    extra = 1
+    fields = ('image', 'title', 'caption', 'location', 'captured_at', 'display_order', 'is_visible')
+
+
 @admin.register(Package)
 class PackageAdmin(admin.ModelAdmin):
     form = PackageAdminForm
@@ -242,6 +250,7 @@ class PackageAdmin(admin.ModelAdmin):
     readonly_fields = ('total_bookings', 'total_reviews')
     prepopulated_fields = {'slug': ('name',)}
     list_editable = ('status', 'is_featured', 'home_rank')
+    inlines = [PackageGalleryImageInline, PackageBookingInline]
 
     fieldsets = (
         ('Basic Information', {
@@ -290,10 +299,45 @@ class PackageAdmin(admin.ModelAdmin):
         return super().get_queryset(request).prefetch_related(
             'available_accommodations',
             'available_travel_modes',
-            'package_bookings'
+            'package_bookings',
+            'gallery_images'
         ).select_related(
             'main_destination'
         )
+
+
+@admin.register(PackageGalleryImage)
+class PackageGalleryImageAdmin(admin.ModelAdmin):
+    list_display = ('package', 'display_image', 'title', 'location', 'captured_at', 'display_order', 'is_visible', 'created_at')
+    list_filter = ('is_visible', 'package', 'captured_at', 'created_at')
+    search_fields = ('package__name', 'title', 'caption', 'location')
+    list_editable = ('display_order', 'is_visible')
+    ordering = ('package__name', 'display_order', '-captured_at', '-created_at')
+
+    fieldsets = (
+        ('Package', {
+            'fields': ('package',)
+        }),
+        ('Image', {
+            'fields': ('image', 'title', 'caption')
+        }),
+        ('Trip Context', {
+            'fields': ('location', 'captured_at')
+        }),
+        ('Display', {
+            'fields': ('display_order', 'is_visible')
+        }),
+    )
+
+    def display_image(self, obj):
+        if obj.image:
+            return format_html(
+                '<img src="{}" width="72" height="52" style="object-fit: cover; border-radius: 6px;" />',
+                obj.image.cdn_url
+            )
+        return "No Image"
+    display_image.short_description = 'Image'
+
 
 @admin.register(ItineraryDay)
 class ItineraryDayAdmin(admin.ModelAdmin):

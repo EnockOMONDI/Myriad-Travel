@@ -452,6 +452,46 @@ class Package(models.Model):
         return self.status == self.PUBLISHED
 
 
+class PackageGalleryImage(models.Model):
+    """
+    Additional package photos used for past-trip galleries.
+    """
+    package = models.ForeignKey(
+        Package,
+        on_delete=models.CASCADE,
+        related_name='gallery_images'
+    )
+    image = ImageField(
+        manual_crop="16:9,4:3,3:2,1:1,4:5,9:16",
+        help_text="Gallery image. Use landscape for wide trip scenes or portrait for poster-style moments."
+    )
+    title = models.CharField(max_length=160, blank=True)
+    caption = models.TextField(blank=True)
+    location = models.CharField(max_length=160, blank=True)
+    captured_at = models.DateField(null=True, blank=True)
+    display_order = models.PositiveIntegerField(default=100)
+    is_visible = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['display_order', '-captured_at', '-created_at']
+        indexes = [
+            models.Index(fields=['package', 'is_visible', 'display_order']),
+            models.Index(fields=['package', 'captured_at']),
+        ]
+        verbose_name = "Package Gallery Image"
+        verbose_name_plural = "Package Gallery Images"
+
+    def __str__(self):
+        return self.title or f"{self.package.name} gallery image"
+
+    def get_image_url(self):
+        if self.image:
+            return self.image.cdn_url
+        return '/static/images/placeholders/myriad-package-placeholder.png'
+
+
 class Itinerary(models.Model):
     """
     One-to-one relationship with Package for detailed day-by-day planning
