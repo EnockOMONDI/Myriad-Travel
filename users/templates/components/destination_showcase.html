@@ -4,7 +4,7 @@
     <div class="mb-10 flex flex-col justify-between gap-5 md:flex-row md:items-end">
       <div class="max-w-2xl space-y-3">
         <div class="inline-flex items-center gap-2 rounded-full border border-[#1abdaf]/20 bg-[#1abdaf]/8 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#1abdaf]"><i data-lucide="compass" class="h-3.5 w-3.5"></i><span>Explore by region</span></div>
-        <h2 class="font-serif text-3xl font-bold leading-tight text-slate-900 sm:text-5xl">Start with a region</h2>
+        <h2 class="font-sans text-3xl font-bold leading-tight text-slate-900 sm:text-5xl">Explore The World</h2>
         <p class="text-sm leading-relaxed text-slate-600 sm:text-base">Choose a part of the world, then narrow down by country, destination and the packages available there.</p>
       </div>
       <a href="{% url 'users:explore_the_world' %}" class="myriad-red-bg inline-flex items-center gap-2 self-start rounded-xl px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90 md:self-auto"><span>Explore the world</span><i data-lucide="arrow-right" class="h-4 w-4"></i></a>
@@ -16,7 +16,7 @@
         <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent"></div>
         <div class="relative flex min-h-[260px] flex-col justify-between p-5 text-white">
           <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1abdaf] text-white"><i data-lucide="{{ region.icon }}" class="h-5 w-5"></i></span>
-          <div><div class="mb-2 flex flex-wrap gap-2 text-[11px] font-bold uppercase tracking-wider text-white/80"><span>{{ region.destination_count }} destinations</span><span>•</span><span>{{ region.package_count }} packages</span></div><h3 class="font-serif text-2xl font-black">{{ region.name }}</h3><p class="mt-2 max-w-sm text-sm leading-6 text-white/80">{{ region.description }}</p><span class="mt-4 inline-flex items-center gap-2 text-sm font-bold text-white">Explore region <i data-lucide="arrow-right" class="h-4 w-4 transition group-hover:translate-x-1"></i></span></div>
+          <div><h3 class="font-sans text-3xl font-extrabold">{{ region.name }}</h3><span class="mt-4 inline-flex items-center gap-2 text-sm font-bold text-white">Explore region <i data-lucide="arrow-right" class="h-4 w-4 transition group-hover:translate-x-1"></i></span></div>
         </div>
       </a>
       {% endfor %}

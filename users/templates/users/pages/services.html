@@ -2,24 +2,11 @@
 {% load static %}
 
 {% block title %}
-Concierge Travel Services &amp; Corporate MICE — Myriad Travel
+Myriad Services | Travel, Tickets, Visas &amp; Experiences
 {% endblock %}
 
 {% block content %}
-<div class="bg-slate-900 text-white py-16 px-4 sm:px-8">
-  <div class="max-w-7xl mx-auto space-y-4">
-    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EB3728]/20 border border-[#EB3728]/40 text-[#EB3728] text-xs font-bold uppercase tracking-wider">
-      <i data-lucide="briefcase" class="w-3.5 h-3.5"></i>
-      <span>Travel Concierge</span>
-    </div>
-    <h1 class="text-3xl sm:text-5xl font-bold font-serif">
-      Full-Service Safari &amp; Corporate Logistics
-    </h1>
-    <p class="text-slate-300 text-sm sm:text-base max-w-2xl">
-      Domestic bush hops, international flights, Kenya eTA visa guidance, 4x4 cruiser hire, and corporate team-building retreats in Naivasha and Nanyuki.
-    </p>
-  </div>
-</div>
+<section class="relative isolate overflow-hidden bg-[#0B192C] px-4 py-16 text-white sm:px-8 sm:py-24"><img src="{% static 'images/hero/tours-safaris.jpeg' %}" alt="Travel in Kenya" class="absolute inset-0 h-full w-full object-cover opacity-35"><div class="absolute inset-0 bg-[#0B192C]/75"></div><div class="relative mx-auto max-w-7xl space-y-5"><p class="myriad-red-text text-xs font-bold uppercase tracking-[0.22em]">Myriad Services</p><h1 class="max-w-3xl font-sans text-4xl font-extrabold leading-tight sm:text-6xl">The practical details behind a memorable trip.</h1><p class="max-w-2xl text-sm leading-7 text-slate-200 sm:text-base">From domestic and international travel to tickets, visas, hotels, transfers, insurance and events, our team helps you move from an idea to a well-prepared journey.</p></div></section>
 
 {% include 'components/services_section.html' %}
 {% endblock %}

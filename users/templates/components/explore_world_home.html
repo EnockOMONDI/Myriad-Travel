@@ -1,0 +1,19 @@
+<section id="explore-world-home" class="px-4 py-16 sm:px-8 sm:py-24">
+  <div class="mx-auto max-w-7xl">
+    <div class="mb-10 max-w-2xl space-y-3">
+      <p class="myriad-red-text text-xs font-bold uppercase tracking-[0.2em]">Explore The World</p>
+      <h2 class="font-sans text-3xl font-bold leading-tight text-slate-900 sm:text-5xl">Go further with Myriad</h2>
+      <p class="text-sm leading-relaxed text-slate-600 sm:text-base">City breaks, island holidays and carefully planned journeys beyond Kenya.</p>
+      <a href="{% url 'users:explore_the_world' %}" class="myriad-red-bg mt-5 inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-bold text-white transition hover:opacity-90">Explore the world <i data-lucide="arrow-right" class="h-4 w-4"></i></a>
+    </div>
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {% for region in homepage_world_destinations %}
+      <a href="{% url 'users:destination_detail' slug=region.slug %}" class="group relative isolate min-h-[260px] overflow-hidden rounded-2xl border border-white/60 bg-slate-900 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+        <img src="{{ region.image }}" alt="{{ region.name }}" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy">
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent"></div>
+        <div class="relative flex min-h-[260px] flex-col justify-end p-5 text-white"><h3 class="font-sans text-2xl font-bold">{{ region.name }}</h3><span class="mt-3 inline-flex items-center gap-2 text-sm font-bold">Explore {{ region.name }} <i data-lucide="arrow-right" class="h-4 w-4 transition group-hover:translate-x-1"></i></span></div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>

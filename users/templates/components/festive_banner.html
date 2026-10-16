@@ -1,0 +1,13 @@
+{% load static %}
+<section class="px-4 pt-8 sm:px-8 sm:pt-12" aria-labelledby="festive-banner-heading">
+  <div class="relative mx-auto min-h-[300px] max-w-7xl overflow-hidden rounded-2xl bg-slate-900 sm:min-h-[390px]">
+    <img src="{% static 'images/home/festive-kenya-coast-banner.png' %}" alt="Kenya safari and coastal holiday at sunset" class="absolute inset-0 h-full w-full object-cover">
+    <div class="absolute inset-0 bg-gradient-to-r from-slate-950/75 via-slate-950/30 to-slate-950/10"></div>
+    <div class="relative flex min-h-[300px] max-w-xl flex-col justify-center px-6 py-12 text-white sm:min-h-[390px] sm:px-12">
+      <p class="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-white/80">Myriad Travel seasonal offer</p>
+      <h2 id="festive-banner-heading" class="font-sans text-3xl font-extrabold leading-tight sm:text-5xl">Festive Christmas &amp; New Year Holidays 2026/27</h2>
+      <p class="mt-4 max-w-md text-sm leading-6 text-white/90 sm:text-base">Celebrate the season with unforgettable escapes across Kenya &amp; beyond.</p>
+      <a href="{% url 'users:deals' %}" class="myriad-red-bg mt-7 inline-flex w-fit items-center gap-2 rounded-xl px-5 py-3 text-sm font-bold text-white transition hover:opacity-90">Explore Festive Deals <i data-lucide="arrow-right" class="h-4 w-4"></i></a>
+    </div>
+  </div>
+</section>

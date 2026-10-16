@@ -127,6 +127,20 @@ def _region_cards():
     return cards
 
 
+def _homepage_destination_cards(names, limit):
+    """Select destination cards by editorial preference while keeping records DB-driven."""
+    destinations = list(Destination.objects.filter(is_active=True).order_by('display_order', 'name'))
+    selected = []
+    for requested in names:
+        requested_slug = slugify(requested)
+        match = next((item for item in destinations if item.slug == requested_slug), None)
+        if not match:
+            match = next((item for item in destinations if requested.lower() in item.name.lower()), None)
+        if match and match not in selected:
+            selected.append(match)
+    return [_destination_presenter(item) for item in selected[:limit]]
+
+
 class _ListItemParser(HTMLParser):
     def __init__(self):
         super().__init__()
@@ -1273,6 +1287,24 @@ def home(request):
         }
 
         context.update(_public_page_context(package_limit=4))
+        kenya_preferences = ('Chalbi', 'Maasai Mara', 'Amboseli', 'Diani', 'Watamu')
+        kenya_packages = list(
+            Package.objects.select_related('main_destination', 'category').prefetch_related('collections')
+            .filter(status=Package.PUBLISHED)
+            .order_by('home_rank', '-is_featured', '-published_at', '-created_at')
+        )
+        preferred_kenya = [
+            item for requested in kenya_preferences
+            for item in kenya_packages
+            if item.main_destination and requested.lower() in item.main_destination.get_full_name().lower()
+        ]
+        selected_kenya = list(dict.fromkeys(preferred_kenya))[:4]
+        if len(selected_kenya) < 4:
+            selected_kenya.extend(item for item in kenya_packages if item not in selected_kenya)
+        context['homepage_kenya_packages'] = [_package_presenter(item) for item in selected_kenya[:4]]
+        context['homepage_world_destinations'] = _homepage_destination_cards(
+            ('Dubai', 'South Africa', 'Egypt', 'Maldives', 'Seychelles', 'Rwanda'), 6
+        )
         from adminside.models import Campaign
         from django.utils import timezone
         now = timezone.now()

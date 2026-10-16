@@ -1,0 +1,12 @@
+<section id="explore-kenya-home" class="px-4 py-16 sm:px-8 sm:py-24">
+  <div class="mx-auto max-w-7xl">
+    <div class="mb-10 max-w-2xl space-y-3">
+      <p class="myriad-red-text text-xs font-bold uppercase tracking-[0.2em]">Explore Kenya</p>
+      <h2 class="font-sans text-3xl font-bold leading-tight text-slate-900 sm:text-5xl">Kenya, beyond the usual route</h2>
+      <p class="text-sm leading-relaxed text-slate-600 sm:text-base">Safari circuits, coastal stays, northern-frontier adventures and weekend escapes.</p>
+    </div>
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {% for pkg in homepage_kenya_packages %}{% include 'components/package_card.html' with pkg=pkg %}{% endfor %}
+    </div>
+  </div>
+</section>

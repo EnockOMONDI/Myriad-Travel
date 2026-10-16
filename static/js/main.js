@@ -96,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const heroSlideBtns = document.querySelectorAll('.hero-slide-btn');
   const heroSlideTitle = document.getElementById('hero-heading');
   const heroSlideTag = document.getElementById('hero-eyebrow');
+  const heroCta = document.getElementById('hero-cta');
   const heroPrevBtn = document.getElementById('hero-prev-btn');
   const heroNextBtn = document.getElementById('hero-next-btn');
   let currentSlide = 0;
@@ -124,6 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (activeSlide && heroSlideTitle && heroSlideTag) {
       heroSlideTitle.textContent = activeSlide.getAttribute('data-title') || '';
       heroSlideTag.textContent = activeSlide.getAttribute('data-tag') || '';
+      if (heroCta) heroCta.href = activeSlide.getAttribute('data-url') || '#';
     }
     currentSlide = idx;
   }

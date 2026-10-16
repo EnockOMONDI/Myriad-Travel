@@ -28,55 +28,19 @@
       </span>
     </div>
 
-    <!-- Duration Tag -->
-    <div class="absolute bottom-3 right-3 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-lg text-slate-800 text-xs font-bold shadow-xs flex items-center gap-1.5">
-      <i data-lucide="clock" class="w-3.5 h-3.5 myriad-red-text"></i>
-      <span>{{ pkg.duration }}</span>
-    </div>
   </div>
 
   <!-- Content Body -->
   <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
     <div class="space-y-2">
-      <!-- Destination & Rating -->
-      <div class="flex items-center justify-between text-xs text-slate-500">
-        <span class="myriad-red-text flex items-center gap-1 font-medium">
-          <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
-          <span class="truncate max-w-[200px]">{{ pkg.destination }}</span>
-        </span>
-        <span class="flex items-center gap-1 font-semibold text-slate-700">
-          <i data-lucide="star" class="myriad-red-fill myriad-red-text w-3.5 h-3.5"></i>
-          <span>{{ pkg.rating|default:"5.0" }} ({{ pkg.reviews_count|default:"45" }})</span>
-        </span>
-      </div>
-
+      <!-- Destination -->
       <!-- Title -->
-      <h3 class="text-lg font-bold font-serif text-slate-900 leading-snug transition-colors line-clamp-2">
+      <h3 class="text-lg font-bold font-serif text-slate-900 leading-snug transition-colors">
         <a href="/packages/{{ pkg.slug }}/" class="hover-myriad-red-text">
           {{ pkg.title }}
         </a>
       </h3>
 
-      <!-- Subtitle -->
-      <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-        {{ pkg.subtitle }}
-      </p>
-
-      {% if pkg.collections %}
-      <div class="flex flex-wrap gap-1.5">
-        {% for collection in pkg.collections|slice:":2" %}<span class="rounded-full bg-[#1abdaf]/10 px-2 py-1 text-[10px] font-bold text-[#147f78]">{{ collection }}</span>{% endfor %}
-      </div>
-      {% endif %}
-
-      <!-- Highlights Preview -->
-      <div class="pt-2 border-t border-slate-100 space-y-1.5">
-        {% for highlight in pkg.highlights|slice:":2" %}
-        <div class="flex items-start gap-2 text-xs text-slate-600">
-          <i data-lucide="check" class="w-3.5 h-3.5 text-[#1abdaf] shrink-0 mt-0.5"></i>
-          <span class="line-clamp-1">{{ highlight }}</span>
-        </div>
-        {% endfor %}
-      </div>
     </div>
 
     <!-- Pricing & Actions Footer -->

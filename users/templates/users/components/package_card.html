@@ -28,25 +28,16 @@
       </span>
     </div>
 
-    <!-- Duration Tag -->
-    <div class="absolute bottom-3 right-3 bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-lg text-slate-800 text-xs font-bold shadow-xs flex items-center gap-1.5">
-      <i data-lucide="clock" class="w-3.5 h-3.5 text-[#EB3728]"></i>
-      <span>{{ pkg.duration }}</span>
-    </div>
   </div>
 
   <!-- Content Body -->
   <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
     <div class="space-y-2">
-      <!-- Destination & Rating -->
-      <div class="flex items-center justify-between text-xs text-slate-500">
+      <!-- Destination -->
+      <div class="text-xs text-slate-500">
         <span class="flex items-center gap-1 font-medium text-[#EB3728]">
           <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
           <span class="truncate max-w-[200px]">{{ pkg.destination }}</span>
-        </span>
-        <span class="flex items-center gap-1 font-semibold text-slate-700">
-          <i data-lucide="star" class="w-3.5 h-3.5 fill-[#EB3728] text-[#EB3728]"></i>
-          <span>{{ pkg.rating|default:"5.0" }} ({{ pkg.reviews_count|default:"45" }})</span>
         </span>
       </div>
 
@@ -56,11 +47,6 @@
           {{ pkg.title }}
         </a>
       </h3>
-
-      <!-- Subtitle -->
-      <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-        {{ pkg.subtitle }}
-      </p>
 
       {% if pkg.collections %}
       <div class="flex flex-wrap gap-1.5">
