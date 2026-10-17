@@ -809,6 +809,17 @@ class QuoteRequest(models.Model):
     destination = models.CharField(max_length=100, help_text="Preferred destination or region")
     preferred_travel_dates = models.CharField(max_length=200, help_text="Preferred travel dates (flexible dates welcome)")
     number_of_travelers = models.PositiveIntegerField(default=1, help_text="Number of people traveling")
+    room_preference = models.CharField(
+        max_length=20,
+        blank=True,
+        choices=[('sharing', 'Adult sharing'), ('single', 'Single occupancy')],
+        help_text='Optional room preference captured from a package enquiry.',
+    )
+    estimated_value = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        help_text='Indicative database-calculated estimate; final quote is confirmed by the team.',
+    )
 
     # Package Information (optional - if requesting quote for specific package)
     package = models.ForeignKey(

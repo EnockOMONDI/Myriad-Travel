@@ -8,11 +8,13 @@ from .models import (
     TravelCollection,
     Campaign,
     PackageCategory,
+    PackingListItem,
     Destination,
     Accommodation,
     TravelMode,
     Package,
     PackageGalleryImage,
+    PackageDeparture,
     Itinerary,
     ItineraryDay,
     PackageBooking,
@@ -337,7 +339,9 @@ class ItineraryDayInline(admin.TabularInline):
     model = ItineraryDay
     extra = 1
     ordering = ['day_number']
-    fields = ('day_number', 'title', 'destination', 'accommodation', 'breakfast', 'lunch', 'dinner', 'description')
+    fields = ('day_number', 'date', 'theme', 'route', 'title', 'summary', 'main_activities', 'optional_activities',
+              'destination', 'overnight_location', 'accommodation', 'breakfast', 'lunch', 'dinner',
+              'estimated_departure_time', 'estimated_arrival_time', 'operational_notes', 'description')
 
     class Media:
         css = {
@@ -384,6 +388,12 @@ class PackageGalleryImageInline(admin.TabularInline):
     fields = ('image', 'title', 'caption', 'location', 'captured_at', 'display_order', 'is_visible')
 
 
+class PackageDepartureInline(admin.TabularInline):
+    model = PackageDeparture
+    extra = 1
+    fields = ('label', 'starts_on', 'ends_on', 'departure_location', 'departure_time', 'return_location', 'return_time_note', 'is_active', 'display_order')
+
+
 class ItineraryQualityFilter(admin.SimpleListFilter):
     title = 'itinerary quality'
     parameter_name = 'itinerary_quality'
@@ -410,15 +420,15 @@ class ItineraryQualityFilter(admin.SimpleListFilter):
 class PackageAdmin(admin.ModelAdmin):
     form = PackageAdminForm
     list_display = ('name', 'display_image', 'category', 'collection_names', 'main_collection', 'destination_link', 'itinerary_quality', 'adult_price',
-                   'child_price', 'duration_days', 'lipa_pole_pole', 'status', 'is_featured', 'home_rank', 'total_bookings')
+                   'child_price', 'single_occupancy_status', 'duration_days', 'lipa_pole_pole', 'status', 'is_featured', 'home_rank', 'total_bookings')
     list_filter = ('category', 'categories', 'collections', PackageCollectionFilter, 'main_destination', PackageImageStatusFilter, ItineraryQualityFilter, 'status', 'lipa_pole_pole', 'is_featured', 'duration_days')
-    search_fields = ('name', 'subtitle', 'description', 'highlights', 'inclusions', 'exclusions', 'main_destination__name')
+    search_fields = ('name', 'subtitle', 'description', 'highlights', 'inclusions', 'exclusions', 'travel_notes', 'meta_keywords', 'main_destination__name')
     autocomplete_fields = ('category', 'main_destination')
-    filter_horizontal = ('categories', 'available_accommodations', 'available_travel_modes')
+    filter_horizontal = ('categories', 'packing_items', 'available_accommodations', 'available_travel_modes')
     readonly_fields = ('total_bookings', 'total_reviews', 'itinerary_quality')
     prepopulated_fields = {'slug': ('name',)}
     list_editable = ('status', 'is_featured', 'home_rank')
-    inlines = [PackageGalleryImageInline, PackageBookingInline]
+    inlines = [PackageDepartureInline, PackageGalleryImageInline, PackageBookingInline]
 
     fieldsets = (
         ('Basic Information', {
@@ -436,13 +446,14 @@ class PackageAdmin(admin.ModelAdmin):
             'classes': ('wide',)
         }),
         ('Pricing', {
-            'fields': ('adult_price', 'child_price', 'lipa_pole_pole', 'lipa_pole_pole_months')
+            'fields': ('adult_price', 'child_price', 'single_occupancy_supplement', 'lipa_pole_pole', 'lipa_pole_pole_months'),
+            'description': 'Single occupancy is optional. Enter only the supplement above the adult sharing rate; the public total is calculated automatically.'
         }),
         ('Available Options', {
             'fields': ('available_accommodations', 'available_travel_modes')
         }),
         ('Package Details', {
-            'fields': ('highlights', 'inclusions', 'exclusions'),
+            'fields': ('highlights', 'inclusions', 'exclusions', 'travel_notes', 'packing_items', 'packing_list_custom'),
             'classes': ('wide',)
         }),
         ('Itinerary Quality', {
@@ -450,7 +461,8 @@ class PackageAdmin(admin.ModelAdmin):
             'description': 'This is a read-only audit. It flags grouped ranges, missing day coverage, and stored day-number mismatches without altering itinerary content.'
         }),
         ('SEO', {
-            'fields': ('meta_title', 'meta_description'),
+            'fields': ('meta_title', 'meta_description', 'meta_keywords', 'aeo_summary'),
+            'description': 'Use a clear title and description for search. Keywords are comma-separated phrases, not a paragraph. AEO summary should answer what this package is in one concise sentence.',
             'classes': ('collapse',)
         }),
         ('Status & Statistics', {
@@ -474,6 +486,12 @@ class PackageAdmin(admin.ModelAdmin):
         names = list(obj.collections.filter(is_active=True).values_list('name', flat=True))
         return ', '.join(names) if names else 'Legacy grouping only'
     collection_names.short_description = 'Collections'
+
+    def single_occupancy_status(self, obj):
+        if obj.has_single_occupancy:
+            return format_html('<span style="color:#147f78">+ KSh {:,}</span>', obj.single_occupancy_supplement)
+        return format_html('<span style="color:#EB3728">Missing</span>')
+    single_occupancy_status.short_description = 'Single supplement'
 
     def main_collection(self, obj):
         return obj.get_region_display()
@@ -506,6 +524,8 @@ class PackageAdmin(admin.ModelAdmin):
             'available_travel_modes',
             'package_bookings',
             'gallery_images',
+            'packing_items',
+            'departures',
             'itinerary__days'
         ).select_related(
             'main_destination'
@@ -532,18 +552,10 @@ class PackageGalleryImageAdmin(admin.ModelAdmin):
     ordering = ('package__name', 'display_order', '-captured_at', '-created_at')
 
     fieldsets = (
-        ('Package', {
-            'fields': ('package',)
-        }),
-        ('Image', {
-            'fields': ('image', 'title', 'caption')
-        }),
-        ('Trip Context', {
-            'fields': ('location', 'captured_at')
-        }),
-        ('Display', {
-            'fields': ('display_order', 'is_visible')
-        }),
+        ('Package', {'fields': ('package',)}),
+        ('Image', {'fields': ('image', 'title', 'caption')}),
+        ('Trip Context', {'fields': ('location', 'captured_at')}),
+        ('Display', {'fields': ('display_order', 'is_visible')}),
     )
 
     def display_image(self, obj):
@@ -554,6 +566,22 @@ class PackageGalleryImageAdmin(admin.ModelAdmin):
             )
         return "No Image"
     display_image.short_description = 'Image'
+
+
+@admin.register(PackingListItem)
+class PackingListItemAdmin(admin.ModelAdmin):
+    list_display = ('name', 'display_order', 'is_active')
+    list_editable = ('display_order', 'is_active')
+    search_fields = ('name',)
+    ordering = ('display_order', 'name')
+
+
+@admin.register(PackageDeparture)
+class PackageDepartureAdmin(admin.ModelAdmin):
+    list_display = ('package', 'label', 'starts_on', 'ends_on', 'departure_location', 'is_active')
+    list_filter = ('is_active', 'starts_on', 'ends_on')
+    search_fields = ('package__name', 'label', 'departure_location', 'return_location')
+    autocomplete_fields = ('package',)
 
 
 @admin.register(ItineraryDay)

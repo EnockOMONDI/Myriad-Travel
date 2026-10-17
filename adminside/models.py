@@ -114,6 +114,19 @@ class PackageCategory(models.Model):
         return self.packages.filter(status='published').count()
 
 
+class PackingListItem(models.Model):
+    """Reusable packing guidance that admins can attach to many packages."""
+    name = models.CharField(max_length=160, unique=True)
+    display_order = models.PositiveIntegerField(default=100)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['display_order', 'name']
+
+    def __str__(self):
+        return self.name
+
+
 
 class Destination(models.Model):
     """
@@ -496,6 +509,11 @@ class Package(models.Model):
     # Pricing
     adult_price = models.PositiveIntegerField()
     child_price = models.PositiveIntegerField()
+    single_occupancy_supplement = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        help_text='Optional supplement added to the adult sharing rate for a private room. Leave blank when unavailable.',
+    )
     lipa_pole_pole = models.BooleanField(default=False, help_text="Show this package as eligible for Myriad's Lipa Pole Pole plan")
     lipa_pole_pole_months = models.PositiveIntegerField(default=4, help_text="Suggested number of monthly installments")
 
@@ -503,6 +521,20 @@ class Package(models.Model):
     highlights = models.TextField(blank=True, help_text="One public-facing highlight per line for package cards and detail pages")
     inclusions = CKEditor5Field(config_name='default', help_text="What's included in the package")
     exclusions = CKEditor5Field(config_name='default', help_text="What's NOT included in the package")
+    travel_notes = models.TextField(
+        blank=True,
+        help_text='One traveller note per line. Example: Road conditions, limited network, weather or timing guidance.',
+    )
+    packing_items = models.ManyToManyField(
+        PackingListItem,
+        blank=True,
+        related_name='packages',
+        help_text='Select reusable items for this package. Add package-specific items in the field below.',
+    )
+    packing_list_custom = models.TextField(
+        blank=True,
+        help_text='Optional extra packing items, separated by commas or line breaks.',
+    )
     
     # Media
     featured_image = ImageField(
@@ -542,6 +574,14 @@ class Package(models.Model):
     # SEO
     meta_title = models.CharField(max_length=200, blank=True)
     meta_description = models.TextField(max_length=300, blank=True)
+    meta_keywords = models.TextField(
+        blank=True,
+        help_text='Optional comma-separated search phrases. Example: Chalbi Desert, Northern Kenya safari, Lake Turkana.',
+    )
+    aeo_summary = models.TextField(
+        blank=True,
+        help_text='A concise answer for search assistants. Example: A 5-day northern Kenya adventure from Nairobi to Chalbi, Lake Turkana and Marsabit.',
+    )
     
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
@@ -575,6 +615,21 @@ class Package(models.Model):
     @property
     def is_published(self):
         return self.status == self.PUBLISHED
+
+    @property
+    def has_single_occupancy(self):
+        return self.single_occupancy_supplement is not None
+
+    @property
+    def single_occupancy_price(self):
+        if not self.has_single_occupancy:
+            return None
+        return self.adult_price + self.single_occupancy_supplement
+
+    def packing_list(self):
+        selected = list(self.packing_items.filter(is_active=True).values_list('name', flat=True))
+        custom = [item.strip() for item in self.packing_list_custom.replace('\n', ',').split(',') if item.strip()]
+        return selected + [item for item in custom if item not in selected]
 
 
 class PackageGalleryImage(models.Model):
@@ -641,6 +696,34 @@ class PackageGalleryImage(models.Model):
         return '/static/images/placeholders/myriad-package-placeholder.png'
 
 
+class PackageDeparture(models.Model):
+    """A dated or scheduled departure attached to a package."""
+    package = models.ForeignKey(Package, on_delete=models.CASCADE, related_name='departures')
+    label = models.CharField(max_length=160, blank=True)
+    starts_on = models.DateField()
+    ends_on = models.DateField()
+    departure_location = models.CharField(max_length=160, blank=True)
+    departure_time = models.TimeField(null=True, blank=True)
+    return_location = models.CharField(max_length=160, blank=True)
+    return_time_note = models.CharField(max_length=160, blank=True)
+    is_active = models.BooleanField(default=True)
+    display_order = models.PositiveIntegerField(default=100)
+
+    class Meta:
+        ordering = ['display_order', 'starts_on']
+        constraints = [models.CheckConstraint(
+            check=models.Q(ends_on__gte=models.F('starts_on')),
+            name='package_departure_dates_in_order',
+        )]
+
+    def __str__(self):
+        return self.label or f'{self.package.name} ({self.starts_on} - {self.ends_on})'
+
+    @property
+    def date_label(self):
+        return f'{self.starts_on:%-d}–{self.ends_on:%-d %B %Y}'
+
+
 class Itinerary(models.Model):
     """
     One-to-one relationship with Package for detailed day-by-day planning
@@ -673,8 +756,18 @@ class ItineraryDay(models.Model):
         related_name='days'
     )
     day_number = models.PositiveIntegerField()
+    date = models.DateField(null=True, blank=True)
+    theme = models.CharField(max_length=160, blank=True)
+    route = models.CharField(max_length=240, blank=True)
     title = models.CharField(max_length=200)
     description = models.TextField()
+    summary = models.TextField(blank=True)
+    main_activities = models.TextField(blank=True, help_text='One confirmed activity per line.')
+    optional_activities = models.TextField(blank=True, help_text='One optional activity per line.')
+    overnight_location = models.CharField(max_length=200, blank=True)
+    operational_notes = models.TextField(blank=True)
+    estimated_departure_time = models.TimeField(null=True, blank=True)
+    estimated_arrival_time = models.TimeField(null=True, blank=True)
     
     # Optional destination for this day
     destination = models.ForeignKey(

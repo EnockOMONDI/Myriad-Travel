@@ -165,86 +165,6 @@ class _ListItemParser(HTMLParser):
             self._current.append(data)
 
 
-CHALBI_SPECIAL_OFFER = {
-    'label': 'Featured Group Trip',
-    'date': '10-14 December 2026',
-    'departure': 'Nairobi departure at 3:30 AM on 10 December 2026',
-    'return': 'Nairobi return around 4:00-5:00 PM on 14 December 2026',
-    'single_occupancy_price': 66000,
-    'notes': [
-        'Expect long stretches of rough, dusty and corrugated roads across the northern frontier.',
-        'Network coverage may be limited in some sections; download key documents and maps before departure.',
-        'The early Nairobi departure and morning starts are important because delays can affect later activities.',
-        'December days can be hot, while early mornings and evenings may feel cooler.',
-        'Accommodation may be split by capacity on some nights while meals and activities remain coordinated.',
-    ],
-    'packing_list': [
-        'Refillable water bottle, sunscreen, hat or cap, sunglasses and mosquito repellent.',
-        'Dust scarf or shuka, light comfortable clothing, warm jacket and comfortable shoes.',
-        'Swimwear and towel for Lake Turkana, plus a power bank and charging cables.',
-        'Personal medication, toiletries, wet wipes, sanitiser, tissues and identification documents.',
-        'Small cash in Kenyan shillings for personal purchases and incidentals.',
-    ],
-    'before_faqs': [
-        {
-            'question': 'Is this adventure right for me?',
-            'answer': 'This trip is best for travellers who enjoy road adventure, remote landscapes, early starts, dusty terrain and flexible timing. It is scenic, social and guided, but it is not a soft city break.',
-        },
-        {
-            'question': 'What should I pack?',
-            'answer': 'Carry sun protection, a dust scarf or shuka, comfortable shoes, warm layers, swimwear, a towel, a power bank, personal medication and identification documents.',
-        },
-        {
-            'question': 'Can children join, and how does room sharing work?',
-            'answer': 'Children can be considered with the Myriad team confirming rooming, age suitability and final pricing before booking. The current child rate is stored separately from the adult sharing rate.',
-        },
-        {
-            'question': 'What happens after I send my request?',
-            'answer': 'Myriad Travel will confirm availability, rooming preference, inclusions, payment steps and any important trip updates before your booking is locked in.',
-        },
-    ],
-}
-
-
-CHALBI_DAY_META = {
-    1: {
-        'date': 'Thu, 10 Dec',
-        'theme': 'Into the North',
-        'title': 'Nairobi to Marsabit',
-        'summary': 'Nanyuki - Samburu - Mount Ololokwe',
-        'overnight': 'Marsabit',
-    },
-    2: {
-        'date': 'Fri, 11 Dec',
-        'theme': 'Desert Days',
-        'title': 'Marsabit to Chalbi & North Horr',
-        'summary': 'Salt flats - Desert walks - Sunset dunes',
-        'overnight': 'North Horr',
-    },
-    3: {
-        'date': 'Sat, 12 Dec',
-        'theme': 'By the Jade Sea',
-        'title': 'North Horr to Lake Turkana',
-        'summary': 'Loiyangalani - Boat experience - El Molo',
-        'overnight': 'Lake Turkana / Loiyangalani',
-    },
-    4: {
-        'date': 'Sun, 13 Dec',
-        'theme': 'The Scenic Route',
-        'title': 'Lake Turkana to Isiolo',
-        'summary': 'Wind Power route - Ngurunit - Archers Post',
-        'overnight': 'Isiolo',
-    },
-    5: {
-        'date': 'Mon, 14 Dec',
-        'theme': 'Home, With Stories',
-        'title': 'Isiolo to Nairobi',
-        'summary': 'A slow breakfast - The journey home',
-        'overnight': '',
-    },
-}
-
-
 # Reviewed local fallback photographs. An admin-uploaded destination or package
 # image always wins; this list only prevents published pages from falling back
 # to the generic Myriad placeholder while the image library is being completed.
@@ -356,7 +276,18 @@ def _package_presenter(package):
     highlights = [line.strip() for line in (package.highlights or '').splitlines() if line.strip()]
     region_label = package.get_region_display() if hasattr(package, 'get_region_display') else category
     lipa_months = package.lipa_pole_pole_months or 4
-    special_offer = CHALBI_SPECIAL_OFFER if package.slug == 'twende-chalbi-4-nights-5-days' else None
+    departure = package.departures.filter(is_active=True).order_by('display_order', 'starts_on').first()
+    special_offer = None
+    if departure:
+        special_offer = {
+            'label': departure.label or 'Scheduled departure',
+            'date': departure.date_label,
+            'departure': ' '.join(filter(None, [departure.departure_location, departure.departure_time.strftime('%-I:%M %p') if departure.departure_time else ''])),
+            'return': ' '.join(filter(None, [departure.return_location, departure.return_time_note])),
+            'notes': [line.strip() for line in package.travel_notes.splitlines() if line.strip()],
+            'packing_list': package.packing_list(),
+            'before_faqs': [],
+        }
     itinerary_days, itinerary_audit = _itinerary_presenter(package)
     accommodations = list(package.available_accommodations.all())
     travel_modes = list(package.available_travel_modes.all())
@@ -396,7 +327,14 @@ def _package_presenter(package):
         'reviews_count': package.total_reviews,
         'price_kes': price_kes,
         'child_price_kes': int(package.child_price or 0),
-        'single_price_kes': int(special_offer['single_occupancy_price']) if special_offer else 0,
+        'single_price_kes': package.single_occupancy_price or 0,
+        'single_supplement_kes': package.single_occupancy_supplement or 0,
+        'packing_list': package.packing_list(),
+        'travel_notes': [line.strip() for line in package.travel_notes.splitlines() if line.strip()],
+        'meta_title': package.meta_title,
+        'meta_description': package.meta_description,
+        'meta_keywords': [item.strip() for item in package.meta_keywords.split(',') if item.strip()],
+        'aeo_summary': package.aeo_summary,
         'price_usd': round(price_kes / 130) if price_kes else 0,
         'lipa_pole_pole': package.lipa_pole_pole,
         'lipa_pole_pole_months': lipa_months,
@@ -421,14 +359,16 @@ def _itinerary_presenter(package):
     audit = analyse_itinerary(package)
     days = []
     for index, day in enumerate(audit['rows'], start=1):
-        chalbi_meta = CHALBI_DAY_META.get(index, {}) if package.slug == 'twende-chalbi-4-nights-5-days' else {}
         days.append({
             **day,
-            'title': chalbi_meta.get('title', day['title']),
-            'date': chalbi_meta.get('date', ''),
-            'theme': chalbi_meta.get('theme', ''),
-            'summary': chalbi_meta.get('summary', ''),
-            'overnight': chalbi_meta.get('overnight', ''),
+            'date': day.get('date', ''),
+            'theme': day.get('theme', ''),
+            'route': day.get('route', ''),
+            'summary': day.get('summary', ''),
+            'main_activities': day.get('main_activities', []),
+            'optional_activities': day.get('optional_activities', []),
+            'overnight': day.get('overnight_location') or day.get('stay', ''),
+            'operational_notes': day.get('operational_notes', ''),
         })
     return days, audit
 
@@ -1833,6 +1773,14 @@ def quote_request_view(request):
                 # Associate with package if provided
                 if package:
                     quote_request.package = package
+                    room_preference = request.POST.get('room_preference', 'sharing')
+                    if room_preference not in {'sharing', 'single'}:
+                        room_preference = 'sharing'
+                    if room_preference == 'single' and not package.has_single_occupancy:
+                        room_preference = 'sharing'
+                    quote_request.room_preference = room_preference
+                    rate = package.single_occupancy_price if room_preference == 'single' else package.adult_price
+                    quote_request.estimated_value = rate * quote_request.number_of_travelers
                     quote_request.save()
                     logger.info(f"Quote request {quote_request.id} associated with package {package.name}")
 

@@ -19,6 +19,10 @@ def _plain(value):
     return ' '.join(strip_tags(str(value or '')).split())
 
 
+def _lines(value):
+    return [line.strip(' -*\t') for line in str(value or '').splitlines() if line.strip(' -*\t')]
+
+
 def _title_details(title, fallback_day):
     title = _plain(title)
     match = DAY_TITLE_RE.match(title)
@@ -81,6 +85,14 @@ def analyse_itinerary(package):
                         'description': before,
                         'meals': _meals(day),
                         'stay': _stay(day),
+                        'date': day.date,
+                        'theme': day.theme,
+                        'route': day.route,
+                        'summary': _plain(day.summary),
+                        'main_activities': _lines(day.main_activities),
+                        'optional_activities': _lines(day.optional_activities),
+                        'overnight_location': day.overnight_location,
+                        'operational_notes': _plain(day.operational_notes),
                     })
                 rows.append({
                     'label': f'Days {embedded_start}-{embedded_end}',
@@ -88,6 +100,14 @@ def analyse_itinerary(package):
                     'description': range_match.group('body').strip(),
                     'meals': '',
                     'stay': '',
+                    'date': None,
+                    'theme': '',
+                    'route': '',
+                    'summary': '',
+                    'main_activities': [],
+                    'optional_activities': [],
+                    'overnight_location': '',
+                    'operational_notes': '',
                 })
                 continue
 
@@ -97,6 +117,14 @@ def analyse_itinerary(package):
             'description': description,
             'meals': _meals(day),
             'stay': _stay(day),
+            'date': day.date,
+            'theme': day.theme,
+            'route': day.route,
+            'summary': _plain(day.summary),
+            'main_activities': _lines(day.main_activities),
+            'optional_activities': _lines(day.optional_activities),
+            'overnight_location': day.overnight_location,
+            'operational_notes': _plain(day.operational_notes),
         })
 
     expected_days = set(range(1, package.duration_days + 1))

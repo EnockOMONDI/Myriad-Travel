@@ -3,6 +3,8 @@
 {% load currency_filters %}
 
 {% block title %}{{ pkg.title }} - Myriad Travel{% endblock %}
+{% block meta_description %}{{ pkg.meta_description|default:pkg.subtitle|default:pkg.title }}{% endblock %}
+{% block extra_head %}{% if pkg.meta_keywords %}<meta name="keywords" content="{{ pkg.meta_keywords|join:', '|escape }}" />{% endif %}{% if pkg.aeo_summary %}<script type="application/ld+json">{"@context":"https://schema.org","@type":"TouristTrip","name":"{{ pkg.title|escapejs }}","description":"{{ pkg.aeo_summary|escapejs }}","url":"{{ request.build_absolute_uri }}"}</script>{% endif %}{% endblock %}
 {% block site_navbar %}{% endblock %}
 {% block site_footer %}{% endblock %}
 {% block site_floating_widgets %}{% endblock %}
@@ -84,6 +86,8 @@
 
         {% if pkg.inclusions or pkg.exclusions %}<section id="included" class="mt-16 scroll-mt-24"><p class="text-[12px] font-black uppercase tracking-[0.24em] text-[#1abdaf]">Booking details</p><h2 class="mt-4 font-serif text-4xl font-black tracking-[-0.03em] text-[#23302f] sm:text-5xl">What's included.</h2><div class="mt-8 grid gap-5 md:grid-cols-2">{% if pkg.inclusions %}<div class="rounded-sm border border-[#dce3df] bg-white p-6"><h3 class="text-lg font-black text-[#243131]">Included in your trip</h3><ul class="mt-5 space-y-3 text-sm leading-6 text-[#66736f]">{% for inc in pkg.inclusions %}<li class="flex gap-3"><span class="text-[#1abdaf]">•</span><span>{{ inc }}</span></li>{% endfor %}</ul></div>{% endif %}{% if pkg.exclusions %}<div class="rounded-sm border border-[#dce3df] bg-white p-6"><h3 class="text-lg font-black text-[#243131]">Plan for separately</h3><ul class="mt-5 space-y-3 text-sm leading-6 text-[#66736f]">{% for exc in pkg.exclusions %}<li class="flex gap-3"><span class="text-[#EB3728]">•</span><span>{{ exc }}</span></li>{% endfor %}</ul></div>{% endif %}</div></section>{% endif %}
 
+        {% if pkg.packing_list or pkg.travel_notes %}<section class="mt-16 grid gap-5 md:grid-cols-2">{% if pkg.packing_list %}<div class="rounded-sm border border-[#dce3df] bg-white p-6"><h3 class="text-lg font-black text-[#243131]">Packing list</h3><ul class="mt-5 space-y-2 text-sm leading-6 text-[#66736f]">{% for item in pkg.packing_list %}<li>• {{ item }}</li>{% endfor %}</ul></div>{% endif %}{% if pkg.travel_notes %}<div class="rounded-sm border border-[#dce3df] bg-white p-6"><h3 class="text-lg font-black text-[#243131]">Travel notes</h3><ul class="mt-5 space-y-2 text-sm leading-6 text-[#66736f]">{% for note in pkg.travel_notes %}<li>• {{ note }}</li>{% endfor %}</ul></div>{% endif %}</section>{% endif %}
+
         {% if pkg.special_offer.before_faqs %}<section id="before" class="mt-16 scroll-mt-24"><p class="text-[12px] font-black uppercase tracking-[0.24em] text-[#1abdaf]">Good to know</p><div class="mt-8 border-t border-[#dce3df]">{% for faq in pkg.special_offer.before_faqs %}<article class="package-accordion border-b border-[#dce3df]" data-open="false"><button type="button" class="package-accordion-btn flex w-full items-center justify-between gap-5 py-5 text-left"><h3 class="text-lg font-black text-[#243131]">{{ faq.question }}</h3><span class="package-accordion-icon text-2xl font-bold text-[#EB3728]">+</span></button><div class="package-accordion-panel hidden pb-6 text-sm leading-7 text-[#66736f]"><p>{{ faq.answer }}</p></div></article>{% endfor %}</div></section>{% endif %}
       </main>
 
@@ -97,9 +101,11 @@
             {% csrf_token %}{% include 'users/includes/antispam_fields.html' %}
             <input type="hidden" name="destination" value="{{ pkg.title }} - {{ pkg.destination }}" />
             <input type="hidden" name="number_of_travelers" id="package-form-travelers" value="1" />
+            <input type="hidden" name="room_preference" id="package-form-room" value="sharing" />
+            <input type="hidden" name="estimated_value" id="package-form-estimate" value="{{ pkg.price_kes }}" />
             <input type="hidden" name="special_requests" id="package-form-notes" value="" />
             <label for="package-room" class="block text-sm font-black text-[#243131]">Your room preference</label>
-            <select id="package-room" class="w-full rounded-sm border border-[#dce3df] bg-white px-4 py-4 text-sm font-semibold text-[#243131]"><option value="sharing" data-price="{{ pkg.price_kes }}">Sharing - {{ pkg.price_kes|kes_format }} / adult</option>{% if pkg.single_price_kes %}<option value="single" data-price="{{ pkg.single_price_kes }}">Single - {{ pkg.single_price_kes|kes_format }} / adult</option>{% endif %}</select>
+            <select id="package-room" class="w-full rounded-sm border border-[#dce3df] bg-white px-4 py-4 text-sm font-semibold text-[#243131]"><option value="sharing" data-price="{{ pkg.price_kes }}">Sharing - {{ pkg.price_kes|kes_format }} / adult</option>{% if pkg.single_price_kes %}<option value="single" data-price="{{ pkg.single_price_kes }}">Single occupancy - {{ pkg.single_price_kes|kes_format }} / adult</option>{% endif %}</select>
             <div class="grid grid-cols-2 gap-3"><label class="text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Adults<input id="package-adults" type="number" min="1" max="20" value="1" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" /></label><label class="text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Children<input id="package-children" type="number" min="0" max="20" value="0" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" /></label></div>
             {% if pkg.special_offer.date %}<input type="hidden" name="preferred_travel_dates" value="{{ pkg.special_offer.date }}" />{% else %}<label class="block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Preferred travel dates *<input id="package-dates" name="preferred_travel_dates" required placeholder="e.g. 12-16 August 2027" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" /></label>{% endif %}
             <label class="block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Your name *<input id="package-name" type="text" name="full_name" required placeholder="Your full name" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" /></label>
@@ -128,6 +134,8 @@
     const dates = document.getElementById('package-dates');
     const notes = document.getElementById('package-extra-notes');
     const formTravelers = document.getElementById('package-form-travelers');
+    const formRoom = document.getElementById('package-form-room');
+    const formEstimate = document.getElementById('package-form-estimate');
     const formNotes = document.getElementById('package-form-notes');
     const estimate = document.getElementById('package-estimate');
     const whatsapp = document.getElementById('package-whatsapp');
@@ -149,6 +157,8 @@
       if (children) children.value = childCount;
       if (estimate) estimate.textContent = formatKes(selectedPrice() * adultCount);
       if (formTravelers) formTravelers.value = adultCount + childCount;
+      if (formRoom) formRoom.value = room ? room.value : 'sharing';
+      if (formEstimate) formEstimate.value = Math.round(selectedPrice() * (adultCount + childCount));
       if (formNotes) formNotes.value = summary() + (notes && notes.value.trim() ? '\n\nClient notes: ' + notes.value.trim() : '');
     }
     [room, adults, children, dates, notes].filter(Boolean).forEach((input) => input.addEventListener('input', sync));

@@ -1,4 +1,5 @@
 from datetime import time, timedelta
+from pathlib import Path
 
 from django.contrib.auth.models import User
 from django.test import TestCase
@@ -7,7 +8,7 @@ from django.utils import timezone
 
 from adminside.admin import PackageAdminForm
 from adminside.package_wizard import DestinationQuickCreateForm
-from adminside.models import Accommodation, Campaign, Destination, Package, TravelCollection, TravelMode
+from adminside.models import Accommodation, Campaign, Destination, Package, PackingListItem, TravelCollection, TravelMode
 from users.views import _destination_ids_for_page, _destination_tree_ids, _packages_for_destinations, _region_cards
 
 
@@ -69,6 +70,32 @@ class PackageFlowTests(TestCase):
         self.assertIn('Collections', form.fields['travel_collections'].label)
         self.assertEqual(set(form.fields['travel_collections'].initial), {first})
         self.assertIn(second, form.fields['travel_collections'].queryset)
+
+    def test_package_pricing_and_packing_are_database_driven(self):
+        self.package.single_occupancy_supplement = 5000
+        self.package.packing_list_custom = 'Refillable bottle, Power bank'
+        self.package.save()
+        item, _ = PackingListItem.objects.get_or_create(name='Closed shoes')
+        self.package.packing_items.add(item)
+
+        self.package.refresh_from_db()
+        self.assertTrue(self.package.has_single_occupancy)
+        self.assertEqual(self.package.single_occupancy_price, 55000)
+        self.assertEqual(self.package.packing_list(), ['Closed shoes', 'Refillable bottle', 'Power bank'])
+
+    def test_admin_explains_optional_single_supplement_and_metadata(self):
+        form = PackageAdminForm(instance=self.package)
+        self.assertIn('supplement', form.fields['single_occupancy_supplement'].help_text.lower())
+        self.assertIn('comma-separated', form.fields['meta_keywords'].help_text.lower())
+        self.assertIn('concise answer', form.fields['aeo_summary'].help_text.lower())
+
+    def test_chalbi_template_has_no_stale_price_fallback_or_view_override(self):
+        root = Path(__file__).resolve().parents[2]
+        view_source = (root / 'users' / 'views.py').read_text()
+        template_source = (root / 'users' / 'templates' / 'users' / 'pages' / 'package_detail_chalbi.html').read_text()
+        self.assertNotIn('CHALBI_SPECIAL_OFFER', view_source)
+        self.assertNotIn('CHALBI_DAY_META', view_source)
+        self.assertNotIn('default:58000', template_source)
 
     def test_campaign_public_status_supports_new_closing_and_scheduled(self):
         package = self.package
