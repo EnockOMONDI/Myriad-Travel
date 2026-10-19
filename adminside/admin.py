@@ -491,9 +491,9 @@ class PackageAdmin(admin.ModelAdmin):
     def single_occupancy_status(self, obj):
         if obj.has_single_occupancy:
             return format_html(
-                '<span style="color:#147f78">+ {} {:,}</span>',
+                '<span style="color:#147f78">+ {} {}</span>',
                 obj.price_currency,
-                obj.single_occupancy_supplement,
+                f'{obj.single_occupancy_supplement:,}',
             )
         return format_html('<span style="color:#EB3728">Missing</span>')
 
