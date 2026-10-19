@@ -76,7 +76,6 @@
         <section id="highlights" class="scroll-mt-24">
           <p class="text-[12px] font-black uppercase tracking-[0.24em] text-[#1abdaf]">{{ pkg.category }}</p>
           <div class="mt-4 max-w-3xl text-base leading-8 text-[#66736f]">{{ pkg.description|safe }}</div>
-          {% if pkg.highlights %}<div class="mt-10 grid gap-5 md:grid-cols-3">{% for highlight in pkg.highlights %}<article class="border-t border-[#dce3df] pt-6"><div class="text-sm font-black text-[#EB3728]">{{ forloop.counter|stringformat:"02d" }}</div><p class="mt-3 text-sm leading-6 text-[#66736f]">{{ highlight }}</p></article>{% endfor %}</div>{% endif %}
         </section>
 
         {% if pkg.itinerary %}<section id="itinerary" class="mt-16 scroll-mt-24">
@@ -94,7 +93,7 @@
       <aside id="booking" class="lg:sticky lg:top-8">
         <div class="rounded-lg border border-[#dce3df] bg-white p-7 shadow-[0_18px_55px_rgba(31,48,49,0.08)]">
           <p class="text-[11px] font-black uppercase tracking-[0.24em] text-[#1abdaf]">Request this package</p>
-          <div class="mt-6"><span class="text-sm text-[#66736f]">From</span><div class="mt-1 text-4xl font-black tracking-[-0.04em] text-[#23302f]">{{ pkg.price_kes|kes_format }}</div><p class="mt-1 text-sm font-semibold text-[#66736f]">per adult sharing</p></div>
+          <div class="mt-6"><span class="text-sm text-[#66736f]">From</span><div class="mt-1 text-4xl font-black tracking-[-0.04em] text-[#23302f]">{{ pkg.price_display }}</div><p class="mt-1 text-sm font-semibold text-[#66736f]">per adult sharing</p></div>
           <div class="mt-7 rounded-sm bg-[#e9fbfa] p-5 text-[#243131]"><div class="flex items-start gap-3"><i data-lucide="calendar-days" class="mt-0.5 h-4 w-4 text-[#1abdaf]"></i><div>{% if pkg.special_offer.date %}<p class="font-black">{{ pkg.special_offer.date }}</p>{% else %}<p class="font-black">Travel dates on request</p>{% endif %}<p class="mt-1 text-sm font-semibold text-[#66736f]">{{ pkg.duration }}</p></div></div></div>
 
           <form id="package-enquiry-form" method="POST" action="/quote/?package_id={{ pkg.model.id }}" class="mt-6 space-y-4">
@@ -105,7 +104,7 @@
             <input type="hidden" name="estimated_value" id="package-form-estimate" value="{{ pkg.price_kes }}" />
             <input type="hidden" name="special_requests" id="package-form-notes" value="" />
             <label for="package-room" class="block text-sm font-black text-[#243131]">Your room preference</label>
-            <select id="package-room" class="w-full rounded-sm border border-[#dce3df] bg-white px-4 py-4 text-sm font-semibold text-[#243131]"><option value="sharing" data-price="{{ pkg.price_kes }}">Sharing - {{ pkg.price_kes|kes_format }} / adult</option>{% if pkg.single_price_kes %}<option value="single" data-price="{{ pkg.single_price_kes }}">Single occupancy - {{ pkg.single_price_kes|kes_format }} / adult</option>{% endif %}</select>
+            <select id="package-room" class="w-full rounded-sm border border-[#dce3df] bg-white px-4 py-4 text-sm font-semibold text-[#243131]"><option value="sharing" data-price="{{ pkg.price_kes }}">Sharing - {{ pkg.price_display }} / adult</option>{% if pkg.single_price_kes %}<option value="single" data-price="{{ pkg.single_price_kes }}">Single occupancy - {{ pkg.single_price_kes|kes_format }} / adult</option>{% endif %}</select>
             <div class="grid grid-cols-2 gap-3"><label class="text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Adults<input id="package-adults" type="number" min="1" max="20" value="1" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" /></label><label class="text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Children<input id="package-children" type="number" min="0" max="20" value="0" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" /></label></div>
             {% if pkg.special_offer.date %}<input type="hidden" name="preferred_travel_dates" value="{{ pkg.special_offer.date }}" />{% else %}<label class="block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Preferred travel dates *<input id="package-dates" name="preferred_travel_dates" required placeholder="e.g. 12-16 August 2027" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" /></label>{% endif %}
             <label class="block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Your name *<input id="package-name" type="text" name="full_name" required placeholder="Your full name" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" /></label>
@@ -113,7 +112,7 @@
             <label class="block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Email *<input type="email" name="email" required placeholder="you@example.com" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" /></label>
             <label class="block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Citizenship / passport country *<input type="text" name="citizenship" required placeholder="e.g. Kenyan" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]" /></label>
             <label class="block text-[11px] font-black uppercase tracking-[0.16em] text-[#66736f]">Notes <textarea id="package-extra-notes" rows="3" placeholder="Rooming, child ages, dietary needs or pickup notes" class="mt-2 w-full rounded-sm border border-[#dce3df] bg-white px-3 py-3 text-sm font-semibold normal-case tracking-normal text-[#243131]"></textarea></label>
-            <div class="mt-5 border-t border-[#dce3df] pt-5"><div class="flex items-center justify-between"><span class="text-sm text-[#243131]">Adult trip estimate</span><strong id="package-estimate" class="text-xl font-black text-[#243131]">{{ pkg.price_kes|kes_format }}</strong></div></div>
+            <div class="mt-5 border-t border-[#dce3df] pt-5"><div class="flex items-center justify-between"><span class="text-sm text-[#243131]">Adult trip estimate</span><strong id="package-estimate" class="text-xl font-black text-[#243131]">{{ pkg.price_display }}</strong></div></div>
             <button type="button" id="package-whatsapp" class="mt-2 flex w-full items-center justify-center rounded-md bg-[#1abdaf] px-5 py-4 text-sm font-black text-white transition hover:bg-[#1abdaf]">Send via WhatsApp</button>
             <button type="submit" class="flex w-full items-center justify-center rounded-md bg-[#1f3031] px-5 py-4 text-sm font-black text-white transition hover:bg-[#162526]">Send via Email</button>
           </form>
@@ -142,20 +141,21 @@
     const whatsappPhone = '{{ company.contacts.whatsapp|default:"254712236522" }}';
     const packageTitle = '{{ pkg.title|escapejs }}';
     const packageDates = '{{ pkg.special_offer.date|default:""|escapejs }}';
-    const formatKes = (value) => new Intl.NumberFormat('en-KE', {style: 'currency', currency: 'KES', maximumFractionDigits: 0}).format(value).replace('KES', 'KSh');
+    const priceCurrency = '{{ pkg.price_currency|default:"KES" }}';
+    const formatPrice = (value) => priceCurrency === 'USD' ? `USD ${Math.round(value).toLocaleString()}` : new Intl.NumberFormat('en-KE', {style: 'currency', currency: 'KES', maximumFractionDigits: 0}).format(value).replace('KES', 'KSh');
     const count = (input, minimum) => Math.max(minimum, Math.min(20, Number(input && input.value || minimum) || minimum));
     const selectedPrice = () => Number(room && room.options[room.selectedIndex].dataset.price || {{ pkg.price_kes|default:0 }});
     const roomLabel = () => room ? room.options[room.selectedIndex].text.replace(/\s+/g, ' ').trim() : 'Sharing';
     const travelDates = () => packageDates || (dates && dates.value.trim()) || 'Dates to be confirmed';
     function summary() {
       const adultCount = count(adults, 1), childCount = count(children, 0);
-      return ['Hello Myriad Travel, I would like to enquire about ' + packageTitle + '.', '', 'Package: ' + packageTitle, 'Travel dates: ' + travelDates(), 'Adults: ' + adultCount, 'Children: ' + childCount, 'Total pax: ' + (adultCount + childCount), 'Room preference: ' + roomLabel(), 'Adult trip estimate: ' + formatKes(selectedPrice() * adultCount), 'Page: ' + window.location.href].join('\n');
+      return ['Hello Myriad Travel, I would like to enquire about ' + packageTitle + '.', '', 'Package: ' + packageTitle, 'Travel dates: ' + travelDates(), 'Adults: ' + adultCount, 'Children: ' + childCount, 'Total pax: ' + (adultCount + childCount), 'Room preference: ' + roomLabel(), 'Adult trip estimate: ' + formatPrice(selectedPrice() * adultCount), 'Page: ' + window.location.href].join('\n');
     }
     function sync() {
       const adultCount = count(adults, 1), childCount = count(children, 0);
       if (adults) adults.value = adultCount;
       if (children) children.value = childCount;
-      if (estimate) estimate.textContent = formatKes(selectedPrice() * adultCount);
+      if (estimate) estimate.textContent = formatPrice(selectedPrice() * adultCount);
       if (formTravelers) formTravelers.value = adultCount + childCount;
       if (formRoom) formRoom.value = room ? room.value : 'sharing';
       if (formEstimate) formEstimate.value = Math.round(selectedPrice() * (adultCount + childCount));

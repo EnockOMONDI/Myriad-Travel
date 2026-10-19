@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from adminside.admin import PackageAdminForm
-from adminside.package_wizard import DestinationQuickCreateForm
+from adminside.package_wizard import DestinationQuickCreateForm, PackageContentForm, PackageOptionsForm
 from adminside.models import Accommodation, Campaign, Destination, Package, PackingListItem, TravelCollection, TravelMode
 from users.views import _destination_ids_for_page, _destination_tree_ids, _packages_for_destinations, _region_cards
 
@@ -89,6 +89,16 @@ class PackageFlowTests(TestCase):
         self.assertIn('comma-separated', form.fields['meta_keywords'].help_text.lower())
         self.assertIn('concise answer', form.fields['aeo_summary'].help_text.lower())
 
+    def test_add_package_wizard_exposes_complete_content_and_search_fields(self):
+        content = PackageContentForm()
+        options = PackageOptionsForm()
+        for field in ('price_currency', 'adult_price', 'child_price', 'single_occupancy_supplement', 'travel_notes', 'packing_items', 'packing_list_custom'):
+            self.assertIn(field, content.fields)
+        for field in ('meta_title', 'meta_description', 'meta_keywords', 'aeo_summary'):
+            self.assertIn(field, options.fields)
+        self.assertIn('comma-separated', options.fields['meta_keywords'].help_text.lower())
+        self.assertIn('one concise sentence', options.fields['aeo_summary'].help_text.lower())
+
     def test_chalbi_template_has_no_stale_price_fallback_or_view_override(self):
         root = Path(__file__).resolve().parents[2]
         view_source = (root / 'users' / 'views.py').read_text()
@@ -140,7 +150,9 @@ class PackageFlowTests(TestCase):
         self.client.post(reverse('adminside:package_wizard'), {
             'step': 3, 'description': 'A practical safari for travellers.',
             'highlights': 'Game drives', 'inclusions': 'Transport', 'exclusions': 'Personal costs',
-            'adult_price': 70000, 'child_price': 45000,
+            'price_currency': 'KES', 'adult_price': 70000, 'child_price': 45000,
+            'single_occupancy_supplement': 12000, 'travel_notes': 'Early starts',
+            'packing_list_custom': 'Sun hat, Power bank',
         })
         response = self.client.post(reverse('adminside:package_wizard'), {
             'step': 4, 'available_accommodations': [accommodation.id],
@@ -152,6 +164,9 @@ class PackageFlowTests(TestCase):
         self.assertEqual(created.main_destination, self.destination)
         self.assertEqual(created.region, 'kenya-safari')
         self.assertEqual(created.adult_price, 70000)
+        self.assertEqual(created.single_occupancy_supplement, 12000)
+        self.assertEqual(created.travel_notes, 'Early starts')
+        self.assertEqual(created.packing_list_custom, 'Sun hat, Power bank')
         self.assertEqual(list(created.available_accommodations.all()), [accommodation])
         self.assertEqual(list(created.available_travel_modes.all()), [travel_mode])
 

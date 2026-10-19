@@ -13,15 +13,24 @@
         <span class="font-semibold text-slate-800">{{ collection_title }}</span>
       </nav>
 
+      {% if collection_title == 'Current Deals' %}
+      <div class="relative min-h-[430px] overflow-hidden rounded-[2rem] bg-slate-950 p-6 text-white shadow-2xl sm:min-h-[500px] sm:p-10">
+        <img src="{% static 'images/home/festive-kenya-coast-banner.png' %}" alt="Festive Christmas and New Year holidays across Kenya and beyond" class="absolute inset-0 h-full w-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-r from-slate-950/75 via-slate-950/30 to-slate-950/10"></div>
+        <div class="relative z-10 flex min-h-[380px] items-end">
+          <div class="max-w-3xl self-end pb-4">
+            <p class="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-white/80">Myriad Travel seasonal offer</p>
+            <h1 class="font-sans text-4xl font-extrabold leading-tight sm:text-6xl">Festive Christmas &amp; New Year Holidays 2026/27</h1>
+            <p class="mt-4 max-w-2xl text-sm leading-6 text-white/90 sm:text-base">Celebrate the season with unforgettable escapes across Kenya &amp; beyond.</p>
+          </div>
+        </div>
+      </div>
+      {% else %}
       <div class="relative min-h-[430px] overflow-hidden rounded-[2rem] bg-slate-950 p-6 text-white shadow-2xl sm:p-10 lg:min-h-[500px]">
         <img src="{% static collection_hero_image %}" alt="{{ collection_title }}" class="absolute inset-0 h-full w-full object-cover opacity-45" />
         <div class="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-950/80 to-slate-900/20"></div>
         <div class="relative z-10 flex min-h-[340px] items-end">
           <div class="max-w-4xl self-end">
-            <div class="mb-5 flex flex-wrap items-center gap-2 text-xs">
-              <span class="myriad-red-bg rounded-full px-3 py-1 font-bold text-white">{{ collection_eyebrow }}</span>
-              <span class="rounded-full bg-white/15 px-3 py-1 font-semibold backdrop-blur-md">{{ collection_packages|length }} published options</span>
-            </div>
             <h1 class="font-serif text-4xl font-black leading-tight tracking-[-0.03em] sm:text-6xl">
               {{ collection_title }}
             </h1>
@@ -31,15 +40,19 @@
           </div>
         </div>
       </div>
-
-      {% if deal_campaigns %}
-      <div class="mt-6 rounded-2xl border border-[#1abdaf]/20 bg-white p-4 shadow-sm">
-        <div class="mb-3 flex items-center justify-between gap-3"><h2 class="font-serif text-xl font-black text-slate-950">Current offers</h2><span class="text-xs font-bold uppercase tracking-wider text-slate-500">{{ deal_campaigns|length }} offer{{ deal_campaigns|length|pluralize }}</span></div>
-        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{% for campaign in deal_campaigns|slice:":10" %}<a href="{% url 'users:package_detail' campaign.package.slug %}" class="rounded-xl border border-slate-200 p-3 transition hover:border-[#1abdaf]"><div class="flex items-center justify-between gap-2"><span class="myriad-red-text text-[10px] font-black uppercase tracking-wider">{{ campaign.public_status }}</span><i data-lucide="arrow-up-right" class="h-4 w-4 text-[#1abdaf]"></i></div><h3 class="mt-2 line-clamp-2 text-sm font-bold text-slate-900">{{ campaign.title }}</h3></a>{% endfor %}</div>
-      </div>
       {% endif %}
 
-      {% if collection_show_destinations and collection_destinations %}
+      {% if world_region_cards %}
+      <section class="mt-8">
+        <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div><p class="myriad-red-text text-xs font-bold uppercase tracking-[0.2em]">Explore The World</p><h2 class="mt-2 font-sans text-3xl font-bold leading-tight text-slate-900 sm:text-5xl">Choose your region</h2></div>
+          <a href="{% url 'users:explore_the_world' %}" class="myriad-red-bg inline-flex items-center gap-2 self-start rounded-xl px-5 py-3 text-sm font-bold text-white transition hover:opacity-90">View all world packages <i data-lucide="arrow-right" class="h-4 w-4"></i></a>
+        </div>
+        {% include 'components/region_card_grid.html' with region_cards=world_region_cards %}
+      </section>
+      {% endif %}
+
+      {% if collection_show_destinations and collection_destinations and not world_region_cards %}
       <div class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {% for destination in collection_destinations %}
         <a href="/destinations/{{ destination.slug }}/" class="hover-myriad-red-border group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
@@ -55,7 +68,7 @@
 
   <section class="px-4 pb-16 sm:px-8">
     <div class="mx-auto max-w-7xl">
-      {% if collection_filters %}
+      {% if collection_filters and collection_title != 'Current Deals' %}
       <div class="sticky top-[120px] z-20 mb-8 rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-sm backdrop-blur-md">
         <div class="flex gap-2 overflow-x-auto pb-1">
           <a href="?" class="collection-filter-pill whitespace-nowrap rounded-xl px-4 py-2 text-xs font-bold transition {% if collection_active_filter == 'all' %}myriad-red-bg text-white{% else %}bg-slate-100 text-slate-700 hover-myriad-red-text{% endif %}">All</a>
@@ -66,36 +79,49 @@
       </div>
       {% endif %}
 
-      {% if collection_packages %}
-      <div id="collection-packages-grid" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {% for pkg in collection_packages %}
-        <div class="collection-package-item" data-filter="{{ pkg.category|slugify }}">
-          {% include 'components/package_card.html' with pkg=pkg %}
-        </div>
-        {% endfor %}
+      <div id="collection-package-results" aria-live="polite">
+        {% include 'users/pages/includes/collection_package_results.html' %}
       </div>
-      <div id="collection-empty-state" class="hidden rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
-        <h2 class="font-serif text-2xl font-black text-slate-950">No packages match this filter yet.</h2>
-        <p class="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600">Use All to see the full collection, or request a custom itinerary.</p>
-      </div>
-      {% else %}
-      <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
-        {% if collection_active_filter != 'all' %}
-        <h2 class="font-serif text-2xl font-black text-slate-950">No packages match this filter yet.</h2>
-        <p class="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600">Use All to see the full collection, or request a tailored itinerary.</p>
-        {% else %}
-        <h2 class="font-serif text-2xl font-black text-slate-950">Packages are being prepared.</h2>
-        <p class="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600">
-          The Myriad team can publish matching packages from admin and they will appear here automatically.
-        </p>
-        {% endif %}
-      </div>
-      {% endif %}
     </div>
   </section>
 </div>
 
 <script>
-  // Category filters are server-rendered URLs so each result is shareable.
+  document.addEventListener('DOMContentLoaded', function () {
+    const results = document.getElementById('collection-package-results');
+    if (!results) return;
+
+    async function updateCollection(url, pushState) {
+      results.setAttribute('aria-busy', 'true');
+      try {
+        const response = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+        if (!response.ok) throw new Error('Could not load packages');
+        results.innerHTML = await response.text();
+        if (pushState) window.history.pushState({}, '', url);
+        const selected = new URL(url, window.location.origin).searchParams.get('category') || 'all';
+        document.querySelectorAll('.collection-filter-pill').forEach(function (pill) {
+          const value = new URL(pill.href, window.location.origin).searchParams.get('category') || 'all';
+          pill.classList.toggle('myriad-red-bg', value === selected);
+          pill.classList.toggle('text-white', value === selected);
+          pill.classList.toggle('bg-slate-100', value !== selected);
+          pill.classList.toggle('text-slate-700', value !== selected);
+          pill.classList.toggle('hover-myriad-red-text', value !== selected);
+        });
+        if (window.lucide) window.lucide.createIcons();
+      } catch (error) {
+        window.location.assign(url);
+      } finally {
+        results.removeAttribute('aria-busy');
+      }
+    }
+
+    document.addEventListener('click', function (event) {
+      const link = event.target.closest('.collection-filter-pill');
+      if (!link) return;
+      event.preventDefault();
+      updateCollection(link.href, true);
+    });
+    window.addEventListener('popstate', function () { updateCollection(window.location.href, false); });
+  });
 </script>
 {% endblock %}

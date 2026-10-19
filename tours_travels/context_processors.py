@@ -206,11 +206,15 @@ def navigation_collections(request):
         {'label': 'Day Trips', 'url': reverse('users:explore_kenya'),
          'items': category_items(categories.filter(Q(packages__region='day-trips') | Q(tagged_packages__region='day-trips')), 'explore_kenya')},
     ]
-    world_sections = [
-        {'label': label, 'url': reverse('users:explore_the_world'),
-         'items': destination_items(destinations.filter(region=region))}
-        for label, region in world_regions
-    ]
+    world_sections = []
+    for label, region in world_regions:
+        items = destination_items(destinations.filter(region=region))
+        if items:
+            world_sections.append({
+                'label': label,
+                'url': reverse('users:explore_region', kwargs={'region': region}),
+                'items': items,
+            })
     safari_categories = categories.exclude(slug__in=themed_slugs).filter(
         Q(packages__region__in=['kenya-safari', 'kenya-coast', 'day-trips']) |
         Q(tagged_packages__region__in=['kenya-safari', 'kenya-coast', 'day-trips'])
@@ -269,6 +273,7 @@ def navigation_collections(request):
     ]
     return {
         'public_menus': menus,
+        'current_deals': deals[:8],
         'nav_explore_kenya': kenya_destinations[:5],
         'nav_explore_world': destinations.exclude(region='kenya')[:5],
         'nav_tours_safaris': safari_categories[:5],

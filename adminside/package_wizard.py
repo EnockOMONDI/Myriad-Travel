@@ -7,15 +7,15 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 
-from .models import Accommodation, Destination, Package, PackageCategory, TravelCollection, TravelMode
+from .models import Accommodation, Destination, Package, PackageCategory, PackingListItem, TravelCollection, TravelMode
 
 
 WIZARD_SESSION_KEY = "adminside_package_wizard"
 STEP_TITLES = {
     1: ("Basics", "Name the package and choose the exact destination."),
     2: ("Placement", "Choose the existing collections and travel categories."),
-    3: ("Content and price", "Add the public description, inclusions, and pricing."),
-    4: ("Options and publish", "Add accommodation, travel options, media, and visibility."),
+    3: ("Content and pricing", "Shape the traveller-facing content, rates, packing guidance, and notes."),
+    4: ("Options, SEO and publish", "Add media, availability, search metadata, and visibility."),
 }
 
 
@@ -165,10 +165,40 @@ class PackageContentForm(forms.Form):
         label="What is not included",
         widget=forms.Textarea(attrs={"rows": 5}),
     )
-    adult_price = forms.IntegerField(min_value=0, label="Adult price", help_text="Use the package currency configured by Myriad.")
-    child_price = forms.IntegerField(min_value=0, label="Child price")
+    price_currency = forms.ChoiceField(choices=Package.PRICE_CURRENCY_CHOICES, initial='KES', label="Price currency")
+    adult_price = forms.IntegerField(min_value=0, label="Adult sharing price", help_text="Enter the adult sharing rate in the selected currency.")
+    child_price = forms.IntegerField(min_value=0, required=False, initial=0, label="Child price", help_text="Optional. Leave at 0 when no child rate has been confirmed.")
+    single_occupancy_supplement = forms.IntegerField(
+        min_value=0,
+        required=False,
+        label="Single occupancy supplement",
+        help_text="Optional extra amount above the adult sharing rate. Leave blank when unavailable; it will be hidden publicly.",
+    )
     lipa_pole_pole = forms.BooleanField(required=False, label="Offer Lipa Pole Pole")
     lipa_pole_pole_months = forms.IntegerField(min_value=1, required=False, initial=4, label="Installment months")
+    travel_notes = forms.CharField(
+        required=False,
+        label="Travel notes",
+        help_text="One note per line: road conditions, weather, connectivity, timing, or other useful guidance.",
+        widget=forms.Textarea(attrs={"rows": 4, "placeholder": "Road sections can be rough\nLimited network in remote areas"}),
+    )
+    packing_items = forms.ModelMultipleChoiceField(
+        queryset=PackingListItem.objects.none(),
+        required=False,
+        label="Reusable packing items",
+        help_text="Select the standard items that apply to this package.",
+        widget=forms.CheckboxSelectMultiple,
+    )
+    packing_list_custom = forms.CharField(
+        required=False,
+        label="Additional packing items",
+        help_text="Optional package-specific items, separated by commas or line breaks.",
+        widget=forms.Textarea(attrs={"rows": 3, "placeholder": "Sun hat, Refillable water bottle"}),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["packing_items"].queryset = PackingListItem.objects.filter(is_active=True).order_by("display_order", "name")
 
 
 class PackageOptionsForm(forms.Form):
@@ -192,6 +222,19 @@ class PackageOptionsForm(forms.Form):
     home_rank = forms.IntegerField(min_value=0, initial=100, label="Homepage order", help_text="Lower numbers appear first.")
     meta_title = forms.CharField(max_length=200, required=False, label="Search title")
     meta_description = forms.CharField(max_length=300, required=False, label="Search description", widget=forms.Textarea(attrs={"rows": 3}))
+    meta_keywords = forms.CharField(
+        max_length=1000,
+        required=False,
+        label="Search keywords",
+        help_text="Comma-separated phrases, not a paragraph. Example: Maasai Mara safari, Kenya wildlife, Big Five.",
+        widget=forms.Textarea(attrs={"rows": 3}),
+    )
+    aeo_summary = forms.CharField(
+        required=False,
+        label="Answer-engine summary",
+        help_text="One concise sentence answering what this package is, where it goes, and how long it takes.",
+        widget=forms.Textarea(attrs={"rows": 3}),
+    )
 
     def __init__(self, *args, destination_id=None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -341,19 +384,26 @@ def _save_package(saved, options):
         highlights=content.get("highlights", ""),
         inclusions=content.get("inclusions", ""),
         exclusions=content.get("exclusions", ""),
+        price_currency=content.get("price_currency", 'KES'),
         adult_price=content["adult_price"],
-        child_price=content["child_price"],
+        child_price=content.get("child_price") or 0,
+        single_occupancy_supplement=content.get("single_occupancy_supplement"),
         lipa_pole_pole=content.get("lipa_pole_pole", False),
         lipa_pole_pole_months=content.get("lipa_pole_pole_months") or 4,
+        travel_notes=content.get("travel_notes", ""),
+        packing_list_custom=content.get("packing_list_custom", ""),
         featured_image=options.get("featured_image"),
         status=options.get("status", Package.DRAFT),
         is_featured=options.get("is_featured", False),
         home_rank=options.get("home_rank", 100),
         meta_title=options.get("meta_title", ""),
         meta_description=options.get("meta_description", ""),
+        meta_keywords=options.get("meta_keywords", ""),
+        aeo_summary=options.get("aeo_summary", ""),
         published_at=timezone.now() if options.get("status") == Package.PUBLISHED else None,
     )
     package.categories.set(placement.get("categories", []))
+    package.packing_items.set(content.get("packing_items", []))
     package.available_accommodations.set(options.get("available_accommodations", []))
     package.available_travel_modes.set(options.get("available_travel_modes", []))
 

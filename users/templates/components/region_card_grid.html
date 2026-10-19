@@ -1,0 +1,14 @@
+<div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+  {% for region in region_cards %}
+  {% if region.slug != 'australasia' %}
+  <a href="{{ region.url }}" class="region-card group relative isolate min-h-[260px] overflow-hidden rounded-2xl border border-white/60 bg-slate-900 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
+    <img src="{{ region.image }}" alt="{{ region.name }}" class="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" loading="lazy">
+    <div class="region-card-overlay absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent"></div>
+    <div class="relative flex min-h-[260px] flex-col justify-between p-5 text-white">
+      <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1abdaf] text-white"><i data-lucide="{{ region.icon }}" class="h-5 w-5"></i></span>
+      <div><h3 class="font-sans text-3xl font-extrabold">{{ region.name }}</h3><span class="region-card-arrow mt-4 inline-flex items-center gap-2 text-sm font-bold text-white">Explore region <i data-lucide="arrow-right" class="h-4 w-4 transition"></i></span></div>
+    </div>
+  </a>
+  {% endif %}
+  {% endfor %}
+</div>

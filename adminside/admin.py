@@ -446,7 +446,7 @@ class PackageAdmin(admin.ModelAdmin):
             'classes': ('wide',)
         }),
         ('Pricing', {
-            'fields': ('adult_price', 'child_price', 'single_occupancy_supplement', 'lipa_pole_pole', 'lipa_pole_pole_months'),
+            'fields': ('price_currency', 'adult_price', 'child_price', 'single_occupancy_supplement', 'lipa_pole_pole', 'lipa_pole_pole_months'),
             'description': 'Single occupancy is optional. Enter only the supplement above the adult sharing rate; the public total is calculated automatically.'
         }),
         ('Available Options', {

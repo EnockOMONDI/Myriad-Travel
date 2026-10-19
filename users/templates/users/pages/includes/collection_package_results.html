@@ -1,0 +1,17 @@
+{% if collection_packages %}
+<div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+  {% for pkg in collection_packages %}
+  {% include 'components/package_card.html' with pkg=pkg %}
+  {% endfor %}
+</div>
+{% else %}
+<div class="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
+  {% if collection_active_filter != 'all' %}
+  <h2 class="font-serif text-2xl font-black text-slate-950">No packages match this filter yet.</h2>
+  <p class="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600">Use All to see the full collection, or request a tailored itinerary.</p>
+  {% else %}
+  <h2 class="font-serif text-2xl font-black text-slate-950">Packages are being prepared.</h2>
+  <p class="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600">The Myriad team can publish matching packages from admin and they will appear here automatically.</p>
+  {% endif %}
+</div>
+{% endif %}

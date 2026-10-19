@@ -131,9 +131,6 @@
           <p class="text-[12px] font-black uppercase tracking-[0.24em] text-[#1abdaf]">Five days. A different side of Kenya.</p>
           <h2 class="mt-4 font-serif text-4xl font-black tracking-[-0.03em] text-[#23302f] sm:text-5xl">Leave the everyday behind.</h2>
           <p class="mt-4 max-w-3xl text-base leading-8 text-[#66736f]">{{ pkg.description|striptags }}</p>
-          <div class="mt-10 grid gap-5 md:grid-cols-3">
-            {% for highlight in pkg.highlights|slice:":3" %}<article class="border-t border-[#dce3df] pt-6"><div class="text-sm font-black text-[#1abdaf]">{{ forloop.counter|stringformat:"02d" }}</div><p class="mt-3 text-sm leading-6 text-[#66736f]">{{ highlight }}</p></article>{% endfor %}
-          </div>
         </section>
 
         <section id="itinerary" class="mt-16 scroll-mt-24">
@@ -234,7 +231,7 @@
           <p class="text-[11px] font-black uppercase tracking-[0.24em] text-[#1abdaf]">Your next great story</p>
           <div class="mt-6">
             <span class="text-sm text-[#66736f]">From</span>
-            <div class="mt-1 text-4xl font-black tracking-[-0.04em] text-[#23302f]">{{ pkg.price_kes|kes_format }}</div>
+            <div class="mt-1 text-4xl font-black tracking-[-0.04em] text-[#23302f]">{{ pkg.price_display }}</div>
             <p class="mt-1 text-sm font-semibold text-[#66736f]">per adult sharing</p>
           </div>
 

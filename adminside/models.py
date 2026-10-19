@@ -507,6 +507,16 @@ class Package(models.Model):
     duration_nights = models.PositiveIntegerField()
 
     # Pricing
+    PRICE_CURRENCY_CHOICES = [
+        ('KES', 'Kenyan Shillings (KES)'),
+        ('USD', 'US Dollars (USD)'),
+    ]
+    price_currency = models.CharField(
+        max_length=3,
+        choices=PRICE_CURRENCY_CHOICES,
+        default='KES',
+        help_text='Currency for the stored adult sharing rate. Use the currency shown on the approved offer.',
+    )
     adult_price = models.PositiveIntegerField()
     child_price = models.PositiveIntegerField()
     single_occupancy_supplement = models.PositiveIntegerField(

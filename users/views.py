@@ -253,6 +253,14 @@ def _uploadcare_preview_url(image_field, fallback, width=1600, height=900):
     return _image_url(image_field, fallback)
 
 
+def _uploadcare_card_url(image_field, fallback):
+    """Use a predictable card ratio instead of an admin-saved crop canvas."""
+    uuid = getattr(image_field, 'uuid', None)
+    if uuid:
+        return f'https://ucarecdn.com/{uuid}/-/preview/1120x700/'
+    return _image_url(image_field, fallback)
+
+
 def _rich_text_items(value):
     if not value:
         return []
@@ -273,6 +281,8 @@ def _package_presenter(package):
     curated_destination_image = _curated_destination_image(package.main_destination)
     image_fallback = curated_destination_image or '/static/images/placeholders/myriad-package-placeholder.png'
     price_kes = int(package.adult_price or 0)
+    price_currency = package.price_currency or 'KES'
+    price_display = f'{price_currency} {price_kes:,}' if price_currency == 'USD' else f'KSh {price_kes:,}'
     highlights = [line.strip() for line in (package.highlights or '').splitlines() if line.strip()]
     region_label = package.get_region_display() if hasattr(package, 'get_region_display') else category
     lipa_months = package.lipa_pole_pole_months or 4
@@ -320,12 +330,14 @@ def _package_presenter(package):
         'destination': destination,
         # A package-specific upload wins. Otherwise its curated destination banner
         # supplies a coherent public image until the package gets its own asset.
-        'featured_image': _image_url(public_image, image_fallback),
+        'featured_image': _uploadcare_card_url(public_image, image_fallback),
         'hero_image': _uploadcare_preview_url(public_image, image_fallback),
         'duration': f'{package.duration_days} Days / {package.duration_nights} Nights',
         'rating': package.rating,
         'reviews_count': package.total_reviews,
         'price_kes': price_kes,
+        'price_currency': price_currency,
+        'price_display': price_display,
         'child_price_kes': int(package.child_price or 0),
         'single_price_kes': package.single_occupancy_price or 0,
         'single_supplement_kes': package.single_occupancy_supplement or 0,
@@ -373,6 +385,23 @@ def _itinerary_presenter(package):
     return days, audit
 
 
+def _public_copy(value):
+    """Return only destination copy that is ready for the public site."""
+    if not value:
+        return ''
+    normalized = strip_tags(str(value)).strip()
+    lowered = normalized.casefold()
+    generic_markers = (
+        'travel destination for curated myriad travel experiences',
+        'myriad is still confirming',
+        'description being prepared',
+        'content coming soon',
+    )
+    if any(marker in lowered for marker in generic_markers):
+        return ''
+    return value
+
+
 def _destination_presenter(destination):
     country = destination.country.name if destination.country else ('Multi-country area' if destination.is_multi_country else 'Kenya')
     return {
@@ -380,7 +409,7 @@ def _destination_presenter(destination):
         'name': destination.name,
         'slug': destination.slug,
         'country': country,
-        'description': destination.meta_description or destination.description,
+        'description': _public_copy(destination.meta_description or destination.description),
         'image': _image_url(
             destination.image,
             _curated_destination_image(destination) or '/static/images/placeholders/myriad-package-placeholder.png',
@@ -650,6 +679,13 @@ def _filter_collection_by_category(request, packages_qs):
     return packages_qs, filters, selected_category or 'all'
 
 
+def _render_collection(request, context):
+    """Return only the package fragment for in-page collection filtering."""
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, 'users/pages/includes/collection_package_results.html', context)
+    return render(request, 'users/pages/collection.html', context)
+
+
 def explore_kenya(request):
     packages_qs = _packages_for_collection().filter(region__in=['kenya-safari', 'kenya-coast', 'day-trips'])
     packages_qs, filters, selected_category = _filter_collection_by_category(request, packages_qs)
@@ -669,7 +705,7 @@ def explore_kenya(request):
         hero_image='images/hero/discover-kenya.jpeg',
         show_destinations=False,
     )
-    return render(request, 'users/pages/collection.html', context)
+    return _render_collection(request, context)
 
 
 def explore_the_world(request):
@@ -692,7 +728,8 @@ def explore_the_world(request):
         category_filters=filters,
         hero_image='images/hero/beyond-imagination.jpeg',
     )
-    return render(request, 'users/pages/collection.html', context)
+    context['world_region_cards'] = [card for card in _region_cards() if card['slug'] != 'australasia']
+    return _render_collection(request, context)
 
 
 def explore_region(request, region):
@@ -762,7 +799,7 @@ def tours_safaris(request):
         category_filters=filters,
         hero_image='images/hero/tours-safaris.jpeg',
     )
-    return render(request, 'users/pages/collection.html', context)
+    return _render_collection(request, context)
 
 
 def signature_experiences(request):
@@ -806,7 +843,7 @@ def travel_collection(request, slug):
         packages_qs, active_filter=selected_filter, category_filters=filters,
         hero_image='images/hero/tours-safaris.jpeg',
     )
-    return render(request, 'users/pages/collection.html', context)
+    return _render_collection(request, context)
 
 
 def deals(request):
@@ -832,7 +869,7 @@ def deals(request):
     )
     context['deal_campaigns'] = deal_campaigns
     context['deal_statuses'] = {campaign.package_id: campaign.public_status for campaign in deal_campaigns}
-    return render(request, 'users/pages/collection.html', context)
+    return _render_collection(request, context)
 
 
 def destinations(request):

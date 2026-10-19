@@ -54,9 +54,6 @@
             </div>
           </div>
 
-          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-sm">
-            A Nairobi travel team helping clients plan Kenya safaris, coastal holidays, corporate trips, and international getaways with clear options and follow-up.
-          </p>
         </div>
 
         <!-- Official Licensing & Badges -->
@@ -94,39 +91,17 @@
         </div>
       </div>
 
-      <!-- Col 3: Popular Safari Experiences -->
+      <!-- Col 3: Current database-backed deals -->
+      {% if current_deals %}
       <div class="space-y-4">
         <h4 class="text-xs font-bold uppercase tracking-wider text-[#EB3728]">
-          Popular Trips
+          Current Deals
         </h4>
         <ul class="space-y-2.5 text-xs text-slate-300">
-          <li>
-            <a href="/tours-safaris/" class="hover:text-[#EB3728] transition-colors">
-              Maasai Mara Big Five Safaris
-            </a>
-          </li>
-          <li>
-            <a href="/explore-kenya/" class="hover:text-[#EB3728] transition-colors">
-              Diani Beach &amp; Coastal Luxury
-            </a>
-          </li>
-          <li>
-            <a href="/tours-safaris/" class="hover:text-[#EB3728] transition-colors">
-              Amboseli Elephant Giants
-            </a>
-          </li>
-          <li>
-            <a href="/explore-the-world/" class="hover:text-[#EB3728] transition-colors">
-              Zanzibar Island &amp; Stone Town
-            </a>
-          </li>
-          <li>
-            <a href="/tours-safaris/" class="hover:text-[#EB3728] transition-colors">
-              Mt. Longonot &amp; Weekend Hikes
-            </a>
-          </li>
+          {% for campaign in current_deals %}<li><a href="{% url 'users:package_detail' campaign.package.slug %}" class="hover:text-[#EB3728] transition-colors">{{ campaign.title }}</a></li>{% endfor %}
         </ul>
       </div>
+      {% endif %}
 
       <!-- Col 4: Corporate & Concierge Services -->
       <div class="space-y-4">
@@ -170,7 +145,7 @@
       <!-- Col 5: Physical Contact & Office Location -->
       <div class="space-y-4">
         <h4 class="text-xs font-bold uppercase tracking-wider text-[#EB3728]">
-          Nairobi Operations Desk
+          Nairobi Office
         </h4>
         <div class="space-y-3 text-xs text-slate-300">
           <div class="flex items-start gap-2.5">

@@ -14,16 +14,15 @@
         <span class="font-semibold text-slate-800">{{ destination.name }}</span>
       </nav>
 
-      <div class="overflow-hidden border border-slate-200 bg-white shadow-sm">
-        <img src="{{ destination.image }}" alt="{{ destination.name }}" class="myriad-banner w-full" />
-        <div class="grid gap-6 p-6 sm:p-10 lg:grid-cols-[1fr_300px] lg:items-end">
-          <div>
-            <span class="myriad-red-text text-[11px] font-black uppercase tracking-[0.22em]">{{ collection_eyebrow }}</span>
-            <h1 class="mt-3 font-serif text-4xl font-black leading-tight text-slate-950 sm:text-6xl">{{ destination.name }}</h1>
-          </div>
-          <div class="border-l-2 border-[#1abdaf] pl-5">
-            <p class="text-xs font-bold uppercase tracking-wider text-slate-500">{{ collection_total_packages }} package option{{ collection_total_packages|pluralize }}</p>
-            <button type="button" class="open-plan-modal-btn myriad-red-bg hover-myriad-red-bg mt-4 inline-flex items-center gap-2 rounded-md px-4 py-3 text-xs font-bold text-white transition">
+      <div class="relative min-h-[360px] overflow-hidden rounded-[2rem] bg-slate-950 p-6 text-white shadow-2xl sm:min-h-[430px] sm:p-10">
+        <img src="{{ destination.image }}" alt="{{ destination.name }}" class="absolute inset-0 h-full w-full object-cover opacity-55" />
+        <div class="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-950/75 to-slate-900/10"></div>
+        <div class="relative z-10 flex min-h-[300px] items-end">
+          <div class="max-w-4xl self-end">
+            <p class="myriad-red-text text-xs font-bold uppercase tracking-[0.22em]">{{ collection_eyebrow }}</p>
+            <h1 class="mt-3 font-serif text-4xl font-black leading-tight tracking-[-0.03em] text-white sm:text-6xl">{{ destination.name }}</h1>
+            {% if destination.description %}<p class="mt-5 max-w-3xl text-sm leading-7 text-slate-200 sm:text-base">{{ destination.description|striptags }}</p>{% endif %}
+            <button type="button" class="open-plan-modal-btn myriad-red-bg hover-myriad-red-bg mt-6 inline-flex items-center gap-2 rounded-md px-4 py-3 text-xs font-bold text-white transition">
               <i data-lucide="send" class="h-4 w-4"></i><span>Request Quote</span>
             </button>
           </div>
@@ -34,10 +33,10 @@
 
   <section class="px-4 pb-8 sm:px-8">
     <div class="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(260px,0.7fr)]">
-      <article class="myriad-red-border border-t-2 bg-white p-6 shadow-sm sm:p-8">
+      {% if destination.description %}<article class="myriad-red-border border-t-2 bg-white p-6 shadow-sm sm:p-8">
         <span class="myriad-red-text text-[11px] font-black uppercase tracking-[0.22em]">Description</span>
         <div class="destination-description mt-4 text-sm leading-7 text-slate-600 sm:text-base">{{ destination.description|safe }}</div>
-      </article>
+      </article>{% endif %}
       <aside class="myriad-blue-border myriad-blue-soft-bg border-t-2 p-6 sm:p-8">
         <span class="myriad-blue-text text-[11px] font-black uppercase tracking-[0.22em]">Things to do in {{ destination.name }}</span>
         {% if collection_filters %}
@@ -51,12 +50,8 @@
     </div>
   </section>
 
-  {% if destination_model.is_multi_country %}
-  <section class="px-4 pb-8 sm:px-8"><div class="mx-auto max-w-7xl"><div class="myriad-blue-border myriad-blue-soft-bg border-t-2 p-6 sm:p-8"><span class="myriad-blue-text text-[11px] font-black uppercase tracking-[0.22em]">Multi-country travel area</span><h2 class="mt-2 font-serif text-2xl font-black text-slate-950">Countries covered by {{ destination.name }}</h2>{% if destination_member_countries %}<div class="mt-5 flex flex-wrap gap-3">{% for country in destination_member_countries %}<a href="{% url 'users:destination_detail' country.slug %}" class="myriad-blue-soft-border myriad-blue-text rounded-md border bg-white px-4 py-3 text-sm font-bold transition hover:shadow-sm">{{ country.name }} <span class="ml-1">&rarr;</span></a>{% endfor %}</div>{% else %}<p class="mt-3 text-sm leading-7 text-slate-600">This area covers several countries. Myriad is still confirming the country links for this page.</p>{% endif %}</div></div></section>
-  {% endif %}
-
-  {% if destination_children %}
-  <section class="px-4 pb-8 sm:px-8"><div class="mx-auto max-w-7xl"><div class="mb-4"><span class="myriad-red-text text-[11px] font-black uppercase tracking-[0.22em]">Explore nearby</span><h2 class="mt-2 font-serif text-2xl font-black text-slate-950">More in {{ destination.name }}</h2></div><div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{% for child in destination_children %}<a href="{% url 'users:destination_detail' child.slug %}" class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"><span class="myriad-red-text text-[11px] font-bold uppercase tracking-wider">{{ child.get_destination_type_display }}</span><h3 class="mt-2 font-serif text-xl font-black text-slate-950">{{ child.name }}</h3><p class="mt-2 text-xs leading-5 text-slate-500">{{ child.meta_description|default:child.description|striptags|truncatechars:120 }}</p></a>{% endfor %}</div></div></section>
+  {% if destination_model.is_multi_country and destination_member_countries %}
+  <section class="px-4 pb-8 sm:px-8"><div class="mx-auto max-w-7xl"><div class="myriad-blue-border myriad-blue-soft-bg border-t-2 p-6 sm:p-8"><span class="myriad-blue-text text-[11px] font-black uppercase tracking-[0.22em]">Multi-country travel area</span><h2 class="mt-2 font-serif text-2xl font-black text-slate-950">Countries covered by {{ destination.name }}</h2><div class="mt-5 flex flex-wrap gap-3">{% for country in destination_member_countries %}<a href="{% url 'users:destination_detail' country.slug %}" class="myriad-blue-soft-border myriad-blue-text rounded-md border bg-white px-4 py-3 text-sm font-bold transition hover:shadow-sm">{{ country.name }} <span class="ml-1">&rarr;</span></a>{% endfor %}</div></div></div></section>
   {% endif %}
 
   <section id="packages" class="px-4 pb-16 pt-6 sm:px-8">

@@ -14,6 +14,8 @@ from .settings import *
 DEBUG = True
 DJANGO_ENV = 'development'
 SECRET_KEY = 'django-insecure-myriad-local-development-key'
+USE_TZ = True
+TIME_ZONE = 'Africa/Nairobi'
 
 DATABASES = {
     'default': {

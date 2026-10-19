@@ -99,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const heroCta = document.getElementById('hero-cta');
   const heroPrevBtn = document.getElementById('hero-prev-btn');
   const heroNextBtn = document.getElementById('hero-next-btn');
+  const heroContent = document.querySelector('.hero-content');
   let currentSlide = 0;
 
   function switchSlide(idx) {
@@ -123,6 +124,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const activeSlide = heroSlides[idx];
     if (activeSlide && heroSlideTitle && heroSlideTag) {
+      if (heroContent) {
+        heroContent.classList.remove('hero-content-visible');
+        window.requestAnimationFrame(() => heroContent.classList.add('hero-content-visible'));
+      }
       heroSlideTitle.textContent = activeSlide.getAttribute('data-title') || '';
       heroSlideTag.textContent = activeSlide.getAttribute('data-tag') || '';
       if (heroCta) heroCta.href = activeSlide.getAttribute('data-url') || '#';
@@ -147,7 +152,32 @@ document.addEventListener('DOMContentLoaded', () => {
   if (heroSlides.length > 1) {
     setInterval(() => {
       switchSlide((currentSlide + 1) % heroSlides.length);
-    }, 3000);
+    }, 7000);
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /* 5. One-time scroll reveals                                                 */
+  /* -------------------------------------------------------------------------- */
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const revealTargets = document.querySelectorAll('main > section:not(#hero), main > div > section:not(#hero), .package-card, .region-card');
+  revealTargets.forEach((target) => {
+    target.setAttribute('data-reveal', '');
+    if (target.parentElement?.classList.contains('grid')) {
+      const index = Array.from(target.parentElement.children).indexOf(target);
+      target.style.setProperty('--reveal-delay', `${Math.min(index, 5) * 110}ms`);
+    }
+  });
+  if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+    revealTargets.forEach((target) => target.classList.add('is-visible'));
+  } else {
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -36px' });
+    revealTargets.forEach((target) => revealObserver.observe(target));
   }
 
   // Hero Search Tabs

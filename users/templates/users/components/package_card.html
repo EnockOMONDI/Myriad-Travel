@@ -72,13 +72,15 @@
           <span class="text-[11px] text-slate-500 block uppercase font-medium">
             From (per person)
           </span>
-          <span 
-            class="text-xl font-bold text-slate-900" 
-            data-price-kes="{{ pkg.price_kes }}" 
+          {% if pkg.price_currency == 'USD' %}
+          <span class="text-xl font-bold text-slate-900" data-fixed-price="true">{{ pkg.price_display }}</span>
+          {% else %}
+          <span
+            class="text-xl font-bold text-slate-900"
+            data-price-kes="{{ pkg.price_kes }}"
             data-price-usd="{{ pkg.price_usd }}"
-          >
-            {{ pkg.price_kes|kes_format }}
-          </span>
+          >{{ pkg.price_display }}</span>
+          {% endif %}
         </div>
 
       </div>

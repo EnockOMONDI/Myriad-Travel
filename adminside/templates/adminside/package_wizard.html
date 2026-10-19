@@ -50,6 +50,10 @@
     .step-heading h2 { margin: 0 0 5px; font-size: 23px; letter-spacing: -.02em; }
     .step-heading p { margin: 0; color: var(--muted); }
     .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 18px; }
+    .form-section { grid-column: 1 / -1; border-top: 1px solid var(--line); padding-top: 20px; margin-top: 4px; }
+    .form-section:first-child { border-top: 0; padding-top: 0; margin-top: 0; }
+    .form-section h3 { margin: 0 0 4px; font-size: 16px; letter-spacing: -.01em; }
+    .form-section p { margin: 0; color: var(--muted); font-size: 12px; }
     .field { min-width: 0; }
     .field.full { grid-column: 1 / -1; }
     label { display: block; margin-bottom: 7px; font-size: 13px; font-weight: 800; }
@@ -138,11 +142,16 @@
             <div class="step-heading"><h2>{{ step_title }}</h2><p>{{ step_description }}</p></div>
             {% if step == 1 %}<div class="notice"><strong>Start with the place.</strong> Choose the exact destination where the experience happens. We will show its saved hierarchy here.</div>{% endif %}
             {% if step == 2 %}<div class="notice"><strong>Keep geography and marketing separate.</strong> The main package collection is the existing public grouping. Collections and categories help the package appear in more than one part of the website.</div>{% endif %}
-            {% if step == 4 %}<div class="notice"><strong>These are package options.</strong> Select the accommodation and travel options the team can actually offer for this package. They will appear on the public package and booking flow.</div>{% endif %}
+            {% if step == 4 %}<div class="notice"><strong>Finish the public record.</strong> Add the image, availability, search metadata, and publishing status. Itinerary days, departures, and gallery images are managed as related records after creation.</div>{% endif %}
             <div class="form-grid">
               {% for field in form %}
-                <div class="field {% if field.name == 'description' or field.name == 'highlights' or field.name == 'inclusions' or field.name == 'exclusions' or field.name == 'meta_description' or field.name == 'travel_collections' or field.name == 'categories' or field.name == 'available_accommodations' or field.name == 'available_travel_modes' %}full{% endif %}">
-                  {% if field.name == 'travel_collections' or field.name == 'categories' or field.name == 'available_accommodations' or field.name == 'available_travel_modes' %}
+                {% if step == 3 and field.name == 'description' %}<div class="form-section"><h3>Traveller-facing content</h3><p>Keep the copy clear enough for a visitor to understand the experience before they enquire.</p></div>{% endif %}
+                {% if step == 3 and field.name == 'price_currency' %}<div class="form-section"><h3>Rates and payment</h3><p>Store the approved price in its actual currency. Single occupancy is optional and stays hidden when unavailable.</p></div>{% endif %}
+                {% if step == 3 and field.name == 'travel_notes' %}<div class="form-section"><h3>Practical guidance</h3><p>Use one item per line. These notes and packing items are stored with the package.</p></div>{% endif %}
+                {% if step == 4 and field.name == 'available_accommodations' %}<div class="form-section"><h3>Availability and media</h3><p>Choose the offerable options and upload the package image.</p></div>{% endif %}
+                {% if step == 4 and field.name == 'meta_title' %}<div class="form-section"><h3>Search and discovery</h3><p>These fields help search engines and answer systems describe the package accurately.</p></div>{% endif %}
+                <div class="field {% if field.name == 'description' or field.name == 'highlights' or field.name == 'inclusions' or field.name == 'exclusions' or field.name == 'travel_notes' or field.name == 'packing_items' or field.name == 'packing_list_custom' or field.name == 'meta_description' or field.name == 'meta_keywords' or field.name == 'aeo_summary' or field.name == 'travel_collections' or field.name == 'categories' or field.name == 'available_accommodations' or field.name == 'available_travel_modes' %}full{% endif %}">
+                  {% if field.name == 'travel_collections' or field.name == 'categories' or field.name == 'packing_items' or field.name == 'available_accommodations' or field.name == 'available_travel_modes' %}
                     <label>{{ field.label }}{% if field.field.required %} *{% endif %}</label>
                     {% if field.name == 'available_accommodations' and not accommodation_count %}
                       <div class="empty-option">No accommodation is set up for this destination yet. You can <a href="{% url 'admin:adminside_accommodation_add' %}">add one in the catalogue</a> and return here, or leave this optional field blank for now.</div>

@@ -43,8 +43,8 @@
 .myriad-menu summary { list-style: none; cursor: pointer; padding: 12px 2px; color: var(--myriad-blue); }
 .myriad-menu summary::-webkit-details-marker { display: none; }
 .myriad-menu summary svg { width: 14px; height: 14px; }
-.myriad-dropdown { display: none; position: absolute; top: 100%; left: 0; min-width: 250px; background: white; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 8px 20px #0001; padding: 12px; }
-.myriad-menu details[open] .myriad-dropdown { display: block; }
+.myriad-dropdown { display: block; opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(8px); transition: opacity .22s ease, transform .22s ease, visibility .22s ease; position: absolute; top: 100%; left: 0; min-width: 250px; background: white; border: 1px solid #e5e7eb; border-radius: 6px; box-shadow: 0 14px 30px #00000014; padding: 12px; }
+.myriad-menu details[open] .myriad-dropdown { opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0); }
 .myriad-menu-item:last-child .myriad-dropdown { left: auto; right: 0; }
 .myriad-mega-dropdown { width: min(720px, calc(100vw - 48px)); }
 .myriad-mega-grid { display: grid; grid-template-columns: repeat(3, minmax(150px, 1fr)); gap: 10px 18px; }
@@ -58,6 +58,21 @@
 .myriad-quote { background: var(--myriad-red); color: white; border-radius: 6px; padding: 12px 16px; font-size: 13px; font-weight: 700; white-space: nowrap; }
 .myriad-menu-toggle { display: none; }
 .myriad-banner { width: 100%; aspect-ratio: 3 / 1; max-height: 480px; object-fit: cover; border-radius: 8px; }
+.hero-slide { transition-duration: 2s; }
+.hero-content { opacity: 0; transform: translateY(12px); transition: opacity .7s ease, transform .7s ease; }
+.hero-content-visible { opacity: 1; transform: translateY(0); }
+[data-reveal] { opacity: 0; transform: translateY(18px); transition: opacity .95s ease, transform .95s ease; transition-delay: var(--reveal-delay, 0ms); }
+[data-reveal].reveal-slow { transition-duration: 1.2s; }
+[data-reveal].is-visible { opacity: 1; transform: translateY(0); }
+.package-card { transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease; }
+.package-card[data-reveal] { transition: opacity 1.05s ease, transform 1.05s ease, box-shadow .3s ease, border-color .3s ease; transition-delay: var(--reveal-delay, 0ms); }
+.package-card:hover { transform: translateY(-4px); }
+.package-card img { transition: transform .65s cubic-bezier(.2,.65,.2,1); }
+.package-card:hover img { transform: scale(1.04); }
+.region-card-overlay { transition: background-color .45s ease, opacity .45s ease; }
+.region-card:hover .region-card-overlay { background-color: rgb(7 19 33 / .18); }
+.region-card-arrow i { transition: transform .25s ease; }
+.region-card:hover .region-card-arrow i { transform: translateX(4px); }
 .myriad-intro { max-width: 1280px; margin: auto; padding: 32px 24px; }
 .myriad-intro h1 { font-size: 40px; line-height: 1.15; margin: 20px 0 12px; }
 .myriad-intro p { max-width: 760px; line-height: 1.8; color: #52565a; }
@@ -95,9 +110,12 @@
   .myriad-menu-item { justify-content: space-between; flex-wrap: wrap; border-top: 1px solid #eee; font-size: 15px; }
   .myriad-menu-item > a { padding: 14px 0; }
   .myriad-menu details[open] { flex-basis: 100%; }
-  .myriad-dropdown { position: static; box-shadow: none; margin-bottom: 12px; }
+  .myriad-dropdown { position: static; box-shadow: none; margin-bottom: 12px; transform: none; }
   .myriad-mega-dropdown { width: 100%; }
   .myriad-mega-grid { grid-template-columns: repeat(2, minmax(140px, 1fr)); }
   .myriad-banner { aspect-ratio: 16 / 10; }
   .myriad-intro h1 { font-size: 30px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-content, [data-reveal], .myriad-dropdown, .package-card, .package-card img, .region-card-overlay, .region-card-arrow i { transition: none !important; transform: none !important; }
 }
