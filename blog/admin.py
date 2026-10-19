@@ -71,11 +71,24 @@ class CategoryAdmin(admin.ModelAdmin):
     get_post_count.short_description = 'Published Posts'
 
 
+class PostCategoryFilter(admin.SimpleListFilter):
+    title = 'post category'
+    parameter_name = 'post_category'
+
+    def lookups(self, request, model_admin):
+        return Category.objects.filter(active=True).order_by('title').values_list('pk', 'title')
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(post__category_id=self.value())
+        return queryset
+
+
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('get_comment', 'post', 'full_name', 'email', 'active', 'date')
     list_editable = ['active']
-    list_filter = ('active', 'date', 'post__category')
+    list_filter = ('active', 'date', PostCategoryFilter)
     search_fields = ['full_name', 'email', 'comment', 'post__title']
     readonly_fields = ['date']
     ordering = ['-date']
