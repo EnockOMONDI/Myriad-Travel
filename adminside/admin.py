@@ -487,11 +487,15 @@ class PackageAdmin(admin.ModelAdmin):
         return ', '.join(names) if names else 'Legacy grouping only'
     collection_names.short_description = 'Collections'
 
+    @admin.display(description='Single supplement')
     def single_occupancy_status(self, obj):
         if obj.has_single_occupancy:
-            return format_html('<span style="color:#147f78">+ KSh {:,}</span>', obj.single_occupancy_supplement)
+            return format_html(
+                '<span style="color:#147f78">+ {} {:,}</span>',
+                obj.price_currency,
+                obj.single_occupancy_supplement,
+            )
         return format_html('<span style="color:#EB3728">Missing</span>')
-    single_occupancy_status.short_description = 'Single supplement'
 
     def main_collection(self, obj):
         return obj.get_region_display()
