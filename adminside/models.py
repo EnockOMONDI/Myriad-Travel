@@ -160,6 +160,11 @@ class Destination(models.Model):
     region = models.CharField(max_length=32, choices=REGION_CHOICES, blank=True,
                               help_text='Used to place this destination in public navigation.')
     description = CKEditor5Field(config_name='default', help_text="Detailed destination description with rich text formatting")
+    things_to_do = models.JSONField(
+        default=list,
+        blank=True,
+        help_text='Enter a JSON list of practical activities, for example ["Beach time", "Boat trip"].',
+    )
     image = ImageField(blank=True, null=True, manual_crop="4:4")
     
     # Hierarchical relationship

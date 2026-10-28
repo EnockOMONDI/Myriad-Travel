@@ -39,6 +39,11 @@
       </article>{% endif %}
       <aside class="myriad-blue-border myriad-blue-soft-bg border-t-2 p-6 sm:p-8">
         <span class="myriad-blue-text text-[11px] font-black uppercase tracking-[0.22em]">Things to do in {{ destination.name }}</span>
+        {% if destination_model.things_to_do %}
+        <ul class="mt-5 space-y-3 text-sm leading-6 text-slate-600">
+          {% for activity in destination_model.things_to_do %}<li class="flex gap-2"><span class="myriad-red-text font-black">&bull;</span><span>{{ activity }}</span></li>{% endfor %}
+        </ul>
+        {% endif %}
         {% if collection_filters %}
         <div class="mt-5 flex flex-wrap gap-2">
           {% for filter in collection_filters %}

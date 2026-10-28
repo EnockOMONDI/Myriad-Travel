@@ -219,7 +219,7 @@ class DestinationAdmin(admin.ModelAdmin):
             'fields': ('image',)
         }),
         ('Description', {
-            'fields': ('description',),
+            'fields': ('description', 'things_to_do'),
             'classes': ('wide',)
         }),
         ('Pricing', {

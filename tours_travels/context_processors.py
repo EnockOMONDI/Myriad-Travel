@@ -184,6 +184,20 @@ def navigation_collections(request):
         'Kajiado / Suswa': ('kajiado-suswa',),
         'Sagana': ('sagana',),
     }
+    world_destination_aliases = {
+        'Tanzania': ('tanzania',), 'Uganda': ('uganda',), 'Rwanda': ('rwanda',),
+        'Egypt': ('egypt',), 'South Africa': ('south-africa',), 'Morocco': ('morocco',),
+        'Namibia': ('namibia',), 'Zimbabwe': ('zimbabwe',),
+        'USA': ('united-states',), 'Canada': ('canada',), 'Brazil': ('brazil',),
+        'Caribbean Islands': ('caribbean-islands', 'caribbean'),
+        'Germany': ('germany',), 'England': ('england',), 'Italy': ('italy',),
+        'France': ('france',), 'Spain': ('spain',), 'Greece': ('greece',), 'Turkey': ('turkey',),
+        'China': ('china',), 'Thailand': ('thailand',), 'India': ('india',), 'Singapore': ('singapore',),
+        'Dubai': ('dubai',), 'Abu Dhabi': ('abu-dhabi',), 'Israel': ('israel',),
+        'Saudi Arabia': ('saudi-arabia',), 'Jordan': ('jordan',), 'Oman': ('oman',),
+        'Zanzibar': ('zanzibar',), 'Seychelles': ('seychelles',), 'Mauritius': ('mauritius',),
+        'Maldives': ('maldives',), 'Madagascar': ('madagascar',),
+    }
 
     def destination_items(queryset, limit=6):
         return [
@@ -216,6 +230,27 @@ def navigation_collections(request):
             })
         return items
 
+    world_destinations_by_slug = None
+
+    def world_named_items(labels, fallback_url):
+        nonlocal world_destinations_by_slug
+        if world_destinations_by_slug is None:
+            world_destinations_by_slug = {
+                destination.slug: destination
+                for destination in Destination.objects.filter(
+                    is_active=True,
+                    show_in_navigation=True,
+                ).exclude(region='kenya').order_by('-is_featured', 'display_order', 'name')
+            }
+        return [
+            {
+                'label': label,
+                'url': reverse('users:destination_detail', kwargs={'slug': destination.slug}) if destination else fallback_url,
+            }
+            for label in labels
+            for destination in [next((world_destinations_by_slug.get(slug) for slug in world_destination_aliases.get(label, ()) if world_destinations_by_slug.get(slug)), None)]
+        ]
+
     def category_items(queryset, route, limit=6):
         base_url = reverse('users:' + route)
         return [
@@ -237,9 +272,9 @@ def navigation_collections(request):
 
     kenya_destinations = destinations.filter(region='kenya')
     world_regions = [
-        ('Africa', 'africa'), ('Americas', 'americas'), ('Asia', 'asia'),
-        ('Australasia', 'australasia'), ('Europe', 'europe'),
-        ('Indian Ocean Islands', 'indian-ocean-islands'), ('Middle East', 'middle-east'),
+        ('Africa', 'africa'), ('Americas', 'americas'), ('Europe', 'europe'),
+        ('Asia', 'asia'), ('Indian Ocean Islands', 'indian-ocean-islands'),
+        ('Middle East', 'middle-east'),
     ]
     themed_slugs = ['cruises', 'wellness-retreats', 'shopping-tours', 'religious-pilgrimages', 'honeymoon-packages']
     themed_categories = categories.filter(slug__in=themed_slugs)
@@ -265,15 +300,23 @@ def navigation_collections(request):
             for label in ['Valentine', 'Easter Holidays', 'August Holidays', 'Mashujaa Holidays', 'Jamhuri Holidays', 'Christmas / New Year']
         ]},
     ]
-    world_sections = []
-    for label, region in world_regions:
-        items = destination_items(destinations.filter(region=region))
-        if items:
-            world_sections.append({
-                'label': label,
-                'url': reverse('users:explore_region', kwargs={'region': region}),
-                'items': items,
-            })
+    world_section_labels = {
+        'Africa': ['Tanzania', 'Uganda', 'Rwanda', 'Egypt', 'South Africa', 'Morocco', 'Namibia', 'Zimbabwe'],
+        'Americas': ['USA', 'Canada', 'Brazil', 'Caribbean Islands'],
+        'Europe': ['Germany', 'England', 'Italy', 'France', 'Spain', 'Greece', 'Turkey'],
+        'Asia': ['China', 'Thailand', 'India', 'Singapore'],
+        'Middle East': ['Dubai', 'Abu Dhabi', 'Israel', 'Saudi Arabia', 'Jordan', 'Oman'],
+        'Indian Ocean Islands': ['Zanzibar', 'Seychelles', 'Mauritius', 'Maldives', 'Madagascar'],
+    }
+    world_sections = [
+        {
+            'label': label,
+            'url': reverse('users:explore_region', kwargs={'region': region}),
+            'items': world_named_items(labels, reverse('users:explore_region', kwargs={'region': region})),
+        }
+        for label, region in world_regions
+        if (labels := world_section_labels.get(label))
+    ]
     safari_categories = categories.exclude(slug__in=themed_slugs).filter(
         Q(packages__region__in=['kenya-safari', 'kenya-coast', 'day-trips']) |
         Q(tagged_packages__region__in=['kenya-safari', 'kenya-coast', 'day-trips'])
@@ -292,7 +335,7 @@ def navigation_collections(request):
     collections = TravelCollection.objects.filter(
         is_active=True, show_in_navigation=True, packages__status=Package.PUBLISHED,
     ).distinct().order_by('display_order', 'name')
-    for section, target in [('world', world_sections), ('safaris', safari_sections), ('themes', theme_sections)]:
+    for section, target in [('safaris', safari_sections), ('themes', theme_sections)]:
         collection_items = [{'label': item.name, 'url': item.get_absolute_url()} for item in collections.filter(section=section)[:5]]
         if collection_items:
             target.append({'label': 'Featured collections', 'url': '', 'items': collection_items})
