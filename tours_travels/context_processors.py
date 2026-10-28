@@ -160,11 +160,61 @@ def navigation_collections(request):
     from django.utils import timezone
     from adminside.models import Campaign, Destination, Package, PackageCategory, TravelCollection
 
+    kenya_destination_aliases = {
+        'Mombasa': ('mombasa-north-coast',),
+        'Diani': ('diani-beach',),
+        'Malindi': ('malindi',),
+        'Watamu': ('watamu',),
+        'Kilifi': ('kilifi',),
+        'Lamu': ('lamu',),
+        'Maasai Mara': ('maasai-mara-national-reserve', 'masai-mara-national-reserve'),
+        'Nakuru': ('nakuru',),
+        'Amboseli': ('amboseli-national-park',),
+        'Samburu': ('samburu-national-reserve',),
+        'Tsavo': ('tsavo-east-national-park', '07-tsavo-east-watamu-malindi'),
+        'Nairobi': ('nairobi',),
+        'Naivasha': ('naivasha',),
+        'Elementaita': ('naivasha-and-elementaita',),
+        'Baringo / Bogoria': ('great-rift-valley', 'great-rift-valley-naivasha'),
+        'Mt. Kenya': ('mount-kenya', 'mount-kenya-national-park'),
+        'Kajiado': ('kajiado-county',),
+        'Kisumu': ('kisumu',),
+        'Longonot': ('longonot',),
+        'Machakos': ('machakos',),
+        'Kajiado / Suswa': ('kajiado-suswa',),
+        'Sagana': ('sagana',),
+    }
+
     def destination_items(queryset, limit=6):
         return [
             {'label': destination.name, 'url': reverse('users:destination_detail', kwargs={'slug': destination.slug})}
             for destination in queryset[:limit]
         ]
+
+    kenya_destinations_by_slug = None
+
+    def kenya_named_items(labels, fallback_url):
+        nonlocal kenya_destinations_by_slug
+        if kenya_destinations_by_slug is None:
+            kenya_destinations_by_slug = {
+                destination.slug: destination
+                for destination in Destination.objects.filter(
+                    is_active=True,
+                    show_in_navigation=True,
+                    region='kenya',
+                ).order_by('-is_featured', 'display_order', 'name')
+            }
+        items = []
+        for label in labels:
+            destination = next(
+                (kenya_destinations_by_slug.get(slug) for slug in kenya_destination_aliases.get(label, ()) if kenya_destinations_by_slug.get(slug)),
+                None,
+            )
+            items.append({
+                'label': label,
+                'url': reverse('users:destination_detail', kwargs={'slug': destination.slug}) if destination else fallback_url,
+            })
+        return items
 
     def category_items(queryset, route, limit=6):
         base_url = reverse('users:' + route)
@@ -194,17 +244,26 @@ def navigation_collections(request):
     themed_slugs = ['cruises', 'wellness-retreats', 'shopping-tours', 'religious-pilgrimages', 'honeymoon-packages']
     themed_categories = categories.filter(slug__in=themed_slugs)
 
+    explore_kenya_url = reverse('users:explore_kenya')
+    tours_safaris_url = reverse('users:tours_safaris')
+    deals_url = reverse('users:deals')
     kenya_sections = [
-        {'label': 'Beach & Coast', 'url': reverse('users:explore_kenya'),
-         'items': destination_items(kenya_destinations.filter(packages__region='kenya-coast'))},
-        {'label': 'Safaris', 'url': reverse('users:tours_safaris'),
-         'items': destination_items(kenya_destinations.filter(packages__region='kenya-safari'))},
-        {'label': 'Getaways', 'url': reverse('users:explore_kenya'),
-         'items': category_items(categories.filter(Q(packages__region='day-trips') | Q(tagged_packages__region='day-trips')), 'explore_kenya')},
-        {'label': 'Themed Experiences', 'url': reverse('users:themed_packages'),
-         'items': category_items(themed_categories, 'themed_packages')},
-        {'label': 'Day Trips', 'url': reverse('users:explore_kenya'),
-         'items': category_items(categories.filter(Q(packages__region='day-trips') | Q(tagged_packages__region='day-trips')), 'explore_kenya')},
+        {'label': 'Beach', 'url': explore_kenya_url, 'items': kenya_named_items(
+            ['Mombasa', 'Diani', 'Malindi', 'Watamu', 'Kilifi', 'Lamu'], explore_kenya_url,
+        )},
+        {'label': 'Safaris', 'url': tours_safaris_url, 'items': kenya_named_items(
+            ['Maasai Mara', 'Nakuru', 'Amboseli', 'Samburu', 'Tsavo'], tours_safaris_url,
+        )},
+        {'label': 'Getaways', 'url': explore_kenya_url, 'items': kenya_named_items(
+            ['Nairobi', 'Naivasha', 'Elementaita', 'Nakuru', 'Baringo / Bogoria', 'Mt. Kenya', 'Kajiado', 'Kisumu'], explore_kenya_url,
+        )},
+        {'label': 'Day Trips', 'url': explore_kenya_url, 'items': kenya_named_items(
+            ['Nairobi', 'Naivasha', 'Longonot', 'Machakos', 'Kajiado / Suswa', 'Sagana'], explore_kenya_url,
+        )},
+        {'label': 'Seasonal Packages', 'url': deals_url, 'items': [
+            {'label': label, 'url': deals_url}
+            for label in ['Valentine', 'Easter Holidays', 'August Holidays', 'Mashujaa Holidays', 'Jamhuri Holidays', 'Christmas / New Year']
+        ]},
     ]
     world_sections = []
     for label, region in world_regions:
@@ -233,7 +292,7 @@ def navigation_collections(request):
     collections = TravelCollection.objects.filter(
         is_active=True, show_in_navigation=True, packages__status=Package.PUBLISHED,
     ).distinct().order_by('display_order', 'name')
-    for section, target in [('kenya', kenya_sections), ('world', world_sections), ('safaris', safari_sections), ('themes', theme_sections)]:
+    for section, target in [('world', world_sections), ('safaris', safari_sections), ('themes', theme_sections)]:
         collection_items = [{'label': item.name, 'url': item.get_absolute_url()} for item in collections.filter(section=section)[:5]]
         if collection_items:
             target.append({'label': 'Featured collections', 'url': '', 'items': collection_items})
