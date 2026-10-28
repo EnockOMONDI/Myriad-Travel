@@ -854,7 +854,7 @@ def deals(request):
     deal_campaigns = Campaign.objects.filter(
         package__status=Package.PUBLISHED,
         ends_on__gte=today,
-    ).select_related('package').order_by('starts_on', 'display_order', 'pk')
+    ).select_related('package').order_by('starts_on', 'display_order', 'pk')[:12]
     packages_qs = _packages_for_collection().filter(
         campaigns__in=deal_campaigns,
     ).distinct()

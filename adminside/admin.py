@@ -40,6 +40,15 @@ class CampaignAdmin(admin.ModelAdmin):
     list_editable = ('display_order', 'is_active')
     search_fields = ('title', 'package__name')
     autocomplete_fields = ('package',)
+    date_hierarchy = 'starts_on'
+    ordering = ('display_order', 'starts_on', 'pk')
+    list_per_page = 50
+    actions = ('deactivate_campaigns',)
+
+    @admin.action(description='Deactivate selected campaigns')
+    def deactivate_campaigns(self, request, queryset):
+        updated = queryset.update(is_active=False)
+        self.message_user(request, f'{updated} campaign(s) deactivated.')
 
     def public_status_display(self, obj):
         return obj.public_status

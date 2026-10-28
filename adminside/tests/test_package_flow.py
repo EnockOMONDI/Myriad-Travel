@@ -2,6 +2,7 @@ from datetime import time, timedelta
 from pathlib import Path
 
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -116,6 +117,26 @@ class PackageFlowTests(TestCase):
         self.assertEqual(scheduled.public_status, 'Scheduled')
         self.assertEqual(new.public_status, 'New')
         self.assertEqual(closing.public_status, 'Closing soon')
+
+    def test_campaigns_limit_active_deals_to_twelve(self):
+        today = timezone.localdate()
+        for index in range(Campaign.MAX_ACTIVE_CAMPAIGNS):
+            Campaign.objects.create(
+                title=f'Active {index}',
+                package=self.package,
+                starts_on=today,
+                ends_on=today + timedelta(days=20),
+                is_active=True,
+            )
+        blocked = Campaign(
+            title='Thirteenth active campaign',
+            package=self.package,
+            starts_on=today,
+            ends_on=today + timedelta(days=20),
+            is_active=True,
+        )
+        with self.assertRaisesMessage(ValidationError, 'Only 12 active campaigns are allowed'):
+            blocked.full_clean()
 
     def test_admin_guide_requires_login_and_explains_nakuru_flow(self):
         self.assertEqual(self.client.get('/adminside/how-it-works/').status_code, 302)

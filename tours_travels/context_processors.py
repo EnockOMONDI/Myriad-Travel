@@ -321,11 +321,33 @@ def navigation_collections(request):
         Q(packages__region__in=['kenya-safari', 'kenya-coast', 'day-trips']) |
         Q(tagged_packages__region__in=['kenya-safari', 'kenya-coast', 'day-trips'])
     )
+    safari_menu_content = [
+        ('Wildlife Safaris', 'wildlife-safaris', 'Classic game drives, Big Five and migration experiences'),
+        ('Adventure Safaris', 'adventure-safaris', 'Hiking, trekking, camping and off-the-beaten-path experiences'),
+        ('Luxury Safaris', 'luxury-safaris', 'Exclusive lodges, private safaris and fly-in experiences'),
+        ('Cultural Safaris', 'cultural-safaris', 'Authentic cultural and community experiences'),
+        ('Photography & Birding Safaris', 'photography-birding-safaris', 'Special-interest safaris for photographers and bird enthusiasts'),
+        ('Honeymoon Safaris', 'honeymoon-safaris', 'Romantic bush escapes and private experiences'),
+        ('Family Safaris', 'family-safaris', 'Family-friendly itineraries and experiences'),
+        ('Group Joining Safaris', 'group-joining-safaris', 'Scheduled shared departures and affordable safari packages'),
+    ]
+    safari_categories_by_slug = {
+        category.slug: category
+        for category in PackageCategory.objects.filter(
+            slug__in=[slug for _, slug, _ in safari_menu_content],
+            is_active=True,
+            show_in_navigation=True,
+        )
+    }
     safari_sections = [
-        {'label': 'Safari & Adventure', 'url': reverse('users:tours_safaris'),
-         'items': category_items(safari_categories, 'tours_safaris')},
-        {'label': 'Destinations', 'url': reverse('users:tours_safaris'),
-         'items': destination_items(kenya_destinations)},
+        {
+            'label': label,
+            'url': f'{tours_safaris_url}?category={slug}',
+            'description': description,
+            'items': [],
+        }
+        for label, slug, description in safari_menu_content
+        if slug in safari_categories_by_slug
     ]
     theme_sections = [
         {'label': 'Travel Themes', 'url': reverse('users:themed_packages'),
@@ -335,7 +357,7 @@ def navigation_collections(request):
     collections = TravelCollection.objects.filter(
         is_active=True, show_in_navigation=True, packages__status=Package.PUBLISHED,
     ).distinct().order_by('display_order', 'name')
-    for section, target in [('safaris', safari_sections), ('themes', theme_sections)]:
+    for section, target in [('themes', theme_sections)]:
         collection_items = [{'label': item.name, 'url': item.get_absolute_url()} for item in collections.filter(section=section)[:5]]
         if collection_items:
             target.append({'label': 'Featured collections', 'url': '', 'items': collection_items})
@@ -356,9 +378,6 @@ def navigation_collections(request):
         {'label': 'Explore The World', 'url': reverse('users:explore_the_world'), 'parent_clickable': False, 'sections': world_sections},
         {'label': 'Tours & Safaris', 'url': reverse('users:tours_safaris'), 'parent_clickable': False, 'sections': safari_sections},
         {'label': 'Themed Experiences', 'url': reverse('users:themed_packages'), 'parent_clickable': False, 'sections': theme_sections},
-        {'label': 'Deals', 'url': reverse('users:deals'), 'parent_clickable': True, 'sections': [
-            {'label': 'Current offers', 'url': reverse('users:deals'), 'items': deal_items},
-        ]},
         {'label': 'About Us', 'url': reverse('users:aboutus'), 'parent_clickable': True, 'sections': [
             {'label': 'About Myriad', 'url': reverse('users:aboutus'), 'items': [
                 {'label': 'Our Story', 'url': reverse('users:aboutus')},
@@ -372,6 +391,7 @@ def navigation_collections(request):
                 {'label': 'Request Quote', 'url': reverse('users:quote_request')},
             ]},
         ]},
+        {'label': 'Deals', 'url': reverse('users:deals'), 'parent_clickable': True, 'sections': []},
     ]
     return {
         'public_menus': menus,

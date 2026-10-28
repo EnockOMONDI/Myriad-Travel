@@ -34,6 +34,7 @@ class TravelCollection(models.Model):
 
 
 class Campaign(models.Model):
+    MAX_ACTIVE_CAMPAIGNS = 12
     title = models.CharField(max_length=160)
     package = models.ForeignKey('Package', on_delete=models.PROTECT, related_name='campaigns')
     starts_on = models.DateField(help_text='First day to display this campaign.')
@@ -54,6 +55,12 @@ class Campaign(models.Model):
             raise ValidationError({'ends_on': 'End date must be on or after start date.'})
         if self.is_active and self.package_id and self.package.status != 'published':
             raise ValidationError({'package': 'Choose a published package for an active campaign.'})
+        if self.is_active:
+            active_count = type(self).objects.filter(is_active=True).exclude(pk=self.pk).count()
+            if active_count >= self.MAX_ACTIVE_CAMPAIGNS:
+                raise ValidationError({
+                    'is_active': f'Only {self.MAX_ACTIVE_CAMPAIGNS} active campaigns are allowed. Deactivate another campaign first.',
+                })
 
     def __str__(self):
         return self.title

@@ -18,15 +18,16 @@
       {% for menu in public_menus %}
       <div class="myriad-menu-item">
         {% if menu.parent_clickable %}<a href="{{ menu.url }}">{{ menu.label }}</a>{% else %}<span>{{ menu.label }}</span>{% endif %}
-        <details><summary aria-label="{{ menu.label }} submenu"><i data-lucide="chevron-down"></i></summary>
-          <div class="myriad-dropdown myriad-mega-dropdown">
+        {% if menu.sections %}<details><summary aria-label="{{ menu.label }} submenu"><i data-lucide="chevron-down"></i></summary>
+          <div class="myriad-dropdown myriad-mega-dropdown{% if menu.label == 'Tours & Safaris' %} myriad-safari-dropdown{% endif %}">
             <div class="myriad-mega-grid">
               {% for section in menu.sections %}
               <section class="myriad-menu-section">
                 {% if section.url %}<a class="myriad-menu-section-title" href="{{ section.url }}">{{ section.label }}</a>{% else %}<span class="myriad-menu-section-title">{{ section.label }}</span>{% endif %}
+                {% if section.description %}<p class="myriad-menu-section-description">{{ section.description }}</p>{% endif %}
                 {% if section.items %}
                   {% for item in section.items %}<a href="{{ item.url }}">{{ item.label }}</a>{% endfor %}
-                {% else %}
+                {% elif not section.description %}
                   <a href="{{ section.url|default:menu.url }}">Browse experiences</a>
                 {% endif %}
               </section>
@@ -34,7 +35,7 @@
             </div>
             <a class="myriad-view-all" href="{{ menu.url }}">View all {{ menu.label|lower }}</a>
           </div>
-        </details>
+        </details>{% endif %}
       </div>
       {% endfor %}
     </div>
