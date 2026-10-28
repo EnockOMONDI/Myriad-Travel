@@ -27,13 +27,13 @@
                 {% if section.description %}<p class="myriad-menu-section-description">{{ section.description }}</p>{% endif %}
                 {% if section.items %}
                   {% for item in section.items %}<a href="{{ item.url }}">{{ item.label }}</a>{% endfor %}
-                {% elif not section.description %}
+                {% elif not section.description and not section.hide_browse %}
                   <a href="{{ section.url|default:menu.url }}">Browse experiences</a>
                 {% endif %}
               </section>
               {% endfor %}
             </div>
-            <a class="myriad-view-all" href="{{ menu.url }}">View all {{ menu.label|lower }}</a>
+            {% if not menu.sections.0.hide_view_all %}<a class="myriad-view-all" href="{{ menu.url }}">View all {{ menu.label|lower }}</a>{% endif %}
           </div>
         </details>{% endif %}
       </div>

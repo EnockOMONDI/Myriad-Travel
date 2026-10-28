@@ -322,33 +322,34 @@ def navigation_collections(request):
         Q(tagged_packages__region__in=['kenya-safari', 'kenya-coast', 'day-trips'])
     )
     safari_menu_content = [
-        ('Wildlife Safaris', 'wildlife-safaris', 'Classic game drives, Big Five and migration experiences'),
-        ('Adventure Safaris', 'adventure-safaris', 'Hiking, trekking, camping and off-the-beaten-path experiences'),
-        ('Luxury Safaris', 'luxury-safaris', 'Exclusive lodges, private safaris and fly-in experiences'),
-        ('Cultural Safaris', 'cultural-safaris', 'Authentic cultural and community experiences'),
-        ('Photography & Birding Safaris', 'photography-birding-safaris', 'Special-interest safaris for photographers and bird enthusiasts'),
-        ('Honeymoon Safaris', 'honeymoon-safaris', 'Romantic bush escapes and private experiences'),
-        ('Family Safaris', 'family-safaris', 'Family-friendly itineraries and experiences'),
-        ('Group Joining Safaris', 'group-joining-safaris', 'Scheduled shared departures and affordable safari packages'),
+        ('Wildlife Safaris', 'wildlife-safaris'),
+        ('Adventure Safaris', 'adventure-safaris'),
+        ('Luxury Safaris', 'luxury-safaris'),
+        ('Cultural Safaris', 'cultural-safaris'),
+        ('Photography & Birding Safaris', 'photography-birding-safaris'),
+        ('Honeymoon Safaris', 'honeymoon-safaris'),
+        ('Family Safaris', 'family-safaris'),
+        ('Group Joining Safaris', 'group-joining-safaris'),
     ]
     safari_categories_by_slug = {
         category.slug: category
         for category in PackageCategory.objects.filter(
-            slug__in=[slug for _, slug, _ in safari_menu_content],
+            slug__in=[slug for _, slug in safari_menu_content],
             is_active=True,
             show_in_navigation=True,
         )
     }
-    safari_sections = [
-        {
-            'label': label,
-            'url': f'{tours_safaris_url}?category={slug}',
-            'description': description,
-            'items': [],
-        }
-        for label, slug, description in safari_menu_content
-        if slug in safari_categories_by_slug
-    ]
+    safari_sections = [{
+        'label': 'Tours & Safaris',
+        'url': tours_safaris_url,
+        'hide_browse': True,
+        'hide_view_all': True,
+        'items': [
+            {'label': label, 'url': f'{tours_safaris_url}?category={slug}'}
+            for label, slug in safari_menu_content
+            if slug in safari_categories_by_slug
+        ],
+    }]
     theme_sections = [
         {'label': 'Travel Themes', 'url': reverse('users:themed_packages'),
          'items': category_items(themed_categories, 'themed_packages')},

@@ -93,3 +93,59 @@ class TripFeedbackTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, visible.client_name)
         self.assertNotContains(response, "Hidden Client")
+
+
+class DestinationGuideTests(TestCase):
+    def test_destination_page_renders_activities_as_destination_content(self):
+        destination = Destination.objects.create(
+            name="Kigali",
+            slug="kigali",
+            destination_type=Destination.CITY,
+            region="africa",
+            description="Kigali is Rwanda's welcoming capital.",
+            things_to_do=["Kigali Genocide Memorial", "Kimironko Market"],
+            is_active=True,
+        )
+
+        response = self.client.get(reverse("users:destination_detail", kwargs={"slug": destination.slug}))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Things to do in Kigali")
+        self.assertContains(response, "Kigali Genocide Memorial")
+        self.assertContains(response, "Kimironko Market")
+        self.assertNotContains(response, "Available package styles")
+
+    def test_package_categories_have_a_separate_label_from_activities(self):
+        from adminside.models import PackageCategory
+
+        destination = Destination.objects.create(
+            name="Kigali",
+            slug="kigali-package-style",
+            destination_type=Destination.CITY,
+            region="africa",
+            description="Kigali is Rwanda's welcoming capital.",
+            things_to_do=["Kigali Genocide Memorial"],
+            is_active=True,
+        )
+        category = PackageCategory.objects.create(name="Adventure Safaris", slug="adventure-safaris", is_active=True)
+        Package.objects.create(
+            name="Kigali Adventure",
+            slug="kigali-adventure",
+            description="A Kigali journey.",
+            main_destination=destination,
+            category=category,
+            duration_days=3,
+            duration_nights=2,
+            adult_price=1000,
+            child_price=800,
+            inclusions="Transport",
+            exclusions="Personal expenses",
+            status=Package.PUBLISHED,
+        )
+
+        response = self.client.get(reverse("users:destination_detail", kwargs={"slug": destination.slug}))
+
+        self.assertContains(response, "Things to do in Kigali")
+        self.assertContains(response, "Kigali Genocide Memorial")
+        self.assertContains(response, "Available package styles")
+        self.assertContains(response, "Adventure Safaris")
