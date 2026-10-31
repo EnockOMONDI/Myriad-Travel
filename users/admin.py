@@ -180,6 +180,29 @@ class UserProfileInline(admin.StackedInline):
     )
 
 
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'phone_number', 'nationality', 'preferred_travel_style', 'updated_at')
+    list_filter = ('preferred_travel_style', 'email_notifications', 'marketing_emails')
+    search_fields = ('user__username', 'user__email', 'user__first_name', 'user__last_name', 'phone_number', 'passport_number')
+    autocomplete_fields = ('user',)
+    readonly_fields = ('created_at', 'updated_at', 'total_bookings', 'total_spent')
+    fieldsets = (
+        ('Account', {'fields': ('user',)}),
+        ('Contact & identity', {'fields': ('phone_number', 'date_of_birth', 'nationality', 'passport_number')}),
+        ('Emergency contact', {'fields': ('emergency_contact_name', 'emergency_contact_phone')}),
+        ('Travel preferences', {'fields': ('preferred_travel_style', 'dietary_requirements', 'special_needs')}),
+        ('Communication', {'fields': ('email_notifications', 'marketing_emails')}),
+        ('Record information', {'fields': ('total_bookings', 'total_spent', 'created_at', 'updated_at'), 'classes': ('collapse',)}),
+    )
+
+    def total_bookings(self, obj):
+        return obj.total_bookings
+
+    def total_spent(self, obj):
+        return obj.total_spent
+
+
 class UserAdmin(BaseUserAdmin):
     inlines = (UserProfileInline,)
     list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'date_joined')

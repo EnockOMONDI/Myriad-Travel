@@ -445,14 +445,9 @@ UNFOLD = {
                         "link": reverse_lazy("admin:blog_post_changelist"),
                     },
                     {
-                        "title": "Hero slides",
-                        "icon": "photo_library",
-                        "link": reverse_lazy("admin:adminside_heroslider_changelist"),
-                    },
-                    {
-                        "title": "Content sections",
+                        "title": "Website content",
                         "icon": "edit_note",
-                        "link": reverse_lazy("admin:adminside_contentsection_changelist"),
+                        "link": reverse_lazy("admin_content:content_overview"),
                     },
                 ],
             },

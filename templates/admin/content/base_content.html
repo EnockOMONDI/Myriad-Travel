@@ -1,0 +1,58 @@
+{% extends 'admin/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} | {{ site_title }}{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  .content-editor-shell{display:grid;grid-template-columns:230px minmax(0,1fr);gap:28px;min-height:680px}
+  .content-editor-nav{background:#071321;color:#fff;border-radius:12px;padding:18px 12px;align-self:start;position:sticky;top:20px}
+  .content-editor-brand{font-weight:800;font-size:16px;padding:8px 10px 24px}
+  .content-editor-nav h3{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8ca0b7;margin:12px 10px 8px}
+  .content-editor-nav a{display:block;color:#cbd5e1;text-decoration:none;border-radius:8px;padding:10px;margin:3px 0;font-size:13px}
+  .content-editor-nav a:hover,.content-editor-nav a.active{background:#12323d;color:#fff}
+  .content-editor-nav a.active:before{content:'';display:inline-block;width:4px;height:16px;background:#1abdaf;border-radius:4px;margin-right:8px;vertical-align:-3px}
+  .content-editor-main{min-width:0}.content-editor-eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#eb3728;font-weight:800}
+  .content-editor-title{font-size:32px;letter-spacing:-.04em;margin:6px 0;color:#0b1728}.content-editor-subtitle{color:#64748b;margin:0;max-width:760px}
+  .content-editor-top{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:26px}
+  .content-editor-btn{border:0;border-radius:8px;padding:11px 15px;font-weight:800;text-decoration:none;display:inline-block;cursor:pointer}
+  .content-editor-btn.primary{background:#eb3728;color:#fff}.content-editor-btn.secondary{background:#fff;color:#0b1728;border:1px solid #dbe5ea}
+  .content-editor-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .content-editor-card{background:#fff;border:1px solid #e3e8ed;border-radius:12px;padding:18px;min-height:216px;position:relative;box-shadow:0 4px 14px rgba(7,19,33,.04)}
+  .content-editor-card:hover{border-color:#1abdaf}.content-editor-card-top{display:flex;justify-content:space-between;align-items:center}.content-editor-icon{width:38px;height:38px;border-radius:10px;background:#e2faf7;color:#087b73;display:grid;place-items:center;font-size:19px}
+  .content-editor-card h2{font-size:18px;margin:20px 0 6px;color:#0b1728}.content-editor-card p{color:#64748b;line-height:1.5;margin:0}.content-editor-meta{color:#94a3b8;font-size:12px;margin-top:18px}
+  .content-editor-edit{position:absolute;bottom:17px;right:17px;color:#109f95;text-decoration:none;font-weight:800;font-size:13px}.content-editor-edit.disabled{color:#94a3b8}
+  .content-source{font-size:10px;border-radius:999px;padding:5px 8px;font-weight:800;white-space:nowrap}.source-static{background:#fff2df;color:#a65b00}.source-db{background:#e7f8f5;color:#087b73}.source-mixed{background:#eaf0ff;color:#3b5eb5}
+  .content-editor-note{margin-top:20px;padding:14px 16px;background:#e9fbf8;border-left:4px solid #1abdaf;border-radius:7px;color:#30545b}
+  .content-breadcrumb{color:#64748b;font-size:13px;margin-bottom:18px}.content-breadcrumb a{color:#109f95;text-decoration:none}
+  .content-form-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(310px,.75fr);gap:20px}.content-panel{background:#fff;border:1px solid #e3e8ed;border-radius:12px;padding:22px;box-shadow:0 4px 14px rgba(7,19,33,.04)}.content-panel h2{font-size:18px;margin:0 0 5px}.content-helper{color:#64748b;font-size:12px;line-height:1.5;margin:0 0 18px}.content-field{margin:16px 0}.content-field label{display:block;font-weight:800;font-size:12px;margin-bottom:6px}.content-field .helptext{display:block;color:#64748b;font-size:11px;margin-top:5px}.content-input{display:block;width:100%;border:1px solid #ccd7df;border-radius:7px;padding:10px 11px;font:inherit;color:#0b1728;background:#fff}.content-input:focus{outline:0;border-color:#1abdaf;box-shadow:0 0 0 3px rgba(26,189,175,.14)}.content-input[type=file]{padding:8px}.content-form-actions{display:flex;justify-content:flex-end;gap:10px;border-top:1px solid #edf1f3;padding-top:17px;margin-top:22px}.content-live-box{background:#071321;color:#fff;border-radius:11px;padding:18px}.content-live-box h2{color:#fff}.content-live-preview{margin-top:14px;border-radius:8px;overflow:hidden;background:linear-gradient(110deg,#182536,#b77a49 48%,#138c88);min-height:225px;padding:30px;color:#fff;display:flex;align-items:flex-end}.content-live-preview h3{font-size:25px;margin:8px 0}.content-live-preview p{color:#e7eef2;max-width:300px}.content-pill{font-size:11px;background:#e7f8f5;color:#087b73;border-radius:999px;padding:6px 9px;font-weight:800}.content-slide-list{margin-top:22px}.content-slide{display:flex;gap:12px;align-items:center;border:1px solid #e3e8ed;border-radius:9px;padding:10px;margin-top:9px}.content-slide-thumb{width:82px;height:47px;border-radius:6px;background:linear-gradient(135deg,#172235,#d98746 55%,#1abdaf);flex:none}.content-slide strong{font-size:13px}.content-slide small{display:block;color:#64748b;margin-top:3px}.content-slide a{margin-left:auto;color:#109f95;text-decoration:none;font-weight:800;font-size:12px}
+  @media(max-width:1000px){.content-editor-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.content-form-grid{grid-template-columns:1fr}}
+  @media(max-width:700px){.content-editor-shell{display:block}.content-editor-nav{position:static;margin-bottom:20px}.content-editor-top{display:block}.content-editor-top .content-editor-btn{margin-top:15px}.content-editor-grid{grid-template-columns:1fr}}
+</style>
+{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+<div class="content-editor-shell">
+  <aside class="content-editor-nav" aria-label="Website content navigation">
+    <div class="content-editor-brand">Myriad Travel</div>
+    <h3>Website content</h3>
+    <a href="{% url 'admin_content:content_overview' %}" class="{% if request.resolver_match.url_name == 'content_overview' %}active{% endif %}">All website content</a>
+    <h3>Homepage</h3>
+    <a href="{% url 'admin_content:content_overview' %}#homepage">Homepage overview</a>
+    <a href="{% url 'admin_content:homepage_hero' %}" class="{% if request.resolver_match.url_name == 'homepage_hero' or request.resolver_match.url_name == 'hero_slide_new' or request.resolver_match.url_name == 'hero_slide_edit' %}active{% endif %}">Hero</a>
+    <a href="{% url 'admin_content:content_overview' %}#homepage-deals">Home Deals</a>
+    <a href="{% url 'admin_content:content_overview' %}#homepage-explore-kenya">Explore Kenya</a>
+    <a href="{% url 'admin_content:content_overview' %}#homepage-explore-world">Explore the World</a>
+    <a href="{% url 'admin_content:content_overview' %}#homepage-services">Services</a>
+    <h3>More pages</h3>
+    <a href="{% url 'admin:users_quoterequest_changelist' %}">About Us</a>
+    <a href="{% url 'admin:adminside_package_changelist' %}">Packages</a>
+    <a href="{% url 'admin:adminside_destination_changelist' %}">Destinations</a>
+    <a href="{% url 'admin:adminside_campaign_changelist' %}">Deals & campaigns</a>
+  </aside>
+  <main class="content-editor-main">{% block content_body %}{% endblock %}</main>
+</div>
+{% endblock %}

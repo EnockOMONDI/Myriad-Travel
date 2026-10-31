@@ -1,0 +1,19 @@
+{% extends 'admin/content/base_content.html' %}
+
+{% block content_body %}
+<div class="content-editor-top" id="homepage">
+  <div><div class="content-editor-eyebrow">Website content</div><h1 class="content-editor-title">Keep the website fresh</h1><p class="content-editor-subtitle">Choose a page section to update its words, images, and buttons. The public layout and enquiry flow stay protected.</p></div>
+  <a class="content-editor-btn primary" href="/" target="_blank" rel="noopener">Preview website ↗</a>
+</div>
+<div class="content-editor-grid">
+  {% for card in homepage_cards %}
+  <article class="content-editor-card" id="{{ card.key }}">
+    <div class="content-editor-card-top"><div class="content-editor-icon">{{ card.icon }}</div><span class="content-source {{ card.status_class }}">{{ card.source }}</span></div>
+    <h2>{{ card.name }}</h2><p>{{ card.description }}</p>
+    <div class="content-editor-meta">{{ card.detail }}</div>
+    {% if card.edit_url %}<a class="content-editor-edit" href="{{ card.edit_url }}">Edit section →</a>{% else %}<span class="content-editor-edit disabled">Editor coming next</span>{% endif %}
+  </article>
+  {% endfor %}
+</div>
+<div class="content-editor-note"><strong>Safe editing:</strong> Static defaults remain live until a database override is uploaded, saved, and published. Every card shows the source currently used by the public page.</div>
+{% endblock %}
