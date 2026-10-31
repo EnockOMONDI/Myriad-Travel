@@ -127,6 +127,7 @@ def build_dashboard_context(user):
         action_group("Content", [
             action("Blog posts", admin_url("blog_post_changelist")),
             action("Trip feedback", admin_url("users_tripfeedback_changelist")),
+            action("Content sections", admin_url("adminside_contentsection_changelist")),
             action("Hero slider", admin_url("adminside_heroslider_changelist")),
             action("Newsletter", admin_url("users_newslettersubscription_changelist")),
             action("Jobs", admin_url("users_joblisting_changelist")),

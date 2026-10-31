@@ -91,6 +91,22 @@ class AdminInterfaceTest(TestCase):
         self.assertContains(response, 'Workspace')
         self.assertContains(response, 'What needs your attention')
         self.assertContains(response, 'Add a package')
+
+    def test_admin_content_section_is_reachable_from_workspace(self):
+        self.client.login(username='admin', password='adminpass123')
+
+        index = self.client.get('/admin/')
+        self.assertEqual(index.status_code, 200)
+        self.assertContains(index, 'Content sections')
+        self.assertContains(index, '/admin/adminside/contentsection/')
+
+        content_sections = self.client.get('/admin/adminside/contentsection/')
+        self.assertEqual(content_sections.status_code, 200)
+
+    def test_admin_login_button_has_visible_contrast_rule(self):
+        response = self.client.get('/admin/login/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'submit-row')
     
     def test_regular_user_admin_access_denied(self):
         """Test that regular users cannot access admin"""

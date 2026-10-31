@@ -44,6 +44,18 @@ body {
     background: #f8fbfc;
 }
 
+/* Unfold reuses the submit-row class on the login button. Keep the form
+   footer styling, but do not turn the button into pale text on pale gray. */
+button.submit-row {
+    border-top-color: transparent;
+    background: var(--myriad-red) !important;
+    color: #fff !important;
+}
+
+button.submit-row:hover {
+    background: #d92c20 !important;
+}
+
 input:focus,
 select:focus,
 textarea:focus {

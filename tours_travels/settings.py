@@ -449,6 +449,11 @@ UNFOLD = {
                         "icon": "photo_library",
                         "link": reverse_lazy("admin:adminside_heroslider_changelist"),
                     },
+                    {
+                        "title": "Content sections",
+                        "icon": "edit_note",
+                        "link": reverse_lazy("admin:adminside_contentsection_changelist"),
+                    },
                 ],
             },
         ],
@@ -567,7 +572,7 @@ def dashboard_callback(request, context):
         context.update({
             "workspace_metrics": dashboard["metrics"][:8],
             "workspace_attention": dashboard["needs_attention"][:6],
-            "workspace_actions": dashboard["quick_actions"][:3],
+            "workspace_actions": dashboard["quick_actions"],
             "workspace_recent_quotes": dashboard["recent_activity"]["quotes"][:5],
             "workspace_recent_bookings": dashboard["recent_activity"]["bookings"][:5],
             "workspace_finance": dashboard["finance"],

@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.db.models import Q, Prefetch
 from django.core.paginator import Paginator
 from django.views.generic import ListView, DetailView
-from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from .models import (
     Destination,
     Accommodation,
@@ -15,7 +15,7 @@ from .models import (
 )
 
 
-@login_required
+@staff_member_required
 def how_it_works(request):
     """Interactive admin guide for placing real Myriad records correctly."""
     return render(request, 'adminside/how_it_works.html', {
@@ -23,6 +23,7 @@ def how_it_works(request):
     })
 
 # Destination Views
+@staff_member_required
 def destination_list(request):
     """List all destinations with hierarchy"""
     countries = Destination.objects.filter(
@@ -46,6 +47,7 @@ def destination_list(request):
     }
     return render(request, 'adminside/destination_list.html', context)
 
+@staff_member_required
 def destination_detail(request, slug):
     """Detail view for a specific destination"""
     destination = get_object_or_404(
@@ -76,6 +78,7 @@ def destination_detail(request, slug):
     return render(request, 'adminside/destination_detail.html', context)
 
 # Package Views
+@staff_member_required
 def package_list(request):
     """Enhanced package list with modern filtering and AJAX support"""
     packages = Package.objects.filter(status=Package.PUBLISHED).select_related('main_destination', 'category')
@@ -162,6 +165,7 @@ def package_list(request):
     }
     return render(request, 'adminside/package_list.html', context)
 
+@staff_member_required
 def package_detail(request, slug):
     """Detail view for a specific package"""
     package = get_object_or_404(
@@ -182,6 +186,7 @@ def package_detail(request, slug):
     return render(request, 'adminside/package_detail.html', context)
 
 # Accommodation Views
+@staff_member_required
 def accommodation_list(request):
     """List accommodations with filtering by destination hierarchy"""
     accommodations = Accommodation.objects.filter(is_active=True).select_related('destination')
@@ -243,6 +248,7 @@ def accommodation_list(request):
     }
     return render(request, 'adminside/accommodation_list.html', context)
 
+@staff_member_required
 def accommodation_detail(request, slug):
     """Detail view for a specific accommodation"""
     accommodation = get_object_or_404(
@@ -265,6 +271,7 @@ def accommodation_detail(request, slug):
     return render(request, 'adminside/accommodation_detail.html', context)
 
 # Travel Mode Views
+@staff_member_required
 def travel_mode_list(request):
     """List travel modes"""
     travel_modes = TravelMode.objects.filter(is_active=True)
@@ -298,6 +305,7 @@ def travel_mode_list(request):
     return render(request, 'adminside/travel_mode_list.html', context)
 
 # AJAX Views for dynamic filtering
+@staff_member_required
 def get_destinations_ajax(request):
     """AJAX endpoint to get destinations hierarchy"""
     parent_id = request.GET.get('parent_id')
@@ -322,6 +330,7 @@ def get_destinations_ajax(request):
 
     return JsonResponse({'destinations': data})
 
+@staff_member_required
 def get_packages_by_destination_ajax(request):
     """AJAX endpoint to get packages filtered by destination"""
     destination_id = request.GET.get('destination_id')
@@ -351,6 +360,7 @@ def get_packages_by_destination_ajax(request):
 
     return JsonResponse({'packages': data})
 
+@staff_member_required
 def get_accommodations_by_destination_ajax(request):
     """AJAX endpoint to get accommodations filtered by destination"""
     destination_id = request.GET.get('destination_id')
@@ -382,6 +392,7 @@ def get_accommodations_by_destination_ajax(request):
     return JsonResponse({'accommodations': data})
 
 
+@staff_member_required
 def user_package_list(request):
     """User-friendly package list with enhanced navigation"""
     # Get all countries with their hierarchical structure

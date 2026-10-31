@@ -142,6 +142,27 @@ class PackageFlowTests(TestCase):
         self.assertEqual(self.client.get('/adminside/how-it-works/').status_code, 302)
         self.assertEqual(reverse('adminside:how_it_works'), '/adminside/how-it-works/')
 
+    def test_custom_admin_catalog_views_require_staff_access(self):
+        for path in (
+            '/adminside/destinations/',
+            '/adminside/packages/',
+            '/adminside/accommodations/',
+            '/adminside/travel-options/',
+            '/adminside/user-packages/',
+        ):
+            self.assertEqual(self.client.get(path).status_code, 302)
+
+        staff = User.objects.create_user(username='catalog-staff', is_staff=True)
+        self.client.force_login(staff)
+        for path in (
+            '/adminside/destinations/',
+            '/adminside/packages/',
+            '/adminside/accommodations/',
+            '/adminside/travel-options/',
+            '/adminside/user-packages/',
+        ):
+            self.assertEqual(self.client.get(path).status_code, 200)
+
     def test_package_wizard_saves_accommodation_and_travel_options(self):
         accommodation = Accommodation.objects.create(
             name='Mara Camp', slug='mara-camp', description='Camp',
