@@ -1183,7 +1183,7 @@ def home(request):
     Fully optimized homepage view with efficient database queries, caching, and featured accommodations
     """
     from django.core.cache import cache
-    from adminside.models import Accommodation, HeroSlider
+    from adminside.models import Accommodation, ContentSection, HeroSlider
     import logging
 
     logger = logging.getLogger(__name__)
@@ -1248,8 +1248,12 @@ def home(request):
             except Exception as e:
                 continue
 
-        # Get active hero slider images
-        hero_slides = HeroSlider.get_active_slides()
+        # Admin-managed hero content is preferred; the template keeps static
+        # slides as a safe fallback until the team publishes hero content.
+        hero_section = ContentSection.objects.filter(
+            section_key='homepage-hero', is_active=True,
+        ).first()
+        hero_slides = HeroSlider.get_active_slides(hero_section).exclude(image='') if hero_section else HeroSlider.get_active_slides().exclude(image='')
 
         # Create optimized context
         context = {
@@ -1261,9 +1265,13 @@ def home(request):
             'dests1': all_destinations,  # For backward compatibility
             'package1': packages_queryset,  # For backward compatibility
             'hero_slides': hero_slides,  # Dynamic hero slider data
+            'hero_section': hero_section,
         }
 
         context.update(_public_page_context(package_limit=4))
+        context['home_deals_section'] = ContentSection.objects.filter(
+            section_key='homepage-deals', is_active=True,
+        ).first()
         kenya_preferences = ('Chalbi', 'Maasai Mara', 'Amboseli', 'Diani', 'Watamu')
         kenya_packages = list(
             Package.objects.select_related('main_destination', 'category').prefetch_related('collections')

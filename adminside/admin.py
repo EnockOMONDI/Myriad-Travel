@@ -18,6 +18,7 @@ from .models import (
     Itinerary,
     ItineraryDay,
     PackageBooking,
+    ContentSection,
     HeroSlider
 )
 # CKEditor5Field automatically handles CKEditor 5 widgets based on config_name
@@ -651,16 +652,16 @@ class HeroSliderAdminForm(forms.ModelForm):
     """Custom form for HeroSlider with multiple image scaling options"""
 
     SCALING_CHOICES = [
+        ('2048x768', 'Wide hero (2048x768, recommended)'),
         ('16:9', '16:9 Aspect Ratio (Standard)'),
-        ('2048x1080', '2048x1080 Resolution (Optimized)'),
         ('', 'Free Form (No Cropping)'),
     ]
 
     image_scaling = forms.ChoiceField(
         choices=SCALING_CHOICES,
-        initial='2048x1080',
+        initial='2048x768',
         required=False,
-        help_text="Choose image scaling option: 16:9 for standard aspect ratio, 2048x1080 for optimized resolution, or Free Form for no cropping constraints"
+        help_text="Use Wide hero for the homepage carousel. Keep the main subject away from the extreme edges so mobile crops remain usable."
     )
 
     class Meta:
@@ -674,6 +675,53 @@ class HeroSliderAdminForm(forms.ModelForm):
             scaling = self.data['image_scaling']
             if scaling:
                 self.fields['image'].widget.attrs['data-manual-crop'] = scaling
+
+
+class HeroSliderInline(admin.StackedInline):
+    model = HeroSlider
+    form = HeroSliderAdminForm
+    extra = 0
+    ordering = ('order', '-created_at')
+    fields = ('title', 'subtitle', 'image_scaling', 'image', 'cta_text', 'cta_url', 'is_active', 'order')
+    classes = ('collapse',)
+    verbose_name = 'Hero slide'
+    verbose_name_plural = 'Hero slides'
+
+
+@admin.register(ContentSection)
+class ContentSectionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'section_key', 'title', 'is_active', 'updated_at')
+    list_filter = ('is_active',)
+    list_editable = ('is_active',)
+    search_fields = ('name', 'section_key', 'title', 'description')
+    readonly_fields = ('created_at', 'updated_at')
+    inlines = (HeroSliderInline,)
+    fieldsets = (
+        ('Section identity', {
+            'fields': ('name', 'section_key', 'is_active'),
+            'description': 'This is reusable section content. The key is managed once and should not be changed after publishing.',
+        }),
+        ('Public copy', {
+            'fields': ('eyebrow', 'title', 'description'),
+            'description': 'Use a clear heading and one short supporting paragraph. Avoid internal notes or placeholder copy.',
+        }),
+        ('Section image', {
+            'fields': ('image',),
+            'description': 'Uploadcare image is optional. Home Deals uses a wide 2172x724px composition. The current static image remains as a fallback when this is empty.',
+        }),
+        ('Default button', {
+            'fields': ('cta_text', 'cta_url'),
+            'classes': ('collapse',),
+            'description': 'These values are used when an individual slide does not provide its own button.',
+        }),
+        ('Record information', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',),
+        }),
+    )
+
+    def get_readonly_fields(self, request, obj=None):
+        return ('section_key', 'created_at', 'updated_at') if obj else ('created_at', 'updated_at')
 
 @admin.register(HeroSlider)
 class HeroSliderAdmin(admin.ModelAdmin):

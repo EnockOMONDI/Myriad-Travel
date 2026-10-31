@@ -889,10 +889,74 @@ class PackageBooking(models.Model):
         return f"Booking {self.id} - {self.package.name} by {self.user.username}"
 
 
+class ContentSection(models.Model):
+    """Reusable section-level content settings for public pages."""
+    section_key = models.SlugField(
+        max_length=80,
+        unique=True,
+        help_text='Stable internal key. Do not change it after the section is created.',
+    )
+    name = models.CharField(
+        max_length=120,
+        help_text='Friendly name shown to the content team, for example Homepage Hero.',
+    )
+    eyebrow = models.CharField(
+        max_length=120,
+        blank=True,
+        help_text='Small label above the heading, for example Myriad Travel seasonal offer.',
+    )
+    title = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text='Main heading shown in this section.',
+    )
+    description = models.TextField(
+        blank=True,
+        help_text='Short supporting copy. Keep it concise for the public page.',
+    )
+    image = ImageField(
+        blank=True,
+        null=True,
+        help_text='Optional section image. For Home Deals, use a wide 2172x724px image and keep important subjects away from the edges.',
+    )
+    cta_text = models.CharField(
+        max_length=80,
+        blank=True,
+        help_text='Optional button label, for example Explore Kenya.',
+    )
+    cta_url = models.CharField(
+        max_length=300,
+        blank=True,
+        help_text='Optional site path or full URL, for example /explore-kenya/.',
+    )
+    is_active = models.BooleanField(
+        default=True,
+        help_text='Turn the section off only when the page should hide it.',
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = 'Content Section'
+        verbose_name_plural = 'Content Sections'
+
+    def __str__(self):
+        return self.name
+
+
 class HeroSlider(models.Model):
     """
     Dynamic hero slider model for homepage management
     """
+    section = models.ForeignKey(
+        ContentSection,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='hero_slides',
+        help_text='The content section this slide belongs to. Leave blank only for legacy fallback slides.',
+    )
     title = models.CharField(
         max_length=200,
         blank=True,
@@ -906,8 +970,8 @@ class HeroSlider(models.Model):
         help_text="Optional subtitle for the hero slide"
     )
     image = ImageField(
-        manual_crop="2048x1080",
-        help_text="Hero slider image (recommended size: 2048x1080px for optimal quality)"
+        manual_crop="2048x768",
+        help_text="Hero slider image (recommended size: 2048x768px, wide 8:3 composition)"
     )
     is_active = models.BooleanField(
         default=True,
@@ -946,9 +1010,12 @@ class HeroSlider(models.Model):
         return f"Hero Slide {self.id}"
 
     @classmethod
-    def get_active_slides(cls):
-        """Get all active slides ordered by their order field"""
-        return cls.objects.filter(is_active=True).order_by('order')
+    def get_active_slides(cls, section=None):
+        """Get active slides for a section, ordered for the public page."""
+        slides = cls.objects.filter(is_active=True)
+        if section is not None:
+            slides = slides.filter(section=section)
+        return slides.order_by('order', '-created_at')
 
     def get_image_url(self):
         """Get the image URL with fallback to default"""

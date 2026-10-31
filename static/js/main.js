@@ -130,7 +130,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       heroSlideTitle.textContent = activeSlide.getAttribute('data-title') || '';
       heroSlideTag.textContent = activeSlide.getAttribute('data-tag') || '';
-      if (heroCta) heroCta.href = activeSlide.getAttribute('data-url') || '#';
+      if (heroCta) {
+        heroCta.href = activeSlide.getAttribute('data-url') || '#';
+        const ctaText = heroCta.querySelector('span');
+        if (ctaText) ctaText.textContent = activeSlide.getAttribute('data-cta-text') || 'Take Me There';
+      }
     }
     currentSlide = idx;
   }

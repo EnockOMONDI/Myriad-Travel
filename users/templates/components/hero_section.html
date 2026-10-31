@@ -1,6 +1,14 @@
 {% load static %}
 <section id="hero" class="relative w-full overflow-hidden bg-slate-950 text-white">
   <div class="absolute inset-0 z-0">
+    {% if hero_slides %}
+    {% for slide in hero_slides %}
+    <div class="hero-slide absolute inset-0 transition-opacity duration-2000 ease-in-out {% if forloop.first %}opacity-100 scale-100{% else %}opacity-0 scale-105 pointer-events-none{% endif %}" data-title="{{ hero_section.title|default:'Beyond Imagination'|escapejs }}" data-tag="{{ slide.title|default:slide.subtitle|default:'Explore Kenya'|escapejs }}" data-url="{{ slide.cta_url|default:hero_section.cta_url|default:'#'|escapejs }}" data-cta-text="{{ slide.cta_text|default:hero_section.cta_text|default:'Take Me There'|escapejs }}">
+      <img src="{{ slide.get_image_url }}" alt="{{ slide.title|default:hero_section.title|default:'Myriad Travel' }}" class="w-full h-full object-cover object-center" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}" />
+      <div class="absolute inset-0 bg-black/25"></div>
+    </div>
+    {% endfor %}
+    {% else %}
     <div class="hero-slide absolute inset-0 transition-opacity duration-2000 ease-in-out opacity-100 scale-100" data-title="Beyond Imagination" data-tag="Explore Kenya" data-url="{% url 'users:explore_kenya' %}">
       <img src="{% static 'images/hero/discover-kenya.jpeg' %}" alt="Elephants beneath Mount Kilimanjaro" class="w-full h-full object-cover object-center" loading="eager" />
       <div class="absolute inset-0 bg-black/25"></div>
@@ -25,6 +33,7 @@
       <img src="{% static 'images/hero/signature-tours.jpeg' %}" alt="Myriad Travel seasonal deal" class="w-full h-full object-cover object-center" loading="lazy" />
       <div class="absolute inset-0 bg-black/25"></div>
     </div>
+    {% endif %}
   </div>
 
   <button type="button" id="hero-prev-btn" class="absolute left-6 sm:left-10 top-1/2 z-20 -translate-y-1/2 h-11 w-11 rounded-full border border-white/70 text-white hover:bg-white/15 transition-colors flex items-center justify-center" aria-label="Previous slide">
@@ -41,10 +50,11 @@
       </p>
 
       <h1 id="hero-heading" class="whitespace-nowrap text-3xl sm:text-6xl lg:text-[6rem] font-sans font-extrabold leading-none text-white">
-        Beyond Imagination
+        {{ hero_section.title|default:'Beyond Imagination' }}
       </h1>
+      {% if hero_section.description %}<p id="hero-description" class="mx-auto max-w-2xl text-sm leading-7 text-white/90 sm:text-base">{{ hero_section.description }}</p>{% endif %}
       <a id="hero-cta" href="{% url 'users:explore_kenya' %}" class="inline-flex items-center justify-center gap-3 min-w-52 px-8 py-4 border border-white/90 text-white text-sm font-bold hover:bg-white hover:text-slate-950 transition-colors">
-        <span>Take Me There</span>
+        <span>{{ hero_section.cta_text|default:'Take Me There' }}</span>
         <i data-lucide="arrow-right" class="w-5 h-5"></i>
       </a>
     </div>
