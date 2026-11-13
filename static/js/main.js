@@ -352,6 +352,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const planModal = document.getElementById('plan-trip-modal');
   const openPlanBtns = document.querySelectorAll('.open-plan-modal-btn');
   const closePlanBtn = document.getElementById('close-plan-modal-btn');
+  const serviceModalContent = document.getElementById('service-inquiry-modal-content');
+  const genericPlanContent = document.getElementById('generic-plan-content');
+  const planModalTitle = document.getElementById('plan-modal-title');
+  const planModalDescription = document.getElementById('plan-modal-description');
+  const defaultPlanModalTitle = planModalTitle?.textContent?.trim() || '';
+  const defaultPlanModalDescription = planModalDescription?.textContent?.trim() || '';
+
+  function resetPlanModalContent() {
+    if (serviceModalContent) {
+      serviceModalContent.classList.add('hidden');
+      serviceModalContent.innerHTML = '';
+    }
+    if (genericPlanContent) genericPlanContent.classList.remove('hidden');
+    if (planModalTitle) planModalTitle.textContent = defaultPlanModalTitle;
+    if (planModalDescription) planModalDescription.textContent = defaultPlanModalDescription;
+  }
 
   function openPlanTripModal() {
     if (planModal) planModal.classList.remove('hidden');
@@ -361,12 +377,78 @@ document.addEventListener('DOMContentLoaded', () => {
   function closePlanTripModal() {
     if (planModal) planModal.classList.add('hidden');
     document.body.style.overflow = '';
+    resetPlanModalContent();
+  }
+
+  function setServiceModalHeader(fragment) {
+    if (planModalTitle) planModalTitle.textContent = fragment.dataset.serviceTitle || 'Myriad Travel enquiry';
+    if (planModalDescription) planModalDescription.textContent = fragment.dataset.serviceDescription || 'Share your details and our team will get back to you.';
+  }
+
+  function bindServiceModalForm() {
+    const form = serviceModalContent?.querySelector('[data-service-inquiry-form]');
+    if (!form) return;
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const submit = form.querySelector('button[type="submit"]');
+      if (submit) {
+        submit.disabled = true;
+        submit.textContent = 'Sending…';
+      }
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: {'X-Requested-With': 'XMLHttpRequest'},
+        });
+        if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+        serviceModalContent.innerHTML = await response.text();
+        const fragment = serviceModalContent.querySelector('.service-modal-fragment');
+        if (fragment) setServiceModalHeader(fragment);
+        serviceModalContent.querySelector('[data-close-service-modal]')?.addEventListener('click', closePlanTripModal);
+        bindServiceModalForm();
+        if (window.lucide) window.lucide.createIcons();
+      } catch (error) {
+        if (submit) {
+          submit.disabled = false;
+          submit.textContent = 'Try again';
+        }
+        const errorMessage = document.createElement('p');
+        errorMessage.className = 'mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-700';
+        errorMessage.textContent = 'We could not send this enquiry right now. Your entered details are still on the form; please try again.';
+        form.prepend(errorMessage);
+      }
+    });
+  }
+
+  async function openServiceInquiryModal(service) {
+    openPlanTripModal();
+    if (!serviceModalContent) return;
+    if (genericPlanContent) genericPlanContent.classList.add('hidden');
+    serviceModalContent.classList.remove('hidden');
+    serviceModalContent.innerHTML = '<div class="p-10 text-center text-sm text-slate-600">Loading the enquiry form…</div>';
+    try {
+      const response = await fetch(`/enquire/modal/${encodeURIComponent(service)}/`, {
+        headers: {'X-Requested-With': 'XMLHttpRequest'},
+      });
+      if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+      serviceModalContent.innerHTML = await response.text();
+      const fragment = serviceModalContent.querySelector('.service-modal-fragment');
+      if (fragment) setServiceModalHeader(fragment);
+      bindServiceModalForm();
+      if (window.lucide) window.lucide.createIcons();
+    } catch (error) {
+      serviceModalContent.innerHTML = '<div class="p-10 text-center"><p class="text-sm text-red-700">The enquiry form could not be loaded. Please try again or contact Myriad Travel directly.</p><button type="button" data-close-service-modal class="mt-5 rounded-xl border border-slate-300 px-5 py-3 text-sm font-bold">Close</button></div>';
+      serviceModalContent.querySelector('[data-close-service-modal]')?.addEventListener('click', closePlanTripModal);
+    }
   }
 
   openPlanBtns.forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
-      openPlanTripModal();
+      const service = btn.getAttribute('data-service-inquiry');
+      if (service) openServiceInquiryModal(service);
+      else openPlanTripModal();
     });
   });
 

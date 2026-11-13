@@ -601,6 +601,15 @@ SERVICE_FORM_CONTENT = {
     },
 }
 
+SERVICE_INQUIRY_FORM_CLASSES = {
+    'tours': TourSafariInquiryForm,
+    'hotels': HotelInquiryForm,
+    'flights': FlightInquiryForm,
+    'transfers': TransferInquiryForm,
+    'visa': VisaInquiryForm,
+    'mice': MICEInquiryForm,
+}
+
 
 def _service_inquiry(request, form_class, service_key):
     """Save once, notify over HTTPS, and redirect even if notification fails."""
@@ -627,6 +636,37 @@ def _service_inquiry(request, form_class, service_key):
             messages.warning(request, 'Your inquiry has been saved, but the email notification could not be sent. Please do not resubmit. You can contact us directly for assistance.')
         return redirect('users:service_inquiry_success', service=service_key)
     return render(request, 'users/service_inquiry_form.html', {'form': form, **content})
+
+
+def service_inquiry_modal(request, service):
+    """Render the existing service inquiry workflow as an in-page modal fragment."""
+    form_class = SERVICE_INQUIRY_FORM_CLASSES.get(service)
+    content = SERVICE_FORM_CONTENT.get(service)
+    if not form_class or not content:
+        raise Http404('Unknown service inquiry')
+
+    from .inquiry_email import send_service_inquiry_emails
+
+    form = form_class(request.POST or None, request=request)
+    if request.method == 'POST' and form.is_valid():
+        from .antispam import check_form_submission
+        if not check_form_submission(request, form.cleaned_data.get('email', '')):
+            from .antispam import SECURITY_BLOCK_MESSAGE
+            form.add_error(None, SECURITY_BLOCK_MESSAGE)
+        else:
+            inquiry = form.save()
+            sent = send_service_inquiry_emails(inquiry, form, service)
+            return render(request, 'users/includes/service_inquiry_modal_success.html', {
+                **content,
+                'reference': getattr(inquiry, 'short_reference', str(inquiry.pk)),
+                'notification_warning': not sent,
+            })
+
+    return render(request, 'users/includes/service_inquiry_modal_form.html', {
+        **content,
+        'form': form,
+        'service': service,
+    })
 
 
 def service_inquiry_success(request, service):
@@ -1387,36 +1427,45 @@ def home(request):
         context['home_deals_section'] = ContentSection.objects.filter(
             section_key='homepage-deals', is_active=True,
         ).first()
-        kenya_preferences = ('Chalbi', 'Maasai Mara', 'Amboseli', 'Diani', 'Watamu')
+        kenya_preferences = (
+            ('Maasai Mara', ('maasai mara',)),
+            ('Amboseli', ('amboseli',)),
+            ('Lake Nakuru', ('lake nakuru', 'nakuru')),
+            ('Lake Naivasha', ('lake naivasha', 'naivasha')),
+        )
         kenya_packages = list(
             Package.objects.select_related('main_destination', 'category').prefetch_related('collections')
             .filter(status=Package.PUBLISHED)
             .order_by('home_rank', '-is_featured', '-published_at', '-created_at')
         )
-        preferred_kenya = [
-            item for requested in kenya_preferences
-            for item in kenya_packages
-            if item.main_destination and requested.lower() in item.main_destination.get_full_name().lower()
-        ]
-        selected_kenya = list(dict.fromkeys(preferred_kenya))[:4]
-        if len(selected_kenya) < 4:
-            selected_kenya.extend(item for item in kenya_packages if item not in selected_kenya)
-        context['homepage_kenya_packages'] = [_package_presenter(item) for item in selected_kenya[:4]]
+        selected_kenya = []
+        for _, requested_aliases in kenya_preferences:
+            match = next(
+                (
+                    item for item in kenya_packages
+                    if any(
+                        alias in item.name.lower()
+                        or (item.main_destination and alias in item.main_destination.get_full_name().lower())
+                        for alias in requested_aliases
+                    )
+                ),
+                None,
+            )
+            if match:
+                selected_kenya.append(match)
+        context['homepage_kenya_packages'] = [_package_presenter(item) for item in selected_kenya]
+        homepage_tours_packages = _packages_for_collection().filter(
+            Q(region__in=['kenya-safari', 'kenya-coast', 'day-trips'])
+            | Q(category__slug__in=TOURS_SAFARI_CATEGORY_SLUGS)
+            | Q(categories__slug__in=TOURS_SAFARI_CATEGORY_SLUGS)
+        ).exclude(
+            Q(category__slug__in=SIGNATURE_CATEGORY_SLUGS)
+            | Q(categories__slug__in=SIGNATURE_CATEGORY_SLUGS)
+        ).distinct()[:4]
+        context['homepage_tours_packages'] = [_package_presenter(item) for item in homepage_tours_packages]
         context['homepage_world_destinations'] = _homepage_destination_cards(
             ('Dubai', 'South Africa', 'Egypt', 'Maldives', 'Seychelles', 'Rwanda'), 6
         )
-        from adminside.models import Campaign
-        from django.utils import timezone
-        now = timezone.now()
-        today = timezone.localtime(now).date() if timezone.is_aware(now) else now.date()
-        campaigns = Campaign.objects.filter(
-            is_active=True, starts_on__lte=today, ends_on__gte=today,
-            package__status=Package.PUBLISHED,
-        ).select_related('package__category', 'package__main_destination')[:4]
-        context['current_campaigns'] = [
-            {'title': campaign.title, 'travel_dates': campaign.travel_dates,
-             'pkg': _package_presenter(campaign.package)} for campaign in campaigns
-        ]
         return render(request, 'users/pages/home.html', context)
 
 
@@ -1632,6 +1681,11 @@ def documentation(request):
     }
 
     return render(request, 'users/documentation.html', context)
+
+
+def travel_information(request):
+    """Public travel guidance hub used by the footer information links."""
+    return render(request, 'users/travel_information.html')
 
 
 @login_required

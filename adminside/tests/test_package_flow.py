@@ -1,5 +1,6 @@
 from datetime import time, timedelta
 from pathlib import Path
+from unittest.mock import patch
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -9,7 +10,7 @@ from django.utils import timezone
 
 from adminside.admin import PackageAdminForm
 from adminside.package_wizard import DestinationQuickCreateForm, PackageContentForm, PackageOptionsForm
-from adminside.models import Accommodation, Campaign, Destination, Package, PackingListItem, TravelCollection, TravelMode
+from adminside.models import Accommodation, Campaign, Destination, Package, PackageCategory, PackingListItem, TravelCollection, TravelMode
 from users.views import _destination_ids_for_page, _destination_tree_ids, _packages_for_destinations, _region_cards
 
 
@@ -62,6 +63,29 @@ class PackageFlowTests(TestCase):
         africa = next(card for card in _region_cards() if card['slug'] == 'africa')
         self.assertEqual(africa['destination_count'], 1)
         self.assertEqual(africa['package_count'], 1)
+
+    def test_homepage_places_four_tours_packages_after_world_section(self):
+        category = PackageCategory.objects.create(
+            name='Wildlife Safaris', slug='wildlife-safaris', is_active=True,
+        )
+        for order in range(1, 5):
+            package = Package.objects.create(
+                name=f'Homepage Tour {order}', slug=f'homepage-tour-{order}',
+                description='Homepage tour package', main_destination=self.destination,
+                duration_days=3, duration_nights=2, adult_price=50000 + order,
+                child_price=30000, status=Package.PUBLISHED, home_rank=order,
+            )
+            package.category = category
+            package.save(update_fields=['category'])
+
+        response = self.client.get(reverse('users:users-home'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'id="tours-safaris-home"')
+        self.assertContains(response, 'images/partners/safaribookings.png')
+        self.assertNotContains(response, 'Current Campaigns')
+        for order in range(1, 5):
+            self.assertContains(response, f'Homepage Tour {order}')
 
     def test_package_admin_exposes_existing_collections_as_multi_select(self):
         first = TravelCollection.objects.create(name='Kenya Safaris', slug='kenya-safaris', section='safaris')
@@ -211,6 +235,32 @@ class PackageFlowTests(TestCase):
         self.assertEqual(created.packing_list_custom, 'Sun hat, Power bank')
         self.assertEqual(list(created.available_accommodations.all()), [accommodation])
         self.assertEqual(list(created.available_travel_modes.all()), [travel_mode])
+
+    def test_package_wizard_preserves_final_step_when_save_fails(self):
+        user = User.objects.create_user(
+            username='wizard-recovery-admin', password='password123', is_staff=True,
+        )
+        self.client.force_login(user)
+        session = self.client.session
+        session['adminside_package_wizard'] = {
+            '1': {'name': 'Recovery Safari', 'main_destination': self.destination.id, 'duration_days': 3, 'duration_nights': 2},
+            '2': {'legacy_collection': 'kenya-safari'},
+            '3': {'description': 'A recovery test package.', 'price_currency': 'KES', 'adult_price': 70000},
+        }
+        session.save()
+
+        with patch('adminside.package_wizard._save_package', side_effect=RuntimeError('simulated database failure')):
+            response = self.client.post(reverse('adminside:package_wizard'), {
+                'step': 4,
+                'status': Package.DRAFT,
+                'home_rank': 100,
+            })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Your form details are preserved')
+        saved = self.client.session['adminside_package_wizard']
+        self.assertEqual(saved['1']['name'], 'Recovery Safari')
+        self.assertEqual(saved['4']['status'], Package.DRAFT)
 
     def test_package_wizard_can_create_and_select_missing_destination(self):
         user = User.objects.create_user(

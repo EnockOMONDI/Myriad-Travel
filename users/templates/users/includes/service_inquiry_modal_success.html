@@ -1,0 +1,9 @@
+<div class="service-modal-fragment p-8 text-center sm:p-10" data-service-title="{{ success_title }}" data-service-description="{{ success_message }}">
+  <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#1abdaf]/15 text-2xl text-[#1abdaf]">✓</div>
+  <p class="mt-5 text-xs font-bold uppercase tracking-[0.22em] text-[#EB3728]">{{ eyebrow }}</p>
+  <h3 class="mt-3 text-2xl font-extrabold text-[#0B192C]">{{ success_title }}</h3>
+  <p class="mx-auto mt-4 max-w-xl text-sm leading-7 text-slate-600">{{ success_message }}</p>
+  {% if reference %}<p class="mt-5 text-sm font-bold text-[#0B192C]">Reference: {{ reference }}</p>{% endif %}
+  {% if notification_warning %}<p class="mt-4 rounded-xl bg-amber-50 p-3 text-xs leading-5 text-amber-800">Your enquiry was saved, but the email notification could not be sent. Please do not resubmit.</p>{% endif %}
+  <button type="button" data-close-service-modal class="mt-7 rounded-xl border border-slate-300 px-6 py-3 text-sm font-bold text-[#0B192C]">Close</button>
+</div>

@@ -1,211 +1,103 @@
 {% load static %}
-<footer id="footer-section" class="bg-[#071321] text-white border-t border-slate-800">
-  <!-- Top CTA Banner -->
-  <div class="border-b border-slate-800/80 bg-gradient-to-r from-[#EB3728]/20 via-slate-900/50 to-[#1abdaf]/20 py-12 px-4 sm:px-8">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-      <div class="space-y-2">
-        <h3 class="text-xl sm:text-2xl font-bold font-serif text-white">
-          Ready to plan your next trip?
-        </h3>
-        <p class="text-xs sm:text-sm text-slate-300">
-          Talk to the Nairobi team and share where you want to go, your dates, and your budget.
-        </p>
+<footer id="footer-section" class="border-t border-slate-800 bg-[#071321] text-white">
+  <div class="border-b border-slate-800/80 bg-gradient-to-r from-[#EB3728]/20 via-slate-900/50 to-[#1abdaf]/20 px-4 py-10 sm:px-8">
+    <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
+      <div>
+        <h3 class="font-serif text-xl font-bold text-white sm:text-2xl">Ready to plan your next trip?</h3>
+        <p class="mt-2 text-xs text-slate-300 sm:text-sm">Talk to the Nairobi team and share where you want to go, your dates, and your budget.</p>
       </div>
-
       <div class="flex flex-wrap items-center justify-center gap-3">
-        <button
-          type="button"
-          class="open-plan-modal-btn px-6 py-3 bg-[#EB3728] hover:bg-[#EB3728] text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all cursor-pointer"
-        >
-          Start Custom Itinerary
-        </button>
-        <a
-          href="https://wa.me/{{ company.contacts.whatsapp|default:'254712236522' }}?text=Hello%20Myriad%20Travel,%20I%20would%20like%20to%20plan%20a%20trip%20to%20Kenya.%20Please%20connect%20me%20with%20a%20safari%20consultant."
-          target="_blank"
-          rel="noopener noreferrer"
-          class="px-6 py-3 bg-[#1abdaf] hover:bg-[#1abdaf] text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer"
-        >
-          <i data-lucide="send" class="w-4 h-4"></i>
-          <span>Chat on WhatsApp</span>
+        <button type="button" class="open-plan-modal-btn cursor-pointer rounded-xl bg-[#EB3728] px-6 py-3 text-xs font-bold text-white shadow-md transition hover:bg-[#c92d20] sm:text-sm">Start Custom Itinerary</button>
+        <a href="https://wa.me/{{ company.contacts.whatsapp|default:'254712236522' }}?text=Hello%20Myriad%20Travel,%20I%20would%20like%20to%20plan%20a%20trip%20to%20Kenya.%20Please%20connect%20me%20with%20a%20safari%20consultant." target="_blank" rel="noopener noreferrer" class="flex cursor-pointer items-center gap-2 rounded-xl bg-[#1abdaf] px-6 py-3 text-xs font-bold text-white shadow-md transition hover:bg-[#119d91] sm:text-sm">
+          <i data-lucide="send" class="h-4 w-4"></i><span>Chat on WhatsApp</span>
         </a>
       </div>
     </div>
   </div>
 
-  <!-- Main Footer Content -->
-  <div class="max-w-7xl mx-auto px-4 sm:px-8 py-16">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
-      <!-- Col 1 & 2: Company Overview & Accreditations (2 cols) -->
-      <div class="lg:col-span-2 space-y-6">
-        <div class="space-y-3">
-          <div class="flex items-center gap-3">
-            <img
-              src="{% static 'images/myriad-logo.webp' %}"
-              alt="{{ company.name|default:'Myriad Travel' }}"
-              class="h-10 sm:h-12 w-auto object-contain bg-white/95 p-1.5 rounded-lg shadow-sm"
-            />
-            <div>
-              <span class="text-lg font-bold font-serif text-white tracking-tight block">
-                {{ company.name|default:"Myriad Travel" }}
-              </span>
-              <span class="text-[11px] font-semibold text-[#EB3728] tracking-widest uppercase block">
-                {{ company.tagline|default:"Beyond Imagination" }}
-              </span>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Official Licensing & Badges -->
-        <div class="space-y-2 pt-2">
-          <span class="text-[11px] font-bold text-[#EB3728] uppercase tracking-wider block">
-            Accreditations &amp; Partner Authorities
-          </span>
-          <div class="flex flex-wrap items-center gap-3">
-            <div class="bg-white/90 p-1.5 rounded-lg shadow-2xs hover:bg-white transition-colors" title="Tourism Regulatory Authority">
-              <img src="{% static 'images/partners/tra.webp' %}" alt="TRA Kenya" class="h-6 w-auto object-contain max-w-[60px]" />
-            </div>
-            <div class="bg-white/90 p-1.5 rounded-lg shadow-2xs hover:bg-white transition-colors" title="Kenya Wildlife Service">
-              <img src="{% static 'images/partners/kws.webp' %}" alt="KWS" class="h-6 w-auto object-contain max-w-[60px]" />
-            </div>
-            <div class="bg-white/90 p-1.5 rounded-lg shadow-2xs hover:bg-white transition-colors" title="Magical Kenya">
-              <img src="{% static 'images/partners/magical.webp' %}" alt="Magical Kenya" class="h-6 w-auto object-contain max-w-[60px]" />
-            </div>
-            <div class="bg-white/90 p-1.5 rounded-lg shadow-2xs hover:bg-white transition-colors" title="KATO Member">
-              <img src="{% static 'images/partners/kato.webp' %}" alt="KATO" class="h-6 w-auto object-contain max-w-[60px]" />
-            </div>
-          </div>
-        </div>
-
-        <!-- SafariBookings Rating -->
-        <div class="inline-flex items-center gap-2 bg-slate-900 px-3.5 py-2 rounded-xl border border-slate-800 text-xs">
-          <div class="flex text-[#EB3728]">
-            <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
-            <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
-            <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
-            <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
-            <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i>
-          </div>
-          <span class="text-white font-bold">5.0 / 5.0</span>
-          <span class="text-slate-400 font-medium">SafariBookings Certified</span>
+  <div class="mx-auto max-w-7xl px-4 py-14 sm:px-8">
+    <div class="grid grid-cols-1 gap-12 lg:grid-cols-[1.35fr_1fr_1fr_1fr_1.2fr]">
+      <div class="space-y-5">
+        <a href="/" class="inline-flex items-center gap-3">
+          <img src="{% static 'images/myriad-logo.webp' %}" alt="Myriad Travel" class="h-12 w-auto rounded-lg bg-white/95 p-1.5" />
+          <span><span class="block font-serif text-lg font-bold">Myriad Travel</span><span class="block text-[11px] font-semibold uppercase tracking-widest text-[#EB3728]">Beyond Imagination</span></span>
+        </a>
+        <p class="max-w-xs text-sm leading-6 text-slate-300">Discover Kenya, explore Africa and experience the world with Myriad Travel. From unforgettable safaris to international holidays, we make every journey memorable.</p>
+        <div class="flex items-center gap-3 text-slate-300">
+          <a href="{{ company.socials.facebook|default:'#' }}" aria-label="Facebook" class="transition hover:text-[#1abdaf]"><i data-lucide="facebook" class="h-4 w-4"></i></a>
+          <a href="{{ company.socials.instagram|default:'#' }}" aria-label="Instagram" class="transition hover:text-[#1abdaf]"><i data-lucide="instagram" class="h-4 w-4"></i></a>
+          <a href="{{ company.socials.tiktok|default:'#' }}" aria-label="TikTok" class="transition hover:text-[#1abdaf]"><i data-lucide="music-2" class="h-4 w-4"></i></a>
+          <a href="https://wa.me/{{ company.contacts.whatsapp|default:'254712236522' }}" aria-label="WhatsApp" class="transition hover:text-[#1abdaf]"><i data-lucide="message-circle" class="h-4 w-4"></i></a>
         </div>
       </div>
 
-      <!-- Col 3: Current database-backed deals -->
-      {% if current_deals %}
       <div class="space-y-4">
-        <h4 class="text-xs font-bold uppercase tracking-wider text-[#EB3728]">
-          Current Deals
-        </h4>
-        <ul class="space-y-2.5 text-xs text-slate-300">
-          {% for campaign in current_deals %}<li><a href="{% url 'users:package_detail' campaign.package.slug %}" class="hover:text-[#EB3728] transition-colors">{{ campaign.title }}</a></li>{% endfor %}
-        </ul>
-      </div>
-      {% endif %}
-
-      <!-- Col 4: Corporate & Concierge Services -->
-      <div class="space-y-4">
-        <h4 class="text-xs font-bold uppercase tracking-wider text-[#EB3728]">
-          Travel Services
-        </h4>
-        <ul class="space-y-2.5 text-xs text-slate-300">
-          <li>
-            <a href="/#services-section" class="hover:text-[#EB3728] transition-colors">
-              Flight Ticketing &amp; Bush Charters
-            </a>
-          </li>
-          <li>
-            <a href="/#services-section" class="hover:text-[#EB3728] transition-colors">
-              Corporate Travel &amp; MICE Retreats
-            </a>
-          </li>
-          <li>
-            <a href="/#services-section" class="hover:text-[#EB3728] transition-colors">
-              4x4 Safari Land Cruiser Hire
-            </a>
-          </li>
-          <li>
-            <a href="/#services-section" class="hover:text-[#EB3728] transition-colors">
-              Kenya eTA &amp; Visa Advisory
-            </a>
-          </li>
-          <li>
-            <a href="/#services-section" class="hover:text-[#EB3728] transition-colors">
-              JKIA / Wilson Airport VIP Transfers
-            </a>
-          </li>
-          <li>
-            <a href="/#services-section" class="hover:text-[#EB3728] transition-colors">
-              Team Building in Naivasha &amp; Nanyuki
-            </a>
-          </li>
+        <h4 class="text-xs font-bold uppercase tracking-wider text-[#EB3728]">Top Destinations</h4>
+        <ul class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-slate-300">
+          <li><a href="/destinations/kenya/" class="hover:text-white">Kenya</a></li>
+          <li><a href="/explore-the-world/africa/" class="hover:text-white">Tanzania</a></li>
+          <li><a href="/explore-the-world/indian-ocean-islands/" class="hover:text-white">Zanzibar</a></li>
+          <li><a href="/destinations/south-africa/" class="hover:text-white">South Africa</a></li>
+          <li><a href="/explore-the-world/middle-east/" class="hover:text-white">Dubai</a></li>
+          <li><a href="/explore-the-world/africa/" class="hover:text-white">Egypt</a></li>
+          <li><a href="/explore-the-world/indian-ocean-islands/" class="hover:text-white">Mauritius</a></li>
+          <li><a href="/explore-the-world/indian-ocean-islands/" class="hover:text-white">Seychelles</a></li>
+          <li><a href="/explore-the-world/indian-ocean-islands/" class="hover:text-white">Maldives</a></li>
         </ul>
       </div>
 
-      <!-- Col 5: Physical Contact & Office Location -->
       <div class="space-y-4">
-        <h4 class="text-xs font-bold uppercase tracking-wider text-[#EB3728]">
-          Nairobi Office
-        </h4>
-        <div class="space-y-3 text-xs text-slate-300">
-          <div class="flex items-start gap-2.5">
-            <i data-lucide="map-pin" class="w-4 h-4 text-[#EB3728] shrink-0 mt-0.5"></i>
-            <span class="leading-snug">
-              {{ company.address.full|default:"Parklands, Crescent Business Center, 6th Floor, Nairobi, Kenya" }}
-            </span>
-          </div>
+        <h4 class="text-xs font-bold uppercase tracking-wider text-[#EB3728]">Our Services</h4>
+        <ul class="space-y-2 text-sm text-slate-300">
+          <li><a href="/aboutus/#our-services" class="hover:text-white">Tours &amp; Safaris</a></li>
+          <li><a href="/aboutus/#our-services" class="hover:text-white">Hotel Bookings</a></li>
+          <li><a href="/aboutus/#our-services" class="hover:text-white">Flight Bookings</a></li>
+          <li><a href="/aboutus/#our-services" class="hover:text-white">Ground Handling &amp; Transfers</a></li>
+          <li><a href="/aboutus/#our-services" class="hover:text-white">Visa Processing</a></li>
+          <li><a href="/aboutus/#our-services" class="hover:text-white">Corporate Travel &amp; MICE</a></li>
+        </ul>
+      </div>
 
-          <div class="flex items-start gap-2.5">
-            <i data-lucide="phone" class="w-4 h-4 text-[#1abdaf] shrink-0 mt-0.5"></i>
-            <div class="space-y-0.5">
-              <a href="tel:{{ company.contacts.primary_phone|default:'+254712236522' }}" class="hover:text-white block">
-                {{ company.contacts.phone_formatted|default:"+254 (0) 712 236 522" }}
-              </a>
-              <a href="tel:{{ company.contacts.alt_phone|default:'+254113446213' }}" class="hover:text-white block">
-                {{ company.contacts.alt_phone|default:"+254 113 446 213" }}
-              </a>
-            </div>
-          </div>
+      <div class="space-y-4">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-[#EB3728]">Travel Information</h4>
+        <ul class="space-y-2 text-sm text-slate-300">
+          <li><a href="/travel-information/#safari-faqs" class="hover:text-white">Safari FAQs</a></li>
+          <li><a href="/travel-information/#packing-guide" class="hover:text-white">Safari Packing Guide</a></li>
+          <li><a href="/travel-information/#visa-entry" class="hover:text-white">Visa &amp; Entry Requirements</a></li>
+          <li><a href="/travel-information/#travel-insurance" class="hover:text-white">Travel Insurance</a></li>
+          <li><a href="/travel-information/#tipping-guide" class="hover:text-white">Tipping Guide</a></li>
+          <li><a href="/travel-information/#booking-terms" class="hover:text-white">Booking Terms &amp; Conditions</a></li>
+          <li><a href="/blog/" class="hover:text-white">Travel Blog</a></li>
+        </ul>
+      </div>
 
-          <div class="flex items-start gap-2.5">
-            <i data-lucide="mail" class="w-4 h-4 text-[#1abdaf] shrink-0 mt-0.5"></i>
-            <div class="space-y-0.5">
-              <a href="mailto:{{ company.contacts.email_general|default:'info@myriad-travel.com' }}" class="hover:text-white block">
-                {{ company.contacts.email_general|default:"info@myriad-travel.com" }}
-              </a>
-              <a href="mailto:{{ company.contacts.email_marketing|default:'marketing@myriad-travel.com' }}" class="hover:text-white block">
-                {{ company.contacts.email_marketing|default:"marketing@myriad-travel.com" }}
-              </a>
-            </div>
-          </div>
-
-          <div class="flex items-start gap-2.5">
-            <i data-lucide="clock" class="w-4 h-4 text-slate-400 shrink-0 mt-0.5"></i>
-            <div class="space-y-0.5 text-[11px] text-slate-400">
-              <span>Mon - Fri: 8:30 AM – 5:30 PM (EAT)</span>
-              <span class="block">Saturday: 9:00 AM – 1:00 PM (EAT)</span>
-              <span class="text-[#1abdaf] font-semibold block">
-                24/7 Client Ground Support &amp; WhatsApp
-              </span>
-            </div>
-          </div>
-        </div>
+      <div class="space-y-4">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-[#EB3728]">Quick Links</h4>
+        <ul class="space-y-2 text-sm text-slate-300">
+          <li><a href="/" class="hover:text-white">Home</a></li>
+          <li><a href="/aboutus/" class="hover:text-white">About Myriad</a></li>
+          <li><a href="/explore-kenya/" class="hover:text-white">Explore Kenya</a></li>
+          <li><a href="/explore-the-world/" class="hover:text-white">Explore the World</a></li>
+          <li><a href="/tours-safaris/" class="hover:text-white">Tours &amp; Safaris</a></li>
+          <li><a href="/themed-packages/" class="hover:text-white">Themed Experiences</a></li>
+          <li><a href="/deals/" class="hover:text-white">Special Offers</a></li>
+          <li><a href="/quote/" class="hover:text-white">Request a Quote</a></li>
+          <li><a href="/contact/" class="hover:text-white">Contact Us</a></li>
+        </ul>
       </div>
     </div>
 
-    <!-- Bottom Copyright Bar -->
-    <div class="pt-12 mt-12 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-      <div>
-        &copy; {% now "Y" %} {{ company.name|default:"Myriad Travel" }}. All Rights Reserved. Licensed by Tourism Regulatory Authority of Kenya (TRA).
+    <div class="mt-12 border-t border-slate-800/80 pt-8">
+      <div class="grid gap-4 text-sm text-slate-300 md:grid-cols-3">
+        <div class="flex items-start gap-2"><i data-lucide="map-pin" class="mt-0.5 h-4 w-4 shrink-0 text-[#EB3728]"></i><span>{{ company.address.full|default:'Crescent Business Center, 6th Floor, Parklands, Nairobi, Kenya' }}</span></div>
+        <div class="flex items-start gap-2"><i data-lucide="phone" class="mt-0.5 h-4 w-4 shrink-0 text-[#1abdaf]"></i><span><a href="tel:+254712236522" class="hover:text-white">+254 712 236 522</a> / <a href="tel:+254113446213" class="hover:text-white">+254 113 446 213</a></span></div>
+        <div class="flex items-start gap-2"><i data-lucide="mail" class="mt-0.5 h-4 w-4 shrink-0 text-[#1abdaf]"></i><a href="mailto:info@myriad-travel.com" class="hover:text-white">info@myriad-travel.com</a></div>
       </div>
+    </div>
 
-      <div class="flex items-center gap-4 text-slate-400">
-        <a href="#" class="hover:underline">Privacy Policy</a>
-        <span>•</span>
-        <a href="#" class="hover:underline">Terms of Service</a>
-        <span>•</span>
-        <a href="#" class="hover:underline">Booking Conditions</a>
-      </div>
+    <div class="mt-8 flex flex-col items-center justify-between gap-4 border-t border-slate-800/80 pt-6 text-xs text-slate-500 sm:flex-row">
+      <span>&copy; {% now "Y" %} {{ company.name|default:"Myriad Travel" }}. All Rights Reserved.</span>
+      <div class="flex items-center gap-4"><a href="/travel-information/#privacy" class="hover:text-white">Privacy Policy</a><span>•</span><a href="/travel-information/#booking-terms" class="hover:text-white">Terms of Service</a><span>•</span><a href="/travel-information/#booking-terms" class="hover:text-white">Booking Conditions</a></div>
     </div>
   </div>
 </footer>

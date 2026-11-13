@@ -140,6 +140,11 @@
           {% csrf_token %}<input type="hidden" name="step" value="{{ step }}">
           <div class="form-body">
             <div class="step-heading"><h2>{{ step_title }}</h2><p>{{ step_description }}</p></div>
+            {% if form.non_field_errors %}
+              <div class="notice" style="border-left-color:var(--red);background:#fff4f2;color:#7f1d1d;">
+                {% for error in form.non_field_errors %}<p style="margin:0;">{{ error }}</p>{% endfor %}
+              </div>
+            {% endif %}
             {% if step == 1 %}<div class="notice"><strong>Start with the place.</strong> Choose the exact destination where the experience happens. We will show its saved hierarchy here.</div>{% endif %}
             {% if step == 2 %}<div class="notice"><strong>Keep geography and marketing separate.</strong> The main package collection is the existing public grouping. Collections and categories help the package appear in more than one part of the website.</div>{% endif %}
             {% if step == 4 %}<div class="notice"><strong>Finish the public record.</strong> Add the image, availability, search metadata, and publishing status. Itinerary days, departures, and gallery images are managed as related records after creation.</div>{% endif %}

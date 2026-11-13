@@ -1,3 +1,5 @@
+import logging
+
 from django import forms
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -6,8 +8,12 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
+from pyuploadcare.dj.forms import ImageField as UploadcareImageField
 
 from .models import Accommodation, Destination, Package, PackageCategory, PackingListItem, TravelCollection, TravelMode
+
+
+logger = logging.getLogger(__name__)
 
 
 WIZARD_SESSION_KEY = "adminside_package_wizard"
@@ -216,7 +222,12 @@ class PackageOptionsForm(forms.Form):
         help_text="Select the existing flights, charter flights, vehicles, boats, trains, tour vans, cruise ships, or 4x4 cruisers available for this package.",
         widget=forms.CheckboxSelectMultiple,
     )
-    featured_image = forms.ImageField(required=False, label="Featured image", help_text="Use a clear image that represents this trip.")
+    featured_image = UploadcareImageField(
+        required=False,
+        label="Featured image",
+        help_text="Upload a clear image through Uploadcare. The image remains available if this step needs to be retried.",
+        manual_crop="4:4,16:10,16:9,4:3,3:2,1:1,9:16,4:5",
+    )
     status = forms.ChoiceField(choices=Package.STATUS_CHOICES, initial=Package.DRAFT, label="Publishing status")
     is_featured = forms.BooleanField(required=False, label="Feature this package")
     home_rank = forms.IntegerField(min_value=0, initial=100, label="Homepage order", help_text="Lower numbers appear first.")
@@ -341,10 +352,29 @@ def package_wizard(request):
             request.session.modified = True
             return redirect(f"{reverse('adminside:package_wizard')}?step={step + 1}")
 
-        _save_package(saved, form.cleaned_data)
-        request.session.pop(WIZARD_SESSION_KEY, None)
-        messages.success(request, "Package created as a draft. Review it before publishing.")
-        return redirect("admin:adminside_package_changelist")
+        # Preserve the final step as well as steps 1–3. If the database or an
+        # external image service fails, the administrator can retry without
+        # rebuilding the package from scratch.
+        saved[str(step)] = cleaned
+        request.session[WIZARD_SESSION_KEY] = saved
+        request.session.modified = True
+        options_for_save = dict(saved.get(str(step), {}))
+        options_for_save.update(form.cleaned_data)
+        # Browsers do not resend file inputs after a failed POST. Keep the
+        # Uploadcare URL already stored in the session when the administrator
+        # retries the final step without selecting the image again.
+        if not form.cleaned_data.get("featured_image"):
+            options_for_save["featured_image"] = saved.get(str(step), {}).get("featured_image")
+        try:
+            _save_package(saved, options_for_save)
+        except Exception:
+            logger.exception("Package wizard could not save the package on step %s", step)
+            form.add_error(None, "We could not save this package yet. Your form details are preserved; review the message and try again.")
+            messages.error(request, "The package was not created. Your entered details are still saved in this wizard.")
+        else:
+            request.session.pop(WIZARD_SESSION_KEY, None)
+            messages.success(request, "Package created as a draft. Review it before publishing.")
+            return redirect("admin:adminside_package_changelist")
 
     destination = None
     if saved.get("1", {}).get("main_destination"):
