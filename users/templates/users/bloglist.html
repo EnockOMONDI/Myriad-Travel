@@ -9,7 +9,7 @@
   .blog-hero {
     background:
       linear-gradient(90deg, rgba(18, 47, 70, 0.94), rgba(36, 95, 134, 0.72), rgba(235, 55, 40, 0.62)),
-      url("{% static 'images/hero/discover-kenya.jpeg' %}") center/cover;
+      url("{% static 'images/hero/discover-kenya.webp' %}") center/cover;
   }
 
   .blog-card-image {
@@ -106,7 +106,7 @@
                   {% if post.image %}
                     <img src="{{ post.image.cdn_url }}" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" alt="{{ post.title }}">
                   {% else %}
-                    <img src="{% static 'images/hero/tours-safaris.jpeg' %}" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" alt="{{ post.title }}">
+                    <img src="{% static 'images/hero/tours-safaris.webp' %}" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" alt="{{ post.title }}">
                   {% endif %}
                   <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
                   <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
@@ -128,7 +128,7 @@
                     {% if post.image %}
                       <img src="{{ post.image.cdn_url }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" alt="{{ post.title }}">
                     {% else %}
-                      <img src="{% static 'images/hero/beyond-imagination.jpeg' %}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" alt="{{ post.title }}">
+                      <img src="{% static 'images/hero/beyond-imagination.webp' %}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" alt="{{ post.title }}">
                     {% endif %}
                   </div>
                   <div class="min-w-0">
@@ -161,7 +161,7 @@
             {% if post.image %}
               <img src="{{ post.image.cdn_url }}" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" alt="{{ post.title }}">
             {% else %}
-              <img src="{% static 'images/hero/discover-kenya.jpeg' %}" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" alt="{{ post.title }}">
+              <img src="{% static 'images/hero/discover-kenya.webp' %}" class="h-full w-full object-cover transition duration-700 group-hover:scale-105" alt="{{ post.title }}">
             {% endif %}
           </div>
           <div class="flex flex-1 flex-col p-5">

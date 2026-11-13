@@ -66,7 +66,7 @@ def default_images(request):
         if config_key in default_images_urls:
             return default_images_urls[config_key]
         else:
-            return default_images_urls.get('DEFAULT', static('images/placeholders/myriad-package-placeholder.png'))
+            return default_images_urls.get('DEFAULT', static('images/placeholders/myriad-package-placeholder.webp'))
     
     # Helper function to get image URL with fallback
     def get_image_url_with_fallback(image_field, content_type='default', use_placeholder=False):
@@ -98,7 +98,7 @@ def default_images(request):
         
         # Use placeholder SVG if requested
         if use_placeholder:
-            return default_images_urls.get('PLACEHOLDER_SVG', static('images/placeholders/myriad-package-placeholder.png'))
+            return default_images_urls.get('PLACEHOLDER_SVG', static('images/placeholders/myriad-package-placeholder.webp'))
         
         # Use content-type specific default
         return get_default_for_content_type(content_type)
@@ -382,7 +382,7 @@ def navigation_collections(request):
         {'label': 'About Us', 'url': reverse('users:aboutus'), 'parent_clickable': True, 'sections': [
             {'label': 'About Myriad', 'url': reverse('users:aboutus'), 'items': [
                 {'label': 'Our Story', 'url': reverse('users:aboutus')},
-                {'label': 'Myriad Services', 'url': reverse('users:services')},
+                {'label': 'Myriad Services', 'url': f"{reverse('users:aboutus')}#our-services"},
                 {'label': 'Travel Blog', 'url': reverse('blog:blog-list')},
             ]},
         ]},
@@ -394,6 +394,19 @@ def navigation_collections(request):
         ]},
         {'label': 'Deals', 'url': reverse('users:deals'), 'parent_clickable': True, 'sections': []},
     ]
+    # Keep every menu entry structurally consistent. Besides simplifying the
+    # template, this prevents development logging from reporting missing
+    # optional dictionary keys on every page render.
+    for menu in menus:
+        menu.setdefault('parent_clickable', False)
+        menu.setdefault('sections', [])
+        for section in menu['sections']:
+            section.setdefault('url', menu.get('url', '/'))
+            section.setdefault('description', '')
+            section.setdefault('items', [])
+            section.setdefault('hide_browse', False)
+            section.setdefault('hide_view_all', False)
+
     return {
         'public_menus': menus,
         'current_deals': deals[:8],

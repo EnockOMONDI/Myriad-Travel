@@ -25,7 +25,7 @@ class Command(BaseCommand):
                 html_content = response.content.decode('utf-8')
                 
                 # Look for the inspiration section with background image
-                if 'assets/images/hero/3.png' in html_content:
+                if 'assets/images/hero/3.jpg' in html_content:
                     self.stdout.write(self.style.SUCCESS('✅ Background image (hero/3.png) found in HTML'))
                 else:
                     self.stdout.write(self.style.ERROR('❌ Background image not found in HTML'))

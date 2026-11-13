@@ -35,7 +35,7 @@
           {% if post.image %}
             <img src="{{ post.image.cdn_url }}" class="h-72 w-full object-cover sm:h-96" alt="{{ post.title }}">
           {% else %}
-            <img src="{% static 'images/hero/tours-safaris.jpeg' %}" class="h-72 w-full object-cover sm:h-96" alt="{{ post.title }}">
+            <img src="{% static 'images/hero/tours-safaris.webp' %}" class="h-72 w-full object-cover sm:h-96" alt="{{ post.title }}">
           {% endif %}
         </div>
       </div>
@@ -83,7 +83,7 @@
                     {% if recent.image %}
                       <img src="{{ recent.image.cdn_url }}" class="h-full w-full object-cover" alt="{{ recent.title }}">
                     {% else %}
-                      <img src="{% static 'images/hero/beyond-imagination.jpeg' %}" class="h-full w-full object-cover" alt="{{ recent.title }}">
+                      <img src="{% static 'images/hero/beyond-imagination.webp' %}" class="h-full w-full object-cover" alt="{{ recent.title }}">
                     {% endif %}
                   </div>
                   <div>

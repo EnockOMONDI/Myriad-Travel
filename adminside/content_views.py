@@ -8,11 +8,11 @@ from .models import ContentSection, HeroSlider
 
 
 DEFAULT_HERO_SLIDES = (
-    ('Explore Kenya', 'images/hero/discover-kenya.jpeg', 'Elephants beneath Mount Kilimanjaro'),
-    ('Explore The World', 'images/hero/beyond-imagination.jpeg', 'Turquoise island lagoon'),
-    ('Tours & Safaris', 'images/hero/tours-safaris.jpeg', 'Safari vehicle at sunset'),
-    ('Themed Experiences', 'images/hero/signature-tours.jpeg', 'Giraffes on open savannah'),
-    ('Deals', 'images/hero/signature-tours.jpeg', 'Myriad Travel seasonal deal'),
+    ('Explore Kenya', 'images/hero/discover-kenya.webp', 'Elephants beneath Mount Kilimanjaro'),
+    ('Explore The World', 'images/hero/beyond-imagination.webp', 'Turquoise island lagoon'),
+    ('Tours & Safaris', 'images/hero/tours-safaris.webp', 'Safari vehicle at sunset'),
+    ('Themed Experiences', 'images/hero/signature-tours.webp', 'Giraffes on open savannah'),
+    ('Deals', 'images/hero/signature-tours.webp', 'Myriad Travel seasonal deal'),
 )
 
 

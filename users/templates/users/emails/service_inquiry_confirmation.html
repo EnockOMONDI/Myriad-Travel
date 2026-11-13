@@ -1,2 +1,8 @@
 {% extends 'users/emails/base_email.html' %}
-{% block content %}<h2>Inquiry Received</h2><p>Thank you for contacting Myriad Travel. Our team has received your inquiry and will respond soon.</p>{% endblock %}
+{% block content %}
+<h2>{{ title }} inquiry received</h2>
+<p>Hello {{ customer_name }}, thank you for contacting Myriad Travel.</p>
+<p>{{ customer_intro }}</p>
+<p><strong>Your reference:</strong> #{{ reference }}</p>
+<p>Keep this reference when replying to us. A member of the relevant travel desk will contact you after reviewing the details you submitted.</p>
+{% endblock %}

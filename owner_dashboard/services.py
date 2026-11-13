@@ -9,16 +9,31 @@ from adminside.models import Destination, HeroSlider, Itinerary, Package
 from blog.models import Post
 from users.models import (
     Booking,
+    FlightInquiry,
     FollowUp,
     JobApplication,
     JobListing,
     MICEInquiry,
+    HotelInquiry,
     NGOTravelInquiry,
     NewsletterSubscription,
     QuoteRequest,
     StudentTravelInquiry,
+    TourSafariInquiry,
+    TransferInquiry,
     TripFeedback,
     UserBookings,
+    VisaInquiry,
+)
+
+
+SERVICE_INQUIRY_MODELS = (
+    TourSafariInquiry,
+    HotelInquiry,
+    FlightInquiry,
+    TransferInquiry,
+    VisaInquiry,
+    MICEInquiry,
 )
 
 
@@ -38,6 +53,7 @@ def build_dashboard_context(user):
         metric("Published packages", Package.objects.filter(status=Package.PUBLISHED).count(), "Visible package catalog"),
         metric("Published blogs", Post.objects.filter(status="published").count(), "Live travel content"),
         metric("New quotes", QuoteRequest.objects.filter(status="new").count(), "Needs sales follow-up"),
+        metric("New service inquiries", sum(model.objects.filter(status='new').count() for model in SERVICE_INQUIRY_MODELS), "Across six specialist desks"),
         metric("Open follow-ups", FollowUp.objects.open().count(), "Team workload"),
         metric("Trip feedback", TripFeedback.objects.filter(status=TripFeedback.SUBMITTED).count(), "Awaiting admin review"),
     ]
@@ -63,6 +79,12 @@ def build_dashboard_context(user):
             QuoteRequest.objects.filter(status="new").count(),
             "Fresh quote leads that should be contacted.",
             admin_url("users_quoterequest_changelist") + "?status__exact=new",
+        ),
+        attention(
+            "New service inquiries",
+            sum(model.objects.filter(status='new').count() for model in SERVICE_INQUIRY_MODELS),
+            "Specialist travel requests awaiting review.",
+            admin_url("users_toursafariinquiry_changelist") + "?status__exact=new",
         ),
         attention(
             "Overdue follow-ups",
@@ -111,6 +133,14 @@ def build_dashboard_context(user):
             action("Quote requests", admin_url("users_quoterequest_changelist")),
             action("Follow-ups", admin_url("users_followup_changelist")),
             action("MICE inquiries", admin_url("users_miceinquiry_changelist")),
+        ]),
+        action_group("Service Inquiries", [
+            action("Tours & safaris", admin_url("users_toursafariinquiry_changelist")),
+            action("Hotels", admin_url("users_hotelinquiry_changelist")),
+            action("Flights", admin_url("users_flightinquiry_changelist")),
+            action("Transfers", admin_url("users_transferinquiry_changelist")),
+            action("Visa advisory", admin_url("users_visainquiry_changelist")),
+            action("Corporate & MICE", admin_url("users_miceinquiry_changelist")),
         ]),
         action_group("Catalog / Packages", [
             action("Add package", reverse("adminside:package_wizard")),
@@ -225,10 +255,24 @@ def sum_booking_amounts(queryset):
 
 def recent_inquiries():
     items = []
-    for inquiry in MICEInquiry.objects.order_by("-created_at")[:3]:
-        items.append({"kind": "MICE", "name": inquiry.company_name, "created_at": inquiry.created_at})
+    service_models = [
+        (TourSafariInquiry, 'Tours & Safaris', 'users_toursafariinquiry_change'),
+        (HotelInquiry, 'Hotel', 'users_hotelinquiry_change'),
+        (FlightInquiry, 'Flight', 'users_flightinquiry_change'),
+        (TransferInquiry, 'Transfer', 'users_transferinquiry_change'),
+        (VisaInquiry, 'Visa', 'users_visainquiry_change'),
+        (MICEInquiry, 'Corporate & MICE', 'users_miceinquiry_change'),
+    ]
+    for model, kind, route in service_models:
+        for inquiry in model.objects.order_by('-created_at')[:3]:
+            items.append({
+                'kind': kind,
+                'name': getattr(inquiry, 'company_name', inquiry.contact_person),
+                'created_at': inquiry.created_at,
+                'url': reverse(f'admin:{route}', args=[inquiry.pk]),
+            })
     for inquiry in StudentTravelInquiry.objects.order_by("-created_at")[:3]:
-        items.append({"kind": "Student", "name": inquiry.school_name, "created_at": inquiry.created_at})
+        items.append({"kind": "Student", "name": inquiry.school_name, "created_at": inquiry.created_at, "url": reverse('admin:users_studenttravelinquiry_change', args=[inquiry.pk])})
     for inquiry in NGOTravelInquiry.objects.order_by("-created_at")[:3]:
-        items.append({"kind": "NGO", "name": inquiry.organization_name, "created_at": inquiry.created_at})
+        items.append({"kind": "NGO", "name": inquiry.organization_name, "created_at": inquiry.created_at, "url": reverse('admin:users_ngotravelinquiry_change', args=[inquiry.pk])})
     return sorted(items, key=lambda item: item["created_at"], reverse=True)[:6]

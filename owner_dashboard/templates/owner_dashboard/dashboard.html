@@ -196,7 +196,7 @@
                 <p class="text-sm"><span class="font-semibold">{{ quote.full_name }}</span><br><span class="text-slate-500">{{ quote.destination }} - {{ quote.status|title }}</span></p>
                 {% endfor %}
                 {% for inquiry in recent_activity.inquiries %}
-                <p class="text-sm"><span class="font-semibold">{{ inquiry.name }}</span><br><span class="text-slate-500">{{ inquiry.kind }} - {{ inquiry.created_at|date:"M d" }}</span></p>
+                <a href="{{ inquiry.url }}" class="block rounded-md p-2 text-sm hover:bg-slate-50"><span class="font-semibold">{{ inquiry.name }}</span><br><span class="text-slate-500">{{ inquiry.kind }} - {{ inquiry.created_at|date:"M d" }}</span></a>
                 {% empty %}
                 {% if not recent_activity.quotes %}<p class="text-sm text-slate-500">No inquiries yet.</p>{% endif %}
                 {% endfor %}

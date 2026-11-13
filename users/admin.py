@@ -4,7 +4,28 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.html import format_html
 from django.utils import timezone
-from .models import UserBookings, MICEInquiry, StudentTravelInquiry, NGOTravelInquiry, UserProfile, BucketList, Booking, JobApplication, NewsletterSubscription, JobListing, QuoteRequest, FollowUp, TripFeedback
+from django.urls import reverse
+from urllib.parse import urlencode
+from .models import (
+    Booking,
+    BucketList,
+    FlightInquiry,
+    FollowUp,
+    HotelInquiry,
+    JobApplication,
+    JobListing,
+    MICEInquiry,
+    NGOTravelInquiry,
+    NewsletterSubscription,
+    QuoteRequest,
+    StudentTravelInquiry,
+    TourSafariInquiry,
+    TransferInquiry,
+    TripFeedback,
+    UserBookings,
+    UserProfile,
+    VisaInquiry,
+)
 from django_ckeditor_5.widgets import CKEditor5Widget
 
 class UserBookingsAdminForm(forms.ModelForm):
@@ -73,25 +94,78 @@ class UserBookingsAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return super().get_queryset(request).select_related('user', 'package')
 
-@admin.register(MICEInquiry)
-class MICEInquiryAdmin(admin.ModelAdmin):
-    form = MICEInquiryAdminForm
-    list_display = ('company_name', 'contact_person', 'event_type', 'attendees', 'created_at')
-    list_filter = ('event_type', 'created_at')
-    search_fields = ('company_name', 'contact_person', 'email')
-    readonly_fields = ('created_at',)
+class ServiceInquiryAdmin(admin.ModelAdmin):
+    list_display = ('contact_person', 'email', 'status_badge', 'priority', 'assigned_to', 'created_at')
+    list_filter = ('status', 'priority', 'assigned_to', 'admin_notification_sent', 'confirmation_email_sent', 'created_at')
+    search_fields = ('contact_person', 'email', 'phone_number', 'reference')
+    readonly_fields = ('reference', 'created_at', 'updated_at', 'admin_notification_sent', 'confirmation_email_sent', 'create_followup_link')
     date_hierarchy = 'created_at'
+    list_editable = ()
+    list_per_page = 25
+    actions = ('mark_reviewing', 'mark_contacted', 'mark_closed')
+
+    @admin.display(description='Follow-up')
+    def create_followup_link(self, obj):
+        relation_fields = {
+            TourSafariInquiry: ('tour', 'tour_inquiry'),
+            HotelInquiry: ('hotel', 'hotel_inquiry'),
+            FlightInquiry: ('flight', 'flight_inquiry'),
+            TransferInquiry: ('transfer', 'transfer_inquiry'),
+            VisaInquiry: ('visa', 'visa_inquiry'),
+            MICEInquiry: ('mice', 'mice_inquiry'),
+        }
+        follow_up_type, relation = relation_fields[type(obj)]
+        query = urlencode({
+            'follow_up_type': follow_up_type,
+            relation: obj.pk,
+            'title': f'Follow up {obj._meta.verbose_name} #{obj.short_reference}',
+            'customer_name': obj.contact_person,
+            'customer_email': obj.email,
+            'customer_phone': obj.phone_number,
+        })
+        url = f"{reverse('admin:users_followup_add')}?{query}"
+        return format_html('<a class="button" href="{}">Create follow-up</a>', url)
+
+    @admin.display(description='Status', ordering='status')
+    def status_badge(self, obj):
+        colors = {'new': '#EB3728', 'reviewing': '#f59e0b', 'contacted': '#1abdaf', 'quoted': '#2563eb', 'confirmed': '#15803d', 'closed': '#64748b', 'cancelled': '#475569'}
+        return format_html('<span style="background:{};color:white;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:700">{}</span>', colors.get(obj.status, '#64748b'), obj.get_status_display())
+
+    @admin.action(description='Mark selected inquiries as reviewing')
+    def mark_reviewing(self, request, queryset):
+        self.message_user(request, f'{queryset.update(status="reviewing")} inquiries updated.')
+
+    @admin.action(description='Mark selected inquiries as contacted')
+    def mark_contacted(self, request, queryset):
+        self.message_user(request, f'{queryset.update(status="contacted")} inquiries updated.')
+
+    @admin.action(description='Mark selected inquiries as closed')
+    def mark_closed(self, request, queryset):
+        self.message_user(request, f'{queryset.update(status="closed")} inquiries updated.')
+
+
+WORKFLOW_FIELDS = ('status', 'priority', 'assigned_to', 'internal_notes', 'create_followup_link')
+SYSTEM_FIELDS = ('reference', 'admin_notification_sent', 'confirmation_email_sent', 'created_at', 'updated_at')
+
+
+@admin.register(MICEInquiry)
+class MICEInquiryAdmin(ServiceInquiryAdmin):
+    form = MICEInquiryAdminForm
+    list_display = ('company_name', 'contact_person', 'event_type', 'attendees', 'status_badge', 'assigned_to', 'created_at')
+    list_filter = ('event_type',) + ServiceInquiryAdmin.list_filter
+    search_fields = ('company_name',) + ServiceInquiryAdmin.search_fields
 
     fieldsets = (
         ('Company Information', {
-            'fields': ('company_name', 'contact_person', 'email', 'phone_number')
+            'fields': ('company_name', 'contact_person', 'email', 'phone_number', 'preferred_contact')
         }),
         ('Event Details', {
-            'fields': ('event_type', 'attendees', 'event_details'),
+            'fields': ('event_type', 'destination', 'event_dates', 'attendees', 'services_required', 'budget', 'budget_currency', 'event_details'),
             'classes': ('wide',)
         }),
+        ('Workflow', {'fields': WORKFLOW_FIELDS}),
         ('System Information', {
-            'fields': ('created_at',),
+            'fields': SYSTEM_FIELDS,
             'classes': ('collapse',)
         }),
     )
@@ -103,6 +177,69 @@ class MICEInquiryAdmin(admin.ModelAdmin):
         js = (
             'ckeditor/ckeditor/ckeditor.js',
         )
+
+
+@admin.register(TourSafariInquiry)
+class TourSafariInquiryAdmin(ServiceInquiryAdmin):
+    list_display = ('contact_person', 'destination', 'trip_style', 'adults', 'status_badge', 'assigned_to', 'created_at')
+    list_filter = ('trip_style', 'dates_flexible') + ServiceInquiryAdmin.list_filter
+    search_fields = ('destination', 'departure_location') + ServiceInquiryAdmin.search_fields
+    fieldsets = (
+        ('Traveller', {'fields': ('contact_person', 'email', 'phone_number', 'preferred_contact')}),
+        ('Trip requirements', {'fields': ('destination', 'trip_style', 'preferred_travel_dates', 'dates_flexible', 'adults', 'children', 'departure_location', 'accommodation_preference', 'budget', 'budget_currency', 'notes')}),
+        ('Workflow', {'fields': WORKFLOW_FIELDS}),
+        ('System information', {'fields': SYSTEM_FIELDS, 'classes': ('collapse',)}),
+    )
+
+
+@admin.register(HotelInquiry)
+class HotelInquiryAdmin(ServiceInquiryAdmin):
+    list_display = ('contact_person', 'destination', 'check_in', 'check_out', 'rooms', 'status_badge', 'assigned_to', 'created_at')
+    search_fields = ('destination', 'preferred_hotel') + ServiceInquiryAdmin.search_fields
+    fieldsets = (
+        ('Guest', {'fields': ('contact_person', 'email', 'phone_number', 'preferred_contact')}),
+        ('Stay requirements', {'fields': ('destination', 'preferred_hotel', 'check_in', 'check_out', 'rooms', 'adults', 'children', 'room_preference', 'meal_plan', 'budget', 'budget_currency', 'notes')}),
+        ('Workflow', {'fields': WORKFLOW_FIELDS}),
+        ('System information', {'fields': SYSTEM_FIELDS, 'classes': ('collapse',)}),
+    )
+
+
+@admin.register(FlightInquiry)
+class FlightInquiryAdmin(ServiceInquiryAdmin):
+    list_display = ('contact_person', 'origin', 'destination', 'departure_date', 'trip_type', 'status_badge', 'assigned_to', 'created_at')
+    list_filter = ('trip_type', 'cabin_class', 'dates_flexible') + ServiceInquiryAdmin.list_filter
+    search_fields = ('origin', 'destination') + ServiceInquiryAdmin.search_fields
+    fieldsets = (
+        ('Traveller', {'fields': ('contact_person', 'email', 'phone_number', 'preferred_contact')}),
+        ('Flight requirements', {'fields': ('trip_type', 'origin', 'destination', 'departure_date', 'return_date', 'adults', 'children', 'infants', 'cabin_class', 'dates_flexible', 'baggage_requirements', 'additional_segments', 'notes')}),
+        ('Workflow', {'fields': WORKFLOW_FIELDS}),
+        ('System information', {'fields': SYSTEM_FIELDS, 'classes': ('collapse',)}),
+    )
+
+
+@admin.register(TransferInquiry)
+class TransferInquiryAdmin(ServiceInquiryAdmin):
+    list_display = ('contact_person', 'service_type', 'pickup_location', 'service_date', 'passengers', 'status_badge', 'assigned_to', 'created_at')
+    list_filter = ('service_type',) + ServiceInquiryAdmin.list_filter
+    search_fields = ('pickup_location', 'dropoff_location', 'flight_number') + ServiceInquiryAdmin.search_fields
+    fieldsets = (
+        ('Traveller', {'fields': ('contact_person', 'email', 'phone_number', 'preferred_contact')}),
+        ('Transport requirements', {'fields': ('service_type', 'pickup_location', 'dropoff_location', 'service_date', 'pickup_time', 'passengers', 'luggage_count', 'flight_number', 'vehicle_preference', 'notes')}),
+        ('Workflow', {'fields': WORKFLOW_FIELDS}),
+        ('System information', {'fields': SYSTEM_FIELDS, 'classes': ('collapse',)}),
+    )
+
+
+@admin.register(VisaInquiry)
+class VisaInquiryAdmin(ServiceInquiryAdmin):
+    list_display = ('contact_person', 'applicant_nationality', 'destination_country', 'intended_travel_date', 'status_badge', 'assigned_to', 'created_at')
+    search_fields = ('applicant_nationality', 'destination_country', 'visa_category') + ServiceInquiryAdmin.search_fields
+    fieldsets = (
+        ('Applicant', {'fields': ('contact_person', 'email', 'phone_number', 'preferred_contact')}),
+        ('Advisory requirements', {'fields': ('applicant_nationality', 'destination_country', 'intended_travel_date', 'visa_category', 'number_of_applicants', 'assistance_required', 'notes')}),
+        ('Workflow', {'fields': WORKFLOW_FIELDS}),
+        ('System information', {'fields': SYSTEM_FIELDS, 'classes': ('collapse',)}),
+    )
 
 @admin.register(StudentTravelInquiry)
 class StudentTravelInquiryAdmin(admin.ModelAdmin):
@@ -226,7 +363,7 @@ class FollowUpAdmin(admin.ModelAdmin):
             'fields': ('customer_name', 'customer_email', 'customer_phone')
         }),
         ('Related Records', {
-            'fields': ('booking', 'quote_request', 'mice_inquiry', 'student_inquiry', 'ngo_inquiry', 'job_application'),
+            'fields': ('booking', 'quote_request', 'mice_inquiry', 'tour_inquiry', 'hotel_inquiry', 'flight_inquiry', 'transfer_inquiry', 'visa_inquiry', 'student_inquiry', 'ngo_inquiry', 'job_application'),
             'classes': ('collapse',)
         }),
         ('Notes', {

@@ -204,21 +204,21 @@ UPLOADCARE = {
 # Default Image Configuration
 DEFAULT_IMAGES = {
     # Primary default image for most content types
-    'DEFAULT': 'images/placeholders/myriad-package-placeholder.png',
+    'DEFAULT': 'images/placeholders/myriad-package-placeholder.webp',
 
     # Category-specific default images
-    'DESTINATIONS': 'images/hero/discover-kenya.jpeg',
-    'ACCOMMODATIONS': 'images/placeholders/myriad-package-placeholder.png',
-    'PACKAGES': 'images/placeholders/myriad-package-placeholder.png',
-    'BLOG_POSTS': 'images/hero/beyond-imagination.jpeg',
+    'DESTINATIONS': 'images/hero/discover-kenya.webp',
+    'ACCOMMODATIONS': 'images/placeholders/myriad-package-placeholder.webp',
+    'PACKAGES': 'images/placeholders/myriad-package-placeholder.webp',
+    'BLOG_POSTS': 'images/hero/beyond-imagination.webp',
 
     # Fallback for job listings and older placeholder helpers
-    'JOB_LISTINGS': 'images/placeholders/myriad-package-placeholder.png',
-    'PLACEHOLDER_SVG': 'images/placeholders/myriad-package-placeholder.png',
+    'JOB_LISTINGS': 'images/placeholders/myriad-package-placeholder.webp',
+    'PLACEHOLDER_SVG': 'images/placeholders/myriad-package-placeholder.webp',
 
     # Fallback images for specific use cases
-    'HERO_BACKGROUND': 'images/hero/discover-kenya.jpeg',
-    'CAROUSEL_FALLBACK': 'images/hero/beyond-imagination.jpeg',
+    'HERO_BACKGROUND': 'images/hero/discover-kenya.webp',
+    'CAROUSEL_FALLBACK': 'images/hero/beyond-imagination.webp',
 }
 
 TEMPLATE_DIRS = (
@@ -241,6 +241,12 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='Myriad Travel <info@m
 
 # Admin email for notifications
 ADMIN_EMAIL = config('ADMIN_EMAIL', default='info@myriad-travel.com')
+TOURS_INQUIRY_EMAIL = config('TOURS_INQUIRY_EMAIL', default=ADMIN_EMAIL)
+HOTEL_INQUIRY_EMAIL = config('HOTEL_INQUIRY_EMAIL', default=ADMIN_EMAIL)
+FLIGHT_INQUIRY_EMAIL = config('FLIGHT_INQUIRY_EMAIL', default=ADMIN_EMAIL)
+TRANSFER_INQUIRY_EMAIL = config('TRANSFER_INQUIRY_EMAIL', default=ADMIN_EMAIL)
+VISA_INQUIRY_EMAIL = config('VISA_INQUIRY_EMAIL', default=ADMIN_EMAIL)
+MICE_INQUIRY_EMAIL = config('MICE_INQUIRY_EMAIL', default=ADMIN_EMAIL)
 TURNSTILE_SITE_KEY = os.getenv('TURNSTILE_SITE_KEY', '')
 TURNSTILE_SECRET = os.getenv('TURNSTILE_SECRET', '')
 TURNSTILE_SECRET_KEY = os.getenv('TURNSTILE_SECRET_KEY', '') or TURNSTILE_SECRET
@@ -290,15 +296,15 @@ UNFOLD = {
     "SITE_HEADER": "Myriad Travel Workspace",
     "SITE_SUBHEADER": "Manage trips, enquiries, and content",
     "SITE_URL": "/",
-    "SITE_ICON": lambda request: static("images/myriad-logo.png"),
-    "SITE_LOGO": lambda request: static("images/myriad-logo.png"),
+    "SITE_ICON": lambda request: static("images/myriad-logo.webp"),
+    "SITE_LOGO": lambda request: static("images/myriad-logo.webp"),
     "SITE_SYMBOL": "travel_explore",
     "SHOW_HISTORY": True,
     "SHOW_VIEW_ON_SITE": True,
     "ENVIRONMENT": "tours_travels.settings.environment_callback",
     "DASHBOARD_CALLBACK": "tours_travels.settings.dashboard_callback",
     "LOGIN": {
-        "image": lambda request: static("images/hero/discover-kenya.jpeg"),
+        "image": lambda request: static("images/hero/discover-kenya.webp"),
         "redirect_after": lambda request: reverse_lazy("admin:index"),
     },
     "STYLES": [lambda request: static("admin/css/myriad-admin.css")],
@@ -417,6 +423,36 @@ UNFOLD = {
                         "title": "Quote requests",
                         "icon": "request_quote",
                         "link": reverse_lazy("admin:users_quoterequest_changelist"),
+                    },
+                    {
+                        "title": "Tours & safari inquiries",
+                        "icon": "travel_explore",
+                        "link": reverse_lazy("admin:users_toursafariinquiry_changelist"),
+                    },
+                    {
+                        "title": "Hotel inquiries",
+                        "icon": "hotel",
+                        "link": reverse_lazy("admin:users_hotelinquiry_changelist"),
+                    },
+                    {
+                        "title": "Flight inquiries",
+                        "icon": "flight",
+                        "link": reverse_lazy("admin:users_flightinquiry_changelist"),
+                    },
+                    {
+                        "title": "Transfer inquiries",
+                        "icon": "airport_shuttle",
+                        "link": reverse_lazy("admin:users_transferinquiry_changelist"),
+                    },
+                    {
+                        "title": "Visa advisory inquiries",
+                        "icon": "verified_user",
+                        "link": reverse_lazy("admin:users_visainquiry_changelist"),
+                    },
+                    {
+                        "title": "Corporate & MICE inquiries",
+                        "icon": "business_center",
+                        "link": reverse_lazy("admin:users_miceinquiry_changelist"),
                     },
                     {
                         "title": "Follow-ups",

@@ -3,7 +3,20 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import UserBookings
 from django import forms
 from django.contrib.auth.models import User
-from .models import MICEInquiry, StudentTravelInquiry, NGOTravelInquiry, JobApplication, NewsletterSubscription, NewsletterSubscription, QuoteRequest, TripFeedback
+from .models import (
+    FlightInquiry,
+    HotelInquiry,
+    JobApplication,
+    MICEInquiry,
+    NGOTravelInquiry,
+    NewsletterSubscription,
+    QuoteRequest,
+    StudentTravelInquiry,
+    TourSafariInquiry,
+    TransferInquiry,
+    TripFeedback,
+    VisaInquiry,
+)
 import re
 from .antispam import AntiSpamFormMixin
 
@@ -47,20 +60,126 @@ class UserBookingsForm(AntiSpamFormMixin, forms.ModelForm):
 
 
 
-class MICEInquiryForm(AntiSpamFormMixin, forms.ModelForm):
-    class Meta:
-        model = MICEInquiry
-        fields = ['company_name', 'contact_person', 'email', 'phone_number',
-                 'event_type', 'attendees', 'event_details']
+class ServiceInquiryFormMixin:
+    """Consistent, accessible widgets for the public service enquiry forms."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Add classes and placeholders to form fields
-        for field in self.fields:
-            self.fields[field].widget.attrs.update({
-                'class': 'form-control',
-                'placeholder': field.replace('_', ' ').title()
-            })
+        for name, field in self.fields.items():
+            if name == 'website':
+                continue
+            css = 'service-form-input'
+            if isinstance(field.widget, forms.CheckboxInput):
+                css = 'service-form-checkbox'
+            field.widget.attrs.setdefault('class', css)
+            if not isinstance(field.widget, (forms.Select, forms.CheckboxInput, forms.DateInput, forms.TimeInput)):
+                field.widget.attrs.setdefault('placeholder', field.label or name.replace('_', ' ').title())
+
+
+class MICEInquiryForm(ServiceInquiryFormMixin, AntiSpamFormMixin, forms.ModelForm):
+    budget_currency = forms.ChoiceField(choices=[('KES', 'KES'), ('USD', 'USD')], required=False, initial='KES')
+
+    class Meta:
+        model = MICEInquiry
+        fields = ['company_name', 'contact_person', 'email', 'phone_number',
+                  'preferred_contact', 'event_type', 'destination', 'event_dates',
+                  'attendees', 'services_required', 'budget', 'budget_currency', 'event_details']
+        widgets = {'event_details': forms.Textarea(attrs={'rows': 5})}
+
+    def clean_budget_currency(self):
+        return self.cleaned_data.get('budget_currency') or 'KES'
+
+
+class TourSafariInquiryForm(ServiceInquiryFormMixin, AntiSpamFormMixin, forms.ModelForm):
+    class Meta:
+        model = TourSafariInquiry
+        fields = [
+            'contact_person', 'email', 'phone_number', 'preferred_contact',
+            'destination', 'trip_style', 'preferred_travel_dates', 'dates_flexible',
+            'adults', 'children', 'departure_location', 'accommodation_preference',
+            'budget', 'budget_currency', 'notes',
+        ]
+        widgets = {'notes': forms.Textarea(attrs={'rows': 4})}
+
+
+class HotelInquiryForm(ServiceInquiryFormMixin, AntiSpamFormMixin, forms.ModelForm):
+    class Meta:
+        model = HotelInquiry
+        fields = [
+            'contact_person', 'email', 'phone_number', 'preferred_contact',
+            'destination', 'preferred_hotel', 'check_in', 'check_out', 'rooms',
+            'adults', 'children', 'room_preference', 'meal_plan', 'budget',
+            'budget_currency', 'notes',
+        ]
+        widgets = {
+            'check_in': forms.DateInput(attrs={'type': 'date'}),
+            'check_out': forms.DateInput(attrs={'type': 'date'}),
+            'notes': forms.Textarea(attrs={'rows': 4}),
+        }
+
+    def clean(self):
+        cleaned = super().clean()
+        if cleaned.get('check_in') and cleaned.get('check_out') and cleaned['check_out'] <= cleaned['check_in']:
+            self.add_error('check_out', 'Check-out must be after check-in.')
+        return cleaned
+
+
+class FlightInquiryForm(ServiceInquiryFormMixin, AntiSpamFormMixin, forms.ModelForm):
+    class Meta:
+        model = FlightInquiry
+        fields = [
+            'contact_person', 'email', 'phone_number', 'preferred_contact', 'trip_type',
+            'origin', 'destination', 'departure_date', 'return_date', 'adults',
+            'children', 'infants', 'cabin_class', 'dates_flexible',
+            'baggage_requirements', 'additional_segments', 'notes',
+        ]
+        widgets = {
+            'departure_date': forms.DateInput(attrs={'type': 'date'}),
+            'return_date': forms.DateInput(attrs={'type': 'date'}),
+            'additional_segments': forms.Textarea(attrs={'rows': 3}),
+            'notes': forms.Textarea(attrs={'rows': 4}),
+        }
+
+    def clean(self):
+        cleaned = super().clean()
+        if cleaned.get('trip_type') == 'return' and not cleaned.get('return_date'):
+            self.add_error('return_date', 'A return date is required for a return flight.')
+        if cleaned.get('trip_type') == 'multi_city' and not cleaned.get('additional_segments'):
+            self.add_error('additional_segments', 'List the additional routes and preferred dates for a multi-city trip.')
+        if cleaned.get('departure_date') and cleaned.get('return_date') and cleaned['return_date'] < cleaned['departure_date']:
+            self.add_error('return_date', 'Return date cannot be before departure.')
+        return cleaned
+
+
+class TransferInquiryForm(ServiceInquiryFormMixin, AntiSpamFormMixin, forms.ModelForm):
+    class Meta:
+        model = TransferInquiry
+        fields = [
+            'contact_person', 'email', 'phone_number', 'preferred_contact',
+            'service_type', 'pickup_location', 'dropoff_location', 'service_date',
+            'pickup_time', 'passengers', 'luggage_count', 'flight_number',
+            'vehicle_preference', 'notes',
+        ]
+        widgets = {
+            'service_date': forms.DateInput(attrs={'type': 'date'}),
+            'pickup_time': forms.TimeInput(attrs={'type': 'time'}),
+            'notes': forms.Textarea(attrs={'rows': 4}),
+        }
+
+
+class VisaInquiryForm(ServiceInquiryFormMixin, AntiSpamFormMixin, forms.ModelForm):
+    class Meta:
+        model = VisaInquiry
+        fields = [
+            'contact_person', 'email', 'phone_number', 'preferred_contact',
+            'applicant_nationality', 'destination_country', 'intended_travel_date',
+            'visa_category', 'number_of_applicants', 'assistance_required', 'notes',
+        ]
+        widgets = {
+            'intended_travel_date': forms.DateInput(attrs={'type': 'date'}),
+            'assistance_required': forms.Textarea(attrs={'rows': 4}),
+            'notes': forms.Textarea(attrs={'rows': 3}),
+        }
 
 
 class StudentTravelInquiryForm(AntiSpamFormMixin, forms.ModelForm):

@@ -6,7 +6,7 @@ from django.utils import timezone
 
 from adminside.models import Destination, Package
 from blog.models import Post
-from users.models import Booking, FollowUp, QuoteRequest, TripFeedback
+from users.models import Booking, FollowUp, QuoteRequest, TourSafariInquiry, TripFeedback
 from owner_dashboard.services import sum_quote_values
 
 
@@ -133,3 +133,19 @@ class OwnerDashboardTests(TestCase):
         self.assertContains(response, "Call Brian Lead")
         self.assertContains(response, "Trip feedback")
         self.assertContains(response, "Jane Client")
+
+    def test_dashboard_surfaces_new_service_inquiries_and_admin_link(self):
+        inquiry = TourSafariInquiry.objects.create(
+            contact_person='Safari Lead',
+            email='safari@example.com',
+            phone_number='+254700000000',
+            destination='Maasai Mara',
+            trip_style='wildlife',
+            preferred_travel_dates='December 2026',
+            adults=2,
+        )
+        self.client.force_login(self.staff)
+        response = self.client.get(reverse('owner_dashboard:dashboard'))
+        self.assertContains(response, 'New service inquiries')
+        self.assertContains(response, 'Safari Lead')
+        self.assertContains(response, reverse('admin:users_toursafariinquiry_change', args=[inquiry.pk]))

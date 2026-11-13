@@ -6,7 +6,7 @@ Usage: python manage.py test_quote_emails [--real-emails]
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 from users.models import QuoteRequest
-from users.views import send_quote_request_emails
+from users.tasks import send_quote_request_emails
 import os
 
 
@@ -77,36 +77,22 @@ class Command(BaseCommand):
         # Test email sending
         self.stdout.write('\n📤 Testing email sending...')
         try:
-            result = send_quote_request_emails(quote_request)
+            result = send_quote_request_emails(quote_request.id)
             
-            if result['overall_success']:
+            if result.get('success'):
                 self.stdout.write(
                     self.style.SUCCESS('✅ Emails sent successfully!')
                 )
-                self.stdout.write(f'   Confirmation email: {"✅" if result["confirmation_email"]["sent"] else "❌"}')
-                self.stdout.write(f'   Admin notification: {"✅" if result["admin_email"]["sent"] else "❌"}')
+                self.stdout.write(f'   Confirmation email: {"✅" if result.get("user_sent") else "❌"}')
+                self.stdout.write(f'   Admin notification: {"✅" if result.get("admin_sent") else "❌"}')
             else:
                 self.stdout.write(
                     self.style.ERROR('❌ Email sending failed!')
                 )
-                
-                # Show errors
-                if result['confirmation_email']['error_message']:
-                    self.stdout.write(f'   Confirmation error: {result["confirmation_email"]["error_message"]}')
-                    
-                if result['admin_email']['error_message']:
-                    self.stdout.write(f'   Admin error: {result["admin_email"]["error_message"]}')
-            
-            # Show warnings and recommendations
-            if result['warnings']:
-                self.stdout.write('\n⚠️  Warnings:')
-                for warning in result['warnings']:
-                    self.stdout.write(f'   - {warning}')
-                    
-            if result['recommendations']:
-                self.stdout.write('\n💡 Recommendations:')
-                for rec in result['recommendations']:
-                    self.stdout.write(f'   - {rec}')
+                self.stdout.write(f'   Confirmation email: {"✅" if result.get("user_sent") else "❌"}')
+                self.stdout.write(f'   Admin notification: {"✅" if result.get("admin_sent") else "❌"}')
+                if result.get('error'):
+                    self.stdout.write(f'   Error: {result["error"]}')
                     
         except Exception as e:
             raise CommandError(f'Failed to send emails: {e}')

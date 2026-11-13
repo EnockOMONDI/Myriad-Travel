@@ -36,7 +36,20 @@ from .forms import UserRegisterForm
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from .utils import send_booking_confirmation_email
-from .forms import MICEInquiryForm, StudentTravelInquiryForm, NGOTravelInquiryForm, JobApplicationForm, NewsletterSubscriptionSimpleForm, QuoteRequestForm, TripFeedbackForm
+from .forms import (
+    FlightInquiryForm,
+    HotelInquiryForm,
+    JobApplicationForm,
+    MICEInquiryForm,
+    NGOTravelInquiryForm,
+    NewsletterSubscriptionSimpleForm,
+    QuoteRequestForm,
+    StudentTravelInquiryForm,
+    TourSafariInquiryForm,
+    TransferInquiryForm,
+    TripFeedbackForm,
+    VisaInquiryForm,
+)
 from .models import QuoteRequest, TripFeedback
 from django.contrib.auth.models import User
 from blog.models import Post, Category
@@ -59,13 +72,13 @@ PUBLIC_REGION_ORDER = [
 ]
 
 REGION_CARD_IMAGES = {
-    'africa': '/static/images/destinations/maasai-mara-national-reserve.jpg',
-    'americas': '/static/images/destinations/caribbean.jpg',
-    'asia': '/static/images/destinations/ubud-bali.jpg',
-    'australasia': '/static/images/destinations/australasia.jpg',
-    'europe': '/static/images/destinations/mediterranean-europe.jpg',
-    'indian-ocean-islands': '/static/images/destinations/maldives.jpg',
-    'middle-east': '/static/images/destinations/dubai-abu-dhabi.jpg',
+    'africa': '/static/images/destinations/maasai-mara-national-reserve.webp',
+    'americas': '/static/images/destinations/caribbean.webp',
+    'asia': '/static/images/destinations/ubud-bali.webp',
+    'australasia': '/static/images/destinations/australasia.webp',
+    'europe': '/static/images/destinations/mediterranean-europe.webp',
+    'indian-ocean-islands': '/static/images/destinations/maldives.webp',
+    'middle-east': '/static/images/destinations/dubai-abu-dhabi.webp',
 }
 
 
@@ -231,7 +244,7 @@ CURATED_DESTINATION_IMAGES = {
 def _curated_destination_image(destination):
     slug = getattr(destination, 'slug', '')
     if slug in CURATED_DESTINATION_IMAGES:
-        return f'/static/images/destinations/{slug}.jpg'
+        return f'/static/images/destinations/{slug}.webp'
     return None
 
 
@@ -279,7 +292,7 @@ def _package_presenter(package):
     destination_image = getattr(package.main_destination, 'image', None)
     public_image = package.featured_image or destination_image
     curated_destination_image = _curated_destination_image(package.main_destination)
-    image_fallback = curated_destination_image or '/static/images/placeholders/myriad-package-placeholder.png'
+    image_fallback = curated_destination_image or '/static/images/placeholders/myriad-package-placeholder.webp'
     price_kes = int(package.adult_price or 0)
     price_currency = package.price_currency or 'KES'
     price_display = f'{price_currency} {price_kes:,}' if price_currency == 'USD' else f'KSh {price_kes:,}'
@@ -412,7 +425,7 @@ def _destination_presenter(destination):
         'description': _public_copy(destination.meta_description or destination.description),
         'image': _image_url(
             destination.image,
-            _curated_destination_image(destination) or '/static/images/placeholders/myriad-package-placeholder.png',
+            _curated_destination_image(destination) or '/static/images/placeholders/myriad-package-placeholder.webp',
         ),
         'badge': 'Featured' if destination.is_featured else destination.get_destination_type_display(),
         'popular_for': ['Safari', 'Nature', 'Tailored Trips'],
@@ -510,10 +523,8 @@ def aboutus(request):
 
 
 def services(request):
-    """
-    Render the services page showcasing all Mbugani Luxe Adventures services.
-    """
-    return render(request, 'users/pages/services.html', _public_page_context(package_limit=6))
+    """Preserve old bookmarks while the About page becomes the service hub."""
+    return HttpResponseRedirect(f"{reverse('users:aboutus')}#our-services")
 
 
 def corporate(request):
@@ -523,37 +534,141 @@ def corporate(request):
 # users/views.py
 
 
-def _service_inquiry(request, form_class, template_name, route_name, title):
+SERVICE_FORM_CONTENT = {
+    'tours': {
+        'title': 'Plan a Tour or Safari',
+        'eyebrow': 'Tours & Safaris',
+        'description': 'Share your destination, dates and travel style. Our safari specialists will prepare suitable options.',
+        'button': 'Send Safari Inquiry',
+        'success_title': 'Your safari planning has started.',
+        'success_message': 'Our safari specialists will review your destination, dates and preferences before contacting you.',
+    },
+    'hotels': {
+        'title': 'Request a Hotel Stay',
+        'eyebrow': 'Hotel Bookings',
+        'description': 'Tell us where and when you are travelling, and what kind of stay you prefer.',
+        'button': 'Send Hotel Inquiry',
+        'success_title': 'Your stay request is with our team.',
+        'success_message': 'We will review availability, room requirements and suitable accommodation options.',
+    },
+    'flights': {
+        'title': 'Request Flight Options',
+        'eyebrow': 'Flight Bookings',
+        'description': 'Share your route, dates and passenger details so our flight desk can review suitable options.',
+        'button': 'Send Flight Inquiry',
+        'success_title': 'Your flight request has been received.',
+        'success_message': 'Our flight desk will review routes, schedules and fare options for your journey.',
+    },
+    'transfers': {
+        'title': 'Arrange Ground Transport',
+        'eyebrow': 'Ground Handling & Transfers',
+        'description': 'Provide your pickup, drop-off and passenger details for a coordinated transport plan.',
+        'button': 'Send Transfer Inquiry',
+        'success_title': 'Your transport request is in.',
+        'success_message': 'Our operations team will review your route, timing, passengers and vehicle requirements.',
+    },
+    'visa': {
+        'title': 'Request Visa & Travel Advice',
+        'eyebrow': 'Visa Processing & Travel Advisory',
+        'description': 'Tell us your nationality, destination and intended travel date. Do not submit passport scans through this form.',
+        'button': 'Send Advisory Inquiry',
+        'success_title': 'Your advisory request has been received.',
+        'success_message': 'Our team will review your request and explain the available assistance. Visa decisions remain with the relevant immigration authority.',
+    },
+    'mice': {
+        'title': 'Plan Corporate Travel or an Event',
+        'eyebrow': 'Corporate Travel & MICE',
+        'description': 'Share your event brief, dates and logistics needs with our Nairobi corporate desk.',
+        'button': 'Send Corporate Inquiry',
+        'success_title': 'Your corporate brief is with our team.',
+        'success_message': 'Our corporate desk will review the event, travel and logistics requirements before contacting you.',
+    },
+    'student': {
+        'title': 'Student Travel Programs',
+        'eyebrow': 'Student Travel',
+        'description': 'Share the school, programme stage and travel requirements.',
+        'button': 'Send Student Travel Inquiry',
+        'success_title': 'Your student travel request has been received.',
+        'success_message': 'Our team will review the programme and group requirements.',
+    },
+    'ngo': {
+        'title': 'NGO & Humanitarian Travel',
+        'eyebrow': 'NGO Travel',
+        'description': 'Share your organisation’s travel purpose and operational requirements.',
+        'button': 'Send NGO Travel Inquiry',
+        'success_title': 'Your operational travel request is in.',
+        'success_message': 'Our team will review the organisation and travel requirements.',
+    },
+}
+
+
+def _service_inquiry(request, form_class, service_key):
     """Save once, notify over HTTPS, and redirect even if notification fails."""
     from .inquiry_email import send_service_inquiry_emails
 
+    content = SERVICE_FORM_CONTENT[service_key]
     form = form_class(request.POST if request.method == 'POST' else None, request=request)
     if request.method == 'POST' and form.is_valid():
         from .antispam import check_form_submission
         if not check_form_submission(request, form.cleaned_data.get('email', '')):
             from .antispam import SECURITY_BLOCK_MESSAGE
             form.add_error(None, SECURITY_BLOCK_MESSAGE)
-            return render(request, template_name, {'form': form})
+            return render(request, 'users/service_inquiry_form.html', {'form': form, **content})
         inquiry = form.save()
-        sent = send_service_inquiry_emails(inquiry, form, title)
+        sent = send_service_inquiry_emails(inquiry, form, service_key)
+        request.session['service_inquiry_success'] = {
+            'service': service_key,
+            'reference': getattr(inquiry, 'short_reference', str(inquiry.pk)),
+            'customer_name': inquiry.contact_person,
+        }
         if sent:
-            messages.success(request, 'Thank you! Your inquiry has been submitted successfully. We will contact you soon.')
+            messages.success(request, 'Your inquiry was submitted successfully.')
         else:
             messages.warning(request, 'Your inquiry has been saved, but the email notification could not be sent. Please do not resubmit. You can contact us directly for assistance.')
-        return redirect(route_name)
-    return render(request, template_name, {'form': form})
+        return redirect('users:service_inquiry_success', service=service_key)
+    return render(request, 'users/service_inquiry_form.html', {'form': form, **content})
+
+
+def service_inquiry_success(request, service):
+    content = SERVICE_FORM_CONTENT.get(service)
+    if not content:
+        raise Http404('Unknown service inquiry')
+    submission = request.session.pop('service_inquiry_success', {})
+    if submission.get('service') != service:
+        submission = {'reference': '', 'customer_name': ''}
+    return render(request, 'users/service_inquiry_success.html', {**content, **submission})
+
+
+def tours_inquiry(request):
+    return _service_inquiry(request, TourSafariInquiryForm, 'tours')
+
+
+def hotel_inquiry(request):
+    return _service_inquiry(request, HotelInquiryForm, 'hotels')
+
+
+def flight_inquiry(request):
+    return _service_inquiry(request, FlightInquiryForm, 'flights')
+
+
+def transfer_inquiry(request):
+    return _service_inquiry(request, TransferInquiryForm, 'transfers')
+
+
+def visa_inquiry(request):
+    return _service_inquiry(request, VisaInquiryForm, 'visa')
 
 
 def micepage(request):
-    return _service_inquiry(request, MICEInquiryForm, 'users/mice.html', 'users:micepage', 'MICE')
+    return _service_inquiry(request, MICEInquiryForm, 'mice')
 
 
 def student_travel(request):
-    return _service_inquiry(request, StudentTravelInquiryForm, 'users/student_travel.html', 'users:student-travel', 'Student Travel')
+    return _service_inquiry(request, StudentTravelInquiryForm, 'student')
 
 
 def ngo_travel(request):
-    return _service_inquiry(request, NGOTravelInquiryForm, 'users/ngo_travel.html', 'users:ngo-travel', 'NGO Travel')
+    return _service_inquiry(request, NGOTravelInquiryForm, 'ngo')
 
 
 def holidays(request):
@@ -657,7 +772,7 @@ def _collection_context(title, eyebrow, description, packages_qs, destination_qs
         'collection_filters': category_filters if category_filters is not None else filters,
         'collection_active_filter': active_filter or 'all',
         'collection_groups': groups or [],
-        'collection_hero_image': hero_image or 'images/hero/tours-safaris.jpeg',
+        'collection_hero_image': hero_image or 'images/hero/tours-safaris.webp',
         'collection_show_destinations': show_destinations,
     })
     return context
@@ -702,7 +817,7 @@ def explore_kenya(request):
         destinations_qs,
         active_filter=selected_category,
         category_filters=filters,
-        hero_image='images/hero/discover-kenya.jpeg',
+        hero_image='images/hero/discover-kenya.webp',
         show_destinations=False,
     )
     return _render_collection(request, context)
@@ -726,7 +841,7 @@ def explore_the_world(request):
         destinations_qs,
         active_filter=selected_category,
         category_filters=filters,
-        hero_image='images/hero/beyond-imagination.jpeg',
+        hero_image='images/hero/beyond-imagination.webp',
     )
     context['world_region_cards'] = [card for card in _region_cards() if card['slug'] != 'australasia']
     return _render_collection(request, context)
@@ -768,12 +883,12 @@ def explore_region(request, region):
         region_destinations.order_by('display_order', 'name')[:24],
         active_filter=selected_category,
         category_filters=filters,
-        hero_image='images/hero/beyond-imagination.jpeg',
+        hero_image='images/hero/beyond-imagination.webp',
     )
     context.update({
         'region': region_meta,
         'region_slug': region,
-        'region_image': next((card['image'] for card in _region_cards() if card['slug'] == region), '/static/images/placeholders/myriad-package-placeholder.png'),
+        'region_image': next((card['image'] for card in _region_cards() if card['slug'] == region), '/static/images/placeholders/myriad-package-placeholder.webp'),
         'country_filters': country_filters,
         'multi_country_groups': region_destinations.filter(is_multi_country=True).prefetch_related('member_countries').order_by('display_order', 'name'),
         'selected_country': selected_country,
@@ -797,7 +912,7 @@ def tours_safaris(request):
         packages_qs,
         active_filter=selected_filter,
         category_filters=filters,
-        hero_image='images/hero/tours-safaris.jpeg',
+        hero_image='images/hero/tours-safaris.webp',
     )
     return _render_collection(request, context)
 
@@ -827,7 +942,7 @@ def signature_experiences(request):
         groups=groups,
         active_filter=selected_filter,
         category_filters=filters,
-        hero_image='images/hero/signature-tours.jpeg',
+        hero_image='images/hero/signature-tours.webp',
     )
     return render(request, 'users/pages/signature_experiences.html', context)
 
@@ -841,7 +956,7 @@ def travel_collection(request, slug):
     context = _collection_context(
         collection.name, collection.get_section_display(), collection.description,
         packages_qs, active_filter=selected_filter, category_filters=filters,
-        hero_image='images/hero/tours-safaris.jpeg',
+        hero_image='images/hero/tours-safaris.webp',
     )
     return _render_collection(request, context)
 

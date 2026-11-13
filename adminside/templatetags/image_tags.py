@@ -52,7 +52,7 @@ def is_valid_django_url(url):
     return url.startswith('/') or url.startswith('http')
 
 @register.simple_tag
-def image_with_placeholder(image_field, css_class="", alt_text="", placeholder_path="images/placeholders/myriad-package-placeholder.png", lazy_load=True):
+def image_with_placeholder(image_field, css_class="", alt_text="", placeholder_path="images/placeholders/myriad-package-placeholder.webp", lazy_load=True):
     """
     Template tag to display an image with automatic placeholder fallback
 
@@ -118,7 +118,7 @@ def image_with_default(image_field, content_type="default", css_class="", alt_te
 
         if use_placeholder:
             # Use SVG placeholder
-            placeholder_path = default_images_config.get('PLACEHOLDER_SVG', 'images/placeholders/myriad-package-placeholder.png')
+            placeholder_path = default_images_config.get('PLACEHOLDER_SVG', 'images/placeholders/myriad-package-placeholder.webp')
             image_url = static(placeholder_path)
         else:
             # Use content-type specific default
@@ -148,7 +148,7 @@ def image_with_default(image_field, content_type="default", css_class="", alt_te
             if config_key in default_images_config:
                 default_path = default_images_config[config_key]
             else:
-                default_path = default_images_config.get('DEFAULT', 'images/placeholders/myriad-package-placeholder.png')
+                default_path = default_images_config.get('DEFAULT', 'images/placeholders/myriad-package-placeholder.webp')
 
             image_url = static(default_path)
 
@@ -159,7 +159,7 @@ def image_with_default(image_field, content_type="default", css_class="", alt_te
     return mark_safe(html)
 
 @register.simple_tag
-def image_url_with_placeholder(image_field, placeholder_path="images/placeholders/myriad-package-placeholder.png"):
+def image_url_with_placeholder(image_field, placeholder_path="images/placeholders/myriad-package-placeholder.webp"):
     """
     Template tag to get image URL with automatic placeholder fallback
 
@@ -211,7 +211,7 @@ def image_url_with_default(image_field, content_type="default", use_placeholder=
 
     if use_placeholder:
         # Use SVG placeholder
-        placeholder_path = default_images_config.get('PLACEHOLDER_SVG', 'images/placeholders/myriad-package-placeholder.png')
+        placeholder_path = default_images_config.get('PLACEHOLDER_SVG', 'images/placeholders/myriad-package-placeholder.webp')
         return static(placeholder_path)
     else:
         # Use content-type specific default
@@ -241,7 +241,7 @@ def image_url_with_default(image_field, content_type="default", use_placeholder=
         if config_key in default_images_config:
             default_path = default_images_config[config_key]
         else:
-            default_path = default_images_config.get('DEFAULT', 'images/placeholders/myriad-package-placeholder.png')
+            default_path = default_images_config.get('DEFAULT', 'images/placeholders/myriad-package-placeholder.webp')
 
         return static(default_path)
 

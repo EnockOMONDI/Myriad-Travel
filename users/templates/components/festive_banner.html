@@ -1,7 +1,7 @@
 {% load static %}
 <section class="reveal-slow px-4 pt-8 sm:px-8 sm:pt-12" aria-labelledby="festive-banner-heading">
   <div class="relative mx-auto min-h-[300px] max-w-7xl overflow-hidden rounded-2xl bg-slate-900 sm:min-h-[390px]">
-    {% if home_deals_section.image %}<img src="{{ home_deals_section.image.cdn_url }}" alt="{{ home_deals_section.title|default:'Festive Christmas and New Year holidays' }}" class="absolute inset-0 h-full w-full object-cover">{% else %}<img src="{% static 'images/home/festive-kenya-coast-banner.png' %}" alt="Kenya safari and coastal holiday at sunset" class="absolute inset-0 h-full w-full object-cover">{% endif %}
+    {% if home_deals_section.image %}<img src="{{ home_deals_section.image.cdn_url }}" alt="{{ home_deals_section.title|default:'Festive Christmas and New Year holidays' }}" class="absolute inset-0 h-full w-full object-cover">{% else %}<img src="{% static 'images/home/festive-kenya-coast-banner.webp' %}" alt="Kenya safari and coastal holiday at sunset" class="absolute inset-0 h-full w-full object-cover">{% endif %}
     <div class="absolute inset-0 bg-gradient-to-r from-slate-950/75 via-slate-950/30 to-slate-950/10"></div>
     <div class="relative flex min-h-[300px] max-w-xl flex-col justify-center px-6 py-12 text-white sm:min-h-[390px] sm:px-12">
       <p class="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-white/80">{{ home_deals_section.eyebrow|default:'Myriad Travel seasonal offer' }}</p>

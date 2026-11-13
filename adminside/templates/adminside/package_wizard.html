@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ page_title }} | Myriad Travel Admin</title>
-  <link rel="icon" href="{% static 'images/myriad-logo.png' %}">
+  <link rel="icon" href="{% static 'images/myriad-logo.webp' %}">
   <style>
     :root {
       --ink: #0b1728;
@@ -98,7 +98,7 @@
 <body>
   <header class="topbar">
     <div class="topbar-inner">
-      <a class="brand" href="{% url 'owner_dashboard:dashboard' %}"><img src="{% static 'images/myriad-logo.png' %}" alt="Myriad Travel"><span>Myriad Travel Admin</span></a>
+      <a class="brand" href="{% url 'owner_dashboard:dashboard' %}"><img src="{% static 'images/myriad-logo.webp' %}" alt="Myriad Travel"><span>Myriad Travel Admin</span></a>
       <nav class="top-actions"><a href="{% url 'owner_dashboard:dashboard' %}">Dashboard</a><a href="{% url 'admin:adminside_package_changelist' %}">Packages</a></nav>
     </div>
   </header>

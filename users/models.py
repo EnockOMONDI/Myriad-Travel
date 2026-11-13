@@ -7,6 +7,7 @@ import uuid
 from decimal import Decimal
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.validators import MinValueValidator
 
 
 
@@ -34,6 +35,11 @@ class FollowUp(models.Model):
     BOOKING = 'booking'
     QUOTE = 'quote'
     MICE = 'mice'
+    TOUR = 'tour'
+    HOTEL = 'hotel'
+    FLIGHT = 'flight'
+    TRANSFER = 'transfer'
+    VISA = 'visa'
     STUDENT = 'student'
     NGO = 'ngo'
     JOB = 'job'
@@ -43,6 +49,11 @@ class FollowUp(models.Model):
         (BOOKING, 'Booking'),
         (QUOTE, 'Quote Request'),
         (MICE, 'MICE Inquiry'),
+        (TOUR, 'Tours & Safaris Inquiry'),
+        (HOTEL, 'Hotel Inquiry'),
+        (FLIGHT, 'Flight Inquiry'),
+        (TRANSFER, 'Transfer Inquiry'),
+        (VISA, 'Visa Inquiry'),
         (STUDENT, 'Student Travel'),
         (NGO, 'NGO Travel'),
         (JOB, 'Job Application'),
@@ -83,6 +94,11 @@ class FollowUp(models.Model):
     booking = models.ForeignKey('Booking', on_delete=models.SET_NULL, null=True, blank=True, related_name='followups')
     quote_request = models.ForeignKey('QuoteRequest', on_delete=models.SET_NULL, null=True, blank=True, related_name='followups')
     mice_inquiry = models.ForeignKey('MICEInquiry', on_delete=models.SET_NULL, null=True, blank=True, related_name='followups')
+    tour_inquiry = models.ForeignKey('TourSafariInquiry', on_delete=models.SET_NULL, null=True, blank=True, related_name='followups')
+    hotel_inquiry = models.ForeignKey('HotelInquiry', on_delete=models.SET_NULL, null=True, blank=True, related_name='followups')
+    flight_inquiry = models.ForeignKey('FlightInquiry', on_delete=models.SET_NULL, null=True, blank=True, related_name='followups')
+    transfer_inquiry = models.ForeignKey('TransferInquiry', on_delete=models.SET_NULL, null=True, blank=True, related_name='followups')
+    visa_inquiry = models.ForeignKey('VisaInquiry', on_delete=models.SET_NULL, null=True, blank=True, related_name='followups')
     student_inquiry = models.ForeignKey('StudentTravelInquiry', on_delete=models.SET_NULL, null=True, blank=True, related_name='followups')
     ngo_inquiry = models.ForeignKey('NGOTravelInquiry', on_delete=models.SET_NULL, null=True, blank=True, related_name='followups')
     job_application = models.ForeignKey('JobApplication', on_delete=models.SET_NULL, null=True, blank=True, related_name='followups')
@@ -362,24 +378,217 @@ class GuestBooking(models.Model):
         return f"Guest Booking - {self.package.name} ({self.session_key[:8]}...)"
 
 
-# users/models.py
-class MICEInquiry(models.Model):
-    company_name = models.CharField(max_length=200)
-    contact_person = models.CharField(max_length=100)
+class ServiceInquiryBase(models.Model):
+    """Shared sales workflow fields for the six public service enquiry forms."""
+
+    NEW = 'new'
+    REVIEWING = 'reviewing'
+    CONTACTED = 'contacted'
+    QUOTED = 'quoted'
+    CONFIRMED = 'confirmed'
+    CLOSED = 'closed'
+    CANCELLED = 'cancelled'
+    STATUS_CHOICES = [
+        (NEW, 'New'),
+        (REVIEWING, 'Reviewing'),
+        (CONTACTED, 'Contacted'),
+        (QUOTED, 'Quote Sent'),
+        (CONFIRMED, 'Confirmed'),
+        (CLOSED, 'Closed'),
+        (CANCELLED, 'Cancelled'),
+    ]
+    PRIORITY_CHOICES = [
+        ('low', 'Low'),
+        ('normal', 'Normal'),
+        ('high', 'High'),
+        ('urgent', 'Urgent'),
+    ]
+    CONTACT_CHOICES = [
+        ('email', 'Email'),
+        ('phone', 'Phone call'),
+        ('whatsapp', 'WhatsApp'),
+    ]
+
+    reference = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    contact_person = models.CharField(max_length=100, verbose_name='Full name')
     email = models.EmailField()
-    phone_number = models.CharField(max_length=15)
+    phone_number = models.CharField(max_length=20)
+    preferred_contact = models.CharField(max_length=20, choices=CONTACT_CHOICES, default='whatsapp', blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=NEW, db_index=True)
+    priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default='normal')
+    assigned_to = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        limit_choices_to={'is_staff': True},
+        related_name='%(class)s_assignments',
+    )
+    internal_notes = models.TextField(blank=True, help_text='Private notes visible only to staff.')
+    admin_notification_sent = models.BooleanField(default=False)
+    confirmation_email_sent = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+        ordering = ['-created_at']
+
+    @property
+    def short_reference(self):
+        return str(self.reference).split('-')[0].upper()
+
+
+class MICEInquiry(ServiceInquiryBase):
+    company_name = models.CharField(max_length=200)
     event_type = models.CharField(max_length=50, choices=[
         ('Meeting', 'Meeting'),
         ('Incentive', 'Incentive'),
         ('Conference', 'Conference'),
-        ('Exhibition', 'Exhibition')
+        ('Exhibition', 'Exhibition'),
+        ('Corporate Travel', 'Corporate Travel'),
+        ('Retreat', 'Retreat'),
+        ('Team Building', 'Team Building'),
+        ('Other', 'Other'),
     ])
-    attendees = models.PositiveIntegerField()
+    destination = models.CharField(max_length=150, blank=True)
+    event_dates = models.CharField(max_length=150, blank=True, help_text='Confirmed or preferred event dates.')
+    attendees = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+    services_required = models.CharField(max_length=250, blank=True, help_text='Venue, flights, accommodation, transfers or event logistics.')
+    budget = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    budget_currency = models.CharField(max_length=3, choices=[('KES', 'KES'), ('USD', 'USD')], default='KES')
     event_details = CKEditor5Field(config_name='default', help_text="Detailed event information and requirements")
-    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta(ServiceInquiryBase.Meta):
+        verbose_name = 'Corporate & MICE Inquiry'
+        verbose_name_plural = 'Corporate & MICE Inquiries'
 
     def __str__(self):
         return f"{self.company_name} - {self.event_type}"
+
+
+class TourSafariInquiry(ServiceInquiryBase):
+    TRIP_STYLE_CHOICES = [
+        ('wildlife', 'Wildlife safari'),
+        ('adventure', 'Adventure safari'),
+        ('luxury', 'Luxury safari'),
+        ('cultural', 'Cultural safari'),
+        ('photography', 'Photography & birding'),
+        ('honeymoon', 'Honeymoon safari'),
+        ('family', 'Family safari'),
+        ('group', 'Group joining safari'),
+        ('other', 'Other'),
+    ]
+    destination = models.CharField(max_length=150)
+    trip_style = models.CharField(max_length=30, choices=TRIP_STYLE_CHOICES)
+    preferred_travel_dates = models.CharField(max_length=150)
+    dates_flexible = models.BooleanField(default=False)
+    adults = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
+    children = models.PositiveIntegerField(default=0)
+    departure_location = models.CharField(max_length=150, blank=True)
+    accommodation_preference = models.CharField(max_length=100, blank=True)
+    budget = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    budget_currency = models.CharField(max_length=3, choices=[('KES', 'KES'), ('USD', 'USD')], default='KES')
+    notes = models.TextField(blank=True)
+
+    class Meta(ServiceInquiryBase.Meta):
+        verbose_name = 'Tours & Safaris Inquiry'
+        verbose_name_plural = 'Tours & Safaris Inquiries'
+
+    def __str__(self):
+        return f'{self.contact_person} - {self.destination}'
+
+
+class HotelInquiry(ServiceInquiryBase):
+    destination = models.CharField(max_length=150)
+    preferred_hotel = models.CharField(max_length=150, blank=True)
+    check_in = models.DateField()
+    check_out = models.DateField()
+    rooms = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
+    adults = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
+    children = models.PositiveIntegerField(default=0)
+    room_preference = models.CharField(max_length=100, blank=True)
+    meal_plan = models.CharField(max_length=100, blank=True)
+    budget = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    budget_currency = models.CharField(max_length=3, choices=[('KES', 'KES'), ('USD', 'USD')], default='KES')
+    notes = models.TextField(blank=True)
+
+    class Meta(ServiceInquiryBase.Meta):
+        verbose_name = 'Hotel Inquiry'
+        verbose_name_plural = 'Hotel Inquiries'
+
+    def __str__(self):
+        return f'{self.contact_person} - {self.destination}'
+
+
+class FlightInquiry(ServiceInquiryBase):
+    TRIP_TYPE_CHOICES = [('return', 'Return'), ('one_way', 'One way'), ('multi_city', 'Multi-city')]
+    CABIN_CHOICES = [('economy', 'Economy'), ('premium', 'Premium economy'), ('business', 'Business'), ('first', 'First class')]
+    trip_type = models.CharField(max_length=20, choices=TRIP_TYPE_CHOICES, default='return')
+    origin = models.CharField(max_length=150)
+    destination = models.CharField(max_length=150)
+    departure_date = models.DateField()
+    return_date = models.DateField(null=True, blank=True)
+    adults = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
+    children = models.PositiveIntegerField(default=0)
+    infants = models.PositiveIntegerField(default=0)
+    cabin_class = models.CharField(max_length=20, choices=CABIN_CHOICES, default='economy')
+    dates_flexible = models.BooleanField(default=False)
+    baggage_requirements = models.CharField(max_length=200, blank=True)
+    additional_segments = models.TextField(blank=True, help_text='Required for multi-city travel. List each additional route and preferred date.')
+    notes = models.TextField(blank=True)
+
+    class Meta(ServiceInquiryBase.Meta):
+        verbose_name = 'Flight Inquiry'
+        verbose_name_plural = 'Flight Inquiries'
+
+    def __str__(self):
+        return f'{self.contact_person} - {self.origin} to {self.destination}'
+
+
+class TransferInquiry(ServiceInquiryBase):
+    SERVICE_CHOICES = [
+        ('airport', 'Airport transfer'),
+        ('car_hire', 'Car hire'),
+        ('excursion', 'Excursion transport'),
+        ('corporate', 'Corporate transport'),
+        ('logistics', 'Destination logistics'),
+        ('other', 'Other'),
+    ]
+    service_type = models.CharField(max_length=30, choices=SERVICE_CHOICES)
+    pickup_location = models.CharField(max_length=200)
+    dropoff_location = models.CharField(max_length=200)
+    service_date = models.DateField()
+    pickup_time = models.TimeField(null=True, blank=True)
+    passengers = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
+    luggage_count = models.PositiveIntegerField(default=0)
+    flight_number = models.CharField(max_length=30, blank=True)
+    vehicle_preference = models.CharField(max_length=100, blank=True)
+    notes = models.TextField(blank=True)
+
+    class Meta(ServiceInquiryBase.Meta):
+        verbose_name = 'Ground Handling & Transfer Inquiry'
+        verbose_name_plural = 'Ground Handling & Transfer Inquiries'
+
+    def __str__(self):
+        return f'{self.contact_person} - {self.pickup_location}'
+
+
+class VisaInquiry(ServiceInquiryBase):
+    applicant_nationality = models.CharField(max_length=100)
+    destination_country = models.CharField(max_length=100)
+    intended_travel_date = models.DateField()
+    visa_category = models.CharField(max_length=100)
+    number_of_applicants = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
+    assistance_required = models.TextField(help_text='Tell us which part of the application you need help with.')
+    notes = models.TextField(blank=True)
+
+    class Meta(ServiceInquiryBase.Meta):
+        verbose_name = 'Visa & Travel Advisory Inquiry'
+        verbose_name_plural = 'Visa & Travel Advisory Inquiries'
+
+    def __str__(self):
+        return f'{self.contact_person} - {self.destination_country}'
 
 
 class StudentTravelInquiry(models.Model):

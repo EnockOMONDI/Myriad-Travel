@@ -7,6 +7,10 @@ Tests all critical functionality in production environment
 import os
 import sys
 import django
+import unittest
+
+if any(argument == 'test' for argument in sys.argv):
+    raise unittest.SkipTest('Standalone production diagnostic; not part of the Django unit-test suite.')
 
 # Set production environment
 os.environ['DJANGO_ENV'] = 'production'
@@ -18,7 +22,8 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db import connection
 from users.tasks import send_email_via_mailtrap
-from users.models import QuoteRequest, Destination, Package
+from users.models import QuoteRequest
+from adminside.models import Destination, Package
 from pyuploadcare import Uploadcare
 import logging
 
