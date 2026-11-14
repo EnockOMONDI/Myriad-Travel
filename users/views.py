@@ -81,6 +81,97 @@ REGION_CARD_IMAGES = {
     'middle-east': '/static/images/destinations/dubai-abu-dhabi.webp',
 }
 
+KENYA_EXPLORE_CARDS = [
+    {
+        'slug': 'kenyan-coast',
+        'name': 'Kenyan Coast',
+        'description': 'Beach stays, marine escapes and relaxed coastal holidays.',
+        'icon': 'waves',
+        'image': '/static/images/destinations/mombasa-north-coast.webp',
+        'url': '/kenyan-coast/',
+        'action_label': 'Explore Kenyan Coast',
+    },
+    {
+        'slug': 'safaris',
+        'name': 'Safaris',
+        'description': 'Wildlife, open landscapes and expertly planned safari circuits.',
+        'icon': 'binoculars',
+        'image': '/static/images/destinations/masai-mara-national-reserve.webp',
+        'url': '/safaris/',
+        'action_label': 'Explore Safaris',
+    },
+    {
+        'slug': 'getaways',
+        'name': 'Getaways',
+        'description': 'Scenic breaks, short holidays and easy escapes from Nairobi.',
+        'icon': 'map',
+        'image': '/static/images/destinations/naivasha-and-elementaita.webp',
+        'url': '/getaways/',
+        'action_label': 'Explore Getaways',
+    },
+    {
+        'slug': 'day-trips',
+        'name': 'Day Trips',
+        'description': 'Well-planned one-day adventures, hikes and weekend experiences.',
+        'icon': 'sunrise',
+        'image': '/static/images/destinations/great-rift-valley-naivasha.webp',
+        'url': '/day-trips/',
+        'action_label': 'Explore Day Trips',
+    },
+    {
+        'slug': 'seasonal-packages',
+        'name': 'Seasonal Packages',
+        'description': 'Holiday ideas shaped around Kenya’s most anticipated seasons.',
+        'icon': 'calendar-days',
+        'image': '/static/images/home/festive-kenya-coast-banner.webp',
+        'url': '/seasonal-packages/',
+        'action_label': 'Explore Seasonal Packages',
+    },
+    {
+        'slug': 'deals',
+        'name': 'Deals',
+        'description': 'Current offers and limited-date experiences worth discovering.',
+        'icon': 'tag',
+        'image': '/static/images/destinations/diani-beach.webp',
+        'url': '/deals/',
+        'action_label': 'View Current Deals',
+    },
+]
+
+
+def _homepage_kenya_explore_cards():
+    """Return editable homepage cards, preserving static fallbacks safely."""
+    fallback_by_slug = {card['slug']: card for card in KENYA_EXPLORE_CARDS}
+    try:
+        section = ContentSection.objects.filter(
+            section_key='homepage-explore-kenya', is_active=True,
+        ).first()
+        database_cards = list(
+            HomepageExploreCard.objects.filter(
+                section=section, is_active=True,
+            ).order_by('display_order', 'id')
+        ) if section else []
+    except Exception:
+        database_cards = []
+
+    if not database_cards:
+        return KENYA_EXPLORE_CARDS
+
+    cards = []
+    for card in database_cards:
+        fallback = fallback_by_slug.get(card.slug, {})
+        image = _image_url(card.image, fallback.get('image', '/static/images/placeholders/myriad-package-placeholder.webp'))
+        cards.append({
+            'slug': card.slug,
+            'name': card.name,
+            'description': card.description,
+            'icon': card.icon or fallback.get('icon', 'map'),
+            'image': image,
+            'url': card.url or fallback.get('url', '/explore-kenya/'),
+            'action_label': card.action_label or fallback.get('action_label', 'Explore'),
+        })
+    return cards
+
 
 def _region_keys(region_slug):
     """Treat existing Kenya records as part of Africa without changing their data yet."""
@@ -120,6 +211,19 @@ def _packages_for_destinations(destination_ids):
 
 def _region_cards():
     """Build homepage cards from current destination/package data, not hardcoded inventory."""
+    try:
+        world_section = ContentSection.objects.filter(
+            section_key='homepage-explore-world', is_active=True,
+        ).first()
+        world_card_images = {
+            card.slug: card.image
+            for card in HomepageExploreCard.objects.filter(
+                section=world_section, is_active=True,
+            ).only('slug', 'image')
+        } if world_section else {}
+    except Exception:
+        world_card_images = {}
+
     cards = []
     for slug, name, description, icon in PUBLIC_REGION_ORDER:
         keys = _region_keys(slug)
@@ -127,12 +231,13 @@ def _region_cards():
         destination_ids = list(destinations.values_list('id', flat=True))
         packages = _packages_for_collection().filter(main_destination_id__in=destination_ids)
         image_destination = destinations.exclude(image='').exclude(image__isnull=True).order_by('display_order', 'name').first()
+        card_image = world_card_images.get(slug)
         cards.append({
             'slug': slug,
             'name': name,
             'description': description,
             'icon': icon,
-            'image': _image_url(image_destination.image, REGION_CARD_IMAGES[slug]) if image_destination else REGION_CARD_IMAGES[slug],
+            'image': _image_url(card_image, '') if card_image else (_image_url(image_destination.image, REGION_CARD_IMAGES[slug]) if image_destination else REGION_CARD_IMAGES[slug]),
             'destination_count': destinations.filter(packages__status=Package.PUBLISHED).distinct().count(),
             'package_count': packages.count(),
             'url': reverse('users:explore_region', kwargs={'region': slug}),
@@ -257,6 +362,19 @@ def _image_url(image_field, fallback):
         except (ValueError, AttributeError):
             pass
     return fallback
+
+
+def _homepage_explore_card_image(slug, fallback):
+    """Use the matching homepage card image for a linked collection banner."""
+    try:
+        card = HomepageExploreCard.objects.filter(
+            section__section_key__in=('homepage-explore-kenya', 'homepage-explore-world'),
+            slug=slug,
+            is_active=True,
+        ).only('image').first()
+        return _image_url(card.image, fallback) if card and card.image else fallback
+    except Exception:
+        return fallback
 
 
 def _uploadcare_preview_url(image_field, fallback, width=1600, height=900):
@@ -817,6 +935,10 @@ def _collection_context(title, eyebrow, description, packages_qs, destination_qs
         'collection_active_filter': active_filter or 'all',
         'collection_groups': groups or [],
         'collection_hero_image': hero_image or 'images/hero/tours-safaris.webp',
+        'collection_hero_image_src': (
+            hero_image if hero_image and (hero_image.startswith('http') or hero_image.startswith('/'))
+            else f"/static/{hero_image or 'images/hero/tours-safaris.webp'}"
+        ),
         'collection_show_destinations': show_destinations,
     })
     return context
@@ -864,6 +986,79 @@ def explore_kenya(request):
         hero_image='images/hero/discover-kenya.webp',
         show_destinations=False,
     )
+    return _render_collection(request, context)
+
+
+KENYA_SECTION_META = {
+    'kenyan-coast': {
+        'title': 'Kenyan Coast',
+        'description': 'Beach holidays, marine escapes and relaxed stays along Kenya’s coast.',
+        'hero_image': 'images/destinations/mombasa-north-coast.webp',
+    },
+    'safaris': {
+        'title': 'Safaris',
+        'description': 'Wildlife, open landscapes and carefully planned safari circuits across Kenya.',
+        'hero_image': 'images/destinations/masai-mara-national-reserve.webp',
+    },
+    'getaways': {
+        'title': 'Getaways',
+        'description': 'Scenic breaks and easy escapes across Kenya, from the Rift Valley to the highlands.',
+        'hero_image': 'images/destinations/naivasha-and-elementaita.webp',
+    },
+    'day-trips': {
+        'title': 'Day Trips',
+        'description': 'One-day adventures, hikes and short experiences designed around your available time.',
+        'hero_image': 'images/destinations/great-rift-valley-naivasha.webp',
+    },
+    'seasonal-packages': {
+        'title': 'Seasonal Packages',
+        'description': 'Kenya travel ideas shaped around the holidays, seasons and moments that bring people together.',
+        'hero_image': 'images/home/festive-kenya-coast-banner.webp',
+    },
+}
+
+
+def kenya_section(request, section):
+    """Render a focused Kenya collection linked from the homepage discovery cards."""
+    meta = KENYA_SECTION_META.get(section)
+    if not meta:
+        raise Http404('Kenya section not found')
+
+    if section == 'kenyan-coast':
+        packages_qs = _packages_for_collection().filter(region='kenya-coast')
+    elif section == 'safaris':
+        packages_qs = _packages_for_collection().filter(region='kenya-safari')
+    elif section == 'day-trips':
+        packages_qs = _packages_for_collection().filter(region='day-trips')
+    elif section == 'getaways':
+        getaway_names = ('Nairobi', 'Naivasha', 'Elementaita', 'Nakuru', 'Baringo', 'Bogoria', 'Mount Kenya', 'Kajiado', 'Kisumu')
+        destination_filter = Q()
+        for name in getaway_names:
+            destination_filter |= Q(main_destination__name__icontains=name)
+        packages_qs = _packages_for_collection().filter(
+            region__in=['kenya-safari', 'kenya-coast', 'day-trips'],
+        ).filter(destination_filter).distinct()
+    else:  # seasonal-packages
+        from django.utils import timezone
+        today = timezone.localdate()
+        active_campaigns = Campaign.objects.filter(
+            package__status=Package.PUBLISHED,
+            ends_on__gte=today,
+        )
+        packages_qs = _packages_for_collection().filter(campaigns__in=active_campaigns).distinct()
+
+    packages_qs, filters, selected_filter = _filter_collection_by_category(request, packages_qs)
+    context = _collection_context(
+        meta['title'],
+        'Explore Kenya',
+        meta['description'],
+        packages_qs,
+        active_filter=selected_filter,
+        category_filters=filters,
+        hero_image=_homepage_explore_card_image(section, f"/static/{meta['hero_image']}"),
+        show_destinations=False,
+    )
+    context['kenya_section'] = section
     return _render_collection(request, context)
 
 
@@ -927,7 +1122,7 @@ def explore_region(request, region):
         region_destinations.order_by('display_order', 'name')[:24],
         active_filter=selected_category,
         category_filters=filters,
-        hero_image='images/hero/beyond-imagination.webp',
+        hero_image=_homepage_explore_card_image(region, '/static/images/hero/beyond-imagination.webp'),
     )
     context.update({
         'region': region_meta,
@@ -1025,6 +1220,7 @@ def deals(request):
         packages_qs,
         active_filter=selected_filter,
         category_filters=filters,
+        hero_image=_homepage_explore_card_image('deals', '/static/images/destinations/diani-beach.webp'),
     )
     context['deal_campaigns'] = deal_campaigns
     context['deal_statuses'] = {campaign.package_id: campaign.public_status for campaign in deal_campaigns}
@@ -1431,33 +1627,7 @@ def home(request):
         context['home_deals_section'] = ContentSection.objects.filter(
             section_key='homepage-deals', is_active=True,
         ).first()
-        kenya_preferences = (
-            ('Maasai Mara', ('maasai mara',)),
-            ('Amboseli', ('amboseli',)),
-            ('Maasai Mara Flying Safari', ('maasai mara flying safari',)),
-            ('Lake Naivasha', ('lake naivasha', 'naivasha')),
-        )
-        kenya_packages = list(
-            Package.objects.select_related('main_destination', 'category').prefetch_related('collections')
-            .filter(status=Package.PUBLISHED)
-            .order_by('home_rank', '-is_featured', '-published_at', '-created_at')
-        )
-        selected_kenya = []
-        for _, requested_aliases in kenya_preferences:
-            match = next(
-                (
-                    item for item in kenya_packages
-                    if any(
-                        alias in item.name.lower()
-                        or (item.main_destination and alias in item.main_destination.get_full_name().lower())
-                        for alias in requested_aliases
-                    )
-                ),
-                None,
-            )
-            if match:
-                selected_kenya.append(match)
-        context['homepage_kenya_packages'] = [_package_presenter(item) for item in selected_kenya]
+        context['kenya_explore_cards'] = _homepage_kenya_explore_cards()
         homepage_tours_packages = _packages_for_collection().filter(
             Q(region__in=['kenya-safari', 'kenya-coast', 'day-trips'])
             | Q(category__slug__in=TOURS_SAFARI_CATEGORY_SLUGS)

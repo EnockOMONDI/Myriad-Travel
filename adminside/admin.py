@@ -19,7 +19,8 @@ from .models import (
     ItineraryDay,
     PackageBooking,
     ContentSection,
-    HeroSlider
+    HeroSlider,
+    HomepageExploreCard,
 )
 # CKEditor5Field automatically handles CKEditor 5 widgets based on config_name
 # No need for explicit widget overrides
@@ -761,6 +762,46 @@ class HeroSliderAdmin(admin.ModelAdmin):
         )
     display_image_thumbnail.short_description = 'Image'
     display_image_thumbnail.allow_tags = True
+
+
+@admin.register(HomepageExploreCard)
+class HomepageExploreCardAdmin(admin.ModelAdmin):
+    list_display = ('display_image_thumbnail', 'name', 'section', 'display_order', 'is_active', 'updated_at')
+    list_filter = ('is_active', 'section')
+    list_editable = ('display_order', 'is_active')
+    search_fields = ('name', 'slug', 'description')
+    ordering = ('section', 'display_order', 'id')
+    autocomplete_fields = ('section',)
+    readonly_fields = ('created_at', 'updated_at')
+    fieldsets = (
+        ('Card content', {
+            'fields': ('section', 'name', 'slug', 'description', 'icon'),
+            'description': 'Update the words shown on the homepage card. Keep the slug stable so existing links and seeded content remain traceable.',
+        }),
+        ('Card image', {
+            'fields': ('image',),
+            'description': 'Upload the replacement through Uploadcare. If this is empty, the current static fallback image remains visible on the public homepage.',
+        }),
+        ('Link and order', {
+            'fields': ('url', 'action_label', 'display_order', 'is_active'),
+            'description': 'Use a site path such as /day-trips/. Lower display order appears first.',
+        }),
+        ('Record information', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',),
+        }),
+    )
+
+    def display_image_thumbnail(self, obj):
+        if obj.image:
+            return format_html(
+                '<img src="{}" style="width: 100px; height: 62px; object-fit: cover; border-radius: 4px;" />',
+                obj.image.cdn_url,
+            )
+        return format_html(
+            '<div style="width: 100px; height: 62px; background: #f0f0f0; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #666; font-size: 11px;">Static fallback</div>'
+        )
+    display_image_thumbnail.short_description = 'Image'
 
 # Customize admin site header and title
 admin.site.site_header = 'Myriad Travel Workspace'

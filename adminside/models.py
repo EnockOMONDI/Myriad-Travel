@@ -945,6 +945,30 @@ class ContentSection(models.Model):
         return self.name
 
 
+class HomepageExploreCard(models.Model):
+    section = models.ForeignKey(ContentSection, on_delete=models.CASCADE, related_name='explore_kenya_cards', help_text='Normally Homepage Explore Kenya. Keep this unchanged.')
+    slug = models.SlugField(max_length=80, help_text='Stable card key, for example kenyan-coast.')
+    name = models.CharField(max_length=120)
+    description = models.CharField(max_length=240, blank=True)
+    icon = models.CharField(max_length=40, default='map')
+    image = ImageField(manual_crop='1200x800', blank=True, null=True, help_text='Optional Uploadcare image. Recommended display size: 1200 × 800px. Static fallback remains active when empty.')
+    url = models.CharField(max_length=300, help_text='Myriad page path, for example /kenyan-coast/.')
+    action_label = models.CharField(max_length=80, default='Explore')
+    display_order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['display_order', 'id']
+        constraints = [models.UniqueConstraint(fields=['section', 'slug'], name='unique_explore_card_per_section')]
+        verbose_name = 'Homepage Explore Kenya Card'
+        verbose_name_plural = 'Homepage Explore Kenya Cards'
+
+    def __str__(self):
+        return self.name
+
+
 class HeroSlider(models.Model):
     """
     Dynamic hero slider model for homepage management

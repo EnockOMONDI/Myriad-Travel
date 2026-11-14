@@ -5,8 +5,6 @@
       <h2 class="font-sans text-2xl font-bold leading-tight text-slate-900 sm:text-4xl">Kenya, beyond the usual route</h2>
       <p class="text-sm leading-relaxed text-slate-600 sm:text-base">Safari circuits, coastal stays, northern-frontier adventures and weekend escapes.</p>
     </div>
-    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-      {% for pkg in homepage_kenya_packages %}{% include 'components/package_card.html' with pkg=pkg %}{% endfor %}
-    </div>
+    {% include 'components/region_card_grid.html' with region_cards=kenya_explore_cards %}
   </div>
 </section>

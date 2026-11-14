@@ -4,7 +4,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
-from .models import ContentSection, HeroSlider
+from .models import ContentSection, HeroSlider, HomepageExploreCard
 
 
 DEFAULT_HERO_SLIDES = (
@@ -38,14 +38,16 @@ HOMEPAGE_SECTIONS = (
         'name': 'Explore Kenya',
         'description': 'Kenya package discovery cards and supporting introduction.',
         'icon': '◎',
-        'editable': False,
+        'editable': True,
+        'url_name': 'admin_content:homepage_explore_kenya',
     },
     {
         'key': 'homepage-explore-world',
         'name': 'Explore the World',
         'description': 'International region cards and the global discovery introduction.',
         'icon': '◌',
-        'editable': False,
+        'editable': True,
+        'url_name': 'admin_content:homepage_explore_world',
     },
     {
         'key': 'homepage-campaigns',
@@ -140,6 +142,31 @@ class HeroSlideEditorForm(forms.ModelForm):
             field.widget.attrs.setdefault('class', 'content-input')
 
 
+class ExploreKenyaCardEditorForm(forms.ModelForm):
+    class Meta:
+        model = HomepageExploreCard
+        fields = ('name', 'description', 'image', 'url', 'action_label', 'display_order', 'is_active')
+        widgets = {
+            'name': forms.TextInput(attrs={'maxlength': 120}),
+            'description': forms.TextInput(attrs={'maxlength': 240}),
+            'url': forms.TextInput(attrs={'maxlength': 300}),
+            'action_label': forms.TextInput(attrs={'maxlength': 80}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['name'].label = 'Card title'
+        self.fields['description'].label = 'Card description'
+        self.fields['image'].label = 'Card image'
+        self.fields['url'].label = 'Card destination'
+        self.fields['action_label'].label = 'Card link label'
+        self.fields['display_order'].label = 'Display order'
+        self.fields['image'].help_text = 'Optional Uploadcare replacement. Recommended display size: 1200 × 800px. The static fallback stays live when empty.'
+        self.fields['url'].help_text = 'Use a Myriad page path such as /kenyan-coast/ or /day-trips/.'
+        for field in self.fields.values():
+            field.widget.attrs.setdefault('class', 'content-input')
+
+
 def _homepage_card_data():
     sections = {item.section_key: item for item in ContentSection.objects.all()}
     hero = sections.get('homepage-hero')
@@ -159,6 +186,14 @@ def _homepage_card_data():
         elif item['key'] == 'homepage-deals':
             source = 'Mixed: database copy + static image' if record and not record.image else 'Database override'
             detail = 'Static fallback image remains live until an Uploadcare image is published' if record and not record.image else 'Uploadcare image override is active'
+        elif item['key'] == 'homepage-explore-kenya':
+            card_count = HomepageExploreCard.objects.filter(section=record, is_active=True).count() if record else 0
+            source = 'Database cards' if card_count else 'Static default'
+            detail = f'{card_count or 6} editable card(s) · static image fallback available'
+        elif item['key'] == 'homepage-explore-world':
+            card_count = HomepageExploreCard.objects.filter(section=record, is_active=True).count() if record else 0
+            source = 'Database cards' if card_count else 'Static default'
+            detail = f'{card_count or 6} editable card(s) · static image fallback available'
         else:
             source = 'Static default'
             detail = 'Structured editor planned; current public component remains unchanged'
@@ -207,6 +242,86 @@ def homepage_hero(request):
         'slides': slides,
         'default_slides': DEFAULT_HERO_SLIDES,
         'live_source': 'Database override' if slides.filter(is_active=True).exclude(image='').exists() else 'Static default',
+        'overview_url': reverse('admin_content:content_overview'),
+    })
+
+
+@staff_member_required
+def homepage_explore_kenya(request):
+    section, _ = ContentSection.objects.get_or_create(
+        section_key='homepage-explore-kenya',
+        defaults={
+            'name': 'Homepage Explore Kenya',
+            'eyebrow': 'Explore Kenya',
+            'title': 'Kenya, beyond the usual route',
+            'description': 'Safari circuits, coastal stays, northern-frontier adventures and weekend escapes.',
+            'is_active': True,
+        },
+    )
+    cards = HomepageExploreCard.objects.filter(section=section).order_by('display_order', 'id')
+    if request.method == 'POST':
+        section_form = ContentSectionEditorForm(request.POST, request.FILES, instance=section, prefix='section')
+        card_forms = [
+            ExploreKenyaCardEditorForm(request.POST, request.FILES, instance=card, prefix=f'card-{card.pk}')
+            for card in cards
+        ]
+        if section_form.is_valid() and all(card_form.is_valid() for card_form in card_forms):
+            section_form.save()
+            for card_form in card_forms:
+                card_form.save()
+            messages.success(request, 'Explore Kenya content saved. Empty image fields continue using the static fallback images.')
+            return redirect('admin_content:homepage_explore_kenya')
+    else:
+        section_form = ContentSectionEditorForm(instance=section, prefix='section')
+        card_forms = [
+            ExploreKenyaCardEditorForm(instance=card, prefix=f'card-{card.pk}')
+            for card in cards
+        ]
+    return render(request, 'admin/content/explore_kenya.html', {
+        'page_title': 'Explore Kenya',
+        'section': section,
+        'section_form': section_form,
+        'card_forms': zip(cards, card_forms),
+        'overview_url': reverse('admin_content:content_overview'),
+    })
+
+
+@staff_member_required
+def homepage_explore_world(request):
+    section, _ = ContentSection.objects.get_or_create(
+        section_key='homepage-explore-world',
+        defaults={
+            'name': 'Homepage Explore the World',
+            'eyebrow': 'Explore The World',
+            'title': 'Go further with Myriad',
+            'description': 'City breaks, island holidays and carefully planned journeys beyond Kenya.',
+            'is_active': True,
+        },
+    )
+    cards = HomepageExploreCard.objects.filter(section=section).order_by('display_order', 'id')
+    if request.method == 'POST':
+        section_form = ContentSectionEditorForm(request.POST, request.FILES, instance=section, prefix='section')
+        card_forms = [
+            ExploreKenyaCardEditorForm(request.POST, request.FILES, instance=card, prefix=f'card-{card.pk}')
+            for card in cards
+        ]
+        if section_form.is_valid() and all(card_form.is_valid() for card_form in card_forms):
+            section_form.save()
+            for card_form in card_forms:
+                card_form.save()
+            messages.success(request, 'Explore the World content saved. Empty image fields continue using the static fallback images.')
+            return redirect('admin_content:homepage_explore_world')
+    else:
+        section_form = ContentSectionEditorForm(instance=section, prefix='section')
+        card_forms = [
+            ExploreKenyaCardEditorForm(instance=card, prefix=f'card-{card.pk}')
+            for card in cards
+        ]
+    return render(request, 'admin/content/explore_world.html', {
+        'page_title': 'Explore the World',
+        'section': section,
+        'section_form': section_form,
+        'card_forms': zip(cards, card_forms),
         'overview_url': reverse('admin_content:content_overview'),
     })
 

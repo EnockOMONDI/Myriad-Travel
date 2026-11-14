@@ -1,0 +1,48 @@
+{% extends 'admin/content/base_content.html' %}
+
+{% block content_body %}
+<div class="content-breadcrumb"><a href="{{ overview_url }}">Website content</a> / Homepage / Explore Kenya</div>
+<div class="content-editor-top">
+  <div><div class="content-editor-eyebrow">Homepage</div><h1 class="content-editor-title">Explore Kenya</h1><p class="content-editor-subtitle">Update the section introduction and the six discovery cards. The page layout and safe static image fallbacks stay protected.</p></div>
+  <button form="explore-kenya-form" class="content-editor-btn primary" type="submit">Save changes</button>
+</div>
+<form id="explore-kenya-form" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="content-form-grid">
+    <section>
+      <div class="content-panel">
+        <h2>Section introduction</h2>
+        <p class="content-helper">These fields control the label, heading and supporting sentence above the cards.</p>
+        {% for field in section_form %}
+          {% if field.name != 'image' and field.name != 'cta_text' and field.name != 'cta_url' %}
+          <div class="content-field">{{ field.label_tag }}{{ field }}{% if field.help_text %}<span class="helptext">{{ field.help_text }}</span>{% endif %}{% for error in field.errors %}<span class="helptext" style="color:#eb3728">{{ error }}</span>{% endfor %}</div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <div class="content-panel content-slide-list">
+        <h2>Kenya discovery cards</h2>
+        <p class="content-helper">Each card can use an Uploadcare image. Leave the image empty to keep the current static fallback. Use display order to control the sequence.</p>
+        {% for card, form in card_forms %}
+        <article class="content-card-editor" style="border:1px solid #e3e8ed;border-radius:10px;padding:16px;margin-top:14px;background:#fbfdfe">
+          <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px"><h3 style="margin:0;font-size:16px">{{ forloop.counter }}. {{ card.name }}</h3><span class="content-pill">{{ card.slug }}</span></div>
+          {% for field in form %}
+          <div class="content-field">{{ field.label_tag }}{{ field }}{% if field.help_text %}<span class="helptext">{{ field.help_text }}</span>{% endif %}{% for error in field.errors %}<span class="helptext" style="color:#eb3728">{{ error }}</span>{% endfor %}</div>
+          {% endfor %}
+        </article>
+        {% empty %}
+          <p class="content-helper">No cards are seeded yet. Run the latest adminside migration to create the six fallback card records.</p>
+        {% endfor %}
+        <div class="content-form-actions"><a class="content-editor-btn secondary" href="{{ overview_url }}">Cancel</a><button class="content-editor-btn primary" type="submit">Save changes</button></div>
+      </div>
+    </section>
+    <aside>
+      <div class="content-live-box">
+        <h2>Currently live</h2>
+        <p class="content-helper" style="color:#cbd5e1">The public homepage uses the database card settings when they exist. A card with no Uploadcare image keeps its static default image.</p>
+        <div class="content-live-preview"><div><small style="letter-spacing:.16em;text-transform:uppercase">{{ section.eyebrow|default:'Explore Kenya' }}</small><h3>{{ section.title|default:'Kenya, beyond the usual route' }}</h3><p>{{ section.description|default:'Safari circuits, coastal stays, northern-frontier adventures and weekend escapes.' }}</p></div></div>
+      </div>
+      <div class="content-panel" style="margin-top:16px"><h2>Image helper</h2><p class="content-helper" style="margin-bottom:0">Recommended upload: <strong>1200 × 800px</strong> landscape. JPG, PNG or WebP are accepted by Uploadcare. Keep the main subject away from the extreme edges for smaller screens.</p></div>
+    </aside>
+  </div>
+</form>
+{% endblock %}

@@ -280,24 +280,28 @@ def navigation_collections(request):
     themed_categories = categories.filter(slug__in=themed_slugs)
 
     explore_kenya_url = reverse('users:explore_kenya')
+    kenyan_coast_url = reverse('users:kenyan_coast')
+    safaris_url = reverse('users:kenya_safaris')
+    getaways_url = reverse('users:kenya_getaways')
+    day_trips_url = reverse('users:kenya_day_trips')
+    seasonal_packages_url = reverse('users:kenya_seasonal_packages')
     tours_safaris_url = reverse('users:tours_safaris')
-    day_trips_url = f'{tours_safaris_url}?category=day-trips'
     deals_url = reverse('users:deals')
     kenya_sections = [
-        {'label': 'Kenyan Coast', 'url': explore_kenya_url, 'items': kenya_named_items(
-            ['Mombasa', 'Diani', 'Malindi', 'Watamu', 'Kilifi', 'Lamu'], explore_kenya_url,
+        {'label': 'Kenyan Coast', 'url': kenyan_coast_url, 'items': kenya_named_items(
+            ['Mombasa', 'Diani', 'Malindi', 'Watamu', 'Kilifi', 'Lamu'], kenyan_coast_url,
         )},
-        {'label': 'Safaris', 'url': tours_safaris_url, 'items': kenya_named_items(
-            ['Maasai Mara', 'Nakuru', 'Amboseli', 'Samburu', 'Tsavo'], tours_safaris_url,
+        {'label': 'Safaris', 'url': safaris_url, 'items': kenya_named_items(
+            ['Maasai Mara', 'Nakuru', 'Amboseli', 'Samburu', 'Tsavo'], safaris_url,
         )},
-        {'label': 'Getaways', 'url': explore_kenya_url, 'items': kenya_named_items(
-            ['Nairobi', 'Naivasha', 'Elementaita', 'Nakuru', 'Baringo / Bogoria', 'Mt. Kenya', 'Kajiado', 'Kisumu'], explore_kenya_url,
+        {'label': 'Getaways', 'url': getaways_url, 'items': kenya_named_items(
+            ['Nairobi', 'Naivasha', 'Elementaita', 'Nakuru', 'Baringo / Bogoria', 'Mt. Kenya', 'Kajiado', 'Kisumu'], getaways_url,
         )},
         {'label': 'Day Trips', 'url': day_trips_url, 'items': kenya_named_items(
             ['Nairobi', 'Naivasha', 'Longonot', 'Machakos', 'Kajiado / Suswa', 'Sagana'], day_trips_url,
         )},
-        {'label': 'Seasonal Packages', 'url': deals_url, 'items': [
-            {'label': label, 'url': deals_url}
+        {'label': 'Seasonal Packages', 'url': seasonal_packages_url, 'items': [
+            {'label': label, 'url': seasonal_packages_url}
             for label in ['Valentine', 'Easter Holidays', 'August Holidays', 'Mashujaa Holidays', 'Jamhuri Holidays', 'Christmas / New Year']
         ]},
     ]

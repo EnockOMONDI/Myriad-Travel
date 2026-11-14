@@ -8,7 +8,7 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from decimal import Decimal
 
-from adminside.models import Package, Destination, Accommodation, TravelMode, ContentSection
+from adminside.models import Package, Destination, Accommodation, TravelMode, ContentSection, HomepageExploreCard
 from users.models import Booking, UserProfile, BucketList
 
 
@@ -123,6 +123,47 @@ class AdminInterfaceTest(TestCase):
         })
         self.assertEqual(response.status_code, 302)
         self.assertEqual(ContentSection.objects.get(section_key='homepage-hero').description, 'Discover Kenya and the world through Myriad Travel.')
+
+    def test_explore_kenya_editor_is_reachable_and_shows_cards(self):
+        self.client.login(username='admin', password='adminpass123')
+        section, _ = ContentSection.objects.get_or_create(
+            section_key='homepage-explore-kenya',
+            defaults={'name': 'Homepage Explore Kenya', 'title': 'Kenya, beyond the usual route'},
+        )
+        card, _ = HomepageExploreCard.objects.get_or_create(
+            section=section,
+            slug='kenyan-coast',
+            defaults={'name': 'Kenyan Coast', 'url': '/kenyan-coast/', 'action_label': 'Explore Kenyan Coast'},
+        )
+        card.name = 'Kenyan Coast'
+        card.description = 'Beach stays.'
+        card.url = '/kenyan-coast/'
+        card.action_label = 'Explore Kenyan Coast'
+        card.save()
+        response = self.client.get('/admin/content/homepage/explore-kenya/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Kenyan Coast')
+        self.assertContains(response, 'Uploadcare')
+
+    def test_homepage_explore_kenya_uses_database_card_copy(self):
+        section, _ = ContentSection.objects.get_or_create(
+            section_key='homepage-explore-kenya',
+            defaults={'name': 'Homepage Explore Kenya', 'title': 'Kenya, beyond the usual route', 'is_active': True},
+        )
+        card, _ = HomepageExploreCard.objects.get_or_create(
+            section=section,
+            slug='kenyan-coast',
+            defaults={'name': 'Kenyan Coast', 'url': '/kenyan-coast/', 'action_label': 'Explore Kenyan Coast'},
+        )
+        card.name = 'Coast edited in admin'
+        card.description = 'Edited card copy.'
+        card.url = '/kenyan-coast/'
+        card.action_label = 'View the coast'
+        card.save()
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Coast edited in admin')
+        self.assertContains(response, 'View the coast')
 
     def test_registered_admin_changelists_are_reachable(self):
         self.client.login(username='admin', password='adminpass123')

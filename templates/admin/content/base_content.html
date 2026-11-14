@@ -44,8 +44,8 @@
     <a href="{% url 'admin_content:content_overview' %}#homepage">Homepage overview</a>
     <a href="{% url 'admin_content:homepage_hero' %}" class="{% if request.resolver_match.url_name == 'homepage_hero' or request.resolver_match.url_name == 'hero_slide_new' or request.resolver_match.url_name == 'hero_slide_edit' %}active{% endif %}">Hero</a>
     <a href="{% url 'admin_content:content_overview' %}#homepage-deals">Home Deals</a>
-    <a href="{% url 'admin_content:content_overview' %}#homepage-explore-kenya">Explore Kenya</a>
-    <a href="{% url 'admin_content:content_overview' %}#homepage-explore-world">Explore the World</a>
+    <a href="{% url 'admin_content:homepage_explore_kenya' %}" class="{% if request.resolver_match.url_name == 'homepage_explore_kenya' %}active{% endif %}">Explore Kenya</a>
+    <a href="{% url 'admin_content:homepage_explore_world' %}" class="{% if request.resolver_match.url_name == 'homepage_explore_world' %}active{% endif %}">Explore the World</a>
     <a href="{% url 'admin_content:content_overview' %}#homepage-services">Services</a>
     <h3>More pages</h3>
     <a href="{% url 'admin:users_quoterequest_changelist' %}">About Us</a>

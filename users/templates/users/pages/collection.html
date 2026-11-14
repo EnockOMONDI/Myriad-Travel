@@ -15,8 +15,8 @@
 
       {% if collection_title == 'Current Deals' %}
       <div class="relative min-h-[430px] overflow-hidden rounded-[2rem] bg-slate-950 p-6 text-white shadow-2xl sm:min-h-[500px] sm:p-10">
-        <img src="{% static 'images/home/festive-kenya-coast-banner.webp' %}" alt="Festive Christmas and New Year holidays across Kenya and beyond" class="absolute inset-0 h-full w-full object-cover" />
-        <div class="absolute inset-0 bg-gradient-to-r from-slate-950/75 via-slate-950/30 to-slate-950/10"></div>
+        <img src="{{ collection_hero_image_src }}" alt="{{ collection_title }}" class="absolute inset-0 h-full w-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-r from-[#15BDAF]/90 via-[#15BDAF]/55 to-[#15BDAF]/10"></div>
         <div class="relative z-10 flex min-h-[380px] items-end">
           <div class="max-w-3xl self-end pb-4">
             <p class="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-white/80">Myriad Travel seasonal offer</p>
@@ -27,8 +27,8 @@
       </div>
       {% else %}
       <div class="relative min-h-[430px] overflow-hidden rounded-[2rem] bg-slate-950 p-6 text-white shadow-2xl sm:p-10 lg:min-h-[500px]">
-        <img src="{% static collection_hero_image %}" alt="{{ collection_title }}" class="absolute inset-0 h-full w-full object-cover opacity-45" />
-        <div class="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-950/80 to-slate-900/20"></div>
+        <img src="{{ collection_hero_image_src }}" alt="{{ collection_title }}" class="absolute inset-0 h-full w-full object-cover opacity-45" />
+        <div class="absolute inset-0 bg-gradient-to-tr from-[#15BDAF]/90 via-[#15BDAF]/55 to-[#15BDAF]/10"></div>
         <div class="relative z-10 flex min-h-[340px] items-end">
           <div class="max-w-4xl self-end">
             <h1 class="font-serif text-4xl font-black leading-tight tracking-[-0.03em] sm:text-6xl">
