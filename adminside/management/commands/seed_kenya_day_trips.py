@@ -87,9 +87,17 @@ class Command(BaseCommand):
     @transaction.atomic
     def handle(self, *args, **options):
         publish = options['publish']
-        kenya = Destination.objects.filter(slug='kenya', destination_type=Destination.COUNTRY).first()
-        if not kenya:
-            raise ValueError('An existing Kenya country destination is required.')
+        kenya, _ = Destination.objects.get_or_create(
+            slug='kenya',
+            defaults={
+                'name': 'Kenya',
+                'destination_type': Destination.COUNTRY,
+                'region': 'kenya',
+                'description': 'Kenya',
+                'is_active': True,
+                'show_in_navigation': True,
+            },
+        )
         category, _ = PackageCategory.objects.get_or_create(
             slug='day-trips', defaults={'name': 'Day Trips', 'description': 'One-day experiences in Kenya.', 'is_active': True},
         )

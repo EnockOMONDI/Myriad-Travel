@@ -15,6 +15,8 @@ services:
       echo "📁 Static files collected"
       python manage.py migrate --settings=tours_travels.settings_prod
       echo "🗄️ Database migrations applied"
+      python manage.py seed_kenya_day_trips --publish --settings=tours_travels.settings_prod
+      echo "🧭 Explore Kenya day trips seeded and published"
       python manage.py createcachetable --settings=tours_travels.settings_prod
       echo "💾 Cache table created"
       echo "✅ Build completed successfully"
