@@ -741,6 +741,22 @@ def explore_kenya(request):
     return render(request, 'users/pages/collection.html', context)
 
 
+def day_trips(request):
+    packages_qs = _packages_for_collection().filter(region='day-trips')
+    packages_qs, filters, selected_category = _filter_collection_by_category(request, packages_qs)
+    context = _collection_context(
+        'Explore Kenya Day Trips',
+        'Day Trips',
+        'One-day adventures across Kenya. Choose a trip and ask Myriad Travel to confirm your date, pickup and final quote.',
+        packages_qs,
+        active_filter=selected_category,
+        category_filters=filters,
+        hero_image='images/hero/discover-kenya.jpeg',
+        show_destinations=False,
+    )
+    return render(request, 'users/pages/collection.html', context)
+
+
 def explore_the_world(request):
     packages_qs = _packages_for_collection().filter(region='international').exclude(
         Q(category__slug__in=SIGNATURE_CATEGORY_SLUGS) | Q(categories__slug__in=SIGNATURE_CATEGORY_SLUGS)
