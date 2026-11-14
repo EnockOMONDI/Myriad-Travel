@@ -281,6 +281,7 @@ def navigation_collections(request):
 
     explore_kenya_url = reverse('users:explore_kenya')
     tours_safaris_url = reverse('users:tours_safaris')
+    day_trips_url = f'{tours_safaris_url}?category=day-trips'
     deals_url = reverse('users:deals')
     kenya_sections = [
         {'label': 'Kenyan Coast', 'url': explore_kenya_url, 'items': kenya_named_items(
@@ -292,8 +293,8 @@ def navigation_collections(request):
         {'label': 'Getaways', 'url': explore_kenya_url, 'items': kenya_named_items(
             ['Nairobi', 'Naivasha', 'Elementaita', 'Nakuru', 'Baringo / Bogoria', 'Mt. Kenya', 'Kajiado', 'Kisumu'], explore_kenya_url,
         )},
-        {'label': 'Day Trips', 'url': explore_kenya_url, 'items': kenya_named_items(
-            ['Nairobi', 'Naivasha', 'Longonot', 'Machakos', 'Kajiado / Suswa', 'Sagana'], explore_kenya_url,
+        {'label': 'Day Trips', 'url': day_trips_url, 'items': kenya_named_items(
+            ['Nairobi', 'Naivasha', 'Longonot', 'Machakos', 'Kajiado / Suswa', 'Sagana'], day_trips_url,
         )},
         {'label': 'Seasonal Packages', 'url': deals_url, 'items': [
             {'label': label, 'url': deals_url}
