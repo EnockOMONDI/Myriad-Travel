@@ -1047,6 +1047,19 @@ def kenya_section(request, section):
         )
         packages_qs = _packages_for_collection().filter(campaigns__in=active_campaigns).distinct()
 
+    selected_destination = None
+    destination_slug = request.GET.get('destination', '').strip()
+    if destination_slug:
+        selected_destination = get_object_or_404(
+            Destination,
+            slug=destination_slug,
+            is_active=True,
+            region='kenya',
+        )
+        packages_qs = packages_qs.filter(
+            main_destination_id__in=_destination_ids_for_page(selected_destination),
+        ).distinct()
+
     packages_qs, filters, selected_filter = _filter_collection_by_category(request, packages_qs)
     context = _collection_context(
         meta['title'],
@@ -1059,6 +1072,7 @@ def kenya_section(request, section):
         show_destinations=False,
     )
     context['kenya_section'] = section
+    context['selected_destination'] = selected_destination
     return _render_collection(request, context)
 
 

@@ -207,7 +207,7 @@ def navigation_collections(request):
 
     kenya_destinations_by_slug = None
 
-    def kenya_named_items(labels, fallback_url):
+    def kenya_named_items(labels, fallback_url, scoped=False):
         nonlocal kenya_destinations_by_slug
         if kenya_destinations_by_slug is None:
             kenya_destinations_by_slug = {
@@ -224,9 +224,12 @@ def navigation_collections(request):
                 (kenya_destinations_by_slug.get(slug) for slug in kenya_destination_aliases.get(label, ()) if kenya_destinations_by_slug.get(slug)),
                 None,
             )
+            item_url = reverse('users:destination_detail', kwargs={'slug': destination.slug}) if destination else fallback_url
+            if scoped and destination:
+                item_url = f'{fallback_url}?destination={destination.slug}'
             items.append({
                 'label': label,
-                'url': reverse('users:destination_detail', kwargs={'slug': destination.slug}) if destination else fallback_url,
+                'url': item_url,
             })
         return items
 
@@ -289,16 +292,16 @@ def navigation_collections(request):
     deals_url = reverse('users:deals')
     kenya_sections = [
         {'label': 'Kenyan Coast', 'url': kenyan_coast_url, 'items': kenya_named_items(
-            ['Mombasa', 'Diani', 'Malindi', 'Watamu', 'Kilifi', 'Lamu'], kenyan_coast_url,
+            ['Mombasa', 'Diani', 'Malindi', 'Watamu', 'Kilifi', 'Lamu'], kenyan_coast_url, scoped=True,
         )},
         {'label': 'Safaris', 'url': safaris_url, 'items': kenya_named_items(
-            ['Maasai Mara', 'Nakuru', 'Amboseli', 'Samburu', 'Tsavo'], safaris_url,
+            ['Maasai Mara', 'Nakuru', 'Amboseli', 'Samburu', 'Tsavo'], safaris_url, scoped=True,
         )},
         {'label': 'Getaways', 'url': getaways_url, 'items': kenya_named_items(
-            ['Nairobi', 'Naivasha', 'Elementaita', 'Nakuru', 'Baringo / Bogoria', 'Mt. Kenya', 'Kajiado', 'Kisumu'], getaways_url,
+            ['Nairobi', 'Naivasha', 'Elementaita', 'Nakuru', 'Baringo / Bogoria', 'Mt. Kenya', 'Kajiado', 'Kisumu'], getaways_url, scoped=True,
         )},
         {'label': 'Day Trips', 'url': day_trips_url, 'items': kenya_named_items(
-            ['Nairobi', 'Naivasha', 'Longonot', 'Machakos', 'Kajiado / Suswa', 'Sagana'], day_trips_url,
+            ['Nairobi', 'Naivasha', 'Longonot', 'Machakos', 'Kajiado / Suswa', 'Sagana'], day_trips_url, scoped=True,
         )},
         {'label': 'Seasonal Packages', 'url': seasonal_packages_url, 'items': [
             {'label': label, 'url': seasonal_packages_url}
