@@ -346,6 +346,7 @@ def _rich_text_items(value):
 
 
 def _package_presenter(package):
+    day_trip_details = getattr(package, 'day_trip_details', None)
     category = package.category.name if package.category else 'Safari & Holiday'
     destination = package.main_destination.get_full_name() if package.main_destination else 'Kenya'
     destination_image = getattr(package.main_destination, 'image', None)
@@ -391,7 +392,15 @@ def _package_presenter(package):
         # supplies a coherent public image until the package gets its own asset.
         'featured_image': _image_url(public_image, image_fallback),
         'hero_image': _uploadcare_preview_url(public_image, image_fallback),
-        'duration': f'{package.duration_days} Days / {package.duration_nights} Nights',
+        'duration': day_trip_details.duration_label if day_trip_details else f'{package.duration_days} Days / {package.duration_nights} Nights',
+        'day_trip': {
+            'departs_from': day_trip_details.departs_from,
+            'price_audience': day_trip_details.price_audience,
+            'price_basis': day_trip_details.price_basis,
+            'price_status': day_trip_details.price_status,
+            'schedule': [line.strip() for line in day_trip_details.schedule.splitlines() if line.strip()],
+            'booking_note': day_trip_details.booking_note,
+        } if day_trip_details else None,
         'rating': package.rating,
         'reviews_count': package.total_reviews,
         'price_kes': price_kes,
@@ -453,7 +462,7 @@ def _destination_presenter(destination):
 
 
 def _public_page_context(package_limit=None):
-    packages_qs = Package.objects.select_related('main_destination', 'category').prefetch_related(
+    packages_qs = Package.objects.select_related('main_destination', 'category', 'day_trip_details').prefetch_related(
         'collections',
         'available_accommodations',
         'available_travel_modes',
@@ -654,7 +663,7 @@ TOURS_SAFARI_CATEGORY_SLUGS = [
 
 
 def _packages_for_collection():
-    return Package.objects.select_related('main_destination', 'category').prefetch_related(
+    return Package.objects.select_related('main_destination', 'category', 'day_trip_details').prefetch_related(
         'categories',
         'collections',
         'available_accommodations',
@@ -937,7 +946,7 @@ def destination_detail(request, slug):
 
 def package_detail(request, slug):
     package = get_object_or_404(
-        Package.objects.select_related('main_destination', 'category').prefetch_related(
+        Package.objects.select_related('main_destination', 'category', 'day_trip_details').prefetch_related(
             'itinerary__days',
             'available_accommodations',
             'available_travel_modes',
@@ -954,7 +963,7 @@ def package_detail(request, slug):
 
 def package_gallery(request, slug):
     package = get_object_or_404(
-        Package.objects.select_related('main_destination', 'category').prefetch_related('gallery_images'),
+        Package.objects.select_related('main_destination', 'category', 'day_trip_details').prefetch_related('gallery_images'),
         slug=slug,
         status=Package.PUBLISHED,
     )
@@ -1231,7 +1240,7 @@ def home(request):
         ).order_by('name')[:50]  # Limit to 50 most relevant destinations
 
         # Get published packages with highly optimized queries (limit to 12 for homepage)
-        packages_queryset = Package.objects.select_related('main_destination', 'category').prefetch_related(
+        packages_queryset = Package.objects.select_related('main_destination', 'category', 'day_trip_details').prefetch_related(
             'available_accommodations',
             'available_travel_modes'
         ).filter(status=Package.PUBLISHED).order_by('home_rank', '-is_featured', '-published_at', '-created_at')[:4]
@@ -1289,7 +1298,7 @@ def home(request):
         context.update(_public_page_context(package_limit=4))
         kenya_preferences = ('Chalbi', 'Maasai Mara', 'Amboseli', 'Diani', 'Watamu')
         kenya_packages = list(
-            Package.objects.select_related('main_destination', 'category').prefetch_related('collections')
+            Package.objects.select_related('main_destination', 'category', 'day_trip_details').prefetch_related('collections')
             .filter(status=Package.PUBLISHED)
             .order_by('home_rank', '-is_featured', '-published_at', '-created_at')
         )

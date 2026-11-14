@@ -12,6 +12,7 @@ from .models import (
     Accommodation,
     TravelMode,
     Package,
+    DayTripDetails,
     PackageGalleryImage,
     Itinerary,
     ItineraryDay,
@@ -406,6 +407,12 @@ class ItineraryQualityFilter(admin.SimpleListFilter):
         return queryset.filter(id__in=matching_ids)
 
 
+class DayTripDetailsInline(admin.StackedInline):
+    model = DayTripDetails
+    extra = 0
+    max_num = 1
+
+
 @admin.register(Package)
 class PackageAdmin(admin.ModelAdmin):
     form = PackageAdminForm
@@ -418,7 +425,7 @@ class PackageAdmin(admin.ModelAdmin):
     readonly_fields = ('total_bookings', 'total_reviews', 'itinerary_quality')
     prepopulated_fields = {'slug': ('name',)}
     list_editable = ('status', 'is_featured', 'home_rank')
-    inlines = [PackageGalleryImageInline, PackageBookingInline]
+    inlines = [DayTripDetailsInline, PackageGalleryImageInline, PackageBookingInline]
 
     fieldsets = (
         ('Basic Information', {

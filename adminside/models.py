@@ -557,6 +557,15 @@ class Package(models.Model):
             models.Index(fields=['status', 'home_rank']),
         ]
 
+    def clean(self):
+        super().clean()
+        if self.status == self.PUBLISHED and self.region == 'day-trips':
+            details = getattr(self, 'day_trip_details', None) if self.pk else None
+            if details and details.price_status != 'confirmed':
+                raise ValidationError({'status': 'Confirm the day trip price and details before publishing.'})
+            if details and self.child_price == 0:
+                raise ValidationError({'child_price': 'Enter the confirmed child rate before publishing this day trip.'})
+
     def save(self, *args, **kwargs):
         """Clean slug before saving"""
         if self.slug:
@@ -639,6 +648,29 @@ class PackageGalleryImage(models.Model):
         if self.image:
             return self.image.cdn_url
         return '/static/images/placeholders/myriad-package-placeholder.png'
+
+
+class DayTripDetails(models.Model):
+    """Terms and timed schedule for a one-day Package."""
+
+    package = models.OneToOneField(Package, on_delete=models.CASCADE, related_name='day_trip_details')
+    duration_label = models.CharField(max_length=30, choices=[('Half day', 'Half day'), ('Full day', 'Full day')])
+    departs_from = models.CharField(max_length=160)
+    price_audience = models.CharField(max_length=160, default='Kenyan citizen adult')
+    price_basis = models.CharField(max_length=200)
+    price_status = models.CharField(max_length=12, choices=[('proposed', 'Proposed'), ('confirmed', 'Confirmed')], default='proposed')
+    schedule = models.TextField(help_text='One timed stop per line, including the time and activity.')
+    booking_note = models.TextField(default='Timings are approximate. Myriad Travel confirms the final price and departure when you enquire.')
+
+    class Meta:
+        verbose_name_plural = 'Day trip details'
+
+    def clean(self):
+        if self.package_id and (self.package.region != 'day-trips' or self.package.duration_days != 1 or self.package.duration_nights != 0):
+            raise ValidationError('Day trip details require a package in Day Trips with one day and zero nights.')
+
+    def __str__(self):
+        return f'Day trip: {self.package.name}'
 
 
 class Itinerary(models.Model):
