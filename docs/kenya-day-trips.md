@@ -1,6 +1,6 @@
 # Explore Kenya day trips
 
-The command `python manage.py seed_kenya_day_trips` creates four **draft** packages from the Myriad copy supplied on 14 November 2026. Run migrations first. The command is repeatable: it leaves existing package records untouched, and it requires an existing Kenya country destination. It creates the four specific place destinations, a Day Trips category, and an Explore Kenya Day Trips collection only when absent.
+The command `python manage.py seed_kenya_day_trips` creates four **draft** packages from the Myriad copy supplied on 14 November 2026. Run migrations first. To seed Supabase and publish immediately, run `python manage.py seed_kenya_day_trips --publish --settings=tours_travels.settings_prod` in the deployed app's shell. The command is repeatable: it leaves existing package content untouched, and `--publish` promotes existing matching drafts. It requires an existing Kenya country destination. It creates the four specific place destinations, a Day Trips category, and an Explore Kenya Day Trips collection only when absent.
 
 | Trip | Proposed from rate, Kenyan citizen adult in shared transport | Basis | Information still to confirm |
 | --- | ---: | --- | --- |

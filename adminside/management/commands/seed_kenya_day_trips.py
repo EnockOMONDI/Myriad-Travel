@@ -2,6 +2,7 @@
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from django.utils import timezone
 
 from adminside.models import DayTripDetails, Destination, Itinerary, ItineraryDay, Package, PackageCategory, TravelCollection
 
@@ -74,10 +75,18 @@ TRIPS = [
 
 
 class Command(BaseCommand):
-    help = 'Add four proposed Kenya day trips as drafts. Existing package records are never overwritten.'
+    help = 'Add four Kenya day trips. Use --publish to make them public immediately.'
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--publish',
+            action='store_true',
+            help='Publish the four records and mark their supplied rates confirmed.',
+        )
 
     @transaction.atomic
     def handle(self, *args, **options):
+        publish = options['publish']
         kenya = Destination.objects.filter(slug='kenya', destination_type=Destination.COUNTRY).first()
         if not kenya:
             raise ValueError('An existing Kenya country destination is required.')
@@ -107,21 +116,31 @@ class Command(BaseCommand):
                     'highlights': '\n'.join(trip['includes'][:3]),
                     'inclusions': '<ul>' + ''.join(f'<li>{item}</li>' for item in trip['includes']) + '</ul>',
                     'exclusions': '<ul>' + ''.join(f'<li>{item}</li>' for item in trip['excludes']) + '</ul>',
-                    'status': Package.DRAFT, 'is_featured': False, 'lipa_pole_pole': False,
+                    'status': Package.PUBLISHED if publish else Package.DRAFT,
+                    'published_at': timezone.now() if publish else None,
+                    'is_featured': False, 'lipa_pole_pole': False,
                     'meta_title': trip['name'] + ' | Myriad Travel',
                     'meta_description': trip['summary'][:300],
                 },
             )
             if not created:
-                self.stdout.write(f'Left existing package unchanged: {trip["slug"]}')
+                collection.packages.add(package)
+                if publish:
+                    Package.objects.filter(pk=package.pk).update(status=Package.PUBLISHED, published_at=timezone.now())
+                    DayTripDetails.objects.filter(package=package).update(price_status='confirmed')
+                    self.stdout.write(f'Published existing package: {trip["slug"]}')
+                else:
+                    self.stdout.write(f'Left existing package unchanged: {trip["slug"]}')
                 continue
             collection.packages.add(package)
             DayTripDetails.objects.create(
                 package=package, duration_label=trip['duration_label'], departs_from=trip['departs_from'],
                 price_basis=trip['price_basis'], schedule='\n'.join(trip['schedule']),
+                price_status='confirmed' if publish else 'proposed',
             )
             itinerary = Itinerary.objects.create(package=package, title='Day trip schedule', overview=trip['summary'])
             ItineraryDay.objects.create(itinerary=itinerary, day_number=1, title=trip['name'],
                                         description='\n'.join(trip['schedule']), destination=destination,
                                         lunch=trip['slug'] == 'wasini-island-kisite-marine-park-day-trip')
-            self.stdout.write(f'Created draft: {trip["slug"]}')
+            label = 'published package' if publish else 'draft'
+            self.stdout.write(f'Created {label}: {trip["slug"]}')
