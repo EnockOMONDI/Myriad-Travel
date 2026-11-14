@@ -21,7 +21,6 @@
           <div class="max-w-4xl self-end">
             <p class="myriad-red-text text-xs font-bold uppercase tracking-[0.22em]">{{ collection_eyebrow }}</p>
             <h1 class="mt-3 font-serif text-4xl font-black leading-tight tracking-[-0.03em] text-white sm:text-6xl">{{ destination.name }}</h1>
-            {% if destination.description %}<p class="mt-5 max-w-3xl text-sm leading-7 text-slate-200 sm:text-base">{{ destination.description|striptags }}</p>{% endif %}
             <button type="button" class="open-plan-modal-btn myriad-red-bg hover-myriad-red-bg mt-6 inline-flex items-center gap-2 rounded-md px-4 py-3 text-xs font-bold text-white transition">
               <i data-lucide="send" class="h-4 w-4"></i><span>Request Quote</span>
             </button>

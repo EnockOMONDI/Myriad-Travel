@@ -96,6 +96,23 @@ class TripFeedbackTests(TestCase):
 
 
 class DestinationGuideTests(TestCase):
+    def test_public_destination_copy_prefers_reviewed_description_over_generic_meta(self):
+        destination = Destination.objects.create(
+            name="Dubai",
+            slug="dubai-copy-test",
+            destination_type=Destination.CITY,
+            region="middle-east",
+            description="Dubai combines skyline experiences, desert landscapes and Gulf coast stays.",
+            meta_description="Dubai travel region.",
+            is_active=True,
+        )
+
+        response = self.client.get(reverse("users:destination_detail", kwargs={"slug": destination.slug}), follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Dubai combines skyline experiences, desert landscapes and Gulf coast stays.")
+        self.assertNotContains(response, "Dubai travel region.")
+
     def test_destination_page_renders_activities_as_destination_content(self):
         destination = Destination.objects.create(
             name="Kigali",
@@ -149,3 +166,16 @@ class DestinationGuideTests(TestCase):
         self.assertContains(response, "Kigali Genocide Memorial")
         self.assertContains(response, "Available package styles")
         self.assertContains(response, "Adventure Safaris")
+
+
+class TravelInformationTests(TestCase):
+    def test_travel_insurance_and_terms_content_have_footer_targets(self):
+        response = self.client.get(reverse("users:travel_information"), follow=True)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'id="travel-insurance"')
+        self.assertContains(response, 'id="visa-entry"')
+        self.assertContains(response, "Request a travel insurance quote")
+        self.assertContains(response, "Booking Terms and Conditions")
+        self.assertContains(response, "/travel-information/#travel-insurance")
+        self.assertContains(response, "/travel-information/#terms")

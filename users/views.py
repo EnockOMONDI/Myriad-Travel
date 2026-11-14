@@ -406,6 +406,9 @@ def _public_copy(value):
     lowered = normalized.casefold()
     generic_markers = (
         'travel destination for curated myriad travel experiences',
+        'travel destination for myriad travel',
+        ' travel region.',
+        ' package destination.',
         'myriad is still confirming',
         'description being prepared',
         'content coming soon',
@@ -417,12 +420,13 @@ def _public_copy(value):
 
 def _destination_presenter(destination):
     country = destination.country.name if destination.country else ('Multi-country area' if destination.is_multi_country else 'Kenya')
+    description = _public_copy(destination.description) or _public_copy(destination.meta_description)
     return {
         'id': destination.id,
         'name': destination.name,
         'slug': destination.slug,
         'country': country,
-        'description': _public_copy(destination.meta_description or destination.description),
+        'description': description,
         'image': _image_url(
             destination.image,
             _curated_destination_image(destination) or '/static/images/placeholders/myriad-package-placeholder.webp',
