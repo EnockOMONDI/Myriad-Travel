@@ -3,33 +3,33 @@
   <div class="absolute inset-0 z-0">
     {% if hero_slides %}
     {% for slide in hero_slides %}
-    <div class="hero-slide absolute inset-0 transition-opacity duration-2000 ease-in-out {% if forloop.first %}opacity-100 scale-100{% else %}opacity-0 scale-105 pointer-events-none{% endif %}" data-title="{{ hero_section.title|default:'Beyond Imagination'|escapejs }}" data-tag="{{ slide.title|default:slide.subtitle|default:'Explore Kenya'|escapejs }}" data-url="{{ slide.cta_url|default:hero_section.cta_url|default:'#'|escapejs }}" data-cta-text="{{ slide.cta_text|default:hero_section.cta_text|default:'Take Me There'|escapejs }}">
+    <div class="hero-slide absolute inset-0 transition-opacity duration-2000 ease-in-out {% if forloop.first %}opacity-100 scale-100{% else %}opacity-0 scale-105 pointer-events-none{% endif %}" data-title="{{ hero_section.title|default:'Beyond Imagination'|escapejs }}" data-tag="{{ slide.title|default:slide.subtitle|default:'Explore Kenya'|escapejs }}" data-url="{{ slide.cta_url|default:hero_section.cta_url|default:'#'|escapejs }}" data-cta-text="{{ slide.cta_text|default:hero_section.cta_text|default:'Explore More'|escapejs }}">
       <img src="{{ slide.get_image_url }}" alt="{{ slide.title|default:hero_section.title|default:'Myriad Travel' }}" class="w-full h-full object-cover object-center" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}" />
       <div class="absolute inset-0 bg-black/25"></div>
     </div>
     {% endfor %}
     {% else %}
-    <div class="hero-slide absolute inset-0 transition-opacity duration-2000 ease-in-out opacity-100 scale-100" data-title="Beyond Imagination" data-tag="Explore Kenya" data-url="{% url 'users:explore_kenya' %}">
+    <div class="hero-slide absolute inset-0 transition-opacity duration-2000 ease-in-out opacity-100 scale-100" data-title="Beyond Imagination" data-tag="Explore Kenya" data-url="{% url 'users:explore_kenya' %}" data-cta-text="Explore More">
       <img src="{% static 'images/hero/discover-kenya.webp' %}" alt="Elephants beneath Mount Kilimanjaro" class="w-full h-full object-cover object-center" loading="eager" />
       <div class="absolute inset-0 bg-black/25"></div>
     </div>
 
-    <div class="hero-slide absolute inset-0 transition-opacity duration-2000 ease-in-out opacity-0 scale-105 pointer-events-none" data-title="Beyond Imagination" data-tag="Explore The World" data-url="{% url 'users:explore_the_world' %}">
+    <div class="hero-slide absolute inset-0 transition-opacity duration-2000 ease-in-out opacity-0 scale-105 pointer-events-none" data-title="Beyond Imagination" data-tag="Explore The World" data-url="{% url 'users:explore_the_world' %}" data-cta-text="Explore More">
       <img src="{% static 'images/hero/beyond-imagination.webp' %}" alt="Turquoise island lagoon" class="w-full h-full object-cover object-center" loading="lazy" />
       <div class="absolute inset-0 bg-black/20"></div>
     </div>
 
-    <div class="hero-slide absolute inset-0 transition-opacity duration-2000 ease-in-out opacity-0 scale-105 pointer-events-none" data-title="Beyond Imagination" data-tag="Tours & Safaris" data-url="{% url 'users:tours_safaris' %}">
+    <div class="hero-slide absolute inset-0 transition-opacity duration-2000 ease-in-out opacity-0 scale-105 pointer-events-none" data-title="Beyond Imagination" data-tag="Tours & Safaris" data-url="{% url 'users:tours_safaris' %}" data-cta-text="Explore More">
       <img src="{% static 'images/hero/tours-safaris.webp' %}" alt="Safari vehicle at sunset" class="w-full h-full object-cover object-center" loading="lazy" />
       <div class="absolute inset-0 bg-black/35"></div>
     </div>
 
-    <div class="hero-slide absolute inset-0 transition-opacity duration-2000 ease-in-out opacity-0 scale-105 pointer-events-none" data-title="Beyond Imagination" data-tag="Themed Experiences" data-url="{% url 'users:signature_experiences' %}">
+    <div class="hero-slide absolute inset-0 transition-opacity duration-2000 ease-in-out opacity-0 scale-105 pointer-events-none" data-title="Beyond Imagination" data-tag="Themed Experiences" data-url="{% url 'users:signature_experiences' %}" data-cta-text="Explore More">
       <img src="{% static 'images/hero/signature-tours.webp' %}" alt="Giraffes on open savannah" class="w-full h-full object-cover object-center" loading="lazy" />
       <div class="absolute inset-0 bg-black/20"></div>
     </div>
 
-    <div class="hero-slide absolute inset-0 transition-opacity duration-2000 ease-in-out opacity-0 scale-105 pointer-events-none" data-title="Beyond Imagination" data-tag="Deals" data-url="{% url 'users:deals' %}">
+    <div class="hero-slide absolute inset-0 transition-opacity duration-2000 ease-in-out opacity-0 scale-105 pointer-events-none" data-title="Beyond Imagination" data-tag="Deals" data-url="{% url 'users:deals' %}" data-cta-text="Explore More">
       <img src="{% static 'images/hero/signature-tours.webp' %}" alt="Myriad Travel seasonal deal" class="w-full h-full object-cover object-center" loading="lazy" />
       <div class="absolute inset-0 bg-black/25"></div>
     </div>
@@ -45,16 +45,16 @@
 
   <div class="relative z-10 min-h-[430px] sm:min-h-[520px] lg:min-h-[590px] flex items-center justify-center px-4 sm:px-8 py-20 text-center">
     <div class="hero-content hero-content-visible max-w-6xl mx-auto space-y-5">
-      <p id="hero-eyebrow" class="text-2xl sm:text-4xl lg:text-5xl font-light tracking-wide text-white/95">
+      <p id="hero-eyebrow" class="text-4xl sm:text-6xl lg:text-[5.5rem] font-extrabold tracking-wide text-white/95">
         Explore Kenya
       </p>
 
-      <h1 id="hero-heading" class="whitespace-nowrap text-3xl sm:text-6xl lg:text-[6rem] font-sans font-extrabold leading-none text-white">
+      <h1 id="hero-heading" class="whitespace-nowrap text-lg sm:text-2xl lg:text-[2.75rem] font-sans font-medium leading-none text-white">
         {{ hero_section.title|default:'Beyond Imagination' }}
       </h1>
       {% if hero_section.description %}<p id="hero-description" class="mx-auto max-w-2xl text-sm leading-7 text-white/90 sm:text-base">{{ hero_section.description }}</p>{% endif %}
       <a id="hero-cta" href="{% url 'users:explore_kenya' %}" class="inline-flex items-center justify-center gap-3 min-w-52 px-8 py-4 border border-white/90 text-white text-sm font-bold hover:bg-white hover:text-slate-950 transition-colors">
-        <span>{{ hero_section.cta_text|default:'Take Me There' }}</span>
+        <span>{% if hero_section.cta_text and hero_section.cta_text != 'Take Me There' %}{{ hero_section.cta_text }}{% else %}Explore More{% endif %}</span>
         <i data-lucide="arrow-right" class="w-5 h-5"></i>
       </a>
     </div>

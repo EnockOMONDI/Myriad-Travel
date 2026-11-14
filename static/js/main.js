@@ -133,7 +133,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (heroCta) {
         heroCta.href = activeSlide.getAttribute('data-url') || '#';
         const ctaText = heroCta.querySelector('span');
-        if (ctaText) ctaText.textContent = activeSlide.getAttribute('data-cta-text') || 'Take Me There';
+        if (ctaText) {
+          const requestedCta = activeSlide.getAttribute('data-cta-text');
+          ctaText.textContent = requestedCta && requestedCta !== 'Take Me There' ? requestedCta : 'Explore More';
+        }
       }
     }
     currentSlide = idx;
@@ -421,7 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  async function openServiceInquiryModal(service) {
+  async function openServiceInquiryModal(service, packageTitle = '') {
     openPlanTripModal();
     if (!serviceModalContent) return;
     if (genericPlanContent) genericPlanContent.classList.add('hidden');
@@ -435,6 +438,10 @@ document.addEventListener('DOMContentLoaded', () => {
       serviceModalContent.innerHTML = await response.text();
       const fragment = serviceModalContent.querySelector('.service-modal-fragment');
       if (fragment) setServiceModalHeader(fragment);
+      if (packageTitle) {
+        const notes = serviceModalContent.querySelector('textarea[name="notes"]');
+        if (notes && !notes.value) notes.value = `Package of interest: ${packageTitle}\n\n`;
+      }
       bindServiceModalForm();
       if (window.lucide) window.lucide.createIcons();
     } catch (error) {
@@ -447,7 +454,8 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       const service = btn.getAttribute('data-service-inquiry');
-      if (service) openServiceInquiryModal(service);
+      const packageTitle = btn.getAttribute('data-package-title') || '';
+      if (service) openServiceInquiryModal(service, packageTitle);
       else openPlanTripModal();
     });
   });

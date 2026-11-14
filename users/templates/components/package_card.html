@@ -73,15 +73,15 @@
           <span>View Details</span>
         </a>
 
-        <a
-          href="https://wa.me/{{ company.contacts.whatsapp|default:'254712236522' }}?text=Hello%20Myriad%20Travel,%20I%20would%20like%20to%20enquire%20/%20book%20the%20%22{{ pkg.title|urlencode }}%22%20({{ pkg.duration|urlencode }}).%20Could%20you%20share%20available%20dates%20and%20quotes?"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="w-full py-2.5 px-3 bg-[#1abdaf] hover:bg-[#1abdaf] text-white font-semibold text-xs rounded-xl transition-all shadow-2xs flex items-center justify-center gap-1.5 text-center"
+        <button
+          type="button"
+          class="open-plan-modal-btn w-full py-2.5 px-3 bg-[#1abdaf] hover:bg-[#1abdaf] text-white font-semibold text-xs rounded-xl transition-all shadow-2xs flex items-center justify-center gap-1.5 text-center"
+          data-service-inquiry="tours"
+          data-package-title="{{ pkg.title }}"
         >
           <i data-lucide="send" class="w-3.5 h-3.5"></i>
           <span>Enquire Now</span>
-        </a>
+        </button>
       </div>
     </div>
   </div>

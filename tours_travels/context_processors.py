@@ -283,7 +283,7 @@ def navigation_collections(request):
     tours_safaris_url = reverse('users:tours_safaris')
     deals_url = reverse('users:deals')
     kenya_sections = [
-        {'label': 'Beach', 'url': explore_kenya_url, 'items': kenya_named_items(
+        {'label': 'Kenyan Coast', 'url': explore_kenya_url, 'items': kenya_named_items(
             ['Mombasa', 'Diani', 'Malindi', 'Watamu', 'Kilifi', 'Lamu'], explore_kenya_url,
         )},
         {'label': 'Safaris', 'url': tours_safaris_url, 'items': kenya_named_items(

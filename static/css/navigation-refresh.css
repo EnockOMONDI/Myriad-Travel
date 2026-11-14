@@ -36,9 +36,9 @@
 .myriad-socials svg { width: 13px; height: 13px; }
 .myriad-socials span { font-weight: 800; font-size: 14px; line-height: 1; }
 .myriad-navigation { max-width: 1440px; padding: 8px 24px; margin: auto; display: flex; align-items: center; gap: 14px; }
-.myriad-navigation img { width: 152px; height: 104px; object-fit: contain; }
-.myriad-menu { display: flex; align-items: center; justify-content: center; flex: 1; gap: 10px; }
-.myriad-menu-item { display: flex; align-items: center; position: relative; font-size: 12px; white-space: nowrap; }
+.myriad-navigation img { width: 176px; height: 120px; object-fit: contain; }
+.myriad-menu { display: flex; align-items: center; justify-content: center; flex: 1; gap: 14px; }
+.myriad-menu-item { display: flex; align-items: center; position: relative; font-size: 14px; white-space: nowrap; }
 .myriad-menu-item > span { cursor: default; }
 .myriad-menu summary { list-style: none; cursor: pointer; padding: 12px 2px; color: var(--myriad-blue); }
 .myriad-menu summary::-webkit-details-marker { display: none; }
@@ -100,7 +100,7 @@
   .myriad-contact { padding: 7px 16px; }
   .myriad-phone span { font-size: 12px; }
   .myriad-navigation { padding: 8px 16px; }
-  .myriad-navigation img { width: 122px; height: 86px; }
+  .myriad-navigation img { width: 132px; height: 92px; }
   .myriad-quote { padding: 10px; font-size: 12px; }
   .myriad-menu-toggle span { display: none; }
   #packages-section h2 { font-size: 28px; }
