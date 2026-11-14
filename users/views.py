@@ -1430,7 +1430,7 @@ def home(request):
         kenya_preferences = (
             ('Maasai Mara', ('maasai mara',)),
             ('Amboseli', ('amboseli',)),
-            ('Lake Nakuru', ('lake nakuru', 'nakuru')),
+            ('Maasai Mara Flying Safari', ('maasai mara flying safari',)),
             ('Lake Naivasha', ('lake naivasha', 'naivasha')),
         )
         kenya_packages = list(
