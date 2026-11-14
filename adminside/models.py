@@ -557,15 +557,6 @@ class Package(models.Model):
             models.Index(fields=['status', 'home_rank']),
         ]
 
-    def clean(self):
-        super().clean()
-        if self.status == self.PUBLISHED and self.region == 'day-trips':
-            details = getattr(self, 'day_trip_details', None) if self.pk else None
-            if details and details.price_status != 'confirmed':
-                raise ValidationError({'status': 'Confirm the day trip price and details before publishing.'})
-            if details and self.child_price == 0:
-                raise ValidationError({'child_price': 'Enter the confirmed child rate before publishing this day trip.'})
-
     def save(self, *args, **kwargs):
         """Clean slug before saving"""
         if self.slug:
