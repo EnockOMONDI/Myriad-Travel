@@ -24,6 +24,7 @@ urlpatterns = [
     path('contact/', views.contactus, name='contact'),
     path('aboutus/', views.aboutus, name='aboutus'),
     path('services/', views.services, name='services'),
+    path('visa-entry-requirements/', views.visa_entry_requirements, name='visa_entry_requirements'),
     path('corporate/', views.corporate, name='corporatepage'),
     path('holidays/', views.holidays, name='holidayspage'),
     path('mice/', views.micepage, name='micepage'),

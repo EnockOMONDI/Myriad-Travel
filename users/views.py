@@ -556,6 +556,10 @@ def services(request):
     return render(request, 'users/pages/services.html', _public_page_context(package_limit=6))
 
 
+def visa_entry_requirements(request):
+    return render(request, 'users/pages/visa_entry_requirements.html', _public_page_context(package_limit=4))
+
+
 def corporate(request):
 
     return render(request, 'users/corporate.html')

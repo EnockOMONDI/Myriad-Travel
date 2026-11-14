@@ -93,3 +93,14 @@ class TripFeedbackTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, visible.client_name)
         self.assertNotContains(response, "Hidden Client")
+
+
+class VisaEntryRequirementsTests(TestCase):
+    def test_page_renders_and_is_linked_in_footer(self):
+        response = self.client.get(reverse("users:visa_entry_requirements"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Visa &amp; Entry Requirements")
+        self.assertContains(response, "Visiting Kenya")
+        self.assertContains(response, "https://etakenya.go.ke/")
+        self.assertContains(response, 'href="/visa-entry-requirements/"')
