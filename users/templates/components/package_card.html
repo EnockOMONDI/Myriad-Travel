@@ -48,15 +48,16 @@
       <div class="flex items-baseline justify-between">
         <div>
           <span class="text-[11px] text-slate-500 block uppercase font-medium">
-            From (per person)
+            {% if pkg.day_trip %}From · Kenyan citizen adult{% else %}From (per person){% endif %}
           </span>
           <span 
             class="text-xl font-bold text-slate-900" 
-            data-price-kes="{{ pkg.price_kes }}" 
-            data-price-usd="{{ pkg.price_usd }}"
+            {% if not pkg.day_trip %}data-price-kes="{{ pkg.price_kes }}"{% endif %}
+            {% if not pkg.day_trip %}data-price-usd="{{ pkg.price_usd }}"{% endif %}
           >
             {{ pkg.price_kes|kes_format }}
           </span>
+          {% if pkg.day_trip %}<span class="mt-1 block text-xs text-slate-600">{{ pkg.duration }} · {{ pkg.day_trip.departs_from }} · shared transport</span>{% endif %}
         </div>
 
       </div>

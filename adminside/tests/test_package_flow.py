@@ -36,6 +36,21 @@ class PackageFlowTests(TestCase):
         self.assertEqual(set(ids), {self.country.id, self.destination.id, self.child.id})
         self.assertEqual(list(_packages_for_destinations(ids)), [self.package])
 
+    def test_day_trips_menu_opens_only_day_trip_packages(self):
+        trip = Package.objects.create(
+            name='Nairobi Day Trip', slug='nairobi-day-trip', description='Day trip',
+            main_destination=self.destination, region='day-trips', duration_days=1,
+            duration_nights=0, adult_price=4700, child_price=2500,
+            status=Package.PUBLISHED,
+        )
+        home = self.client.get(reverse('users:explore_kenya'))
+        self.assertContains(home, 'href="/day-trips/">Day Trips</a>', html=False)
+
+        page = self.client.get(reverse('users:day_trips'))
+        self.assertEqual(page.status_code, 200)
+        self.assertContains(page, trip.name)
+        self.assertNotContains(page, self.package.name)
+
     def test_country_page_includes_linked_multi_country_group_packages(self):
         group = Destination.objects.create(
             name='Indian Ocean Circuit', slug='indian-ocean-circuit',

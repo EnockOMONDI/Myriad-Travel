@@ -203,8 +203,8 @@ def navigation_collections(request):
          'items': category_items(categories.filter(Q(packages__region='day-trips') | Q(tagged_packages__region='day-trips')), 'explore_kenya')},
         {'label': 'Themed Experiences', 'url': reverse('users:themed_packages'),
          'items': category_items(themed_categories, 'themed_packages')},
-        {'label': 'Day Trips', 'url': reverse('users:explore_kenya'),
-         'items': category_items(categories.filter(Q(packages__region='day-trips') | Q(tagged_packages__region='day-trips')), 'explore_kenya')},
+        {'label': 'Day Trips', 'url': reverse('users:day_trips'),
+         'items': category_items(categories.filter(Q(packages__region='day-trips') | Q(tagged_packages__region='day-trips')), 'day_trips')},
     ]
     world_sections = [
         {'label': label, 'url': reverse('users:explore_the_world'),
