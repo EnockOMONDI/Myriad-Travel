@@ -1,4 +1,4 @@
-"""Create the four user-supplied Explore Kenya day trips as unpublished drafts."""
+"""Create the user-supplied Explore Kenya day trips as unpublished drafts."""
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -71,17 +71,71 @@ TRIPS = [
         'excludes': ['Bicycle hire', 'Lunch', 'Lake Naivasha boat ride', 'Crescent Island visit', 'Tips', 'Personal expenses'],
         'extra': 'Optional activities can be quoted when booking.',
     },
+    {
+        'name': 'Sagana White-Water Rafting Day Trip', 'slug': 'sagana-white-water-rafting-day-trip',
+        'destination': ('Sagana', 'sagana', 'kenya'),
+        'departs_from': 'Nairobi CBD', 'duration_label': 'Full day', 'price': 8950,
+        'price_audience': 'Adult', 'price_basis': 'Per adult in shared transport from Nairobi',
+        'summary': 'Spend a day on the Tana River with a guided white-water rafting session at Savage Wilderness in Sagana. After rafting, enjoy lunch at the camp and unwind by the river before returning to Nairobi.',
+        'schedule': [
+            '7:00 a.m. | Depart Nairobi CBD in a shared tour van.',
+            '9:30 a.m. | Arrive at Savage Wilderness, meet the rafting guides and get fitted with equipment.',
+            '10:00 a.m. | Begin the guided white-water rafting session after a safety briefing.',
+            '1:00 p.m. | Enjoy lunch at the camp, followed by leisure time by the river.',
+            '3:30 p.m. | Depart for Nairobi, arriving around 6:00 p.m.',
+        ],
+        'includes': ['Return shared transport from Nairobi CBD', 'Guided rafting session', 'Helmet and buoyancy aid', 'Lunch', 'Bottled water', 'Myriad trip host'],
+        'excludes': ['Drinks with lunch', 'Optional activities such as ziplining or kayaking', 'Tips', 'Personal expenses'],
+        'extra': 'Rafting is subject to river conditions, operator availability and the operator’s participation requirements.',
+    },
+    {
+        'name': 'Suswa SGR Day Trip', 'slug': 'suswa-sgr-day-trip',
+        'destination': ('Suswa', 'suswa', 'kenya'),
+        'departs_from': 'Nairobi SGR Terminus, Syokimau', 'duration_label': 'Full day', 'price': 3250,
+        'price_audience': 'Adult', 'price_basis': 'Per adult for Friday to Sunday group departures, subject to train availability',
+        'summary': 'Take the SGR through the three tunnels of the Rift Valley and spend the afternoon in Suswa. Enjoy lunch at Mara Gateway Resort, followed by time to relax, play group games and take photos before catching the train back.',
+        'schedule': [
+            '7:45 a.m. | Meet your Myriad host at Nairobi SGR Terminus, Syokimau, for check-in.',
+            '8:50 a.m. | Depart Nairobi on the Suswa Leisure Train.',
+            '11:10 a.m. | Arrive at Suswa Station and take a shared transfer to Mara Gateway Resort.',
+            '12:30 p.m. | Enjoy lunch, followed by leisure time and group games.',
+            '3:00 p.m. | Transfer back to Suswa Station for check-in.',
+            '4:05 p.m. | Depart Suswa by train and arrive at Nairobi Terminus at 6:10 p.m.',
+        ],
+        'includes': ['Return economy SGR tickets', 'Shared return transfers between Suswa Station and Mara Gateway Resort', 'Lunch', 'Bottled water', 'Myriad trip host'],
+        'excludes': ['Transport to and from Nairobi SGR Terminus', 'Swimming and other optional resort activities', 'Drinks with lunch', 'Mount Suswa Conservancy visits', 'Personal expenses'],
+        'extra': 'Departures are Friday to Sunday and are subject to train availability, ticket confirmation and resort availability.',
+    },
+    {
+        'name': 'Machakos Day Trip', 'slug': 'machakos-day-trip',
+        'destination': ('Machakos', 'machakos', 'kenya'),
+        'departs_from': 'Nairobi CBD', 'duration_label': 'Full day', 'price': 4950,
+        'price_audience': 'Adult', 'price_basis': 'Per adult on a group-joining departure from Nairobi',
+        'summary': 'Take the scenic route through Mua Hills, stretch your legs on a guided forest walk in the Iveti Hills and try the famous uphill illusion at Kyamwilu Gravity Point. Round off the day with a Kamba-style lunch and a lakeside stroll at Machakos People’s Park.',
+        'schedule': [
+            '7:30 a.m. | Depart Nairobi CBD in a shared tour van.',
+            '9:15 a.m. | Drive through Mua Hills, with a photo stop for views of the rolling hills and surrounding countryside.',
+            '10:15 a.m. | Take a 45–60-minute guided nature walk in Iveti Forest, with time for photos along the trail.',
+            '11:45 a.m. | Visit Kyamwilu Gravity Point on Kituluni Hill and watch a water demonstration of the uphill-flowing illusion.',
+            '12:45 p.m. | Enjoy a Kamba-style set lunch in Machakos town featuring muthokoi, a traditional dish made with cracked maize and beans.',
+            '2:15 p.m. | Visit Machakos People’s Park for a lakeside walk and an optional paddle-boat ride, subject to availability.',
+            '3:45 p.m. | Depart for Nairobi, arriving at approximately 6:00 p.m.',
+        ],
+        'includes': ['Return shared transport from Nairobi CBD', 'Scenic drive through Mua Hills', 'Guided Iveti Forest walk and entry', 'Kyamwilu Gravity Point visit', 'Machakos People’s Park admission', 'Set lunch', 'Bottled drinking water', 'Myriad trip host'],
+        'excludes': ['Paddle-boat rides and other optional park activities', 'Drinks with lunch', 'Tips', 'Personal expenses'],
+        'extra': 'Optional activities and attraction access are subject to availability and local operating conditions.',
+    },
 ]
 
 
 class Command(BaseCommand):
-    help = 'Add four Kenya day trips. Use --publish to make them public immediately.'
+    help = 'Add Kenya day trips. Use --publish to make them public immediately.'
 
     def add_arguments(self, parser):
         parser.add_argument(
             '--publish',
             action='store_true',
-            help='Publish the four records and mark their supplied rates confirmed.',
+            help='Publish the records and mark their supplied rates confirmed.',
         )
 
     @transaction.atomic
@@ -143,6 +197,7 @@ class Command(BaseCommand):
             collection.packages.add(package)
             DayTripDetails.objects.create(
                 package=package, duration_label=trip['duration_label'], departs_from=trip['departs_from'],
+                price_audience=trip.get('price_audience', 'Kenyan citizen adult'),
                 price_basis=trip['price_basis'], schedule='\n'.join(trip['schedule']),
                 price_status='confirmed' if publish else 'proposed',
             )
